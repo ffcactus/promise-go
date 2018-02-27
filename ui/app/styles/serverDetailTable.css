@@ -1,0 +1,30 @@
+.root {
+    border: 1px solid lightgrey;
+    border-collapse: collapse;
+}
+
+.root :global .tbody {
+    border: 1px solid lightgrey;
+}
+
+.root :global .thead {
+    border: 1px solid lightgrey;
+    background-color: gray;
+    color: white;
+}
+
+.root :global .th {
+    border: 1px solid lightgrey;
+}
+
+.root :global .tr {
+    border: 1px solid lightgrey;
+}
+
+.root :global .td {
+    border: 1px solid lightgrey;
+}
+
+table thead tbody th tr td {
+    border: 1px solid red;    
+}

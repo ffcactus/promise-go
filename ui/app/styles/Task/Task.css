@@ -1,0 +1,51 @@
+.TaskApp {
+    background-color: white;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 618fr 1000fr 618fr;
+}
+
+.TaskSearchArea {
+    grid-column: 1 / 2;
+}
+
+.TaskListArea {
+    grid-column: 2 / 3;
+}
+
+.TaskDetailArea {
+    grid-column: 3 / 4;
+}
+
+.TaskListItem {
+    display: grid;
+    margin: 10px;
+    border: 1px solid black;
+    grid-template-columns: 200px 1fr 50px;
+    grid-template-rows: 2em 2em 5px;
+}
+
+.Name {
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+}
+
+.Description {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+}
+
+.CurrentStep {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+}
+
+.ProgressBar {
+    grid-column: 1 / 3;
+    grid-row: 3 / 4;
+}
+
+.Expend {
+    grid-column: 3 / 4;
+    grid-row: 1 / 4;
+}
