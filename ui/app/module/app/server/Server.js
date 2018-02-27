@@ -1,11 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import AppFrame from '../../promise/app/AppFrame';
 function Server() {
   return (
-    <React.Fragment>
+    <AppFrame>
       <p>Server</p>
-      <Link to="/">Home</Link>
-    </React.Fragment>
+    </AppFrame>
   );
 }
 
