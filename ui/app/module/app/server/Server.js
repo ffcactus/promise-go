@@ -1,7 +1,13 @@
 import React from 'react';
-
-function Servers() {
-  return <p>Servers</p>;
+import { Link } from 'react-router-dom';
+function Server() {
+  return (
+    <React.Fragment>
+      <p>Server</p>
+      <Link to="/">Home</Link>
+    </React.Fragment>
+  );
 }
 
-export default Servers;
+export default Server;
+

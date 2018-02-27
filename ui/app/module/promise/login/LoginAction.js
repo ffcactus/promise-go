@@ -63,8 +63,8 @@ function loginSuccess(token) {
  * @param {string} password
  * @param {string} afterLoginPath
  */
-function login(hostname, username, password) {
-  return (dispatch, state) => {
+function login(hostname, username, password, from) {
+  return (dispatch) => {
     dispatch(loginRequest(hostname, username, password));
     Client.login(hostname, username, password).then((response) => {
       if (response.status === 200) {
@@ -72,8 +72,7 @@ function login(hostname, username, password) {
         // TODO
         // Is it good to do redirection in action?
         // browserHistory.push(afterLoginPath);
-        console.info('from = ' + state.from);
-        dispatch(push('/'));
+        dispatch(push(from));
         dispatch(DesktopAction.setAppCollection());
         return;
       }
