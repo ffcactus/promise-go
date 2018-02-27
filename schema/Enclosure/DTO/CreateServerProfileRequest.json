@@ -1,0 +1,75 @@
+{
+    "Name": "TestProfile",
+    "Description": "This profile is for test",
+    "ProfileModelId": 1, // If the profile mode can be get from service, it's better to use URI here.
+    "SettingList": { // ProfileSettings
+        "BIOS": {
+            "BIOSSettings": { // We'd better keep the real settings with a same style.
+                "ProcessorHyperThreadingDisable": "Disabled",
+                "ProcessorX2APIC": "Enabled",
+                "ProcessorVMXEnable": "Enabled",
+                "ProcessorLTSXEnable": "Enabled",
+                "CustomPowerPolicy": "Efficiency",
+                "ProcessorEISTEnable": "Enabled",
+                "TurboMode": "Enabled",
+                "ProcessorAutonomousCStateEnable": "Enabled",
+                "C6Enable": "Auto",
+                "ProcessorC1eEnable": "Enabled",
+                "NUMAEn": "Enabled",
+                "PCIeSRIOVSupport": "Enabled",
+                "VTdSupport": "Enabled",
+                "InterruptRemap": "Enabled",
+                "BootType": "UEFIBoot",
+                "BootTypeOrder0": "HardDiskDrive",
+                "BootTypeOrder1": "DVDROMDrive",
+                "BootTypeOrder2": "PXE",
+                "BootTypeOrder3": "Others"
+            }
+        },
+        "RAID": {
+            "RemovePreviousSettings": true,
+            "Settings": { // RAIDSettings
+                "RAIDControllerCount": 2, // For the array, it's better to provide the count of the elements.
+                "RAIDController": [ // 
+                    {
+                        "StorageID": "RAIDStorage0", // RAIDControllerID
+                        "Setting": [ // RAIDControllerSettings
+                            {
+                                "Drives": [
+                                    0,
+                                    1
+                                ],
+                                "VolumeRaidLevel": "RAID0",
+                                "BootEnable": true,
+                                "VolumeName": "Name1"
+                            },
+                            {
+                                "Drives": [
+                                    2,
+                                    3
+                                ],
+                                "VolumeRaidLevel": "RAID1",
+                                "BootEnable": false,
+                                "VolumeName": "Name2"
+                            }
+                        ]
+                    },
+                    {
+                        "StorageID": "RAIDStorage1",
+                        "Setting": [
+                            {
+                                "Drives": [
+                                    4,
+                                    5
+                                ],
+                                "VolumeRaidLevel": "RAID0",
+                                "BootEnable": true,
+                                "VolumeName": "Name3"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}

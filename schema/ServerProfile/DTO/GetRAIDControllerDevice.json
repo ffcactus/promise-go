@@ -1,0 +1,19 @@
+{
+    "Name": "LSI 3008IR",
+    "ID": "LSI_3008IR",
+    "URI": "/redfish/v1/ServerHardwareModes/devices/lsi_3008IR",
+    "Type": "RAIDController",
+    "Capability": {
+        "SupportedRAIDLevel": [
+            "RAID0",
+            "RAID1",
+            "RAID5",
+            "RAID6",
+            "RAID10",
+            "RAID1E",
+            "RAID50",
+            "RAID60"
+        ],
+        "Controller"
+    }
+}

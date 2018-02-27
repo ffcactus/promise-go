@@ -1,0 +1,7 @@
+{
+    "Members": [
+        "/redfish/v1/rich/enclosures/{id}",
+        "/redfish/v1/rich/enclosures/{id}"
+        // ......
+    ]
+}

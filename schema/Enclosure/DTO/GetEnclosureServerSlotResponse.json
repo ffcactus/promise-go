@@ -1,0 +1,8 @@
+{
+    "URI": "/redfish/v1/rich/enclosures/{id}/slots/server/1",
+    "EnclosureURI": "/redfish/v1/rich/enclosures/{id}",
+    "Type": "Server",
+    "Number": 1,
+    "SlotState": "Inserted",
+    "DeviceURI": "/redfish/v1/rich/nodes/{id}"
+}

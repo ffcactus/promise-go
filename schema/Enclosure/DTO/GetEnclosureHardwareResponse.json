@@ -1,0 +1,35 @@
+{
+    "Name": "EnclosureHardware",
+    "URI": "/redfish/v1/rich/enclosure-hardware/e-hw-0001",
+    "EnclosureModelURI": "/redfish/v1/rich/EnclosureModels/E9000",
+    "ServerSlotCount": 16,
+    "ServerSlots": [
+        {
+            "Number": 1,
+            "SlotState": "Inserted",
+            "Model": "CH121"
+        },
+        {
+            "Number": 2,
+            "SlotState": "Empty"
+        },
+        {
+            "Number": 3,
+            "SlotState": "Covered"
+        }
+        // ......
+    ],
+    "SwitchSlotCount": 4,
+    "SwitchSlots": [
+        {
+            "Number": 1,
+            "SlotState": "Inserted",
+            "Model": "CX110"
+        },
+        {
+            "Number": 2,
+            "SlotState": "Empty"
+        }
+        // ......
+    ]
+}

@@ -1,0 +1,31 @@
+{
+    "Name": "Enclosure 1",
+    "Description": "The description of Enclosure 1.",
+    "URI": "/redfish/v1/rich/enclosures/e-0001",
+    "EnclosureProfileName": "EnclosureProfile 1",
+    "EnclosureProfilePageURI": "/redfish/v1/rich/EnclosureProfiles/e-p-0001",
+    "EnclosureHardwarePageURI": "/redfish/v1/rich/EnclosureHardwares/e-hw-0001",
+    "EnclosureModeType": "E9000",
+    "EnclosureModelPageURI": "/redfish/v1/rich/EnclosureModels/e9000",
+    "EnclosureSetting": {
+        "PowerSetting": {
+            "PowerCapEnabled": true,
+            "PowerCapWatt": 10000
+        }
+    },
+    "Slots": [
+        "/redfish/v1/rich/enclosures/e-0001/slots/server/1",
+        // ......
+        "/redfish/v1/rich/enclosures/e-0001/slots/server/16",
+        "/redfish/v1/rich/enclosures/e-0001/slots/switch/1",
+        // ......
+        "/redfish/v1/rich/enclosures/e-0001/slots/fan/1",
+        // ......
+        "/redfish/v1/rich/enclosures/e-0001/slots/fan/14",
+        "/redfish/v1/rich/enclosures/e-0001/slots/power/1",
+        // ......
+        "/redfish/v1/rich/enclosures/e-0001/slots/power/8",
+        "/redfish/v1/rich/enclosures/e-0001/slots/manager/1",
+        "/redfish/v1/rich/enclosures/e-0001/slots/manager/2"
+    ]
+}

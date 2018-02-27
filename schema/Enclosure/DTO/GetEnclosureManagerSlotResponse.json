@@ -1,0 +1,14 @@
+{
+    "URI": "/redfish/v1/rich/enclosures/{id}/slots/switch/1",
+    "EnclosureURI": "/redfish/v1/rich/enclosures/{id}",
+    "Type": "Manager",
+    "Number": 1,
+    "SlotState": "Inserted",
+    "Standby": false,
+    "Firmware": {
+        "Version": "1.0",
+        "CPLDVersion": "1.0"
+    },
+    // ... Should provider more hardware info from BMC.
+    "DeviceURI": "/redfish/v1/rich/switch/{id}"
+}

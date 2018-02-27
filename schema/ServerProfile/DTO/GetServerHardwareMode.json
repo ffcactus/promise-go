@@ -1,0 +1,57 @@
+{
+    "Name": "CH121_V3_ServerHardwareMode",
+    "URI": "/redfish/v1/rich/ServerHardwareModes/ch121_v5",
+    "ID": "ch121_v5",
+    "Category": "Blade",
+    "Mode": "CH121",
+    "Version": "5",
+    "MainBoard": {
+        "BIOS": {
+            "Version": "5"
+        }
+    },
+    "IODeviceTypes": [
+        "RAIDController",
+        "MezzCard",
+        "StandardPCIeCard"
+    ],
+    "RAIDController": {
+        "SlotCount": 1,
+        "Slot": [
+            {
+                "Number": 1,
+                "SupportedDevices": [
+                    "/redfish/v1/rich/ServerHardwareModes/Devices/LSI_3008IR"
+                ]
+            }
+        ]
+    },
+    "MezzCard": {
+        "SlotCount": 2,
+        "Slot": [
+            {
+                "Number": 1,
+                "SupportedDevices": [
+                    "/redfish/v1/rich/ServerHardwareModes/Devices/MZ312",
+                    "/redfish/v1/rich/ServerHardwareModes/Devices/MZ912",
+                    "/redfish/v1/rich/ServerHardwareModes/Devices/MZ111",
+                    "/redfish/v1/rich/ServerHardwareModes/Devices/MZ710",
+                    "/redfish/v1/rich/ServerHardwareModes/Devices/MZ220",
+                    "/redfish/v1/rich/ServerHardwareModes/Devices/MZ611"
+                ]
+            },
+            {
+                "Number": 2,
+                "CompatibleSlot": 1
+            }
+        ]
+    },
+    "StandardPCIeCard": {
+        "SlotCount": 1,
+        "Slot": [
+            {
+                "Number": 1
+            }
+        ]
+    }
+}

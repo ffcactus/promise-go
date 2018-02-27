@@ -1,0 +1,20 @@
+{
+    "Name": "EnclosureProfile name.",
+    "Description": "EnclosureProfile description.",
+    "EnclosureHardwareURI": "/redfish/v1/rich/EnclosureHardware/{id}",
+    "ServerSetting": {
+        "ServerSlotProfileBinding": [
+            {
+                "Number": 1,
+                "ServerProfileURI": "/redfish/v1/rich/ServerProfile/{id}"
+            }
+            // If the slot doesn't specify here, it means ignore the slot.
+        ],
+        "ApplyMode": "AllMatch"
+    },
+    "SwitchSettingURI": "/redfish/v1/rich",
+    // "NetworkSettingURI": "",
+    "EnclosureSetting": {
+
+    }
+}

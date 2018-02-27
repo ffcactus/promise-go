@@ -1,0 +1,15 @@
+{
+    "Enable": true, // false
+    "PowerCappingWatt": 10000, 
+    "Percentage": 50,
+    "Mode": "Manual", // "Equal", "Ratio"
+    "ManualModeExtraInfo": {
+        "SlotsCapping": [
+            {
+                "Slot": "/redfish/v1/rich/enclosures/slots/blade/1",
+                "PowerCappingWatt": 1000
+            }
+        ]
+    },
+    "BladeOnFailureAction": "PowerOff" // "None"
+}

@@ -1,0 +1,39 @@
+{
+    "Name": "EnclosureModel_E9000",
+    "URI": "/redfish/v1/rich/enclosure_model/e9000",
+    "Type": "E9000",
+    "SubType": "1000",
+    "ServerSlotCount": 16,
+    "ServerSlots": [
+        {
+            "Type": "Server",
+            "Number": 1,
+            "MaxWidth": 2,
+            "MaxHeight": 2,
+            "Sharable": true,
+            "SupportedServerModel": [
+                "CH121 v5",
+                "CH242 v5"
+            ]
+        }
+    ],
+    "SwitchSlotCount": 4,
+    "SwitchSlots": [
+        {
+            "Type": "Switch",
+            "Number": 1,
+            "SupportedSwitchModel": [
+                "CX110 GE",
+                "CX111 GE",
+                "CX116 GE"
+            ]
+        }
+    ],
+    
+    "FanSlotCount": 14,
+    "PowerSlotCount": 6,
+    "Capability": {
+        "SupportPowerCap": true,
+        "SupportCoolingStrategy": true
+    }
+}

@@ -1,0 +1,49 @@
+{
+    "Name": "Enclosure 1",
+    "Description": "The description of Enclosure 1.",
+    "EnclsureMode": "X6000",
+    "EnclosureHardware": {
+        "ServerSlotCount": 16,
+        "ServerSlots": [
+            {
+                "Number": 1,
+                "SlotState": "Inserted",
+                "Model": "XH321",
+                "PowerState": "PowerOn",
+                "ServerPageURI": "/redfish/v1/node/node-0001"
+            },
+            {
+                "Number": 2,
+                "SlotState": "Empty"
+            },
+            {
+                "Number": 3,
+                "SlotState": "Covered"
+            }
+        ],
+        "PowerSlotCount": 6,
+        "PowerSlots": [
+            {
+                "Number": 1,
+                "SlotState": "Inserted",
+                "Model": "PowerXXX"
+            },
+            {
+                "Number": 2,
+                "SlotState": "Empty"
+            }
+        ],
+        "FanSlotCount": 14,
+        "FanSlots": [
+            {
+                "Number": 1,
+                "SlotState": "Inserted",
+                "Model": "FanXXX"
+            },
+            {
+                "Number": 2,
+                "SlotState": "Empty"
+            }
+        ]
+    }
+}

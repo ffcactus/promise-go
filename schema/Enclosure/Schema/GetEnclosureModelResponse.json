@@ -1,0 +1,55 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "id": "http://director.atlas.huawei.com/schemas/Enclosure/GetEnclosureResponse.json",
+    "title": "GetEnclosureResponse",
+    "description": "This is a schema that matches get enclosure response.",
+    "definitions": {
+        "EnclosureType": {
+            "description": "The type of the enclosure. The type can further indicate the properties of the enclosure.",
+            "enum": [
+                "E9000",
+                "X6000",
+                "KunLun"
+            ]
+        }
+    },
+    "type": "object",
+    "properties": {
+        "Name": {
+            "type": "string"
+        },
+        "EnclosureType": {
+            "$ref": "#/definitions/EnclosureType"
+        },
+        "ServerSlotCount": {
+            "type": "integer"
+        },
+        "ServerSlots": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "SlotNumber": {
+                        "type": "integer"
+                    },
+                    "MaxWidth": {
+                        "type": "integer"
+                    },
+                    "MaxHeight": {
+                        "type": "integer"
+                    },
+                    "Sharable": {
+                        "type": "boolean"
+                    }
+                }
+            }
+        },
+        "SwitchSlotCount": {
+            "type": "integer"
+        },
+        "SwitchSlots": {
+            "type": "array"
+            
+        }
+    }
+}

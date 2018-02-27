@@ -1,0 +1,8 @@
+{
+    "EnclosureName": "Enclosure A",
+    "EnclosurePageURI": "/redfish/v1/rich/enclosures/{enclosure_id}",
+    "Hostname": "the.hostname.of.the.blade",
+    "Port": 80,
+    "Slot": 1,
+    "AccountPageURI": "/redfish/v1/rich/useraccount/{account_id}"
+}

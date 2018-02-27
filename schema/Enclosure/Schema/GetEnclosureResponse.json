@@ -1,0 +1,259 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "id": "http://director.atlas.huawei.com/schemas/Enclosure/GetEnclosureResponse.json",
+    "title": "GetEnclosureResponse",
+    "description": "This is a schema that matches get enclosure response.",
+    "definitions": {
+        "Health": {
+            "enum": [
+                "OK", "Warning", "Critical"
+            ]
+        },
+        "OnBoardState": {
+            "description": "A state used to describe the on board state.",
+            "enum": [
+                "Inserting",
+                "Inserted",
+                "Removing"
+            ]
+        }
+    },
+    "type": "object",
+    "properties": {
+        "Name": {
+            "type": "string"
+        },
+        "EnclosurePageURI": {
+            "type": "string"
+        },
+        "EnclosureType": {
+            "enum": [
+                "E9000",
+                "KunLun",
+                "X6000"
+            ]
+        },
+        "EnclosureSubType": {
+            "type": "string"
+        },
+        "EnclosureProfileModelPageURI": {
+            "type": "string"
+        },
+        "EnclosureProfilePageURI": {
+            "type": "string"
+        },
+        "EnclosureCapability": {
+            "type": "object",
+            "properties": {
+                "ServerSlotCount": {
+                    "type": "integer"
+                },
+                "ServerSlots": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "SlotNumber": {
+                                "type": "integer"
+                            },
+                            "MaxWidth": {
+                                "type": "integer"
+                            },
+                            "MaxHeight": {
+                                "type": "integer"
+                            },
+                            "Sharable": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                },
+                "SwitchSlotCount": {
+                    "type": "integer"
+                },
+                "SwitchSlots": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "SlotNumber": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                "PowerSlotCount": {
+                    "type": "integer"
+                },
+                "PowerSlots": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "SlotNumber": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                "FanSlotCount": {
+                    "type": "integer"
+                },
+                "FanSlots": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "SlotNumber": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                "ManagerSlotCount": {
+                    "type": "integer"
+                },
+                "ManagerSlots": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "SlotNumber": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "Servers": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "SlotNumber": {
+                        "type": "integer"
+                    },
+                    "OnBoardState": {
+                        "$ref": "#/definitions/OnBoardState"
+                    },
+                    "DevicePageURI": {
+                        "type": "string"
+                    },
+                    "DeviceProfilePageURI": {
+                        "type": "string"
+                    },
+                    "DeviceWidth": {
+                        "type": "integer"
+                    },
+                    "DeviceHeight": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "Switches": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "SlotNumber": {
+                        "type": "integer"
+                    },
+                    "OnBoardState": {
+                        "$ref": "#/definitions/OnBoardState"
+                    },
+                    "DevicePageURI": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "Fans": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "SlotNumber": {
+                        "type": "integer"
+                    },
+                    "OnBoardState": {
+                        "$ref": "#/definitions/OnBoardState"
+                    },
+                    "Model": {
+                        "type": "string"
+                    },
+                    "PartNumber": {
+                        "type": "string"
+                    },
+                    "Health": {
+                        "$ref": "#/definitions/Health"
+                    },
+                    "FirmwareVersion": {
+                        "type": "string" 
+                    }                    
+                }
+            }
+        },
+        "Powers": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "SlotNumber": {
+                        "type": "integer"
+                    },
+                    "OnBoardState": {
+                        "$ref": "#/definitions/OnBoardState"
+                    },
+                    "Model": {
+                        "type": "string"
+                    },
+                    "PartNumber": {
+                        "type": "string"
+                    },
+                    "Health": {
+                        "$ref": "#/definitions/Health"
+                    },
+                    "FirmwareVersion": {
+                        "type": "string" 
+                    }                    
+                }
+            }
+        },
+        "Managers": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "SlotNumber": {
+                        "type": "integer"
+                    },
+                    "OnBoardState": {
+                        "$ref": "#/definitions/OnBoardState"
+                    },
+                    "Model": {
+                        "type": "string"
+                    },
+                    "PartNumber": {
+                        "type": "string"
+                    },
+                    "Health": {
+                        "$ref": "#/definitions/Health"
+                    },
+                    "FirmwareVersion": {
+                        "type": "string" 
+                    }
+                }
+            }
+        },
+        "Setttings": {
+            "type": "object",
+            "properties": {
+                "PowerCapState": {
+                    "enum": ["Enabled", "Disabled"] 
+                }
+            }
+        }       
+    }
+}
