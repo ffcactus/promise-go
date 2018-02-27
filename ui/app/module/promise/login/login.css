@@ -1,0 +1,60 @@
+.loginForm {
+
+	width: 240px;
+	height: 200px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	padding: 0;
+	border: 0;
+	margin: -100px 0 0 -120px; /* [-(height/2)px 0 0 -(width/2)px] */
+	display: block;
+	z-index: 99;
+}
+
+.loginTitle {
+	font-size: 30px;
+	color: white;
+	text-align: center;
+}
+
+.loginInput input {
+	height: 25px;
+	border-radius: 2px;
+	padding: 0 5px 0 5px;
+	border: 0;
+	margin: 2px;
+	display: flex;
+	flex-flow: column wrap;
+	width: 100%;
+}
+
+
+.loginSubmit {
+	margin: 16px auto auto auto;
+	display: flex;
+	flex-flow: column wrap;
+	align-items: center;
+}
+
+.loginFailureMessage {
+	text-align: center;
+}
+
+.hidden {
+	visibility: hidden
+}
+
+.visible {
+	visibility: visible
+}
+
+.showError {
+	visibility: visible;
+	color: red;
+}
+
+.hideError {
+	visibility: hidden;
+	color: red;
+}
