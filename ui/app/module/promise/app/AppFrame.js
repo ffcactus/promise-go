@@ -1,16 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import CSSModules from 'react-css-modules';
 import Styles from './AppFrame.css';
+import AppToolBar from './AppToolBar';
+import AppMain from './AppMain';
 
 function AppFrame(props) {
   return (
     <div styleName="AppFrame">
-      <div styleName="Home">
-        <Link to="/">Home</Link>
-      </div>
-      {props.children}
+      <AppToolBar>
+        <p>AppToolBar</p>
+      </AppToolBar>
+      <AppMain>
+        {props.children}
+      </AppMain>
     </div>
   );
 }

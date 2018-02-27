@@ -37,7 +37,7 @@ class Login extends Component {
     event.preventDefault();
 
     // If we can't find a next path after login, we go to root.
-    let from = this.props.location.state ? this.props.location.state.from : '/';
+    const from = this.props.location.state ? this.props.location.state.from : '/';
     this.props.dispatch(login(this.state.hostname, this.state.username, this.state.password, from));
   }
 

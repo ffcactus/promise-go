@@ -5,6 +5,32 @@
     overflow: hidden;
 }
 
+.AppToolBar {
+    overflow: hidden;
+    position: absolute;
+    margin: 0px;
+    border: solid transparent;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 44px;
+    font-family: 'SFNSDisplay', 'SFNSText', 'Helvetica Neue', sans-serif;
+    font-size: 21px;
+    line-height: 0.4;
+}
+
+.AppMain {
+    left: 0px;
+    right: 0px;
+    top: 44px;
+    bottom: 0px;
+    cursor: auto;
+    overflow: hidden;
+    position: absolute;
+    margin: 0px;
+    border: solid 0 transparent;    
+}
+
 .Home {
     background-color: rgb(18, 131, 236);
     z-index: 99;
