@@ -1,0 +1,7 @@
+mode_modules/
+.vscode/
+global/global
+auth/auth
+task/task
+ws/ws
+server/server
