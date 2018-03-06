@@ -1,9 +1,10 @@
 import React from 'react';
 import AppFrame from '../../promise/app/AppFrame';
+import CommonTwoColumn from '../../promise/app/CommonTwoColumn';
 function Server() {
   return (
     <AppFrame>
-      <p>Server</p>
+      <CommonTwoColumn/>
     </AppFrame>
   );
 }

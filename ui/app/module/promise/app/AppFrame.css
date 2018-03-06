@@ -31,6 +31,42 @@
     border: solid 0 transparent;    
 }
 
+.CommonTwoColumn {
+    left: 0px;
+    right: 0px;
+    top:0px;
+    bottom: 0px;
+    height: 100%;
+    widows: 100%;
+    overflow: hidden;
+    margin: 0px;
+    border: solid 0 transparent;
+}
+
+.CommonTwoColumnLeft {
+    background-color: skyblue;
+    left: 0px;
+    right: 85.4%;
+    top:0px;
+    bottom: 0px;
+    position: absolute;
+    overflow: hidden;
+    margin: 0px;
+    border: solid 0 transparent;
+}
+
+.CommonTwoColumnRight {
+    background-color: silver;
+    left: 14.6%;
+    right: 0px;
+    top:0px;
+    bottom: 0px;
+    position: absolute;
+    overflow: hidden;
+    margin: 0px;
+    border: solid 0 transparent;
+}
+
 .Home {
     background-color: rgb(18, 131, 236);
     z-index: 99;
