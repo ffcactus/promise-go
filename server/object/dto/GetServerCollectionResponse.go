@@ -24,6 +24,7 @@ func (this *GetServerCollectionResponse) Load(m *model.ServerCollection) {
 	this.Start = m.Start
 	this.Count = m.Count
 	this.Total = m.Total
+	this.Members = make([]ServerMember, 0)
 	for i, _ := range m.Members {
 		this.Members = append(this.Members, ServerMember{
 			PageURI: m.Members[i].URI,

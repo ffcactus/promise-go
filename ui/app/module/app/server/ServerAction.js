@@ -57,7 +57,6 @@ function getServerFailure() {
   };
 }
 
-
 export function appInit(hostname) {
   return (dispatch) => {
     dispatch(appInitStart());
@@ -70,9 +69,9 @@ export function appInit(hostname) {
       }
       dispatch(appInitFailure());
       dispatch(getServerListFailure());
-    }).catch(() => {
-      dispatch(getServerListFailure());
-      dispatch(appInitFailure());
+    }).catch((e) => {
+      dispatch(getServerListFailure(e));
+      dispatch(appInitFailure(e));
     });
   };
 }
@@ -86,8 +85,8 @@ export function getServer(hostname, uri) {
         return;
       }
       dispatch(getServerFailure());
-    }).catch(() => {
-      dispatch(getServerFailure());
+    }).catch((e) => {
+      dispatch(getServerFailure(e));
     });
   };
 }

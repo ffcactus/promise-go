@@ -78,9 +78,9 @@ func (c *RootController) Get() {
 			c.Data["json"] = commonDto.MessagesToDto(messages)
 			c.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
 		} else {
-			resp := dto.GetServerCollectionResponse{}
+			resp := new(dto.GetServerCollectionResponse)
 			resp.Load(serverCollection)
-			c.Data["json"] = &resp
+			c.Data["json"] = resp
 		}
 	}
 	c.ServeJSON()
