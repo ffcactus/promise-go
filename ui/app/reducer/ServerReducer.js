@@ -35,7 +35,7 @@ const server = (state = defaultServerState, action) => {
       return Object.assign({}, state, {
         serverList: action.info.Members.map((each) => {
           return {
-            Uri: each.Uri,
+            URI: each.URI,
             Name: each.Name,
             State: each.State,
             Health: each.Health

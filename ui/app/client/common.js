@@ -30,11 +30,21 @@ export function doPost(url, request) {
     xhr.setRequestHeader('Accept', 'application/json');
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     xhr.onload = () => {
+      if (xhr.status === 500) {
+        reject('Internal Error.');
+        return;
+      }
       resolve({
         response: JSON.parse(xhr.response),
         status: xhr.status,
         statusText: xhr.statusText
       });
+    };
+    xhr.onabort = (e) => {
+      reject(e);
+    };
+    xhr.ontimeout = (e) => {
+      reject(e);
     };
     xhr.onerror = (e) => {
       reject(e);
@@ -53,11 +63,21 @@ export function doGet(url, request) {
     xhr.setRequestHeader('Accept', 'application/json');
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     xhr.onload = () => {
+      if (xhr.status === 500) {
+        reject('Internal Error.');
+        return;
+      }
       resolve({
         response: JSON.parse(xhr.response),
         status: xhr.status,
         statusText: xhr.statusText
       });
+    };
+    xhr.onabort = (e) => {
+      reject(e);
+    };
+    xhr.ontimeout = (e) => {
+      reject(e);
     };
     xhr.onerror = (e) => {
       reject(e);

@@ -3,12 +3,12 @@ package db
 import (
 	"errors"
 	"fmt"
+	"promise/common/app"
 	commonDB "promise/common/db"
 	commonUtil "promise/common/util"
 	"promise/server/object/entity"
 	"promise/server/object/model"
 	"promise/server/util"
-
 	"github.com/astaxie/beego"
 	"github.com/google/uuid"
 )
@@ -72,7 +72,7 @@ func (i *ServerDBImplement) GetServerCollection(start int, count int) (*model.Se
 
 	c := commonDB.GetConnection()
 	c.Table("server").Count(total)
-	c.Order("Name asc").Limit(count).Offset(start).Select([]string{"ID", "Name", "State", "Health"}).Find(server)
+	c.Order("Name asc").Limit(count).Offset(start).Select([]string{"ID", "Name", "State", "Health"}).Find(&server)
 	ret.Start = start
 	ret.Count = len(server)
 	ret.Total = total
@@ -557,7 +557,7 @@ func (i *ServerDBImplement) UpdatePCIeDevices(ID string, pcieDevices []model.PCI
 }
 
 func toServerURI(ID string) string {
-	s := "/promise/server/" + ID
+	s := app.RootURL + "/server" + ID
 	return s
 }
 

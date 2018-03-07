@@ -1,11 +1,11 @@
-import React, {  Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import Frame from './common/Frame';
 import Styles from '../styles/DashBoard.css';
 
-class DashBoard extends Component {
+class DashBoard extends React.Component {
   constructor(props) {
     super(props);
   }

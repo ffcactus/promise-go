@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as DesktopState from '../../constValue/state/Desktop';
@@ -11,7 +11,7 @@ import CenterDiv from '../../components/common/CenterDiv';
 import LoadingIcon from '../../components/common/LoadingIcon';
 
 
-class DesktopContainer extends Component {
+class DesktopContainer extends React.Component {
   constructor(props) {
     super(props);
   }

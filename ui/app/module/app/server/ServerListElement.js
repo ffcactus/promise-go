@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
-import styles from '../../styles/ServerFrame.css';
-import * as Action from '../../actions/HardwareAction';
+import styles from './Server.css';
+// import * as Action from '.ServerAction';
 
 class ServerListElement extends React.Component {
   constructor(props) {
@@ -20,7 +20,7 @@ class ServerListElement extends React.Component {
 
   onSelect(event) {
     event.preventDefault();
-    this.props.dispatch(Action.loadServer(this.props.serverUri));
+    // this.props.dispatch(Action.loadServer(this.props.serverUri));
   }
 
   render() {

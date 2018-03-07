@@ -1,4 +1,4 @@
-import React, {  Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CenterDiv from '../components/common/CenterDiv';
@@ -12,7 +12,7 @@ const PLATFORM_READY = 'PLATFORM_READY';
 const PLATFORM_CRITICAL = 'PLATFORM_CRITICAL';
 const PLATFORM_UNKNOWN = 'PLATFORM_UNKNOWN';
 
-class PlatformContainer extends Component {
+class PlatformContainer extends React.Component {
   constructor(props) {
     super(props);
     this.getPlatformState = this.getPlatformState.bind(this);

@@ -1,10 +1,10 @@
-import React, {  Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Frame from './common/Frame';
 import * as Action from '../actions/SettingAction';
 
-class Setting extends Component {
+class Setting extends React.Component {
   constructor(props) {
     super(props);
     this.createCoreRequest = this.createCoreRequest.bind(this);
@@ -94,7 +94,7 @@ class Setting extends Component {
         <div>
           <label>
             Upload upgrade bundle<br />
-            <input id="setting_upload_upgrade_bundle_input" type="file" onChange={this.onUploadUpgradeBundleDialogOpen}></input>
+            <input id="setting_upload_upgrade_bundle_input" type="file" onChange={this.onUploadUpgradeBundleDialogOpen}/>
           </label>
           <ul>
             <li key="xxx">

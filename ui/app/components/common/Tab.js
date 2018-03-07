@@ -1,10 +1,9 @@
-import React, {  Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import CSSModules from 'react-css-modules';
 import styles from '../../styles/tab.css';
 
-class Tab extends Component {
-
+class Tab extends React.Component {
   constructor(props) {
     super(props);
     this.onTabClick = this.onTabClick.bind(this);

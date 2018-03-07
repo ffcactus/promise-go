@@ -14,7 +14,7 @@ import PrivateRoute from './module/promise/common/PrivateRoute';
 import DesktopContainer from './module/promise/desktop/DesktopContainer';
 import Settings from './module/app/settings/Settings';
 import Phone from './module/app/phone/Phone';
-import Server from './module/app/server/Server';
+import ServerContainer from './module/app/server/ServerContainer';
 const history = createHistory();
 const router = routerMiddleware(history);
 const store = createStore(rootReducer, applyMiddleware(router, thunk));
@@ -27,7 +27,7 @@ render(
         <PrivateRoute exact path="/" component={DesktopContainer} />
         <PrivateRoute path="/app/settings" component={Settings} />
         <PrivateRoute path="/app/phone" component={Phone} />
-        <PrivateRoute path="/app/server" component={Server} />
+        <PrivateRoute path="/app/server" hostname={window.location.hostname} component={ServerContainer} />
       </Switch>
     </ConnectedRouter>
   </Provider>,

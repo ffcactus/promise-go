@@ -1,8 +1,8 @@
-import React, {  Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import ConfirmDialog from './common/ConfirmDialog';
 
-class Example extends Component {
+class Example extends React.Component {
   constructor(props) {
     super(props);
   }

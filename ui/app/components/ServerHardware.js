@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Frame from './common/Frame';
@@ -9,7 +9,7 @@ import ServerAppFrame from './Server/ServerAppFrame';
 
 // import * as Action from '../actions/HardwareAction';
 
-class ServerHardware extends Component {
+class ServerHardware extends React.Component {
   constructor(props) {
     super(props);
   }

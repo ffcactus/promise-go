@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Startup from '../components/Startup';
 
 
-class StartupContainer extends Component {
-
+class StartupContainer extends React.Component {
   constructor(props) {
     super(props);
   }

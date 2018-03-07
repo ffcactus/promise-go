@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { ConnectedRouter } from 'react-router-redux';
 import { connect, Provider } from 'react-redux';
@@ -6,7 +6,7 @@ import CSSModules from 'react-css-modules';
 import RTRouter from './RTRouter';
 import styles from '../styles/main.css';
 // styleName="rootBackground"
-class Root extends Component {
+class Root extends React.Component {
   constructor(props) {
     super(props);
   }
