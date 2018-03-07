@@ -3,6 +3,7 @@
     height: 100%;
     position: absolute;
     overflow: hidden;
+    background-color: skyblue;
 }
 
 .AppToolBar {
@@ -17,12 +18,27 @@
     font-family: 'SFNSDisplay', 'SFNSText', 'Helvetica Neue', sans-serif;
     font-size: 21px;
     line-height: 0.4;
+    background-color: #DFEEFC;
+    float: left;
+}
+
+.AppCollectionMenu {
+    font-family: 'SFNSDisplay', 'SFNSText', 'Helvetica Neue', sans-serif;
+    font-size: 21px;
+    line-height: 0.4;
+    font-weight: bold;
+    text-decoration: none;
+    border-bottom: 1px solid rgb(11, 188, 233)
+}
+
+.AppCollectionMenuText {
+    margin-left: 20px;
 }
 
 .AppMain {
     left: 0px;
     right: 0px;
-    top: 44px;
+    top: 0px;
     bottom: 0px;
     cursor: auto;
     overflow: hidden;
@@ -44,7 +60,7 @@
 }
 
 .CommonTwoColumnLeft {
-    background-color: skyblue;
+    background-color: #DFEEFC;
     left: 0px;
     right: 85.4%;
     top:0px;

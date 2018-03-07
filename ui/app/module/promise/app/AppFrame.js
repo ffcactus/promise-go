@@ -8,9 +8,9 @@ import AppMain from './AppMain';
 function AppFrame(props) {
   return (
     <div styleName="AppFrame">
-      <AppToolBar>
+      {/* <AppToolBar>
         <p>AppToolBar</p>
-      </AppToolBar>
+      </AppToolBar> */}
       <AppMain>
         {props.children}
       </AppMain>
