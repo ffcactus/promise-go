@@ -36,13 +36,21 @@ func main() {
 	// Start background thread to auto refresh server.
 	go service.FindServerStateAdded()
 
-	ns := beego.NewNamespace(
+	serverNS := beego.NewNamespace(
 		app.RootURL+"/server",
 		beego.NSRouter("/", &controller.RootController{}),
 		beego.NSRouter("/:id", &controller.ServerController{}),
 		beego.NSRouter("/:id/action/:action", &controller.ServerActionController{}),
 	)
-	beego.AddNamespace(ns)
+	beego.AddNamespace(serverNS)
+	serverGroupNS := beego.NewNamespace(
+		app.RootURL+"/server/group",
+		beego.NSRouter("/", &controller.ServerGroupRootController{}),
+		// beego.NSRouter("/:id", &controller.ServerGroupController{}),
+		// beego.NSRouter("/:id/action/:action", &controller.ServerGroupActionController{}),
+
+	)
+	beego.AddNamespace(serverGroupNS)
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins:  true,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},

@@ -22,6 +22,7 @@ type Drive struct {
 	Location                      []Location `json:"Location"`                      // The Location of the drive.
 }
 
+// Load the data from model.
 func (this *Drive) Load(m *model.Drive) {
 	this.LoadResourceResponse(&m.Resource)
 	this.LoadProductInfoResponse(&m.ProductInfo)
@@ -36,7 +37,7 @@ func (this *Drive) Load(m *model.Drive) {
 	this.CapableSpeedGbs = m.CapableSpeedGbs
 	this.NegotiatedSpeedGbs = m.NegotiatedSpeedGbs
 	this.PredictedMediaLifeLeftPercent = m.PredictedMediaLifeLeftPercent
-	for i, _ := range m.Location {
+	for i := range m.Location {
 		each := new(Location)
 		each.Load(&m.Location[i])
 		this.Location = append(this.Location, *each)
