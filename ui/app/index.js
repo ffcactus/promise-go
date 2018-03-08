@@ -27,7 +27,7 @@ render(
         <PrivateRoute exact path="/" component={DesktopContainer} />
         <PrivateRoute path="/app/settings" component={Settings} />
         <PrivateRoute path="/app/phone" component={Phone} />
-        <PrivateRoute path="/app/server" hostname={window.location.hostname} component={ServerContainer} />
+        <PrivateRoute appName="Server" path="/app/server" hostname={window.location.hostname} component={ServerContainer} />
       </Switch>
     </ConnectedRouter>
   </Provider>,
