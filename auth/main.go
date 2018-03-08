@@ -4,8 +4,8 @@ import (
 	"promise/auth/controller"
 	"promise/auth/object/entity"
 	"promise/auth/service"
-	commonDB "promise/common/db"
 	"promise/common/app"
+	commonDB "promise/common/db"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
@@ -31,7 +31,7 @@ func initDB() {
 }
 
 func main() {
-	app.ReadConfig("AuthApp")	
+	app.ReadConfig("AuthApp")
 	beego.SetLevel(beego.LevelDebug)
 	initDB()
 	ns := beego.NewNamespace(

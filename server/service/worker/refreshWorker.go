@@ -4,7 +4,7 @@ var jobs chan RefreshRequest
 
 type RefreshRequest struct {
 	serverId string
-	result chan int
+	result   chan int
 }
 
 func CreateRefreshWorker(workerCount int, jobCount int) {
@@ -17,4 +17,3 @@ func CreateRefreshWorker(workerCount int, jobCount int) {
 func refreshWorker(workerId int, request <-chan RefreshRequest) {
 
 }
-

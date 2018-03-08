@@ -1,8 +1,8 @@
 package strategy
 
 import (
-	"promise/server/context"
 	"github.com/astaxie/beego"
+	"promise/server/context"
 )
 
 // MockServerPostStrategy is the strategy for mock server.

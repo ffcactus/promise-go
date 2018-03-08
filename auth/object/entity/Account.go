@@ -3,16 +3,17 @@ package entity
 import (
 	"promise/auth/object/model"
 )
+
 // The Account object in DB.
 type Account struct {
-	ID                 	string `gorm:"primary_key"`
-	Name                string
-	PasswordHash		string
+	ID           string `gorm:"primary_key"`
+	Name         string
+	PasswordHash string
 }
 
 // Load Load model to entity.
 func (e *Account) Load(user *model.Account) {
-	e.Name = user.Name;
+	e.Name = user.Name
 	e.PasswordHash = user.PasswordHash
 }
 

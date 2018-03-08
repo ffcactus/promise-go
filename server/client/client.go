@@ -1,10 +1,10 @@
 package client
 
 import (
+	"github.com/astaxie/beego"
 	"promise/server/client/mock"
 	"promise/server/client/redfish"
 	. "promise/server/object/model"
-	"github.com/astaxie/beego"
 	"strings"
 )
 

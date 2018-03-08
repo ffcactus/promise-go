@@ -1,9 +1,9 @@
 package strategy
 
 import (
+	"github.com/astaxie/beego"
 	"promise/server/context"
 	"promise/server/object/model"
-	"github.com/astaxie/beego"
 )
 
 // RefreshServerStrategy is the strategy for refresh server.

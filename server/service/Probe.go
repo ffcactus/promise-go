@@ -1,11 +1,11 @@
 package service
 
 import (
+	"fmt"
+	"github.com/astaxie/beego"
 	. "promise/server/client"
 	"promise/server/object/dto"
 	. "promise/server/object/model"
-	"fmt"
-	"github.com/astaxie/beego"
 )
 
 func Probe(request *dto.PostServerRequest) (*ServerBasicInfo, error) {

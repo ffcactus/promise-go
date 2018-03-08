@@ -1,15 +1,15 @@
 package main
 
 import (
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/plugins/cors"
 	"promise/common/app"
 	"promise/ws/controller"
 	"promise/ws/service"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/plugins/cors"
 )
 
 func main() {
-	app.ReadConfig("WSApp")	
+	app.ReadConfig("WSApp")
 	beego.SetLevel(beego.LevelDebug)
 	go service.StartEventDispatcher()
 

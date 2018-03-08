@@ -2,9 +2,9 @@ package service
 
 import (
 	"container/list"
-	"promise/common/util"
 	"github.com/astaxie/beego"
 	"github.com/gorilla/websocket"
+	"promise/common/util"
 )
 
 var (

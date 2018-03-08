@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/astaxie/beego"
 )
+
 const (
 	// ProtocolScheme is the protocol scheme used by client.
 	ProtocolScheme = "http://"
@@ -18,7 +19,7 @@ func ReadConfig(appName string) {
 	if err != nil {
 		panic(err)
 	}
-	port, err := beego.AppConfig.Int(appName+"Port")
+	port, err := beego.AppConfig.Int(appName + "Port")
 	if err != nil {
 		panic(err)
 	}

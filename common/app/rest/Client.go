@@ -94,4 +94,3 @@ func Do(method string, uri string, requestDto interface{}, responseDtoP interfac
 	}
 	return *message, nil
 }
-

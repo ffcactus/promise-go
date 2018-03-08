@@ -1,8 +1,8 @@
 package main
 
 import (
-	commonDB "promise/common/db"
 	"promise/common/app"
+	commonDB "promise/common/db"
 	"promise/task/controller"
 	"promise/task/object/entity"
 
@@ -29,7 +29,7 @@ func initDB() {
 }
 
 func main() {
-	app.ReadConfig("TaskApp")	
+	app.ReadConfig("TaskApp")
 	beego.SetLevel(beego.LevelDebug)
 	initDB()
 	ns := beego.NewNamespace(

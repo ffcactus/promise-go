@@ -1,14 +1,14 @@
 package main
 
 import (
-	"promise/common/app"
-	"promise/global/controller"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
+	"promise/common/app"
+	"promise/global/controller"
 )
 
 func main() {
-	app.ReadConfig("GlobalApp")	
+	app.ReadConfig("GlobalApp")
 	beego.SetLevel(beego.LevelDebug)
 
 	ns := beego.NewNamespace(

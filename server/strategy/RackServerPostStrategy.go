@@ -1,11 +1,11 @@
 package strategy
 
 import (
+	"github.com/astaxie/beego"
 	wsSDK "promise/sdk/ws"
 	"promise/server/context"
 	"promise/server/object/model"
 	"promise/server/util"
-	"github.com/astaxie/beego"
 )
 
 // RackServerPostStrategy is the strategy for post rack server.
