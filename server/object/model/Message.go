@@ -26,6 +26,11 @@ const (
 	MessageIDServerServerRefreshTaskFailed = "MessageIDServerServerRefreshTaskFailed"
 )
 
+const (
+	// MessageIDServerGroupExist means server group exist.
+	MessageIDServerGroupExist = "MessageIDServerGroupExist"
+)
+
 // NewArgumentServerID Get argument by server.
 func NewArgumentServerID(s *Server) commonM.Argument {
 	return commonM.Argument{Type: "URI", Name: s.Name, Value: s.URI}
@@ -137,5 +142,14 @@ func NewServerRefreshTaskFailed() commonM.Message {
 	ret.Supports = []commonM.Support{
 		NewSupportInternalError(),
 	}
+	return ret
+}
+
+func NewServerGroupExist() commonM.Message {
+	ret := commonM.NewMessage(commonM.CategoryServer)
+	ret.ID = MessageIDServerGroupExist
+	ret.StatusCode = http.StatusOK
+	ret.Severity = commonM.SeverityNormal
+	ret.Description = "Server group already exists."
 	return ret
 }

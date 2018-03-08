@@ -7,8 +7,8 @@ import (
 // PostServerGroupResponse is the DTO.
 type PostServerGroupResponse struct {
 	ResourceResponse
-	ID           string `json:"ID"`
-	Name          string `json:"URI"`
+	ID          string `json:"ID"`
+	Name        string `json:"URI"`
 	Description string `json:"Description"`
 }
 
