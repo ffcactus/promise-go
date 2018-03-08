@@ -1,0 +1,49 @@
+.GroupCollectionApp {
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    cursor: auto;
+    overflow: hidden;
+    position: absolute;
+    margin: 0px;
+    border: solid 0 transparent;    
+}
+
+.Group {
+    background-color: #DFEEFC;
+    left: 0px;
+    right: 85.4%;
+    top:0px;
+    bottom: 0px;
+    position: absolute;
+    overflow: hidden;
+    margin: 0px;
+    border: solid 0 transparent;
+    border-right: 1px solid rgb(11, 188, 233);
+}
+
+.ElementList {
+    background-color: whitesmoke;
+    left: 14.6%;
+    right: 61.8%;
+    top:0px;
+    bottom: 0px;
+    position: absolute;
+    overflow: hidden;
+    margin: 0px;
+    border: solid 0 transparent;
+    border-right: 1px solid rgb(11, 188, 233);
+}
+
+.Detail {
+    background-color: whitesmoke;
+    left: 38.2%;
+    right: 0px;
+    top:0px;
+    bottom: 0px;
+    position: absolute;
+    overflow: hidden;
+    margin: 0px;
+    border: solid 0 transparent;
+}

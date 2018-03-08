@@ -27,8 +27,8 @@ class ServerList extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { server} = state;
-  return { server };
+  const { server, routing } = state;
+  return { server, routing };
 }
 
 ServerList.propTypes = {

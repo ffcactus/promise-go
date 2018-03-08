@@ -1,17 +1,14 @@
 import React from 'react';
 import AppFrame from '../../promise/app/AppFrame';
-import CommonTwoColumn from '../../promise/app/CommonTwoColumn';
+import GroupCollectionApp from '../../promise/app/GroupCollectionApp/GroupCollectionApp';
 import ServerList from './ServerList';
-import AppCollectionMenu from '../../promise/app/AppCollectionMenu';
+import ServerGroup from './ServerGroup';
+import ServerDetail from './ServerDetail';
 
 function Server() {
   return (
     <AppFrame>
-      <CommonTwoColumn left={
-        <React.Fragment>
-          <AppCollectionMenu />
-          <ServerList/>
-        </React.Fragment>} />
+      <GroupCollectionApp group={<ServerGroup/>} elementList={<ServerList/>} detail={<ServerDetail/>} />
     </AppFrame>
   );
 }

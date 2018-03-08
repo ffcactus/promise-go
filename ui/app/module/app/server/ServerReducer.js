@@ -2,26 +2,33 @@ import { ActionType, ServerAppState } from './ConstValue';
 
 const defaultState = {
   state: ServerAppState.UNKNOWN,
+  groupList: [{
+    Name: 'All'
+  }, {
+    Name: 'Rack'
+  }, {
+    Name: 'Blade'
+  }],
   serverList: [],
 };
 
 const server = (state = defaultState, action) => {
   switch(action.type) {
     case ActionType.APP_INIT_START:
-      return {
+      return Object.assign({}, state, {
         state: ServerAppState.APP_INIT_START,
         serverList: [],
-      };
+      });
     case ActionType.APP_INIT_SUCCESS:
-      return {
+      return Object.assign({}, state, {
         state: ServerAppState.APP_INIT_SUCCESS,
         serverList: [],
-      };
+      });
     case ActionType.APP_INIT_FAILURE:
-      return {
+      return Object.assign({}, state, {
         state: ServerAppState.APP_INIT_FAILURE,
         serverList: [],
-      };
+      });
     case ActionType.GET_SERVER_LIST_START:
       return state;
     case ActionType.GET_SERVER_LIST_SUCCESS:
@@ -36,10 +43,10 @@ const server = (state = defaultState, action) => {
         })
       });
     case ActionType.GET_SERVER_LIST_FAILURE:
-      return {
+      return Object.assign({}, state, {
         state: ServerAppState.APP_INIT_FAILURE,
         serverList: [],
-      };
+      });
     default:
       return state;
   }
