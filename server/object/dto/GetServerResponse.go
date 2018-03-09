@@ -36,91 +36,91 @@ type GetServerResponse struct {
 	Chassis        Chassis        `json:"Chassis"`
 }
 
-func (this *GetServerResponse) Load(m *model.Server) {
+func (dto *GetServerResponse) Load(m *model.Server) {
 	if m == nil {
 		return
 	}
-	this.ID = m.ID
-	this.URI = m.URI
-	this.Name = m.Name
-	this.Description = m.Description
-	this.State = m.State
-	this.Health = m.Health
-	this.PhysicalUUID = m.PhysicalUUID
-	this.Address = m.Address
-	this.Type = m.Type
-	this.CurrentTask = m.CurrentTask
+	dto.ID = m.ID
+	dto.URI = m.URI
+	dto.Name = m.Name
+	dto.Description = m.Description
+	dto.State = m.State
+	dto.Health = m.Health
+	dto.PhysicalUUID = m.PhysicalUUID
+	dto.Address = m.Address
+	dto.Type = m.Type
+	dto.CurrentTask = m.CurrentTask
 	// ComputerSystem.Processors
-	this.ComputerSystem.Processors = make([]Processor, 0)
+	dto.ComputerSystem.Processors = make([]Processor, 0)
 	for i := range m.ComputerSystem.Processors {
 		each := new(Processor)
 		each.Load(&m.ComputerSystem.Processors[i])
-		this.ComputerSystem.Processors = append(this.ComputerSystem.Processors, *each)
+		dto.ComputerSystem.Processors = append(dto.ComputerSystem.Processors, *each)
 	}
 
 	// ComputerSystem.Memory
-	this.ComputerSystem.Memory = make([]Memory, 0)
+	dto.ComputerSystem.Memory = make([]Memory, 0)
 	for i := range m.ComputerSystem.Memory {
 		each := new(Memory)
 		each.Load(&m.ComputerSystem.Memory[i])
-		this.ComputerSystem.Memory = append(this.ComputerSystem.Memory, *each)
+		dto.ComputerSystem.Memory = append(dto.ComputerSystem.Memory, *each)
 	}
 
 	// ComputerSystem.EthernetInterfaces
-	this.ComputerSystem.EthernetInterfaces = make([]EthernetInterface, 0)
+	dto.ComputerSystem.EthernetInterfaces = make([]EthernetInterface, 0)
 	for i := range m.ComputerSystem.EthernetInterfaces {
 		each := new(EthernetInterface)
 		each.Load(&m.ComputerSystem.EthernetInterfaces[i])
-		this.ComputerSystem.EthernetInterfaces = append(this.ComputerSystem.EthernetInterfaces, *each)
+		dto.ComputerSystem.EthernetInterfaces = append(dto.ComputerSystem.EthernetInterfaces, *each)
 	}
 	// ComputerSystem.NetworkInterfaces
-	this.ComputerSystem.NetworkInterfaces = make([]NetworkInterface, 0)
+	dto.ComputerSystem.NetworkInterfaces = make([]NetworkInterface, 0)
 	for i := range m.ComputerSystem.NetworkInterfaces {
 		each := new(NetworkInterface)
 		each.Load(&m.ComputerSystem.NetworkInterfaces[i], m.Chassis.NetworkAdapters)
-		this.ComputerSystem.NetworkInterfaces = append(this.ComputerSystem.NetworkInterfaces, *each)
+		dto.ComputerSystem.NetworkInterfaces = append(dto.ComputerSystem.NetworkInterfaces, *each)
 	}
 	// ComputerSystem.Storages
-	this.ComputerSystem.Storages = make([]Storage, 0)
+	dto.ComputerSystem.Storages = make([]Storage, 0)
 	for i := range m.ComputerSystem.Storages {
 		each := new(Storage)
 		each.Load(&m.ComputerSystem.Storages[i], m.Chassis.Drives)
-		this.ComputerSystem.Storages = append(this.ComputerSystem.Storages, *each)
+		dto.ComputerSystem.Storages = append(dto.ComputerSystem.Storages, *each)
 	}
 	// Chassis.Power
-	this.Chassis.Power.Load(&m.Chassis.Power)
+	dto.Chassis.Power.Load(&m.Chassis.Power)
 
 	// Chassis.Thermal
-	this.Chassis.Thermal.Load(&m.Chassis.Thermal)
+	dto.Chassis.Thermal.Load(&m.Chassis.Thermal)
 
 	// Chassis.OemHuaweiBoards
-	this.Chassis.OemHuaweiBoards = make([]OemHuaweiBoard, 0)
+	dto.Chassis.OemHuaweiBoards = make([]OemHuaweiBoard, 0)
 	for i := range m.Chassis.OemHuaweiBoards {
 		each := new(OemHuaweiBoard)
 		each.Load(&m.Chassis.OemHuaweiBoards[i])
-		this.Chassis.OemHuaweiBoards = append(this.Chassis.OemHuaweiBoards, *each)
+		dto.Chassis.OemHuaweiBoards = append(dto.Chassis.OemHuaweiBoards, *each)
 	}
 	// Chassis.NetworkAdapters
-	this.Chassis.NetworkAdapters = make([]NetworkAdapter, 0)
+	dto.Chassis.NetworkAdapters = make([]NetworkAdapter, 0)
 	for i := range m.Chassis.NetworkAdapters {
 		each := new(NetworkAdapter)
 		each.Load(&m.Chassis.NetworkAdapters[i])
-		this.Chassis.NetworkAdapters = append(this.Chassis.NetworkAdapters, *each)
+		dto.Chassis.NetworkAdapters = append(dto.Chassis.NetworkAdapters, *each)
 	}
 
 	// Chassis.Drives
-	this.Chassis.Drives = make([]Drive, 0)
+	dto.Chassis.Drives = make([]Drive, 0)
 	for i := range m.Chassis.Drives {
 		each := new(Drive)
 		each.Load(&m.Chassis.Drives[i])
-		this.Chassis.Drives = append(this.Chassis.Drives, *each)
+		dto.Chassis.Drives = append(dto.Chassis.Drives, *each)
 	}
 
 	// Chassis.PCIeDevices
-	this.Chassis.PCIeDevices = make([]PCIeDevice, 0)
+	dto.Chassis.PCIeDevices = make([]PCIeDevice, 0)
 	for i := range m.Chassis.PCIeDevices {
 		each := new(PCIeDevice)
 		each.Load(&m.Chassis.PCIeDevices[i], m.ComputerSystem.EthernetInterfaces)
-		this.Chassis.PCIeDevices = append(this.Chassis.PCIeDevices, *each)
+		dto.Chassis.PCIeDevices = append(dto.Chassis.PCIeDevices, *each)
 	}
 }

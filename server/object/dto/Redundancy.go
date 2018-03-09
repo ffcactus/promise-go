@@ -14,11 +14,11 @@ type Redundancy struct {
 	RedundancyEnabled *bool     `json:"RedundancyEnabled,omitempty"` // This indicates whether redundancy is enabled.
 }
 
-func (this *Redundancy) Load(m *model.Redundancy) {
-	this.LoadResourceResponse(&m.Resource)
-	this.Mode = m.Mode
-	this.MaxNumSupported = m.MaxNumSupported
-	this.MinNumNeeded = m.MinNumNeeded
-	this.RedundancyEnabled = m.RedundancyEnabled
-	this.RedundancySet = m.RedundancySet
+func (dto *Redundancy) Load(m *model.Redundancy) {
+	dto.LoadResourceResponse(&m.Resource)
+	dto.Mode = m.Mode
+	dto.MaxNumSupported = m.MaxNumSupported
+	dto.MinNumNeeded = m.MinNumNeeded
+	dto.RedundancyEnabled = m.RedundancyEnabled
+	dto.RedundancySet = m.RedundancySet
 }

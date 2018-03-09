@@ -28,23 +28,23 @@ type Processor struct {
 	TotalThreads          *int         `json:"TotalThreads,omitempty"`          // The total number of execution threads supported by this processor.
 }
 
-func (this *Processor) Load(m *model.Processor) {
-	this.LoadResourceResponse(&m.Resource)
-	this.LoadProductInfoResponse(&m.ProductInfo)
-	this.Socket = m.Socket
-	this.ProcessorType = m.ProcessorType
-	this.ProcessorArchitecture = m.ProcessorArchitecture
-	this.InstructionSet = m.InstructionSet
-	this.MaxSpeedMHz = m.MaxSpeedMHz
-	this.TotalCores = m.TotalCores
-	this.TotalThreads = m.TotalThreads
+func (dto *Processor) Load(m *model.Processor) {
+	dto.LoadResourceResponse(&m.Resource)
+	dto.LoadProductInfoResponse(&m.ProductInfo)
+	dto.Socket = m.Socket
+	dto.ProcessorType = m.ProcessorType
+	dto.ProcessorArchitecture = m.ProcessorArchitecture
+	dto.InstructionSet = m.InstructionSet
+	dto.MaxSpeedMHz = m.MaxSpeedMHz
+	dto.TotalCores = m.TotalCores
+	dto.TotalThreads = m.TotalThreads
 	if m.ProcessorID != nil {
-		this.ProcessorID = new(ProcessorID)
-		this.ProcessorID.VendorID = m.ProcessorID.VendorID
-		this.ProcessorID.IdentificationRegisters = m.ProcessorID.IdentificationRegisters
-		this.ProcessorID.EffectiveFamily = m.ProcessorID.EffectiveFamily
-		this.ProcessorID.EffectiveModel = m.ProcessorID.EffectiveModel
-		this.ProcessorID.Step = m.ProcessorID.Step
-		this.ProcessorID.MicrocodeInfo = m.ProcessorID.MicrocodeInfo
+		dto.ProcessorID = new(ProcessorID)
+		dto.ProcessorID.VendorID = m.ProcessorID.VendorID
+		dto.ProcessorID.IdentificationRegisters = m.ProcessorID.IdentificationRegisters
+		dto.ProcessorID.EffectiveFamily = m.ProcessorID.EffectiveFamily
+		dto.ProcessorID.EffectiveModel = m.ProcessorID.EffectiveModel
+		dto.ProcessorID.Step = m.ProcessorID.Step
+		dto.ProcessorID.MicrocodeInfo = m.ProcessorID.MicrocodeInfo
 	}
 }

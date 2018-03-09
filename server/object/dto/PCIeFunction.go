@@ -16,21 +16,21 @@ type PCIeFunction struct {
 	EthernetInterfaces []ResourceRef // An array of references to the ethernet interfaces which the PCIe device produces.
 }
 
-func (this *PCIeFunction) Load(m *model.PCIeFunction, ethernetInterfaces []model.EthernetInterface) {
-	this.LoadResourceResponse(&m.Resource)
-	this.DeviceClass = m.DeviceClass
-	this.DeviceID = m.DeviceID
-	this.VendorID = m.VendorID
-	this.SubsystemID = m.SubsystemID
-	this.SubsystemVendorID = m.SubsystemVendorID
-	for i, _ := range m.EthernetInterfaces {
+func (dto *PCIeFunction) Load(m *model.PCIeFunction, ethernetInterfaces []model.EthernetInterface) {
+	dto.LoadResourceResponse(&m.Resource)
+	dto.DeviceClass = m.DeviceClass
+	dto.DeviceID = m.DeviceID
+	dto.VendorID = m.VendorID
+	dto.SubsystemID = m.SubsystemID
+	dto.SubsystemVendorID = m.SubsystemVendorID
+	for i := range m.EthernetInterfaces {
 		src := m.EthernetInterfaces[i]
-		for j, _ := range ethernetInterfaces {
+		for j := range ethernetInterfaces {
 			target := ethernetInterfaces[j]
 			if (target.URI != nil) && (src == *target.URI) {
 				ref := ResourceRef{}
 				ref.Ref = fmt.Sprintf("#/ComputerSystem/EthernetInterfaces/%d", j)
-				this.EthernetInterfaces = append(this.EthernetInterfaces, ref)
+				dto.EthernetInterfaces = append(dto.EthernetInterfaces, ref)
 			}
 		}
 	}

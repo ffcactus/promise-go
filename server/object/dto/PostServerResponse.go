@@ -13,10 +13,10 @@ type PostServerResponse struct {
 	Type         string `json:"Type"`
 }
 
-func (this *PostServerResponse) Load(m *model.Server) {
-	this.ID = m.ID
-	this.URI = m.URI
-	this.PhysicalUUID = m.PhysicalUUID
-	this.Address = m.Address
-	this.Type = m.Type
+func (dto *PostServerResponse) Load(m *model.Server) {
+	dto.ID = m.ID
+	dto.URI = m.URI
+	dto.PhysicalUUID = m.PhysicalUUID
+	dto.Address = m.Address
+	dto.Type = m.Type
 }

@@ -14,12 +14,12 @@ type StorageController struct {
 	SupportedDeviceProtocols []string `json:"SupportedDeviceProtocols"` // This represents the protocols which the storage controller can use to communicate with attached devices.
 }
 
-func (this *StorageController) Load(m *model.StorageController) {
-	this.LoadMemberResponse(&m.Member)
-	this.LoadProductInfoResponse(&m.ProductInfo)
-	this.SpeedGbps = m.SpeedGbps
-	this.FirmwareVersion = m.FirmwareVersion
-	this.SupportedDeviceProtocols = m.SupportedDeviceProtocols
+func (dto *StorageController) Load(m *model.StorageController) {
+	dto.LoadMemberResponse(&m.Member)
+	dto.LoadProductInfoResponse(&m.ProductInfo)
+	dto.SpeedGbps = m.SpeedGbps
+	dto.FirmwareVersion = m.FirmwareVersion
+	dto.SupportedDeviceProtocols = m.SupportedDeviceProtocols
 }
 
 // This schema defines a storage subsystem and its respective properties.  A storage subsystem represents a set of storage controllers (physical or virtual) and the resources such as volumes that can be accessed from that subsystem.
@@ -29,12 +29,12 @@ type Storage struct {
 	Drives             []ResourceRef       `json:"Drives"`             // The set of drives attached to the storage controllers represented by this resource.
 }
 
-func (this *Storage) Load(m *model.Storage, drives []model.Drive) {
-	this.LoadResourceResponse(&m.Resource)
+func (dto *Storage) Load(m *model.Storage, drives []model.Drive) {
+	dto.LoadResourceResponse(&m.Resource)
 	for i, _ := range m.StorageControllers {
 		each := StorageController{}
 		each.Load(&m.StorageControllers[i])
-		this.StorageControllers = append(this.StorageControllers, each)
+		dto.StorageControllers = append(dto.StorageControllers, each)
 	}
 	for i, _ := range m.DriveURIs {
 		src := m.DriveURIs[i]
@@ -43,7 +43,7 @@ func (this *Storage) Load(m *model.Storage, drives []model.Drive) {
 			if (target.URI != nil) && (src == *target.URI) {
 				ref := ResourceRef{}
 				ref.Ref = fmt.Sprintf("#/Chassis/Drives/%d", j)
-				this.Drives = append(this.Drives, ref)
+				dto.Drives = append(dto.Drives, ref)
 			}
 		}
 	}

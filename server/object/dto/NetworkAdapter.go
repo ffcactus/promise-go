@@ -56,13 +56,13 @@ type Controller struct {
 	NetworkPorts           []NetworkPort          `json:"NetworkPorts"`           // Contains the members of this collection.
 }
 
-func (this *Controller) Load(m *model.Controller) {
-	this.FirmwarePackageVersion = m.FirmwarePackageVersion
-	this.ControllerCapabilities.NetworkPortCount = m.ControllerCapabilities.NetworkPortCount
+func (dto *Controller) Load(m *model.Controller) {
+	dto.FirmwarePackageVersion = m.FirmwarePackageVersion
+	dto.ControllerCapabilities.NetworkPortCount = m.ControllerCapabilities.NetworkPortCount
 	for i, _ := range m.NetworkPorts {
 		portD := NetworkPort{}
 		portD.Load(&m.NetworkPorts[i])
-		this.NetworkPorts = append(this.NetworkPorts, portD)
+		dto.NetworkPorts = append(dto.NetworkPorts, portD)
 	}
 }
 
@@ -75,12 +75,12 @@ type NetworkAdapter struct {
 	//	NetworkDeviceFunctions []NetworkDeviceFunction // Contains the members of this collection.
 }
 
-func (this *NetworkAdapter) Load(m *model.NetworkAdapter) {
-	this.LoadResourceResponse(&m.Resource)
-	this.LoadProductInfoResponse(&m.ProductInfo)
+func (dto *NetworkAdapter) Load(m *model.NetworkAdapter) {
+	dto.LoadResourceResponse(&m.Resource)
+	dto.LoadProductInfoResponse(&m.ProductInfo)
 	for i, _ := range m.Controllers {
 		controllerD := Controller{}
 		controllerD.Load(&m.Controllers[i])
-		this.Controllers = append(this.Controllers, controllerD)
+		dto.Controllers = append(dto.Controllers, controllerD)
 	}
 }

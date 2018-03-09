@@ -17,13 +17,13 @@ type ResourceResponse struct {
 	PhysicalHealth *string `json:"PhysicalHealth,omitempty"`
 }
 
-func (this *ResourceResponse) LoadResourceResponse(m *model.Resource) {
-	this.Name = m.Name
-	this.Description = m.Description
-	this.State = m.State
-	this.Health = m.Health
-	this.PhysicalState = m.PhysicalState
-	this.PhysicalHealth = m.PhysicalHealth
+func (dto *ResourceResponse) LoadResourceResponse(m *model.Resource) {
+	dto.Name = m.Name
+	dto.Description = m.Description
+	dto.State = m.State
+	dto.Health = m.Health
+	dto.PhysicalState = m.PhysicalState
+	dto.PhysicalHealth = m.PhysicalHealth
 }
 
 type MemberResponse struct {
@@ -37,15 +37,15 @@ type MemberResponse struct {
 	PhysicalHealth *string `json:"PhysicalHealth,omitempty"`
 }
 
-func (this *MemberResponse) LoadMemberResponse(m *model.Member) {
-	// this.URI = m.URI
-	this.MemberID = m.MemberID
-	this.Name = m.Name
-	this.Description = m.Description
-	this.State = m.State
-	this.Health = m.Health
-	this.PhysicalState = m.PhysicalState
-	this.PhysicalHealth = m.PhysicalHealth
+func (dto *MemberResponse) LoadMemberResponse(m *model.Member) {
+	// dto.URI = m.URI
+	dto.MemberID = m.MemberID
+	dto.Name = m.Name
+	dto.Description = m.Description
+	dto.State = m.State
+	dto.Health = m.Health
+	dto.PhysicalState = m.PhysicalState
+	dto.PhysicalHealth = m.PhysicalHealth
 }
 
 // The commom number properties of a resource.
@@ -59,14 +59,14 @@ type ProductInfoResponse struct {
 	AssetTag        *string `json:"AssetTag,omitempty"`        // The value of this property shall be an identifying string used to track the resource for inventory purposes.
 }
 
-func (this *ProductInfoResponse) LoadProductInfoResponse(m *model.ProductInfo) {
-	this.Model = m.Model
-	this.Manufacturer = m.Manufacturer
-	this.SKU = m.SKU
-	this.SerialNumber = m.SerialNumber
-	this.PartNumber = m.PartNumber
-	this.SparePartNumber = m.SparePartNumber
-	this.AssetTag = m.AssetTag
+func (dto *ProductInfoResponse) LoadProductInfoResponse(m *model.ProductInfo) {
+	dto.Model = m.Model
+	dto.Manufacturer = m.Manufacturer
+	dto.SKU = m.SKU
+	dto.SerialNumber = m.SerialNumber
+	dto.PartNumber = m.PartNumber
+	dto.SparePartNumber = m.SparePartNumber
+	dto.AssetTag = m.AssetTag
 }
 
 type ThresholdResponse struct {
@@ -78,13 +78,13 @@ type ThresholdResponse struct {
 	LowerThresholdFatal       *float64 `json:"LowerThresholdFatal"`       // Below normal range and is fatal.
 }
 
-func (this *ThresholdResponse) LoadThresholdResponse(m *model.Threshold) {
-	this.UpperThresholdNonCritical = m.UpperThresholdNonCritical
-	this.UpperThresholdCritical = m.UpperThresholdCritical
-	this.UpperThresholdFatal = m.UpperThresholdFatal
-	this.LowerThresholdNonCritical = m.LowerThresholdNonCritical
-	this.LowerThresholdCritical = m.LowerThresholdCritical
-	this.LowerThresholdFatal = m.LowerThresholdFatal
+func (dto *ThresholdResponse) LoadThresholdResponse(m *model.Threshold) {
+	dto.UpperThresholdNonCritical = m.UpperThresholdNonCritical
+	dto.UpperThresholdCritical = m.UpperThresholdCritical
+	dto.UpperThresholdFatal = m.UpperThresholdFatal
+	dto.LowerThresholdNonCritical = m.LowerThresholdNonCritical
+	dto.LowerThresholdCritical = m.LowerThresholdCritical
+	dto.LowerThresholdFatal = m.LowerThresholdFatal
 }
 
 // The placement within the addressed location.
@@ -139,9 +139,9 @@ type Location struct {
 	Placement     *Placement     `json:"Placement,omitempty"`     // A place within the addressed location.
 }
 
-func (this *Location) Load(m *model.Location) {
-	this.Info = m.Info
-	this.InfoFormat = m.InfoFormat
+func (dto *Location) Load(m *model.Location) {
+	dto.Info = m.Info
+	dto.InfoFormat = m.InfoFormat
 	if m.PostalAddress != nil {
 		postalAddress := new(PostalAddress)
 		postalAddress.Country = m.PostalAddress.Country
@@ -177,7 +177,7 @@ func (this *Location) Load(m *model.Location) {
 		postalAddress.RoadPostModifier = m.PostalAddress.RoadPostModifier
 		postalAddress.GPSCoords = m.PostalAddress.GPSCoords
 
-		this.PostalAddress = postalAddress
+		dto.PostalAddress = postalAddress
 	}
 	if m.Placement != nil {
 		placement := new(Placement)
@@ -186,6 +186,6 @@ func (this *Location) Load(m *model.Location) {
 		placement.RackOffsetUnits = m.Placement.RackOffsetUnits
 		placement.RackOffset = m.Placement.RackOffset
 
-		this.Placement = placement
+		dto.Placement = placement
 	}
 }

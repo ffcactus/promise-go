@@ -32,3 +32,26 @@ func GetServerGroup(id string) (*model.ServerGroup, []commonM.Message) {
 	}
 	return sg, nil
 }
+
+// GetServerGroupCollection will get server collection.
+func GetServerGroupCollection(start int, count int) (*model.ServerGroupCollection, []commonM.Message) {
+	dbImpl := db.GetServerGroupDB()
+	ret, err := dbImpl.GetServerGroupCollection(start, count)
+	if err != nil {
+		return nil, []commonM.Message{message.NewServerInternalError()}
+	}
+	return ret, nil
+}
+
+// DeleteServerGroup will delete server group by ID.
+func DeleteServerGroup(id string) []commonM.Message {
+	dbImpl := db.GetServerGroupDB()
+	exist, err := dbImpl.DeleteServerGroup(id)
+	if err != nil {
+		return []commonM.Message{message.NewServerInternalError()}
+	}
+	if !exist {
+		return []commonM.Message{message.NewServerGroupNotExist()}
+	}
+	return nil
+}

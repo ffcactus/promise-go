@@ -26,3 +26,13 @@ func (c *ServerGroupController) Get() {
 	}
 	c.ServeJSON()
 }
+
+// Delete will delete the server group by ID.
+func (c *ServerGroupController) Delete() {
+	beego.Trace("DELETE server group ID = ", c.Ctx.Input.Param(":id"))
+	if messages := service.DeleteServerGroup(c.Ctx.Input.Param(":id")); messages != nil {
+		c.Data["json"] = commonDto.MessagesToDto(messages)
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+	}
+	c.ServeJSON()
+}

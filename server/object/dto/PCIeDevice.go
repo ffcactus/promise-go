@@ -13,14 +13,14 @@ type PCIeDevice struct {
 	PCIeFunctions   []PCIeFunction
 }
 
-func (this *PCIeDevice) Load(m *model.PCIeDevice, ethernetInterfaces []model.EthernetInterface) {
-	this.LoadResourceResponse(&m.Resource)
-	this.LoadProductInfoResponse(&m.ProductInfo)
-	this.DeviceType = m.DeviceType
-	this.FirmwareVersion = m.FirmwareVersion
-	for i, _ := range m.PCIeFunctions {
+func (dto *PCIeDevice) Load(m *model.PCIeDevice, ethernetInterfaces []model.EthernetInterface) {
+	dto.LoadResourceResponse(&m.Resource)
+	dto.LoadProductInfoResponse(&m.ProductInfo)
+	dto.DeviceType = m.DeviceType
+	dto.FirmwareVersion = m.FirmwareVersion
+	for i := range m.PCIeFunctions {
 		each := new(PCIeFunction)
 		each.Load(&m.PCIeFunctions[i], ethernetInterfaces)
-		this.PCIeFunctions = append(this.PCIeFunctions, *each)
+		dto.PCIeFunctions = append(dto.PCIeFunctions, *each)
 	}
 }

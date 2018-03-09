@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	"github.com/google/uuid"
+	"promise/common/app"
 	commonDB "promise/common/db"
 	"promise/server/object/entity"
 	"promise/server/object/model"
@@ -55,4 +56,46 @@ func (i *ServerGroupDBImplement) PostServerGroup(m *model.ServerGroup) (*model.S
 	}
 	tx.Rollback()
 	return nil, true, fmt.Errorf("already exist")
+}
+
+// GetServerGroupCollection Get server group collection by start and count.
+func (i *ServerGroupDBImplement) GetServerGroupCollection(start int, count int) (*model.ServerGroupCollection, error) {
+	var (
+		total        int
+		sgCollection []entity.ServerGroup
+		ret          = new(model.ServerGroupCollection)
+	)
+
+	c := commonDB.GetConnection()
+	c.Table("server-group").Count(total)
+	c.Order("Name asc").Limit(count).Offset(start).Select([]string{"ID", "Name"}).Find(&sgCollection)
+	ret.Start = start
+	ret.Count = len(sgCollection)
+	ret.Total = total
+	for i := range sgCollection {
+		ret.Members = append(ret.Members, model.ServerGroupMember{
+			ID:   sgCollection[i].ID,
+			URI:  toServerGroupURI(sgCollection[i].ID),
+			Name: sgCollection[i].Name,
+		})
+	}
+	return ret, nil
+}
+
+// DeleteServerGroup will delete server group if exist.
+func (i *ServerGroupDBImplement) DeleteServerGroup(id string) (bool, error) {
+	var sg entity.ServerGroup
+
+	// If I need check the existance and error at the same time, should I use transaction?
+	sg.ID = id
+	c := commonDB.GetConnection()
+	if c.Delete(&sg).RecordNotFound() {
+		return false, nil
+	}
+	return true, nil
+}
+
+func toServerGroupURI(ID string) string {
+	s := app.RootURL + "/servergroup" + ID
+	return s
 }

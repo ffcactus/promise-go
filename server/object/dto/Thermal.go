@@ -32,10 +32,10 @@ type Thermal struct {
 	Fans         []Fan         `json:"Fans"`         // This is the definition for fans.
 }
 
-func (this *Thermal) Load(m *model.Thermal) {
-	this.LoadResourceResponse(&m.Resource)
-	this.Temperatures = make([]Temperature, 0)
-	this.Fans = make([]Fan, 0)
+func (dto *Thermal) Load(m *model.Thermal) {
+	dto.LoadResourceResponse(&m.Resource)
+	dto.Temperatures = make([]Temperature, 0)
+	dto.Fans = make([]Fan, 0)
 	for i, _ := range m.Temperatures {
 		d := Temperature{}
 		m := m.Temperatures[i]
@@ -45,7 +45,7 @@ func (this *Thermal) Load(m *model.Thermal) {
 		d.ReadingCelsius = m.ReadingCelsius
 		d.MinReadingRangeTemp = m.MinReadingRangeTemp
 		d.MaxReadingRangeTemp = m.MaxReadingRangeTemp
-		this.Temperatures = append(this.Temperatures, d)
+		dto.Temperatures = append(dto.Temperatures, d)
 	}
 	for i, _ := range m.Temperatures {
 		d := Temperature{}
@@ -56,7 +56,7 @@ func (this *Thermal) Load(m *model.Thermal) {
 		d.ReadingCelsius = m.ReadingCelsius
 		d.MinReadingRangeTemp = m.MinReadingRangeTemp
 		d.MaxReadingRangeTemp = m.MaxReadingRangeTemp
-		this.Temperatures = append(this.Temperatures, d)
+		dto.Temperatures = append(dto.Temperatures, d)
 	}
 	for i, _ := range m.Fans {
 		d := Fan{}
@@ -68,6 +68,6 @@ func (this *Thermal) Load(m *model.Thermal) {
 		d.MinReadingRange = m.MinReadingRange
 		d.MaxReadingRange = m.MaxReadingRange
 		d.ReadingUnits = m.ReadingUnits
-		this.Fans = append(this.Fans, d)
+		dto.Fans = append(dto.Fans, d)
 	}
 }

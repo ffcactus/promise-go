@@ -77,12 +77,12 @@ type Power struct {
 	Redundancy    []Redundancy   `json:"Redundancy"`    // Redundancy information for the power subsystem of this system or device.
 }
 
-func (this *Power) Load(m *model.Power) {
-	this.LoadResourceResponse(&m.Resource)
-	this.PowerControl = make([]PowerControl, 0)
-	this.Voltages = make([]Voltage, 0)
-	this.PowerSupplies = make([]PowerSupply, 0)
-	this.Redundancy = make([]Redundancy, 0)
+func (dto *Power) Load(m *model.Power) {
+	dto.LoadResourceResponse(&m.Resource)
+	dto.PowerControl = make([]PowerControl, 0)
+	dto.Voltages = make([]Voltage, 0)
+	dto.PowerSupplies = make([]PowerSupply, 0)
+	dto.Redundancy = make([]Redundancy, 0)
 	// PowerControl
 	if m.PowerControl != nil {
 		for i, _ := range *m.PowerControl {
@@ -107,7 +107,7 @@ func (this *Power) Load(m *model.Power) {
 				each.PowerLimit.LimitException = powerControl.PowerLimit.LimitException
 				each.PowerLimit.CorrectionInMs = powerControl.PowerLimit.CorrectionInMs
 			}
-			this.PowerControl = append(this.PowerControl, each)
+			dto.PowerControl = append(dto.PowerControl, each)
 		}
 	}
 	// Voltages
@@ -122,7 +122,7 @@ func (this *Power) Load(m *model.Power) {
 			each.MinReadingRange = voltage.MinReadingRange
 			each.MaxReadingRange = voltage.MaxReadingRange
 			each.PhysicalContext = voltage.PhysicalContext
-			this.Voltages = append(this.Voltages, each)
+			dto.Voltages = append(dto.Voltages, each)
 		}
 	}
 	// PowerSupply
@@ -139,7 +139,7 @@ func (this *Power) Load(m *model.Power) {
 			each.LastPowerOutputWatts = powerSupplies.LastPowerOutputWatts
 			each.FirmwareVersion = powerSupplies.FirmwareVersion
 			each.IndicatorLed = powerSupplies.IndicatorLed
-			this.PowerSupplies = append(this.PowerSupplies, each)
+			dto.PowerSupplies = append(dto.PowerSupplies, each)
 		}
 	}
 	// Redundancy
@@ -148,7 +148,7 @@ func (this *Power) Load(m *model.Power) {
 			each := Redundancy{}
 			redundancy := (*m.Redundancy)[i]
 			each.Load(&redundancy)
-			this.Redundancy = append(this.Redundancy, each)
+			dto.Redundancy = append(dto.Redundancy, each)
 		}
 	}
 }

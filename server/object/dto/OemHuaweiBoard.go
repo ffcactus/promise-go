@@ -18,16 +18,16 @@ type OemHuaweiBoard struct {
 	ManufactureDate *string
 }
 
-func (this *OemHuaweiBoard) Load(m *model.OemHuaweiBoard) {
-	this.LoadResourceResponse(&m.Resource)
-	this.LoadProductInfoResponse(&m.ProductInfo)
-	this.CardNo = m.CardNo
-	this.DeviceLocator = m.DeviceLocator
-	this.DeviceType = m.DeviceType
-	this.Location = m.Location
-	this.CPLDVersion = m.CPLDVersion
-	this.PCBVersion = m.PCBVersion
-	this.BoardName = m.BoardName
-	this.BoardID = m.BoardID
-	this.ManufactureDate = m.ManufactureDate
+func (dto *OemHuaweiBoard) Load(m *model.OemHuaweiBoard) {
+	dto.LoadResourceResponse(&m.Resource)
+	dto.LoadProductInfoResponse(&m.ProductInfo)
+	dto.CardNo = m.CardNo
+	dto.DeviceLocator = m.DeviceLocator
+	dto.DeviceType = m.DeviceType
+	dto.Location = m.Location
+	dto.CPLDVersion = m.CPLDVersion
+	dto.PCBVersion = m.PCBVersion
+	dto.BoardName = m.BoardName
+	dto.BoardID = m.BoardID
+	dto.ManufactureDate = m.ManufactureDate
 }

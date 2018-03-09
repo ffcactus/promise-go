@@ -43,9 +43,9 @@ type NetworkPort struct {
 	// SignalDetected                bool                      // Whether or not the port has detected enough signal on enough lanes to establish link.
 }
 
-func (this *NetworkPort) Load(m *model.NetworkPort) {
-	this.LoadResourceResponse(&m.Resource)
-	this.PhysicalPortNumber = m.PhysicalPortNumber
-	this.LinkStatus = m.LinkStatus
-	this.AssociatedNetworkAddresses = m.AssociatedNetworkAddresses
+func (dto *NetworkPort) Load(m *model.NetworkPort) {
+	dto.LoadResourceResponse(&m.Resource)
+	dto.PhysicalPortNumber = m.PhysicalPortNumber
+	dto.LinkStatus = m.LinkStatus
+	dto.AssociatedNetworkAddresses = m.AssociatedNetworkAddresses
 }

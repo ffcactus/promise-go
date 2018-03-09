@@ -11,14 +11,14 @@ type NetworkInterface struct {
 	NetworkAdapter ResourceRef
 }
 
-func (this *NetworkInterface) Load(m *model.NetworkInterface, networkAdapters []model.NetworkAdapter) {
-	this.LoadResourceResponse(&m.Resource)
-	for i, _ := range networkAdapters {
+func (dto *NetworkInterface) Load(m *model.NetworkInterface, networkAdapters []model.NetworkAdapter) {
+	dto.LoadResourceResponse(&m.Resource)
+	for i := range networkAdapters {
 		target := networkAdapters[i]
 		if (target.URI != nil) && (m.NetworkAdapterURI == *target.URI) {
 			ref := ResourceRef{}
 			ref.Ref = fmt.Sprintf("#/Chassis/NetworkAdapters/%d", i)
-			this.NetworkAdapter = ref
+			dto.NetworkAdapter = ref
 		}
 	}
 }
