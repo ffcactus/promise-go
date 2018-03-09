@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"promise/server/context"
 	"promise/server/object/model"
-
+	"promise/server/object/message"
 	"github.com/astaxie/beego"
 )
 
@@ -18,12 +18,12 @@ func (s *ServerStrategy) LockServer(c *context.ServerContext) error {
 	success, server := c.ServerDBImplement.GetAndLockServer(c.Server.ID)
 	if server == nil {
 		beego.Warning("GetAndLockServer() failed, can't find the server, ID = ", c.Server.ID)
-		c.AppendMessage(model.NewServerNotExist())
+		c.AppendMessage(message.NewServerNotExist())
 		return errors.New("failed to lock server, server not exist")
 	}
 	if !success {
 		beego.Info("GetAndLockServer() failed, server state = ", server.State)
-		c.AppendMessage(model.NewServerLockFailed(server))
+		c.AppendMessage(message.NewServerLockFailed(server))
 		return errors.New("failed to lock server. server can't be lock")
 	}
 	c.DispatchServerUpdate()
@@ -54,7 +54,7 @@ func (s *ServerStrategy) SaveServer(c *context.ServerContext) error {
 	server, err := c.ServerDBImplement.PostServer(c.Server)
 	if err != nil {
 		beego.Warning("SaveServer() failed, physical UUID = ", c.Server.PhysicalUUID, ", error = ", err)
-		c.AppendMessage(model.NewInternalError())
+		c.AppendMessage(message.NewServerInternalError())
 		return errors.New("failed to save server")
 	}
 	c.Server = server

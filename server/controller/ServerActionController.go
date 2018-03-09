@@ -3,7 +3,7 @@ package controller
 import (
 	commonDto "promise/common/object/dto"
 	commonM "promise/common/object/model"
-	m "promise/server/object/model"
+	"promise/server/object/message"
 	"promise/server/service"
 	"promise/server/util"
 	"strings"
@@ -31,7 +31,7 @@ func (c *ServerActionController) Post() {
 		}
 	default:
 		messages := []commonM.Message{}
-		messages = append(messages, m.NewServerParameterError())
+		messages = append(messages, message.NewServerParameterError())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.ResponseWriter.WriteHeader((messages)[0].StatusCode)
 	}

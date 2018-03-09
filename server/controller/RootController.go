@@ -4,8 +4,7 @@ import (
 	commonDto "promise/common/object/dto"
 	commonM "promise/common/object/model"
 	dto "promise/server/object/dto"
-	m "promise/server/object/model"
-
+	"promise/server/object/message"
 	"encoding/json"
 	"promise/server/service"
 	"strconv"
@@ -70,7 +69,7 @@ func (c *RootController) Get() {
 
 	if parameterError {
 		messages := []commonM.Message{}
-		messages = append(messages, m.NewServerParameterError())
+		messages = append(messages, message.NewServerParameterError())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.ResponseWriter.WriteHeader((messages)[0].StatusCode)
 	} else {

@@ -4,8 +4,8 @@ import (
 	"github.com/astaxie/beego"
 	wsSDK "promise/sdk/ws"
 	"promise/server/context"
-	"promise/server/object/model"
 	"promise/server/util"
+	"promise/server/object/message"
 )
 
 // RackServerPostStrategy is the strategy for post rack server.
@@ -23,7 +23,7 @@ func (s *RackServerPostStrategy) getManagementAccount(c *context.PostServerConte
 func (s *RackServerPostStrategy) CreateManagementAccount(c *context.PostServerContext) error {
 	username, password := s.getManagementAccount(c)
 	if err := c.ServerClient.CreateManagementAccount(username, password); err != nil {
-		c.AppendMessage(model.NewServerManagementAccountExist(c.Server))
+		c.AppendMessage(message.NewServerAccountExist(c.Server))
 		return err
 	}
 	// After the management account created on the server, update it in the context.
