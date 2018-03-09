@@ -2,12 +2,12 @@ package service
 
 import (
 	commonM "promise/common/object/model"
-	. "promise/server/context"
+	"promise/server/context"
 	"promise/server/db"
 	"promise/server/object/dto"
+	"promise/server/object/message"
 	"promise/server/object/model"
 	"promise/server/strategy"
-	"promise/server/object/message"
 	"time"
 
 	"github.com/astaxie/beego"
@@ -30,12 +30,12 @@ func PostServer(request *dto.PostServerRequest) (*model.Server, []commonM.Messag
 	}
 
 	// Before save the server to the DB. We need configure the server first.
-	context := CreatePostServerContext(server, request)
+	ctx := context.CreatePostServerContext(server, request)
 	st := strategy.CreatePostServerStrategy(server)
-	if err := st.Execute(context); err != nil {
-		return nil, context.Messages()
+	if err := st.Execute(ctx); err != nil {
+		return nil, ctx.Messages()
 	}
-	return context.Server, nil
+	return ctx.Server, nil
 }
 
 // GetServer will get server by server ID.
@@ -52,7 +52,7 @@ func GetServer(id string) (*model.Server, []commonM.Message) {
 // GetServerCollection will get server collection.
 func GetServerCollection(start int, count int) (*model.ServerCollection, []commonM.Message) {
 	dbImpl := db.GetDBInstance()
-	ret, err := dbImpl.GetServerCollection(start, count); 
+	ret, err := dbImpl.GetServerCollection(start, count)
 	if err != nil {
 		return nil, []commonM.Message{message.NewServerInternalError()}
 	}
@@ -66,10 +66,10 @@ func RefreshServer(id string) (*dto.RefreshServerResponse, []commonM.Message) {
 	if server == nil {
 		return nil, []commonM.Message{message.NewServerNotExist()}
 	}
-	context := CreateRefreshServerContext(server)
+	ctx := context.CreateRefreshServerContext(server)
 	st := strategy.CreateRefreshServerStrategy(server)
-	if err := st.Execute(context); err != nil {
-		return nil, context.Messages()
+	if err := st.Execute(ctx); err != nil {
+		return nil, ctx.Messages()
 	}
 	return nil, nil
 }

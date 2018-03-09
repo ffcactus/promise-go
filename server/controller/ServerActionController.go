@@ -25,7 +25,7 @@ func (c *ServerActionController) Post() {
 	case util.ServerActionRefresh:
 		if resp, messages := service.RefreshServer(id); messages != nil {
 			c.Data["json"] = commonDto.MessagesToDto(messages)
-			c.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
+			c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		} else {
 			c.Data["json"] = &resp
 		}
@@ -33,7 +33,7 @@ func (c *ServerActionController) Post() {
 		messages := []commonM.Message{}
 		messages = append(messages, message.NewServerParameterError())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
-		c.Ctx.ResponseWriter.WriteHeader((messages)[0].StatusCode)
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 	}
 	c.ServeJSON()
 }

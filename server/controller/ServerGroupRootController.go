@@ -40,5 +40,4 @@ func (c *ServerGroupRootController) Post() {
 		beego.Info("POST server group", response.Name)
 	}
 	c.ServeJSON()
-
 }

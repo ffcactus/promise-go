@@ -18,7 +18,7 @@ func (c *ServerController) Get() {
 	beego.Trace("Get(), server ID = ", c.Ctx.Input.Param(":id"))
 	if server, messages := service.GetServer(c.Ctx.Input.Param(":id")); messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
-		c.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 	} else {
 		resp := dto.GetServerResponse{}
 		resp.Load(server)

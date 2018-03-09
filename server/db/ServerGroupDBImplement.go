@@ -17,6 +17,16 @@ func GetServerGroupDB() ServerGroupDBInterface {
 	return new(ServerGroupDBImplement)
 }
 
+// GetServerGroup will get the server group by id.
+func (i *ServerGroupDBImplement) GetServerGroup(id string) *model.ServerGroup {
+	var sg entity.ServerGroup
+	c := commonDB.GetConnection()
+	if c.Where("ID = ?", id).First(&sg).RecordNotFound() {
+		return nil
+	}
+	return sg.ToModel()
+}
+
 // GetServerGroupByName will get the server group by name.
 func (i *ServerGroupDBImplement) GetServerGroupByName(name string) *model.ServerGroup {
 	var sg entity.ServerGroup
@@ -39,12 +49,10 @@ func (i *ServerGroupDBImplement) PostServerGroup(m *model.ServerGroup) (*model.S
 		if err := c.Create(&e).Error; err != nil {
 			tx.Rollback()
 			return nil, false, err
-		} else {
-			tx.Commit()
-			return e.ToModel(), false, nil
 		}
-	} else {
-		tx.Rollback()
-		return nil, true, fmt.Errorf("already exist.")
+		tx.Commit()
+		return e.ToModel(), false, nil
 	}
+	tx.Rollback()
+	return nil, true, fmt.Errorf("already exist")
 }

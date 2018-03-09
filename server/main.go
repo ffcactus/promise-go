@@ -38,7 +38,7 @@ func main() {
 
 	serverNS := beego.NewNamespace(
 		app.RootURL+"/server",
-		beego.NSRouter("/", &controller.RootController{}),
+		beego.NSRouter("/", &controller.ServerRootController{}),
 		beego.NSRouter("/:id", &controller.ServerController{}),
 		beego.NSRouter("/:id/action/:action", &controller.ServerActionController{}),
 	)
@@ -46,7 +46,7 @@ func main() {
 	serverGroupNS := beego.NewNamespace(
 		app.RootURL+"/servergroup",
 		beego.NSRouter("/", &controller.ServerGroupRootController{}),
-		// beego.NSRouter("/:id", &controller.ServerGroupController{}),
+		beego.NSRouter("/:id", &controller.ServerGroupController{}),
 		// beego.NSRouter("/:id/action/:action", &controller.ServerGroupActionController{}),
 
 	)

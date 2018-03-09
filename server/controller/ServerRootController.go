@@ -1,24 +1,24 @@
 package controller
 
 import (
+	"encoding/json"
 	commonDto "promise/common/object/dto"
 	commonM "promise/common/object/model"
 	dto "promise/server/object/dto"
 	"promise/server/object/message"
-	"encoding/json"
 	"promise/server/service"
 	"strconv"
 
 	"github.com/astaxie/beego"
 )
 
-// RootController The root controller
-type RootController struct {
+// ServerRootController The root controller
+type ServerRootController struct {
 	beego.Controller
 }
 
 // Post Post a new server.
-func (c *RootController) Post() {
+func (c *ServerRootController) Post() {
 	request := new(dto.PostServerRequest)
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
 		beego.Warning("error: ", err)
@@ -40,7 +40,7 @@ func (c *RootController) Post() {
 }
 
 // Get Get server collection.
-func (c *RootController) Get() {
+func (c *ServerRootController) Get() {
 	var (
 		start, count       string = c.GetString("start"), c.GetString("count")
 		startInt, countInt int    = 0, -1
@@ -71,11 +71,11 @@ func (c *RootController) Get() {
 		messages := []commonM.Message{}
 		messages = append(messages, message.NewServerParameterError())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
-		c.Ctx.ResponseWriter.WriteHeader((messages)[0].StatusCode)
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 	} else {
 		if serverCollection, messages := service.GetServerCollection(startInt, countInt); messages != nil {
 			c.Data["json"] = commonDto.MessagesToDto(messages)
-			c.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
+			c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		} else {
 			resp := new(dto.GetServerCollectionResponse)
 			resp.Load(serverCollection)

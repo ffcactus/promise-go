@@ -41,7 +41,6 @@ func NewArgumentServerID(s *model.Server) commonM.Argument {
 func NewServerInternalError() commonM.Message {
 	ret := commonM.NewMessage(commonM.CategoryServer)
 	ret.ID = IDMessageServerInternalError
-	ret.StatusCode = http.StatusBadRequest
 	ret.Severity = commonM.SeverityCritical
 	ret.Description = "Internal error."
 	ret.Supports = []commonM.Support{
@@ -54,7 +53,6 @@ func NewServerInternalError() commonM.Message {
 func NewServerPostFailed() commonM.Message {
 	ret := commonM.NewMessage(commonM.CategoryServer)
 	ret.ID = IDMessageServerPostFailed
-	ret.StatusCode = http.StatusBadRequest
 	ret.Severity = commonM.SeverityWarning
 	ret.Description = "Post server failed."
 	ret.Supports = []commonM.Support{
@@ -68,7 +66,6 @@ func NewServerPostFailed() commonM.Message {
 func NewServerExist(s *model.Server) commonM.Message {
 	ret := commonM.NewMessage(commonM.CategoryServer)
 	ret.ID = IDMessageServerExist
-	ret.StatusCode = http.StatusOK
 	ret.Severity = commonM.SeverityNormal
 	ret.Description = "Server already ServerExists. See {0}"
 	ret.Arguments = []commonM.Argument{NewArgumentServerID(s)}
@@ -107,7 +104,6 @@ func NewServerLockFailed(s *model.Server) commonM.Message {
 func NewServerAccountExist(s *model.Server) commonM.Message {
 	ret := commonM.NewMessage(commonM.CategoryServer)
 	ret.ID = IDMessageServerAccountExist
-	ret.StatusCode = http.StatusConflict
 	ret.Severity = commonM.SeverityNormal
 	ret.Description = "Server {0} failed to create management account."
 	ret.Arguments = []commonM.Argument{
@@ -124,7 +120,6 @@ func NewServerAccountExist(s *model.Server) commonM.Message {
 func NewServerParameterError() commonM.Message {
 	ret := commonM.NewMessage(commonM.CategoryServer)
 	ret.ID = IDMessageServerParameterError
-	ret.StatusCode = http.StatusBadRequest
 	ret.Severity = commonM.SeverityNormal
 	ret.Description = "Input parameter error."
 	ret.Supports = []commonM.Support{
@@ -137,7 +132,6 @@ func NewServerParameterError() commonM.Message {
 func NewServerRefreshTaskFailed() commonM.Message {
 	ret := commonM.NewMessage(commonM.CategoryServer)
 	ret.ID = IDMessageServerRefreshTaskFailed
-	ret.StatusCode = http.StatusBadRequest
 	ret.Severity = commonM.SeverityNormal
 	ret.Description = "Failed to create refresh task"
 	ret.Supports = []commonM.Support{

@@ -3,10 +3,10 @@ package strategy
 import (
 	"errors"
 	"fmt"
-	"promise/server/context"
-	"promise/server/object/model"
-	"promise/server/object/message"
 	"github.com/astaxie/beego"
+	"promise/server/context"
+	"promise/server/object/message"
+	"promise/server/object/model"
 )
 
 // ServerStrategy Common server strategy.
