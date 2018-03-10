@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"net/http"
 	commonDto "promise/common/object/dto"
 	dto "promise/server/object/dto"
 	"promise/server/service"
@@ -23,6 +24,7 @@ func (c *ServerController) Get() {
 		resp := dto.GetServerResponse{}
 		resp.Load(server)
 		c.Data["json"] = &resp
+		c.Ctx.Output.SetStatus(http.StatusOK)
 	}
 	c.ServeJSON()
 }

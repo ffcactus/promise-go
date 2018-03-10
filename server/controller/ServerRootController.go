@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"net/http"
 	commonDto "promise/common/object/dto"
 	commonM "promise/common/object/model"
 	"promise/server/object/dto"
@@ -34,6 +35,7 @@ func (c *ServerRootController) Post() {
 		resp := dto.PostServerResponse{}
 		resp.Load(server)
 		c.Data["json"] = &resp
+		c.Ctx.Output.SetStatus(http.StatusCreated)
 	}
 	c.ServeJSON()
 	beego.Info("Post() done, server ID = ", server.ID)
@@ -80,6 +82,7 @@ func (c *ServerRootController) Get() {
 			resp := new(dto.GetServerCollectionResponse)
 			resp.Load(serverCollection)
 			c.Data["json"] = resp
+			c.Ctx.Output.SetStatus(http.StatusOK)
 		}
 	}
 	c.ServeJSON()

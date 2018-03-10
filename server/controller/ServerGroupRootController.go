@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"net/http"
 	commonDto "promise/common/object/dto"
 	commonM "promise/common/object/model"
 	"promise/server/object/dto"
@@ -37,6 +38,7 @@ func (c *ServerGroupRootController) Post() {
 	} else {
 		response.Load(serverGroup)
 		c.Data["json"] = &response
+		c.Ctx.Output.SetStatus(http.StatusCreated)
 	}
 	c.ServeJSON()
 }
@@ -82,6 +84,7 @@ func (c *ServerGroupRootController) Get() {
 			resp := new(dto.GetServerGroupCollectionResponse)
 			resp.Load(serverCollection)
 			c.Data["json"] = resp
+			c.Ctx.Output.SetStatus(http.StatusOK)
 		}
 	}
 	c.ServeJSON()

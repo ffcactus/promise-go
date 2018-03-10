@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"net/http"
 	commonDto "promise/common/object/dto"
 	commonM "promise/common/object/model"
 	"promise/server/object/message"
@@ -28,6 +29,7 @@ func (c *ServerActionController) Post() {
 			c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		} else {
 			c.Data["json"] = &resp
+			c.Ctx.Output.SetStatus(http.StatusAccepted)
 		}
 	default:
 		messages := []commonM.Message{}
