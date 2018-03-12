@@ -95,6 +95,12 @@ func (i *ServerGroupDBImplement) DeleteServerGroup(id string) (bool, error) {
 	return true, nil
 }
 
+// DeleteServerGroupCollection will delete all the server group except the default "all".
+func (i *ServerGroupDBImplement) DeleteServerGroupCollection() error {
+	c := commonDB.GetConnection()
+	return c.Where("name <> ?", "all").Delete(entity.ServerGroup{}).Error
+}
+
 func toServerGroupURI(ID string) string {
 	s := app.RootURL + "/servergroup" + ID
 	return s

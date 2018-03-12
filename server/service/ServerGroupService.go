@@ -6,7 +6,26 @@ import (
 	"promise/server/object/dto"
 	"promise/server/object/message"
 	"promise/server/object/model"
+	"github.com/astaxie/beego"
 )
+
+// CreateDefaultServerGroup will create the default server group.
+func CreateDefaultServerGroup() {
+	var request dto.PostServerGroupRequest
+	request.Name = "all"
+	request.Description = "The default server group that includes all the servers."
+	dbImpl := db.GetServerGroupDB()
+	_, exist, err := dbImpl.PostServerGroup(request.ToModel())
+	if exist {
+		beego.Trace("The default server group exist.")
+	}
+	if err != nil {
+		beego.Critical("Failed to create default server group.")
+	} else {
+		beego.Info("Default server group created.")
+	}
+
+}
 
 // PostServerGroup post a server group.
 func PostServerGroup(request *dto.PostServerGroupRequest) (*model.ServerGroup, []commonM.Message) {
@@ -52,6 +71,16 @@ func DeleteServerGroup(id string) []commonM.Message {
 	}
 	if !exist {
 		return []commonM.Message{message.NewServerGroupNotExist()}
+	}
+	return nil
+}
+
+// DeleteServerGroupCollection will delete all the server group except the default "all".
+func DeleteServerGroupCollection() []commonM.Message {
+	dbImpl := db.GetServerGroupDB()
+	err := dbImpl.DeleteServerGroupCollection()
+	if err != nil {
+		return []commonM.Message{message.NewServerInternalError()}
 	}
 	return nil
 }

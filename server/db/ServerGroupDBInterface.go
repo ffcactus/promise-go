@@ -11,4 +11,5 @@ type ServerGroupDBInterface interface {
 	GetServerGroup(id string) *model.ServerGroup
 	GetServerGroupCollection(start int, count int) (*model.ServerGroupCollection, error)
 	DeleteServerGroup(id string) (bool, error)
+	DeleteServerGroupCollection() error
 }

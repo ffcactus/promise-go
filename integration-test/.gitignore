@@ -5,3 +5,4 @@
 .project
 dist/
 target/
+src/test/resource/environment.json

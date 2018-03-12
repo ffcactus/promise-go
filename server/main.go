@@ -27,6 +27,7 @@ func initDB() {
 			beego.Info("DB schema created.")
 		}
 	}
+	service.CreateDefaultServerGroup()
 }
 
 func main() {

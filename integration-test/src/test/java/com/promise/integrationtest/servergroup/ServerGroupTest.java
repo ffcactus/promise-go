@@ -10,18 +10,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.promise.integrationtest.base.DeleteResourceResponse;
+import com.promise.integrationtest.base.PromiseIntegrationTest;
 import com.promise.integrationtest.servergroup.dto.GetServerGroupResponse;
 import com.promise.integrationtest.servergroup.dto.PostServerGroupRequest;
 import com.promise.integrationtest.util.ResourceAssertUtil;
 import com.promise.integrationtest.util.RestClient;
 
-public class ServerGroupTest
+public class ServerGroupTest extends PromiseIntegrationTest
 {
     @BeforeClass
     public static void setUpBeforeClass()
             throws Exception
     {
-        System.out.println("setUpBeforeClass");
+
     }
 
     @AfterClass
@@ -34,6 +35,11 @@ public class ServerGroupTest
     public void setUp()
             throws Exception
     {
+    	// Remove all the server group.
+        final ResponseEntity<DeleteResourceResponse> response = RestClient.delete(
+        		getRootURL() + "/promise/v1/servergroup/",
+                DeleteResourceResponse.class);
+        Assert.assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());    	    	
     }
 
     @After
@@ -53,7 +59,7 @@ public class ServerGroupTest
 
         // Create a server group.
         final ResponseEntity<GetServerGroupResponse> response1 = RestClient.post(
-                "http://192.168.206.130/promise/v1/servergroup/",
+                getRootURL() + "/promise/v1/servergroup/",
                 request,
                 GetServerGroupResponse.class);
         Assert.assertEquals(HttpStatus.CREATED, response1.getStatusCode());
@@ -61,7 +67,7 @@ public class ServerGroupTest
 
         // Get it.
         final ResponseEntity<GetServerGroupResponse> response2 = RestClient.get(
-                "http://192.168.206.130/promise/v1/servergroup/" + response1.getBody().getId(),
+        		getRootURL() + "/promise/v1/servergroup/" + response1.getBody().getId(),
                 GetServerGroupResponse.class);
         Assert.assertEquals(HttpStatus.OK, response2.getStatusCode());
         ResourceAssertUtil.isResource(response2.getBody());
@@ -70,7 +76,7 @@ public class ServerGroupTest
 
         // Delete it.
         final ResponseEntity<DeleteResourceResponse> response3 = RestClient.delete(
-                "http://192.168.206.130/promise/v1/servergroup/" + response1.getBody().getId(),
+        		getRootURL() + "/promise/v1/servergroup/" + response1.getBody().getId(),
                 DeleteResourceResponse.class);
         Assert.assertEquals(HttpStatus.ACCEPTED, response3.getStatusCode());
     }

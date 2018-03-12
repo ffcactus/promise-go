@@ -24,7 +24,7 @@ func (c *ServerGroupRootController) Post() {
 		request  dto.PostServerGroupRequest
 		response dto.PostServerGroupResponse
 	)
-	beego.Info("POST server group", response.Name)
+	
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &request); err != nil {
 		beego.Warning("error: ", err)
 	}
@@ -39,6 +39,7 @@ func (c *ServerGroupRootController) Post() {
 		response.Load(serverGroup)
 		c.Data["json"] = &response
 		c.Ctx.Output.SetStatus(http.StatusCreated)
+		beego.Info("POST server group", response.Name, response.ID)
 	}
 	c.ServeJSON()
 }
@@ -88,4 +89,16 @@ func (c *ServerGroupRootController) Get() {
 		}
 	}
 	c.ServeJSON()
+}
+
+// Delete will delete all the group except default "all" server group.
+func (c *ServerGroupRootController) Delete() {
+	messages := service.DeleteServerGroupCollection()
+	if messages != nil {
+		c.Data["json"] = commonDto.MessagesToDto(messages)
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)		
+	}
+	c.Ctx.Output.SetStatus(http.StatusAccepted)
+	beego.Info("DELETE all server group")
+	c.ServeJSON()	
 }
