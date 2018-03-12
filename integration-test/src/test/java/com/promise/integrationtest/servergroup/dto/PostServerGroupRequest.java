@@ -12,6 +12,15 @@ public class PostServerGroupRequest
     @JsonProperty("Description")
     private String description;
 
+    public PostServerGroupRequest() {
+    	
+    }
+    
+    public PostServerGroupRequest(String name, String description) {
+    	this.name = name;
+    	this.description = description;
+    }
+    
     public String getName()
     {
         return name;
