@@ -30,7 +30,8 @@ func ReadConfig(appName string) {
 
 // InitLog the log.
 func InitLog() {
-	log.SetFormatter(&log.TextFormatter{})
+	//log.SetFormatter(&log.TextFormatter{ForceColors: true})
+	log.SetFormatter(&PromiseTextFormatter{App: "Server"})
 	log.SetLevel(log.InfoLevel)
 	file, err := os.OpenFile("/tmp/promise.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 	if err == nil {
