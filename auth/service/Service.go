@@ -6,7 +6,7 @@ import (
 	"promise/auth/object/model"
 	commonModel "promise/common/object/model"
 
-	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 )
 
 // Login On success return the session.
@@ -20,10 +20,10 @@ func Login(request *dto.PostLoginRequest) (*model.Session, []commonModel.Message
 	session := CreateSession(account)
 	savedSession := dbInstance.PostSession(session)
 	if savedSession == nil {
-		beego.Warning("Failed to save session in DB.")
+		log.Warn("Failed to save session in DB.")
 		return nil, []commonModel.Message{model.NewMessageAuthInternalError()}
 	}
-	beego.Info("User", request.Name, "login.")
+	log.Info("User", request.Name, "login.")
 	return savedSession, nil
 }
 
@@ -46,7 +46,7 @@ func CreateDefaultAdmin() error {
 		defaultAdmin.Name = "admin"
 		defaultAdmin.PasswordHash = "password_hash"
 		dbInstance.PostAccount(defaultAdmin)
-		beego.Info("Default admin account is created.")
+		log.Info("Default admin account is created.")
 	}
 	return nil
 }

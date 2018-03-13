@@ -2,6 +2,8 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	commonDto "promise/common/object/dto"
 	commonM "promise/common/object/model"
@@ -9,8 +11,6 @@ import (
 	"promise/server/object/message"
 	"promise/server/service"
 	"strconv"
-
-	"github.com/astaxie/beego"
 )
 
 // ServerGroupRootController The root controller
@@ -24,22 +24,23 @@ func (c *ServerGroupRootController) Post() {
 		request  dto.PostServerGroupRequest
 		response dto.PostServerGroupResponse
 	)
-	
+
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &request); err != nil {
-		beego.Warning("error: ", err)
+		log.Warn("error: ", err)
 	}
 	// Create the context for this operation.
 	serverGroup, messages := service.PostServerGroup(&request)
 	if messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		beego.Info("POST server group failed", messages[0].ID)
+		log.Info("POST server group failed", messages[0].ID)
 		// TODO Why the header not includes application/json?
 	} else {
 		response.Load(serverGroup)
 		c.Data["json"] = &response
 		c.Ctx.Output.SetStatus(http.StatusCreated)
-		beego.Info("POST server group", response.Name, response.ID)
+
+		log.Info("POST server group", response.Name, response.ID)
 	}
 	c.ServeJSON()
 }
@@ -51,11 +52,11 @@ func (c *ServerGroupRootController) Get() {
 		startInt, countInt int    = 0, -1
 		parameterError     bool
 	)
-	beego.Trace("Get server group collection, start = ", start, ", count = ", count)
+	log.Debug("Get server group collection, start = ", start, ", count = ", count)
 	if start != "" {
 		_startInt, err := strconv.Atoi(start)
 		if err != nil || _startInt < 0 {
-			beego.Warning("Get(), invalid 'start' parameter, error = ", err)
+			log.Warn("Get(), invalid 'start' parameter, error = ", err)
 			parameterError = true
 		} else {
 			startInt = _startInt
@@ -65,7 +66,7 @@ func (c *ServerGroupRootController) Get() {
 		_countInt, err := strconv.Atoi(count)
 		// -1 means all.
 		if err != nil || _countInt < -1 {
-			beego.Warning("Get() 'count' parameter error = %s\n", err)
+			log.Warn("Get() 'count' parameter error = %s\n", err)
 			parameterError = true
 		} else {
 			countInt = _countInt
@@ -96,9 +97,9 @@ func (c *ServerGroupRootController) Delete() {
 	messages := service.DeleteServerGroupCollection()
 	if messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)		
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 	}
 	c.Ctx.Output.SetStatus(http.StatusAccepted)
-	beego.Info("DELETE all server group")
-	c.ServeJSON()	
+	log.Info("DELETE all server group")
+	c.ServeJSON()
 }

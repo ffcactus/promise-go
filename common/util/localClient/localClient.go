@@ -27,18 +27,18 @@ func Instance() *LocalClient {
 // The REST operation.
 func (c *LocalClient) rest(method string, uri string, request io.Reader) (*http.Response, error) {
 	url := c.address(uri)
-	beego.Trace("rest(), method = ", method, ", url = ", url)
+	log.Debug("rest(), method = ", method, ", url = ", url)
 	// Form the REST request.
 	req, err := http.NewRequest(method, url, request)
 	if err != nil {
-		beego.Warning("NewRequest() failed,", " Method = ", method, " URI = ", uri, " error = ", err)
+		log.Warn("NewRequest() failed,", " Method = ", method, " URI = ", uri, " error = ", err)
 		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 	resp, err := c.Client.Do(req)
 	if err != nil {
-		beego.Warning("Do() failed,", " Method = ", method, " URI = ", uri, " error = ", err)
+		log.Warn("Do() failed,", " Method = ", method, " URI = ", uri, " error = ", err)
 		return nil, err
 	}
 	return resp, err
@@ -68,32 +68,32 @@ func (c *LocalClient) Rest(method string, uri string, requestDto interface{}, re
 	}
 	defer resp.Body.Close()
 	if err != nil {
-		beego.Warning("rest() failed,", " Method = ", method, " URI = ", uri, " error = ", err)
+		log.Warn("rest() failed,", " Method = ", method, " URI = ", uri, " error = ", err)
 		return nil, err
 	}
 	defer resp.Body.Close()
 	// If is expected status code, turn the response to expectedDto, or turn to []Message.
 	if c.isExpectedStatusCode(expectStatusCode, resp.StatusCode) {
-		beego.Trace("isExpectedStatusCode() = true, status code = ", resp.StatusCode)
+		log.Debug("isExpectedStatusCode() = true, status code = ", resp.StatusCode)
 		if resp.Body == nil && responseDtoP != nil {
-			beego.Warning("Resposne body is empty, ", method, " URI = ", uri)
+			log.Warn("Resposne body is empty, ", method, " URI = ", uri)
 			return nil, errors.New("response body is empty")
 		}
 		if err := json.NewDecoder(resp.Body).Decode(responseDtoP); err != nil {
-			beego.Warning("Decode(responseDtoP) failed,", " Method = ", method, " URI = ", uri, " error = ", err)
+			log.Warn("Decode(responseDtoP) failed,", " Method = ", method, " URI = ", uri, " error = ", err)
 			return nil, err
 		}
 		return nil, nil
 	}
-	beego.Trace("isExpectedStatusCode() = false, status code = ", resp.StatusCode)
+	log.Debug("isExpectedStatusCode() = false, status code = ", resp.StatusCode)
 	// TODO Not all the response body can be translate to messages.
 	message := new([]commonDto.Message)
 	if resp.Body == nil {
-		beego.Warning("Resposne body is empty, ", method, " URI = ", uri)
+		log.Warn("Resposne body is empty, ", method, " URI = ", uri)
 		return nil, errors.New("response body is empty")
 	}
 	if err := json.NewDecoder(resp.Body).Decode(message); err != nil {
-		beego.Warning("Decode(message) failed,", " Method = ", method, " URI = ", uri, " error = ", err)
+		log.Warn("Decode(message) failed,", " Method = ", method, " URI = ", uri, " error = ", err)
 		return nil, err
 	}
 	return *message, nil

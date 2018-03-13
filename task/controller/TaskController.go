@@ -6,6 +6,7 @@ import (
 	"promise/task/service"
 
 	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 )
 
 // TaskController Task controller
@@ -14,15 +15,15 @@ type TaskController struct {
 }
 
 // Get Get server by ID.
-func (this *TaskController) Get() {
-	beego.Trace("Get() start, ID = ", this.Ctx.Input.Param(":id"))
-	if task, messages := service.GetTask(this.Ctx.Input.Param(":id")); messages != nil {
-		this.Data["json"] = commonDto.MessagesToDto(messages)
-		this.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
+func (c *TaskController) Get() {
+	log.Debug("Get() start, ID = ", c.Ctx.Input.Param(":id"))
+	if task, messages := service.GetTask(c.Ctx.Input.Param(":id")); messages != nil {
+		c.Data["json"] = commonDto.MessagesToDto(messages)
+		c.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
 	} else {
 		resp := new(PostTaskResponse)
 		resp.Load(task)
-		this.Data["json"] = resp
+		c.Data["json"] = resp
 	}
-	this.ServeJSON()
+	c.ServeJSON()
 }

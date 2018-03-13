@@ -7,12 +7,12 @@ import (
 	"promise/task/object/dto"
 	"promise/task/object/model"
 
-	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 )
 
 // PostTask Post Task.
 func PostTask(request *dto.PostTaskRequest) (*model.Task, []commonModel.Message) {
-	beego.Trace("PostTask() start, task name =", request.Name)
+	log.Debug("PostTask() start, task name =", request.Name)
 	db := db.GetDBInstance()
 	task := request.ToModel()
 	createTask, err := db.PostTask(task)
@@ -25,7 +25,7 @@ func PostTask(request *dto.PostTaskRequest) (*model.Task, []commonModel.Message)
 
 // GetTask Get Task.
 func GetTask(id string) (*model.Task, []commonModel.Message) {
-	beego.Trace("GetTask() start, task ID =", id)
+	log.Debug("GetTask() start, task ID =", id)
 	db := db.GetDBInstance()
 	task := db.GetTask(id)
 	if task == nil {
@@ -36,7 +36,7 @@ func GetTask(id string) (*model.Task, []commonModel.Message) {
 
 // GetTaskCollection Get task collection.
 func GetTaskCollection(start int, count int) (*model.TaskCollection, []commonModel.Message) {
-	beego.Trace("GetTaskCollection() start, start =", start, "count =", count)
+	log.Debug("GetTaskCollection() start, start =", start, "count =", count)
 	db := db.GetDBInstance()
 	ret, err := db.GetTaskCollection(start, count)
 	if err != nil {
@@ -47,7 +47,7 @@ func GetTaskCollection(start int, count int) (*model.TaskCollection, []commonMod
 
 // UpdateTask Update task.
 func UpdateTask(id string, request *dto.UpdateTaskRequest) (*model.Task, []commonModel.Message) {
-	beego.Trace("UpdateTask() start, task ID =", id)
+	log.Debug("UpdateTask() start, task ID =", id)
 	// TODO Check parameters.
 	db := db.GetDBInstance()
 	task := db.GetTask(id)
@@ -65,11 +65,11 @@ func UpdateTask(id string, request *dto.UpdateTaskRequest) (*model.Task, []commo
 
 // UpdateTaskStep Update task step.
 func UpdateTaskStep(id string, request *dto.UpdateTaskStepRequest) (*model.Task, []commonModel.Message) {
-	beego.Trace("UpdateTaskStep() start, task ID =", id, "step name =", request.Name)
+	log.Debug("UpdateTaskStep() start, task ID =", id, "step name =", request.Name)
 	db := db.GetDBInstance()
 	task := db.GetTask(id)
 	if task == nil {
-		beego.Trace("UpdateTaskStep() failed, GetTask() failed, task = nil, task ID =", id)
+		log.Debug("UpdateTaskStep() failed, GetTask() failed, task = nil, task ID =", id)
 		return nil, []commonModel.Message{model.NewMessageTaskNotExist()}
 	}
 	currentTime := 0
@@ -87,7 +87,7 @@ func UpdateTaskStep(id string, request *dto.UpdateTaskStepRequest) (*model.Task,
 			}
 			if request.ExecutionState != nil && *request.ExecutionState == model.ExecutionStateRunning {
 				task.CurrentStep = step.Name
-				beego.Trace("-------CurrentStep =", task.CurrentStep)
+				log.Debug("-------CurrentStep =", task.CurrentStep)
 			}
 			percentageF := (float32)(currentTime) / (float32)(task.ExpectedExecutionMs)
 			task.Percentage = (int)((percentageF * 100) + 0.5)
@@ -97,13 +97,13 @@ func UpdateTaskStep(id string, request *dto.UpdateTaskStepRequest) (*model.Task,
 			request.UpdateModel(task)
 			savedTask, err := db.UpdateTask(id, task)
 			if err != nil {
-				beego.Warning("UpdateTaskStep() failed, failed to save task, step name =", request.Name)
+				log.Warn("UpdateTaskStep() failed, failed to save task, step name =", request.Name)
 				return nil, []commonModel.Message{model.NewMessageTaskSaveFailure()}
 			}
 			wsSDK.DispatchTaskUpdate(savedTask)
 			return savedTask, nil
 		}
 	}
-	beego.Warning("UpdateTaskStep() failed, can't find the step, step name =", request.Name)
+	log.Warn("UpdateTaskStep() failed, can't find the step, step name =", request.Name)
 	return nil, []commonModel.Message{model.NewMessageTaskNotExist()}
 }

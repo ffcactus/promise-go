@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	commonDto "promise/common/object/dto"
 	commonM "promise/common/object/model"
@@ -8,8 +10,6 @@ import (
 	"promise/server/service"
 	"promise/server/util"
 	"strings"
-
-	"github.com/astaxie/beego"
 )
 
 // ServerActionController Server action controller
@@ -21,7 +21,7 @@ type ServerActionController struct {
 func (c *ServerActionController) Post() {
 	action := c.Ctx.Input.Param(":action")
 	id := c.Ctx.Input.Param(":id")
-	beego.Trace("Post(), action = ", action, ", server ID = ", action, id)
+	log.Debug("Post(), action = ", action, ", server ID = ", action, id)
 	switch strings.ToLower(action) {
 	case util.ServerActionRefresh:
 		if resp, messages := service.RefreshServer(id); messages != nil {

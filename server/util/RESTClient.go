@@ -5,7 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"errors"
-	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 	"io"
 	"net/http"
 )
@@ -31,11 +31,11 @@ func GetInstance(address string, username string, password string, useBasicAuth 
 // The REST operation.
 func (this *RESTClient) Rest(method string, uri string, body io.Reader) (resp *http.Response, err error) {
 	url := this.address(uri)
-	beego.Info("Http REST ", method, " to ", url)
+	log.Info("Http REST ", method, " to ", url)
 	// Form the REST request.
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
-		beego.Trace("REST %s %s create request failed, error = %#v\n", method, url, err)
+		log.Debug("REST %s %s create request failed, error = %#v\n", method, url, err)
 		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/json")
@@ -43,11 +43,11 @@ func (this *RESTClient) Rest(method string, uri string, body io.Reader) (resp *h
 	// For basic auth, we pend credential first.
 	if this.UseBasicAuth {
 		// For basic auth.
-		beego.Trace("Use basic auth with %s\n", this.Username)
+		log.Debug("Use basic auth with %s\n", this.Username)
 		req.SetBasicAuth(this.Username, this.Password)
 	}
 	if resp, err := this.Client.Do(req); err != nil {
-		beego.Trace("REST %s %s operation failed, error = %#v\n", method, url, err)
+		log.Debug("REST %s %s operation failed, error = %#v\n", method, url, err)
 		return nil, err
 	} else {
 		return resp, err
@@ -69,15 +69,15 @@ func (this *RESTClient) GetObject(uri string, req interface{}, o interface{}) (i
 	}
 	defer resp.Body.Close()
 	if err != nil {
-		beego.Trace("Get object from %s failed, error = %#v\n", uri, err)
+		log.Debug("Get object from %s failed, error = %#v\n", uri, err)
 		return resp.StatusCode, err
 	} else {
 		if resp.Body == nil {
-			beego.Trace("Get object from %s failed, resposne body is empty.\n", uri)
+			log.Debug("Get object from %s failed, resposne body is empty.\n", uri)
 			return resp.StatusCode, errors.New("Response body is empty.")
 		}
 		if err := json.NewDecoder(resp.Body).Decode(o); err != nil {
-			beego.Trace("Get object from %s failed, failed to decode the object, error = %#v\n", uri, err)
+			log.Debug("Get object from %s failed, failed to decode the object, error = %#v\n", uri, err)
 			return resp.StatusCode, err
 		}
 		return resp.StatusCode, nil
@@ -98,7 +98,7 @@ func (this *RESTClient) PostObject(uri string, req interface{}, o interface{}) (
 	}
 	defer resp.Body.Close()
 	if err != nil {
-		beego.Trace("Post object to %s failed, error = %#v\n", uri, err)
+		log.Debug("Post object to %s failed, error = %#v\n", uri, err)
 		return resp.StatusCode, err
 	} else {
 		if resp.Body == nil {
@@ -107,7 +107,7 @@ func (this *RESTClient) PostObject(uri string, req interface{}, o interface{}) (
 		// Decode only when the client asked for.
 		if o != nil {
 			if err := json.NewDecoder(resp.Body).Decode(o); err != nil {
-				beego.Trace("Post object to %s failed, failed to decode the response, error = %#v\n", uri, err)
+				log.Debug("Post object to %s failed, failed to decode the response, error = %#v\n", uri, err)
 				return resp.StatusCode, err
 			}
 		}
@@ -129,7 +129,7 @@ func (this *RESTClient) PutObject(uri string, req interface{}, o interface{}) (i
 	}
 	defer resp.Body.Close()
 	if err != nil {
-		beego.Trace("Put object to %s failed, error = %#v\n", uri, err)
+		log.Debug("Put object to %s failed, error = %#v\n", uri, err)
 		return resp.StatusCode, err
 	} else {
 		if resp.Body == nil {
@@ -138,7 +138,7 @@ func (this *RESTClient) PutObject(uri string, req interface{}, o interface{}) (i
 		// Decode only when the client asked for.
 		if o != nil {
 			if err := json.NewDecoder(resp.Body).Decode(o); err != nil {
-				beego.Trace("Put object to %s failed, failed to decode the response, error = %#v\n", uri, err)
+				log.Debug("Put object to %s failed, failed to decode the response, error = %#v\n", uri, err)
 				return resp.StatusCode, err
 			}
 		}
@@ -160,7 +160,7 @@ func (this *RESTClient) DeleteObject(uri string, req interface{}, o interface{})
 	}
 	defer resp.Body.Close()
 	if err != nil {
-		beego.Trace("Delete object from %s failed, error = %#v\n", uri, err)
+		log.Debug("Delete object from %s failed, error = %#v\n", uri, err)
 		return resp.StatusCode, err
 	} else {
 		if resp.Body == nil {
@@ -169,7 +169,7 @@ func (this *RESTClient) DeleteObject(uri string, req interface{}, o interface{})
 		// Decode only when the client asked for.
 		if o != nil {
 			if err := json.NewDecoder(resp.Body).Decode(o); err != nil {
-				beego.Trace("Delete object to %s failed, failed to decode the response, error = %#v\n", uri, err)
+				log.Debug("Delete object to %s failed, failed to decode the response, error = %#v\n", uri, err)
 				return resp.StatusCode, err
 			}
 		}

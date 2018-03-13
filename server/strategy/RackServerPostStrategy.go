@@ -1,7 +1,7 @@
 package strategy
 
 import (
-	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 	wsSDK "promise/sdk/ws"
 	"promise/server/context"
 	"promise/server/object/message"
@@ -30,13 +30,13 @@ func (s *RackServerPostStrategy) CreateManagementAccount(c *context.PostServerCo
 	// TODO
 	credential := username + " " + password
 	c.Server.Credential = credential
-	beego.Trace("Server management account created, server address = ", c.Server.Address)
+	log.Debug("Server management account created, server address = ", c.Server.Address)
 	return nil
 }
 
 // Claim the server.
 func (s *RackServerPostStrategy) Claim(c *context.PostServerContext) error {
-	beego.Trace("Server claimed, server address = ", c.Server.Address)
+	log.Debug("Server claimed, server address = ", c.Server.Address)
 	return nil
 }
 

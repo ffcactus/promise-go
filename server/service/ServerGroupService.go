@@ -1,12 +1,12 @@
 package service
 
 import (
+	log "github.com/sirupsen/logrus"
 	commonM "promise/common/object/model"
 	"promise/server/db"
 	"promise/server/object/dto"
 	"promise/server/object/message"
 	"promise/server/object/model"
-	"github.com/astaxie/beego"
 )
 
 // CreateDefaultServerGroup will create the default server group.
@@ -17,12 +17,12 @@ func CreateDefaultServerGroup() {
 	dbImpl := db.GetServerGroupDB()
 	_, exist, err := dbImpl.PostServerGroup(request.ToModel())
 	if exist {
-		beego.Trace("The default server group exist.")
+		log.Debug("The default server group exist.")
 	}
 	if err != nil {
-		beego.Critical("Failed to create default server group.")
+		log.Fatal("Failed to create default server group.")
 	} else {
-		beego.Info("Default server group created.")
+		log.Info("Default server group created.")
 	}
 
 }

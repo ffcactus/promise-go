@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"time"
 )
@@ -32,13 +33,13 @@ func main() {
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("Accept", "application/json")
 		if resp, err := Client.Do(req); err != nil {
-			beego.Info("Post server %s failed. error = %s, response = %#v\n", address, err, resp)
+			log.Info("Post server %s failed. error = %s, response = %#v\n", address, err, resp)
 		} else {
 			resp.Body.Close()
 			if resp.StatusCode != http.StatusOK {
-				beego.Info("post server %s failed, status code = %d\n", address, resp.StatusCode)
+				log.Info("post server %s failed, status code = %d\n", address, resp.StatusCode)
 			} else {
-				beego.Info("post server %s done.\n", address)
+				log.Info("post server %s done.\n", address)
 			}
 		}
 	}

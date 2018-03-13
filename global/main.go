@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	app.InitLog()
 	app.ReadConfig("GlobalApp")
 	beego.SetLevel(beego.LevelDebug)
 

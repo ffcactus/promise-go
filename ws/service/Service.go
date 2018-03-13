@@ -2,8 +2,8 @@ package service
 
 import (
 	"container/list"
-	"github.com/astaxie/beego"
 	"github.com/gorilla/websocket"
+	log "github.com/sirupsen/logrus"
 	"promise/common/util"
 )
 
@@ -36,17 +36,17 @@ var (
 // AddListener Add a listener
 func AddListener(listener *websocket.Conn) {
 	wsConnection.PushBack(listener)
-	beego.Info("EventDispatcher add listener.")
+	log.Info("EventDispatcher add listener.")
 }
 
 // StartEventDispatcher Start the event dispater.
 func StartEventDispatcher() {
 	for {
 		e := <-EventChannel
-		beego.Trace("StartEventDispatcher(), event type =", e.Type, "Category =", e.Category, "URI =", e.URI)
+		log.Debug("StartEventDispatcher(), event type =", e.Type, "Category =", e.Category, "URI =", e.URI)
 		for each := wsConnection.Front(); each != nil; each = each.Next() {
 			if each.Value.(*websocket.Conn).WriteMessage(websocket.TextMessage, []byte(util.StructToString(e))) != nil {
-				beego.Info("EventDispatcher remove listener.")
+				log.Info("EventDispatcher remove listener.")
 				wsConnection.Remove(each)
 			}
 		}

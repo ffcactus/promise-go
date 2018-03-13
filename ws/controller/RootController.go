@@ -6,6 +6,7 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/gorilla/websocket"
+	log "github.com/sirupsen/logrus"
 )
 
 // RootController is the root controller.
@@ -21,7 +22,7 @@ func (c *RootController) Get() {
 		http.Error(c.Ctx.ResponseWriter, "Not a websocket handshake", 400)
 		return
 	} else if err != nil {
-		beego.Warning("Cannot setup WebSocket connection, error =", err)
+		log.Warn("Cannot setup WebSocket connection, error =", err)
 		return
 	}
 	service.AddListener(ws)

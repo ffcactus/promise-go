@@ -7,6 +7,7 @@ import (
 	"promise/server/service"
 
 	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 )
 
 // ServerGroupController Server controller.
@@ -17,7 +18,7 @@ type ServerGroupController struct {
 // Get will return the server group by ID.
 func (c *ServerGroupController) Get() {
 	var resp dto.GetServerGroupResponse
-	beego.Trace("GET server group ID = ", c.Ctx.Input.Param(":id"))
+	log.Debug("GET server group ID = ", c.Ctx.Input.Param(":id"))
 	if sg, messages := service.GetServerGroup(c.Ctx.Input.Param(":id")); messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
@@ -30,12 +31,12 @@ func (c *ServerGroupController) Get() {
 }
 
 // Delete will delete the server group by ID.
-func (c *ServerGroupController) Delete() {	
+func (c *ServerGroupController) Delete() {
 	if messages := service.DeleteServerGroup(c.Ctx.Input.Param(":id")); messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 	}
 	c.Ctx.Output.SetStatus(http.StatusAccepted)
-	beego.Info("DELETE server group ", c.Ctx.Input.Param(":id"))
+	log.Info("DELETE server group ", c.Ctx.Input.Param(":id"))
 	c.ServeJSON()
 }

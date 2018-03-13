@@ -16,13 +16,13 @@ func (this *RefeshProcessorsStep) Execute(context *RefreshServerContext) {
 	processors, err := context.ServerClient.GetProcessors(systemPageURI)
 	if err != nil {
 		this.TaskStepError()
-		beego.Warning("GetProcessors() failed, error = ", err)
+		log.Warn("GetProcessors() failed, error = ", err)
 	}
 	if err := context.ServerDb.UpdateProcessors(context.Server.Id, processors); err != nil {
 		this.TaskStepError()
-		beego.Warning("UpdateProcessors() failed, error = ", err)
+		log.Warn("UpdateProcessors() failed, error = ", err)
 	}
 	context.DispatchServerUpdate()
-	beego.Trace("RefreshProcessors() done, server ID = ", context.Server.Id)
+	log.Debug("RefreshProcessors() done, server ID = ", context.Server.Id)
 	this.TaskStepFinish()
 }

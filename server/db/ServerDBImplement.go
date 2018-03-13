@@ -3,8 +3,8 @@ package db
 import (
 	"errors"
 	"fmt"
-	"github.com/astaxie/beego"
 	"github.com/google/uuid"
+	log "github.com/sirupsen/logrus"
 	"promise/common/app"
 	commonDB "promise/common/db"
 	commonUtil "promise/common/util"
@@ -41,7 +41,7 @@ func (i *ServerDBImplement) PostServer(s *model.Server) (*model.Server, error) {
 	c := commonDB.GetConnection()
 	if exist, _ := i.IsServerExist(s); exist {
 		// TODO get the server to return.
-		beego.Trace("PostServer(), server exist.")
+		log.Debug("PostServer(), server exist.")
 		return nil, errors.New("server exist")
 	}
 	var server = createServerEntityFromServer(s)
@@ -146,7 +146,7 @@ func (i *ServerDBImplement) GetAndLockServer(ID string) (bool, *model.Server) {
 	tx.Where("ID = ?", ID).First(s)
 	if s.ID != ID {
 		// Can't find server, rollback.
-		beego.Info("GetAndLockServer() failed, server not exist.")
+		log.Info("GetAndLockServer() failed, server not exist.")
 		tx.Rollback()
 		return false, nil
 	}
@@ -161,7 +161,7 @@ func (i *ServerDBImplement) GetAndLockServer(ID string) (bool, *model.Server) {
 	tx.Commit()
 	errs := c.GetErrors()
 	if len(errs) != 0 {
-		beego.Warning("GetAndLockServer() failed, server ID = ", ID, ", error = ", errs)
+		log.Warn("GetAndLockServer() failed, server ID = ", ID, ", error = ", errs)
 		return false, nil
 	}
 	return true, createServerModel(s)
@@ -175,7 +175,7 @@ func (i *ServerDBImplement) SetServerState(ID string, state string) bool {
 		return false
 	}
 	if err := c.Model(s).UpdateColumn("State", state).Error; err != nil {
-		beego.Warning("SetServerState() failed, server ID = ", ID, ", error = ", err)
+		log.Warn("SetServerState() failed, server ID = ", ID, ", error = ", err)
 		return false
 	}
 	return true
@@ -189,7 +189,7 @@ func (i *ServerDBImplement) SetServerHealth(ID string, health string) bool {
 		return false
 	}
 	if err := c.Model(s).UpdateColumn("Health", health).Error; err != nil {
-		beego.Warning("SetServerHealth() failed, server ID = ", ID, ", error = ", err)
+		log.Warn("SetServerHealth() failed, server ID = ", ID, ", error = ", err)
 		return false
 	}
 	return true
@@ -203,7 +203,7 @@ func (i *ServerDBImplement) SetServerTask(ID string, taskURI string) bool {
 		return false
 	}
 	if err := c.Model(s).UpdateColumn("CurrentTask", taskURI).Error; err != nil {
-		beego.Warning("SetServerTask() failed, server ID = ", ID, ", error = ", err)
+		log.Warn("SetServerTask() failed, server ID = ", ID, ", error = ", err)
 	}
 	return true
 }
@@ -228,7 +228,7 @@ func (i *ServerDBImplement) UpdateProcessors(ID string, processors []model.Proce
 		server.Processors = append(server.Processors, *createProcessor(&processors[i]))
 	}
 	if err := c.Save(server).Error; err != nil {
-		beego.Warning("UpdateProcessors() failed, server ID = ", ID, ", error = ", err)
+		log.Warn("UpdateProcessors() failed, server ID = ", ID, ", error = ", err)
 		return err
 	}
 	return nil
@@ -254,7 +254,7 @@ func (i *ServerDBImplement) UpdateMemory(ID string, memory []model.Memory) error
 		server.Memory = append(server.Memory, *createMemory(&memory[i]))
 	}
 	if err := c.Save(server).Error; err != nil {
-		beego.Warning("UpdateMemory() failed, server ID = ", ID, ", error = ", err)
+		log.Warn("UpdateMemory() failed, server ID = ", ID, ", error = ", err)
 		return err
 	}
 	return nil
@@ -296,7 +296,7 @@ func (i *ServerDBImplement) UpdateEthernetInterfaces(ID string, ethernet []model
 		server.EthernetInterfaces = append(server.EthernetInterfaces, *createEthernetInterface(&ethernet[i]))
 	}
 	if err := c.Save(server).Error; err != nil {
-		beego.Warning("UpdateEthernetInterfaces() failed, server ID = ", ID, ", error = ", err)
+		log.Warn("UpdateEthernetInterfaces() failed, server ID = ", ID, ", error = ", err)
 		return err
 	}
 	return nil
@@ -324,7 +324,7 @@ func (i *ServerDBImplement) UpdateNetworkInterfaces(ID string, networkInterface 
 	}
 	server.NetworkInterfaces = networkInterfacesE
 	if err := c.Save(server).Error; err != nil {
-		beego.Warning("UpdateNetworkInterfaces() failed, server ID = ", ID, ", error = ", err)
+		log.Warn("UpdateNetworkInterfaces() failed, server ID = ", ID, ", error = ", err)
 		return err
 	}
 	return nil
@@ -354,7 +354,7 @@ func (i *ServerDBImplement) UpdateStorages(ID string, storages []model.Storage) 
 	}
 	server.Storages = storagesE
 	if err := c.Save(server).Error; err != nil {
-		beego.Warning("UpdateStorages() failed, server ID = ", ID, ", error = ", err)
+		log.Warn("UpdateStorages() failed, server ID = ", ID, ", error = ", err)
 		return err
 	}
 	return nil
@@ -390,7 +390,7 @@ func (i *ServerDBImplement) UpdatePower(ID string, power *model.Power) error {
 	c.Delete(server.Power)
 	server.Power = *createPower(power)
 	if err := c.Save(server).Error; err != nil {
-		beego.Warning("UpdatePower() failed, server ID = ", ID, ", error = ", err)
+		log.Warn("UpdatePower() failed, server ID = ", ID, ", error = ", err)
 		return err
 	}
 	return nil
@@ -418,7 +418,7 @@ func (i *ServerDBImplement) UpdateThermal(ID string, thermal *model.Thermal) err
 	c.Delete(server.Thermal)
 	server.Thermal = *createThermal(thermal)
 	if err := c.Save(server).Error; err != nil {
-		beego.Warning("UpdateThermal() failed, server ID = ", ID, ", error = ", err)
+		log.Warn("UpdateThermal() failed, server ID = ", ID, ", error = ", err)
 		return err
 	}
 	return nil
@@ -444,7 +444,7 @@ func (i *ServerDBImplement) UpdateOemHuaweiBoards(ID string, boards []model.OemH
 	}
 	server.OemHuaweiBoards = boardsE
 	if err := c.Save(server).Error; err != nil {
-		beego.Warning("UpdateOemHuaweiBoards() failed, server ID = ", ID, ", error = ", err)
+		log.Warn("UpdateOemHuaweiBoards() failed, server ID = ", ID, ", error = ", err)
 		return err
 	}
 	return nil
@@ -480,7 +480,7 @@ func (i *ServerDBImplement) UpdateNetworkAdapters(ID string, networkAdapters []m
 	}
 	server.NetworkAdapters = networkAdaptersE
 	if err := c.Save(server).Error; err != nil {
-		beego.Warning("UpdateNetworkAdapters() failed, server ID = ", ID, ", error = ", err)
+		log.Warn("UpdateNetworkAdapters() failed, server ID = ", ID, ", error = ", err)
 		return err
 	}
 	return nil
@@ -519,7 +519,7 @@ func (i *ServerDBImplement) UpdateDrives(ID string, drives []model.Drive) error 
 	}
 	server.Drives = drivesE
 	if err := c.Save(server).Error; err != nil {
-		beego.Warning("UpdateDrives() failed, server ID = ", ID, ", error = ", err)
+		log.Warn("UpdateDrives() failed, server ID = ", ID, ", error = ", err)
 		return err
 	}
 	return nil
@@ -550,7 +550,7 @@ func (i *ServerDBImplement) UpdatePCIeDevices(ID string, pcieDevices []model.PCI
 	}
 	server.PCIeDevices = *pcieDevicesE
 	if err := c.Save(server).Error; err != nil {
-		beego.Warning("UpdatePCIeDevices() failed, server ID = ", ID, ", error = ", err)
+		log.Warn("UpdatePCIeDevices() failed, server ID = ", ID, ", error = ", err)
 		return err
 	}
 	return nil

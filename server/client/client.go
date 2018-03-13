@@ -1,7 +1,7 @@
 package client
 
 import (
-	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 	"promise/server/client/mock"
 	"promise/server/client/redfish"
 	. "promise/server/object/model"
@@ -38,7 +38,7 @@ func FindBestClient(address string, username string, password string) ServerClie
 	if client.Support() {
 		return client
 	}
-	beego.Warning("FindBestClient(), can't find a client, server address = ", address)
+	log.Warn("FindBestClient(), can't find a client, server address = ", address)
 	return nil
 }
 
@@ -51,7 +51,7 @@ func getServerManagementAccount(server *Server) (string, string) {
 	if len(s) == 2 {
 		return s[0], s[1]
 	}
-	beego.Warning("getServerManagementAccount(), failed to get username and password.")
+	log.Warn("getServerManagementAccount(), failed to get username and password.")
 	return "", ""
 }
 

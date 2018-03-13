@@ -1,32 +1,23 @@
 package util
 
 import (
-	"bytes"
 	"encoding/json"
-	"github.com/astaxie/beego"
-	"log"
-	"os"
+	log "github.com/sirupsen/logrus"
 )
 
-func init() {
-	Logger.SetOutput(os.Stdout)
-}
-
-var (
-	logBuf bytes.Buffer
-	Logger = log.New(&logBuf, "", log.LstdFlags|log.Lshortfile)
-)
-
+// PrintJson will log the object.
 func PrintJson(data interface{}) {
 	b, _ := json.MarshalIndent(data, "", "    ")
-	beego.Info(string(b))
+	log.Info(string(b))
 }
 
+// StructToString will turn struct to string.
 func StructToString(data interface{}) string {
 	b, _ := json.Marshal(data)
 	return string(b)
 }
 
+// StringToStruct will turn string to struct.
 func StringToStruct(s string, p interface{}) error {
 	return json.Unmarshal([]byte(s), p)
 }

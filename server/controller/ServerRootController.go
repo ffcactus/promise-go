@@ -11,6 +11,7 @@ import (
 	"strconv"
 
 	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 )
 
 // ServerRootController The root controller
@@ -22,9 +23,9 @@ type ServerRootController struct {
 func (c *ServerRootController) Post() {
 	request := new(dto.PostServerRequest)
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
-		beego.Warning("error: ", err)
+		log.Warn("error: ", err)
 	}
-	beego.Info("Post() start, address = " + request.Address)
+	log.Info("Post() start, address = " + request.Address)
 	// Create the context for this operation.
 	server, messages := service.PostServer(request)
 	if messages != nil {
@@ -38,7 +39,7 @@ func (c *ServerRootController) Post() {
 		c.Ctx.Output.SetStatus(http.StatusCreated)
 	}
 	c.ServeJSON()
-	beego.Info("Post() done, server ID = ", server.ID)
+	log.Info("Post() done, server ID = ", server.ID)
 }
 
 // Get Get server collection.
@@ -48,11 +49,11 @@ func (c *ServerRootController) Get() {
 		startInt, countInt int    = 0, -1
 		parameterError     bool
 	)
-	beego.Trace("Get server collection, start = ", start, ", count = ", count)
+	log.Debug("Get server collection, start = ", start, ", count = ", count)
 	if start != "" {
 		_startInt, err := strconv.Atoi(start)
 		if err != nil || _startInt < 0 {
-			beego.Warning("Get(), invalid 'start' parameter, error = ", err)
+			log.Warn("Get(), invalid 'start' parameter, error = ", err)
 			parameterError = true
 		} else {
 			startInt = _startInt
@@ -62,7 +63,7 @@ func (c *ServerRootController) Get() {
 		_countInt, err := strconv.Atoi(count)
 		// -1 means all.
 		if err != nil || _countInt < -1 {
-			beego.Warning("Get() 'count' parameter error = %s\n", err)
+			log.Warn("Get() 'count' parameter error = %s\n", err)
 			parameterError = true
 		} else {
 			countInt = _countInt

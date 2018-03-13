@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -25,48 +26,48 @@ type TaskActionController struct {
 }
 
 // Post POST method.
-func (this *TaskActionController) Post() {
+func (c *TaskActionController) Post() {
 	var messages []Message
-	action := this.Ctx.Input.Param(":action")
-	id := this.Ctx.Input.Param(":id")
-	beego.Trace("Post() start, action = ", action, ", id = ", id)
+	action := c.Ctx.Input.Param(":action")
+	id := c.Ctx.Input.Param(":id")
+	log.Debug("Post() start, action = ", action, ", id = ", id)
 	switch strings.ToLower(action) {
 	case ActionUpdate:
 		updateRequest := new(UpdateTaskRequest)
-		if err := json.Unmarshal(this.Ctx.Input.RequestBody, updateRequest); err != nil {
-			beego.Warning("Unmarshal() failed, action = ", action, ", id = ", id, " error = ", err)
+		if err := json.Unmarshal(c.Ctx.Input.RequestBody, updateRequest); err != nil {
+			log.Warn("Unmarshal() failed, action = ", action, ", id = ", id, " error = ", err)
 			messages = []Message{m.NewMessageTaskBadRequest()}
-			this.Data["json"] = commonDto.MessagesToDto(messages)
-			this.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
+			c.Data["json"] = commonDto.MessagesToDto(messages)
+			c.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
 		} else {
 			if resp, messages := service.UpdateTask(id, updateRequest); messages != nil {
-				this.Data["json"] = commonDto.MessagesToDto(messages)
-				this.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
+				c.Data["json"] = commonDto.MessagesToDto(messages)
+				c.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
 			} else {
-				this.Data["json"] = &resp
+				c.Data["json"] = &resp
 			}
 		}
 	case ActionUpdateTaskStep:
 		updateTaskStepRequest := new(UpdateTaskStepRequest)
-		if err := json.Unmarshal(this.Ctx.Input.RequestBody, updateTaskStepRequest); err != nil {
-			beego.Warning("Unmarshal() failed, action = ", action, ", id = ", id, " error = ", err)
+		if err := json.Unmarshal(c.Ctx.Input.RequestBody, updateTaskStepRequest); err != nil {
+			log.Warn("Unmarshal() failed, action = ", action, ", id = ", id, " error = ", err)
 			messages = []Message{m.NewMessageTaskBadRequest()}
-			this.Data["json"] = commonDto.MessagesToDto(messages)
-			this.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
+			c.Data["json"] = commonDto.MessagesToDto(messages)
+			c.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
 		} else {
 			if resp, messages := service.UpdateTaskStep(id, updateTaskStepRequest); messages != nil {
-				this.Data["json"] = commonDto.MessagesToDto(messages)
-				this.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
+				c.Data["json"] = commonDto.MessagesToDto(messages)
+				c.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
 			} else {
-				this.Data["json"] = &resp
+				c.Data["json"] = &resp
 			}
 		}
 	default:
-		beego.Info("Unknown task action ", action)
+		log.Info("Unknown task action ", action)
 		messages := []Message{}
 		messages = append(messages, m.NewMessageTaskBadRequest())
-		this.Data["json"] = commonDto.MessagesToDto(messages)
-		this.Ctx.ResponseWriter.WriteHeader((messages)[0].StatusCode)
+		c.Data["json"] = commonDto.MessagesToDto(messages)
+		c.Ctx.ResponseWriter.WriteHeader((messages)[0].StatusCode)
 	}
-	this.ServeJSON()
+	c.ServeJSON()
 }

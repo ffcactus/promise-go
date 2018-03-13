@@ -3,7 +3,7 @@ package strategy
 import (
 	"errors"
 	"fmt"
-	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 	"promise/server/context"
 	"promise/server/object/message"
 	"promise/server/object/model"
@@ -17,12 +17,12 @@ type ServerStrategy struct {
 func (s *ServerStrategy) LockServer(c *context.ServerContext) error {
 	success, server := c.ServerDBImplement.GetAndLockServer(c.Server.ID)
 	if server == nil {
-		beego.Warning("GetAndLockServer() failed, can't find the server, ID = ", c.Server.ID)
+		log.Warn("GetAndLockServer() failed, can't find the server, ID = ", c.Server.ID)
 		c.AppendMessage(message.NewServerNotExist())
 		return errors.New("failed to lock server, server not exist")
 	}
 	if !success {
-		beego.Info("GetAndLockServer() failed, server state = ", server.State)
+		log.Info("GetAndLockServer() failed, server state = ", server.State)
 		c.AppendMessage(message.NewServerLockFailed(server))
 		return errors.New("failed to lock server. server can't be lock")
 	}
@@ -53,7 +53,7 @@ func (s *ServerStrategy) SetServerHealth(c *context.ServerContext, health string
 func (s *ServerStrategy) SaveServer(c *context.ServerContext) error {
 	server, err := c.ServerDBImplement.PostServer(c.Server)
 	if err != nil {
-		beego.Warning("SaveServer() failed, physical UUID = ", c.Server.PhysicalUUID, ", error = ", err)
+		log.Warn("SaveServer() failed, physical UUID = ", c.Server.PhysicalUUID, ", error = ", err)
 		c.AppendMessage(message.NewServerInternalError())
 		return errors.New("failed to save server")
 	}
@@ -67,7 +67,7 @@ func (s *ServerStrategy) GetServerFull(c *context.ServerContext) (*model.Server,
 	if server != nil {
 		return server, nil
 	}
-	beego.Warning("GetServerFull() failed, server ID = ", c.Server.ID)
+	log.Warn("GetServerFull() failed, server ID = ", c.Server.ID)
 	return nil, errors.New("internel error")
 
 }
@@ -78,15 +78,15 @@ func (s *ServerStrategy) IndexServer(c *context.ServerContext) error {
 	// 	serverDto := new(dto.GetServerResponse)
 	// 	serverDto.Load(server)
 	// 	if err := context.IndexServer(serverDto); err != nil {
-	// 		beego.Warning("IndexServer() failed, server id = ", server.ID, ", error = ", err)
+	// 		log.Warn("IndexServer() failed, server id = ", server.ID, ", error = ", err)
 	// 		context.AppendMessage(NewInternalError())
 	// 		return errors.New("Failed to save server")
 	// 	} else {
-	// 		beego.Trace("Index server done, server ID = ", context.Server.URI)
+	// 		log.Debug("Index server done, server ID = ", context.Server.URI)
 	// 		return nil
 	// 	}
 	// } else {
-	// 	beego.Warning("Index server failed, unable get server from DB, server ID = ", context.Server.ID)
+	// 	log.Warn("Index server failed, unable get server from DB, server ID = ", context.Server.ID)
 	// 	return errors.New("Index server failed, unable get server from DB")
 	// }
 	return nil

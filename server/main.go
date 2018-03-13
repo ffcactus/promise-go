@@ -9,6 +9,7 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
+	log "github.com/sirupsen/logrus"
 )
 
 func initDB() {
@@ -16,24 +17,27 @@ func initDB() {
 	if recreateDB, _ := beego.AppConfig.Bool("recreate_db"); recreateDB {
 		// Remove tables.
 		if commonDB.RemoveTables(entity.Tables) {
-			beego.Info("Remove all tables in DB done.")
+			log.Info("Remove all tables in DB done.")
 		} else {
-			beego.Warning("Failed to remove all tables in DB.")
+			log.Warn("Failed to remove all tables in DB.")
 		}
 		// Create tables.
 		if !commonDB.CreateTables(entity.Tables) {
 			panic("DB Initialization failed.")
 		} else {
-			beego.Info("DB schema created.")
+			log.Info("DB schema created.")
 		}
 	}
 	service.CreateDefaultServerGroup()
 }
 
 func main() {
+	app.InitLog()
 	app.ReadConfig("ServerApp")
-	beego.SetLevel(beego.LevelDebug)
 	initDB()
+
+	// log.WithFields(log.Fields{"animal": "walrus",}).Info("A walrus appears")
+	// log.WithFields(log.Fields{"animal": "walrus",}).Info("A walrus appears")
 	// Start background thread to auto refresh server.
 	go service.FindServerStateAdded()
 

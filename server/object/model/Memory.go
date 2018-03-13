@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 )
 
 // MemoryLocation Memory connection information to sockets and memory controllers.
@@ -88,28 +88,28 @@ type Memory struct {
 // Print print the memory.
 func (o *Memory) Print() {
 	if o.URI != nil {
-		beego.Info("URI = %#v\n", *o.URI)
+		log.Info("URI = %#v\n", *o.URI)
 	} else {
-		beego.Info("URI = nil\n")
+		log.Info("URI = nil\n")
 	}
 	if o.PhysicalState != nil {
-		beego.Info("PhysicalState = %#v\n", *o.PhysicalState)
+		log.Info("PhysicalState = %#v\n", *o.PhysicalState)
 	} else {
-		beego.Info("PhysicalState = nil\n")
+		log.Info("PhysicalState = nil\n")
 	}
 	if o.Manufacturer != nil {
-		beego.Info("Manufacturer = %#v\n", *o.Manufacturer)
+		log.Info("Manufacturer = %#v\n", *o.Manufacturer)
 	} else {
-		beego.Info("Manufacturer = nil\n")
+		log.Info("Manufacturer = nil\n")
 	}
 	if o.MemoryLocation != nil {
 		if o.MemoryLocation.Socket != nil {
-			beego.Info("MemoryLocation.Socket = %#v\n", *o.MemoryLocation.Socket)
+			log.Info("MemoryLocation.Socket = %#v\n", *o.MemoryLocation.Socket)
 		} else {
-			beego.Info("MemoryLocation.Socket = nil\n")
+			log.Info("MemoryLocation.Socket = nil\n")
 		}
 	} else {
-		beego.Info("MemoryLocation = nil\n")
+		log.Info("MemoryLocation = nil\n")
 	}
 
 }

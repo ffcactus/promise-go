@@ -1,7 +1,7 @@
 package strategy
 
 import (
-	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 	"promise/server/context"
 	"promise/server/object/model"
 )
@@ -30,7 +30,7 @@ func CreateRefreshServerStrategy(server *model.Server) RefreshServerStrategy {
 	case model.MockType:
 		return new(MockServerRefreshStrategy)
 	default:
-		beego.Warning("CreateRefreshServerStrategy() failed, server type =", server.Type)
+		log.Warn("CreateRefreshServerStrategy() failed, server type =", server.Type)
 		return nil
 	}
 }

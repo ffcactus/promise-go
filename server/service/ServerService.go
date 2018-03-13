@@ -10,7 +10,7 @@ import (
 	"promise/server/strategy"
 	"time"
 
-	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 )
 
 // PostServer since the server is not known yet. we have to create the context step by step.
@@ -20,7 +20,7 @@ func PostServer(request *dto.PostServerRequest) (*model.Server, []commonM.Messag
 	// Try to get the basic info.
 	serverBasicInfo, err := Probe(request)
 	if err != nil {
-		beego.Info("PostServer() failed, GetBasicInfo() failed, request address = ", request.Address, ", error = ", err)
+		log.Info("PostServer() failed, GetBasicInfo() failed, request address = ", request.Address, ", error = ", err)
 		return nil, []commonM.Message{message.NewServerPostFailed()}
 	}
 

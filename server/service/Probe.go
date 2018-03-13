@@ -2,7 +2,7 @@ package service
 
 import (
 	"fmt"
-	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 	. "promise/server/client"
 	"promise/server/object/dto"
 	. "promise/server/object/model"
@@ -11,13 +11,13 @@ import (
 func Probe(request *dto.PostServerRequest) (*ServerBasicInfo, error) {
 	client := FindBestClient(request.Address, request.Username, request.Password)
 	if client == nil {
-		beego.Critical("Probe() failed, failed to get the client for the server, address = ", request.Address)
+		log.Fatal("Probe() failed, failed to get the client for the server, address = ", request.Address)
 		return nil, fmt.Errorf("Failed to get server client.")
 	}
 
 	serverBasicInfo, err := client.GetBasicInfo()
 	if err != nil {
-		beego.Critical("Probe() failed, failed to get basic info, address = ", request.Address, ", error = ", err)
+		log.Fatal("Probe() failed, failed to get basic info, address = ", request.Address, ", error = ", err)
 	}
 
 	serverBasicInfo.Address = request.Address

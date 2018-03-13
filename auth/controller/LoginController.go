@@ -2,11 +2,11 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 	"promise/auth/object/dto"
 	"promise/auth/service"
 	commonDto "promise/common/object/dto"
-
-	"github.com/astaxie/beego"
 )
 
 // LoginController Login controller
@@ -16,10 +16,10 @@ type LoginController struct {
 
 // Post Post Login.
 func (c *LoginController) Post() {
-	beego.Trace("POST Login request.")
+	log.Debug("POST Login request.")
 	request := new(dto.PostLoginRequest)
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
-		beego.Warning("Unmarshal() failed, error = ", err)
+		log.Warn("Unmarshal() failed, error = ", err)
 	}
 
 	if session, messages := service.Login(request); messages != nil {

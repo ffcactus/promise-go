@@ -1,7 +1,7 @@
 package strategy
 
 import (
-	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 	"promise/server/context"
 )
 
@@ -12,12 +12,12 @@ type MockServerPostStrategy struct {
 
 // CreateManagementAccount Create the management account.
 func (s *MockServerPostStrategy) CreateManagementAccount(c *context.PostServerContext) error {
-	beego.Trace("Server management account created, server address =", c.Request.Address)
+	log.Debug("Server management account created, server address =", c.Request.Address)
 	return nil
 }
 
 // Claim the server.
 func (s *MockServerPostStrategy) Claim(c *context.PostServerContext) error {
-	beego.Trace("Server claimed, server address =", c.Request.Address)
+	log.Debug("Server claimed, server address =", c.Request.Address)
 	return nil
 }

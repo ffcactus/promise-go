@@ -9,7 +9,7 @@ import (
 	taskDto "promise/task/object/dto"
 	taskModel "promise/task/object/model"
 
-	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 )
 
 // ServerContextInterface Server context interface.
@@ -47,7 +47,7 @@ func CreateServerContext(server *serverM.Server) *ServerContext {
 // can update the server manually.
 func (c *ServerContext) UpdateServer() {
 	if c.Server == nil {
-		beego.Warning("UpdateServer() failed, server is nil.")
+		log.Warn("UpdateServer() failed, server is nil.")
 	}
 	c.Server = c.ServerDBImplement.GetServerFull(c.Server.ID)
 }
@@ -61,7 +61,7 @@ func (c *ServerContext) DispatchServerUpdate() {
 // DispatchServerDelete Dispatch the server deleted event.
 func (c *ServerContext) DispatchServerDelete() {
 	if c.Server == nil {
-		beego.Warning("DispatchServerDelete() failed, server is nil.")
+		log.Warn("DispatchServerDelete() failed, server is nil.")
 	}
 	wsSDK.DispatchServerDelete(c.Server.URI)
 }
@@ -70,14 +70,14 @@ func (c *ServerContext) DispatchServerDelete() {
 func (c *ServerContext) CreateTask(request *taskDto.PostTaskRequest) {
 	taskResp, message, err := taskSDK.CreateTask(request)
 	if err != nil {
-		beego.Warning("Failed to create task, server ID =", c.Server.ID, "task =", request.Name, "error =", err)
+		log.Warn("Failed to create task, server ID =", c.Server.ID, "task =", request.Name, "error =", err)
 		return
 	}
 	if message != nil {
-		beego.Warning("Failed to create task, error message return, server ID =", c.Server.ID, "task =", request.Name)
+		log.Warn("Failed to create task, error message return, server ID =", c.Server.ID, "task =", request.Name)
 		c.AppendMessages(message)
 	}
-	beego.Debug("Create task for server", "server ID =", c.Server.ID, "Task ID =", taskResp.ID)
+	log.Debug("Create task for server", "server ID =", c.Server.ID, "Task ID =", taskResp.ID)
 	c.Server.CurrentTask = taskResp.ID
 	c.SetServerTask(c.Server.ID, taskResp.ID)
 	wsSDK.DispatchServerUpdate(c.Server)
@@ -87,11 +87,11 @@ func (c *ServerContext) CreateTask(request *taskDto.PostTaskRequest) {
 func (c *ServerContext) UpdateStepExecutionState(stepName string, state taskModel.ExecutionState) {
 	_, message, err := taskSDK.SetStepExecutionState(c.Server.CurrentTask, stepName, state)
 	if err != nil {
-		beego.Warning("SetStepExecutionState() failed, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "step name =", stepName, "state =", state, "error =", err)
+		log.Warn("SetStepExecutionState() failed, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "step name =", stepName, "state =", state, "error =", err)
 		return
 	}
 	if message != nil {
-		beego.Warning("SetStepExecutionState(), error message return, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "step name =", stepName, "state =", state)
+		log.Warn("SetStepExecutionState(), error message return, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "step name =", stepName, "state =", state)
 		c.AppendMessages(message)
 	}
 }
@@ -100,25 +100,25 @@ func (c *ServerContext) UpdateStepExecutionState(stepName string, state taskMode
 func (c *ServerContext) UpdateStepExecutionResultState(stepName string, state taskModel.ExecutionResultState) {
 	_, message, err := taskSDK.SetStepExecutionResultState(c.Server.CurrentTask, stepName, state)
 	if err != nil {
-		beego.Warning("SetStepExecutionResultState() failed, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "step name =", stepName, "state =", state, "error =", err)
+		log.Warn("SetStepExecutionResultState() failed, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "step name =", stepName, "state =", state, "error =", err)
 		return
 	}
 	if message != nil {
-		beego.Warning("SetStepExecutionResultState() failed, error message return, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "step name =", stepName, "state =", state)
+		log.Warn("SetStepExecutionResultState() failed, error message return, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "step name =", stepName, "state =", state)
 		c.AppendMessages(message)
 	}
 }
 
 // SetTaskStepRunning Set the task to running.
 func (c *ServerContext) SetTaskStepRunning(stepName string) {
-	beego.Trace("SetTaskStepRunning(), task ID =", c.Server.CurrentTask, "step name =", stepName)
+	log.Debug("SetTaskStepRunning(), task ID =", c.Server.CurrentTask, "step name =", stepName)
 	_, message, err := taskSDK.SetStepExecutionState(c.Server.CurrentTask, stepName, taskModel.ExecutionStateRunning)
 	if err != nil {
-		beego.Warning("SetTaskStepRunning() failed, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "step name =", stepName, "error =", err)
+		log.Warn("SetTaskStepRunning() failed, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "step name =", stepName, "error =", err)
 		return
 	}
 	if message != nil {
-		beego.Warning("SetTaskStepRunning() failed, error message return, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "step name =", stepName)
+		log.Warn("SetTaskStepRunning() failed, error message return, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "step name =", stepName)
 		c.AppendMessages(message)
 	}
 }
@@ -130,14 +130,14 @@ func (c *ServerContext) SetTaskStepFinished(stepName string) {
 	request.ExecutionState = &taskModel.ExecutionStateTerminated
 	request.ExecutionResult = new(taskDto.UpdateExecutionResultRequest)
 	request.ExecutionResult.State = &taskModel.ExecutionResultStateFinished
-	beego.Trace("SetTaskStepFinished(), task ID =", c.Server.CurrentTask, "step name =", stepName)
+	log.Debug("SetTaskStepFinished(), task ID =", c.Server.CurrentTask, "step name =", stepName)
 	_, message, err := taskSDK.UpdateStep(c.Server.CurrentTask, request)
 	if err != nil {
-		beego.Warning("SetTaskStepFinished() failed, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "error =", err)
+		log.Warn("SetTaskStepFinished() failed, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "error =", err)
 		return
 	}
 	if message != nil {
-		beego.Warning("SetTaskStepRunning() failed, error message return, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "step name =", stepName)
+		log.Warn("SetTaskStepRunning() failed, error message return, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "step name =", stepName)
 		c.AppendMessages(message)
 	}
 }
@@ -149,14 +149,14 @@ func (c *ServerContext) SetTaskStepWarning(stepName string) {
 	request.ExecutionState = &taskModel.ExecutionStateTerminated
 	request.ExecutionResult = new(taskDto.UpdateExecutionResultRequest)
 	request.ExecutionResult.State = &taskModel.ExecutionResultStateWarning
-	beego.Trace("SetTaskStepWarning(), task ID =", c.Server.CurrentTask, "step name =", stepName)
+	log.Debug("SetTaskStepWarning(), task ID =", c.Server.CurrentTask, "step name =", stepName)
 	_, message, err := taskSDK.UpdateStep(c.Server.CurrentTask, request)
 	if err != nil {
-		beego.Warning("SetTaskStepWarning() failed, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "error =", err)
+		log.Warn("SetTaskStepWarning() failed, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "error =", err)
 		return
 	}
 	if message != nil {
-		beego.Warning("SetTaskStepWarning() failed, error message return, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "step name =", stepName)
+		log.Warn("SetTaskStepWarning() failed, error message return, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "step name =", stepName)
 		c.AppendMessages(message)
 	}
 }
@@ -168,14 +168,14 @@ func (c *ServerContext) SetTaskStepError(stepName string) {
 	request.ExecutionState = &taskModel.ExecutionStateTerminated
 	request.ExecutionResult = new(taskDto.UpdateExecutionResultRequest)
 	request.ExecutionResult.State = &taskModel.ExecutionResultStateError
-	beego.Trace("SetTaskStepError(), task ID =", c.Server.CurrentTask, "step name =", stepName)
+	log.Debug("SetTaskStepError(), task ID =", c.Server.CurrentTask, "step name =", stepName)
 	_, message, err := taskSDK.UpdateStep(c.Server.CurrentTask, request)
 	if err != nil {
-		beego.Warning("SetTaskStepError() failed, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "error =", err)
+		log.Warn("SetTaskStepError() failed, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "error =", err)
 		return
 	}
 	if message != nil {
-		beego.Warning("SetTaskStepError() failed, error message return, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "step name =", stepName)
+		log.Warn("SetTaskStepError() failed, error message return, server ID =", c.Server.ID, "task ID =", c.Server.CurrentTask, "step name =", stepName)
 		c.AppendMessages(message)
 	}
 }

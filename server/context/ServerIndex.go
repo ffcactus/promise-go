@@ -6,7 +6,7 @@ import (
 	"promise/server/object/dto"
 	"promise/server/util"
 
-	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 )
 
 // RootCause RootCause object in ElasticSearch
@@ -86,15 +86,15 @@ func CreateServerIndex() *ServerIndex {
 func (index *ServerIndex) Init() bool {
 	resp := ESCreateIndexResponse{}
 	if _, err := index.client.PutObject("/promise", nil, &resp); err != nil {
-		beego.Info("Failed to init ElasticSearch, HTTP operation failed error = ", err)
+		log.Info("Failed to init ElasticSearch, HTTP operation failed error = ", err)
 		return false
 	}
 	if resp.Status == 400 {
-		beego.Info("ElasticSearch already initialized.")
+		log.Info("ElasticSearch already initialized.")
 		return true
 	}
 	if !resp.Acknowledged {
-		beego.Info("Failed to init ElasticSearch, result = ", resp)
+		log.Info("Failed to init ElasticSearch, result = ", resp)
 		return false
 	}
 	return true
@@ -104,15 +104,15 @@ func (index *ServerIndex) Init() bool {
 func (index *ServerIndex) Clean() bool {
 	resp := ESDeleteIndexResponse{}
 	if _, err := index.client.DeleteObject("/promise", nil, &resp); err != nil {
-		beego.Info("Failed to clean ElasticSearch, HTTP operation failed error = ", err)
+		log.Info("Failed to clean ElasticSearch, HTTP operation failed error = ", err)
 		return false
 	}
 	if resp.Status == 404 {
-		beego.Info("ElasticSearch already cleaned.")
+		log.Info("ElasticSearch already cleaned.")
 		return true
 	}
 	if !resp.Acknowledged {
-		beego.Info("Failed to clean ElasticSearch, result = ", resp)
+		log.Info("Failed to clean ElasticSearch, result = ", resp)
 		return false
 	}
 	return true
@@ -122,17 +122,17 @@ func (index *ServerIndex) Clean() bool {
 func (index *ServerIndex) IndexServer(s *dto.GetServerResponse) error {
 	resp := new(ESIndexResponse)
 	if _, err := index.client.PutObject("/promise/server/"+s.ID, s, resp); err != nil {
-		beego.Warning("Failed to index server to ElasticSearch, server ID = ", s.ID, "HTTP operation faild error = ", err)
+		log.Warn("Failed to index server to ElasticSearch, server ID = ", s.ID, "HTTP operation faild error = ", err)
 		return err
 	}
 	if resp.Created && resp.Result == "created" {
-		beego.Info("ElasticSearch put server done, server created, server ID = ", s.ID)
+		log.Info("ElasticSearch put server done, server created, server ID = ", s.ID)
 		return nil
 	} else if !resp.Created && resp.Result == "updated" {
-		beego.Info("ElasticSearch put server done, server updated, server ID = ", s.ID)
+		log.Info("ElasticSearch put server done, server updated, server ID = ", s.ID)
 		return nil
 	}
-	beego.Info("Failed to index server to ElasticSearch, server ID = ", s.ID, ", result = ", resp)
+	log.Info("Failed to index server to ElasticSearch, server ID = ", s.ID, ", result = ", resp)
 	return fmt.Errorf("failed to index server %s to ElasticSearch, created = %#v, result = %#v", s.ID, resp.Created, resp.Result)
 
 }

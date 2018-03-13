@@ -4,7 +4,7 @@ import (
 	"promise/server/context"
 	"promise/server/util"
 
-	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 )
 
 // RackServerRefreshStrategy is the strategy of rack server refresh.
@@ -18,7 +18,7 @@ func (s *RackServerRefreshStrategy) Execute(c *context.RefreshServerContext) err
 	// defer s.SetServerState(&c.ServerContext, ServerStateReady)
 	// defer s.SetServerHealth(&c.ServerContext, ServerHealthOK)
 
-	beego.Info("Refresh server start", "Server ID =", c.Server.ID)
+	log.Info("Refresh server start", "Server ID =", c.Server.ID)
 	// Lock server.
 	if err := s.LockServer(&c.ServerContext); err != nil {
 		return err
@@ -73,7 +73,7 @@ func (s *RackServerRefreshStrategy) Execute(c *context.RefreshServerContext) err
 	s.SetServerHealth(&c.ServerContext, util.ServerHealthOK)
 	s.SetServerState(&c.ServerContext, util.ServerStateReady)
 	s.IndexServer(&c.ServerContext)
-	beego.Info("Refresh server done", "Server ID =", c.Server.ID)
+	log.Info("Refresh server done", "Server ID =", c.Server.ID)
 	return nil
 }
 
@@ -96,15 +96,15 @@ func (s *RackServerRefreshStrategy) StepWarper(stepName string, c *context.Refre
 func (s *RackServerRefreshStrategy) RefreshProcessors(c *context.RefreshServerContext) error {
 	processors, err := c.ServerClient.GetProcessors(*c.Server.OriginURIs.System)
 	if err != nil {
-		beego.Warning("GetProcessors() failed, error =", err)
+		log.Warn("GetProcessors() failed, error =", err)
 		return err
 	}
 	if err := c.ServerDBImplement.UpdateProcessors(c.Server.ID, processors); err != nil {
-		beego.Warning("UpdateProcessors() failed, error =", err)
+		log.Warn("UpdateProcessors() failed, error =", err)
 		return err
 	}
 	c.DispatchServerUpdate()
-	beego.Trace("RefreshProcessors() done, server ID =", c.Server.ID)
+	log.Debug("RefreshProcessors() done, server ID =", c.Server.ID)
 	return nil
 }
 
@@ -112,14 +112,14 @@ func (s *RackServerRefreshStrategy) RefreshProcessors(c *context.RefreshServerCo
 func (s *RackServerRefreshStrategy) RefreshMemory(c *context.RefreshServerContext) error {
 	memory, err := c.ServerClient.GetMemory(*c.Server.OriginURIs.System)
 	if err != nil {
-		beego.Warning("GetMemory() failed, error =", err)
+		log.Warn("GetMemory() failed, error =", err)
 		return err
 	}
 	if err := c.ServerDBImplement.UpdateMemory(c.Server.ID, memory); err != nil {
-		beego.Warning("UpdateMemory() failed, error =", err)
+		log.Warn("UpdateMemory() failed, error =", err)
 	}
 	c.DispatchServerUpdate()
-	beego.Trace("RefreshMemory() done, server ID =", c.Server.ID)
+	log.Debug("RefreshMemory() done, server ID =", c.Server.ID)
 	return nil
 }
 
@@ -127,14 +127,14 @@ func (s *RackServerRefreshStrategy) RefreshMemory(c *context.RefreshServerContex
 func (s *RackServerRefreshStrategy) RefreshEthernetInterfaces(c *context.RefreshServerContext) error {
 	ethernet, err := c.ServerClient.GetEthernetInterfaces(*c.Server.OriginURIs.System)
 	if err != nil {
-		beego.Warning("GetEthernetInterfaces() failed, error =", err)
+		log.Warn("GetEthernetInterfaces() failed, error =", err)
 		return err
 	}
 	if err := c.ServerDBImplement.UpdateEthernetInterfaces(c.Server.ID, ethernet); err != nil {
-		beego.Warning("UpdateEthernetInterfaces() failed, error =", err)
+		log.Warn("UpdateEthernetInterfaces() failed, error =", err)
 	}
 	c.DispatchServerUpdate()
-	beego.Trace("RefreshEthernetInterfaces() done, server ID =", c.Server.ID)
+	log.Debug("RefreshEthernetInterfaces() done, server ID =", c.Server.ID)
 	return nil
 }
 
@@ -142,14 +142,14 @@ func (s *RackServerRefreshStrategy) RefreshEthernetInterfaces(c *context.Refresh
 func (s *RackServerRefreshStrategy) RefreshNetworkInterfaces(c *context.RefreshServerContext) error {
 	networks, err := c.ServerClient.GetNetworkInterfaces(*c.Server.OriginURIs.System)
 	if err != nil {
-		beego.Warning("GetNetworkInterfaces() failed, error =", err)
+		log.Warn("GetNetworkInterfaces() failed, error =", err)
 		return err
 	}
 	if err := c.ServerDBImplement.UpdateNetworkInterfaces(c.Server.ID, networks); err != nil {
-		beego.Warning("UpdateNetworkInterfaces() failed, error =", err)
+		log.Warn("UpdateNetworkInterfaces() failed, error =", err)
 	}
 	c.DispatchServerUpdate()
-	beego.Trace("RefreshNetworkInterfaces() done, server ID =", c.Server.ID)
+	log.Debug("RefreshNetworkInterfaces() done, server ID =", c.Server.ID)
 	return nil
 }
 
@@ -157,14 +157,14 @@ func (s *RackServerRefreshStrategy) RefreshNetworkInterfaces(c *context.RefreshS
 func (s *RackServerRefreshStrategy) RefreshStorages(c *context.RefreshServerContext) error {
 	storages, err := c.ServerClient.GetStorages(*c.Server.OriginURIs.System)
 	if err != nil {
-		beego.Warning("GetStorages() failed, error =", err)
+		log.Warn("GetStorages() failed, error =", err)
 		return err
 	}
 	if err := c.ServerDBImplement.UpdateStorages(c.Server.ID, storages); err != nil {
-		beego.Warning("UpdateStorages() failed, error =", err)
+		log.Warn("UpdateStorages() failed, error =", err)
 	}
 	c.DispatchServerUpdate()
-	beego.Trace("RefreshStorages() done, server ID =", c.Server.ID)
+	log.Debug("RefreshStorages() done, server ID =", c.Server.ID)
 	return nil
 }
 
@@ -172,14 +172,14 @@ func (s *RackServerRefreshStrategy) RefreshStorages(c *context.RefreshServerCont
 func (s *RackServerRefreshStrategy) RefreshPower(c *context.RefreshServerContext) error {
 	power, err := c.ServerClient.GetPower(*c.Server.OriginURIs.Chassis)
 	if err != nil {
-		beego.Warning("GetPower() failed, error =", err)
+		log.Warn("GetPower() failed, error =", err)
 		return err
 	}
 	if err := c.ServerDBImplement.UpdatePower(c.Server.ID, power); err != nil {
-		beego.Warning("UpdatePower() failed, error =", err)
+		log.Warn("UpdatePower() failed, error =", err)
 	}
 	c.DispatchServerUpdate()
-	beego.Trace("RefreshPower() done, server ID =", c.Server.ID)
+	log.Debug("RefreshPower() done, server ID =", c.Server.ID)
 	return nil
 }
 
@@ -187,14 +187,14 @@ func (s *RackServerRefreshStrategy) RefreshPower(c *context.RefreshServerContext
 func (s *RackServerRefreshStrategy) RefreshThermal(c *context.RefreshServerContext) error {
 	thermal, err := c.ServerClient.GetThermal(*c.Server.OriginURIs.Chassis)
 	if err != nil {
-		beego.Warning("GetThermal() failed, error =", err)
+		log.Warn("GetThermal() failed, error =", err)
 		return err
 	}
 	if err := c.ServerDBImplement.UpdateThermal(c.Server.ID, thermal); err != nil {
-		beego.Warning("UpdateThermal() failed, error =", err)
+		log.Warn("UpdateThermal() failed, error =", err)
 	}
 	c.DispatchServerUpdate()
-	beego.Trace("RefreshThermal() done, server ID =", c.Server.ID)
+	log.Debug("RefreshThermal() done, server ID =", c.Server.ID)
 	return nil
 }
 
@@ -202,14 +202,14 @@ func (s *RackServerRefreshStrategy) RefreshThermal(c *context.RefreshServerConte
 func (s *RackServerRefreshStrategy) RefreshOemHuaweiBoards(c *context.RefreshServerContext) error {
 	boards, err := c.ServerClient.GetOemHuaweiBoards(*c.Server.OriginURIs.Chassis)
 	if err != nil {
-		beego.Warning("GetOemHuaweiBoards() failed, error =", err)
+		log.Warn("GetOemHuaweiBoards() failed, error =", err)
 		return err
 	}
 	if err := c.ServerDBImplement.UpdateOemHuaweiBoards(c.Server.ID, boards); err != nil {
-		beego.Warning("UpdateOemHuaweiBoards() failed, error =", err)
+		log.Warn("UpdateOemHuaweiBoards() failed, error =", err)
 	}
 	c.DispatchServerUpdate()
-	beego.Trace("RefreshOemHuaweiBoards() done, server ID =", c.Server.ID)
+	log.Debug("RefreshOemHuaweiBoards() done, server ID =", c.Server.ID)
 	return nil
 }
 
@@ -217,14 +217,14 @@ func (s *RackServerRefreshStrategy) RefreshOemHuaweiBoards(c *context.RefreshSer
 func (s *RackServerRefreshStrategy) RefreshNetworkAdapters(c *context.RefreshServerContext) error {
 	networkAdapters, err := c.ServerClient.GetNetworkAdapters(*c.Server.OriginURIs.Chassis)
 	if err != nil {
-		beego.Warning("GetOemHuaweiBoards() failed, error =", err)
+		log.Warn("GetOemHuaweiBoards() failed, error =", err)
 		return err
 	}
 	if err := c.ServerDBImplement.UpdateNetworkAdapters(c.Server.ID, networkAdapters); err != nil {
-		beego.Warning("UpdateOemHuaweiBoards() failed, error =", err)
+		log.Warn("UpdateOemHuaweiBoards() failed, error =", err)
 	}
 	c.DispatchServerUpdate()
-	beego.Trace("RefreshOemHuaweiBoards() done, server ID =", c.Server.ID)
+	log.Debug("RefreshOemHuaweiBoards() done, server ID =", c.Server.ID)
 	return nil
 }
 
@@ -232,14 +232,14 @@ func (s *RackServerRefreshStrategy) RefreshNetworkAdapters(c *context.RefreshSer
 func (s *RackServerRefreshStrategy) RefreshDrives(c *context.RefreshServerContext) error {
 	drives, err := c.ServerClient.GetDrives(*c.Server.OriginURIs.Chassis)
 	if err != nil {
-		beego.Warning("GetDrives() failed, error =", err)
+		log.Warn("GetDrives() failed, error =", err)
 		return err
 	}
 	if err := c.ServerDBImplement.UpdateDrives(c.Server.ID, drives); err != nil {
-		beego.Warning("UpdateDrives() failed, error =", err)
+		log.Warn("UpdateDrives() failed, error =", err)
 	}
 	c.DispatchServerUpdate()
-	beego.Trace("RefreshDrives() done, server ID =", c.Server.ID)
+	log.Debug("RefreshDrives() done, server ID =", c.Server.ID)
 	return nil
 }
 
@@ -247,13 +247,13 @@ func (s *RackServerRefreshStrategy) RefreshDrives(c *context.RefreshServerContex
 func (s *RackServerRefreshStrategy) RefreshPCIeDevices(c *context.RefreshServerContext) error {
 	pcieDevice, err := c.ServerClient.GetPCIeDevices(*c.Server.OriginURIs.Chassis)
 	if err != nil {
-		beego.Warning("GetPCIeDevices() failed, error =", err)
+		log.Warn("GetPCIeDevices() failed, error =", err)
 		return err
 	}
 	if err := c.ServerDBImplement.UpdatePCIeDevices(c.Server.ID, pcieDevice); err != nil {
-		beego.Warning("UpdatePCIeDevices() failed, error =", err)
+		log.Warn("UpdatePCIeDevices() failed, error =", err)
 	}
 	c.DispatchServerUpdate()
-	beego.Trace("RefreshPCIeDevices() done, server ID =", c.Server.ID)
+	log.Debug("RefreshPCIeDevices() done, server ID =", c.Server.ID)
 	return nil
 }

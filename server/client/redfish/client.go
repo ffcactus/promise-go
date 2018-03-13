@@ -11,7 +11,7 @@ import (
 	. "promise/server/client/redfish/dto"
 	"promise/server/object/model"
 
-	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -42,7 +42,7 @@ func (this *RedfishClient) Support() bool {
 	// Form the REST request.
 	req, err := http.NewRequest(http.MethodGet, this.address("/redfish/v1"), nil)
 	if err != nil {
-		beego.Warning("NewRequest() failed, error = ", err)
+		log.Warn("NewRequest() failed, error = ", err)
 		return false
 	}
 	req.Header.Set("Content-Type", "application/json")
@@ -96,7 +96,7 @@ func (this *RedfishClient) GetBasicInfo() (*model.ServerBasicInfo, error) {
 			return nil, err
 		}
 		if *chassis.ChassisType == "" {
-			beego.Warning("GetBasicInfo() failed, failed to get chassis type.")
+			log.Warn("GetBasicInfo() failed, failed to get chassis type.")
 			return nil, errors.New("Failed to get server type.")
 		}
 		ret.Type = *chassis.ChassisType
@@ -355,7 +355,7 @@ func (this *RedfishClient) rest(method string, uri string, body io.Reader) (resp
 	// Form the REST request.
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
-		beego.Warning("NewRequest() failed, method = ", method, ", URL = ", url, ", error = ", err)
+		log.Warn("NewRequest() failed, method = ", method, ", URL = ", url, ", error = ", err)
 		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/json")
@@ -366,7 +366,7 @@ func (this *RedfishClient) rest(method string, uri string, body io.Reader) (resp
 		req.SetBasicAuth(this.Username, this.Password)
 	}
 	if resp, err := this.Client.Do(req); err != nil {
-		beego.Warning("Do() failed, method = ", method, ", URL = ", url, ", error = ", err)
+		log.Warn("Do() failed, method = ", method, ", URL = ", url, ", error = ", err)
 		return nil, err
 	} else {
 		return resp, err
@@ -395,15 +395,15 @@ func (this *RedfishClient) getObject(uri string, o interface{}) error {
 	} else {
 		defer resp.Body.Close()
 		if resp.Body == nil {
-			beego.Warning("getObject() failed, resposne body is empty, URI = ", uri)
+			log.Warn("getObject() failed, resposne body is empty, URI = ", uri)
 			return errors.New("Response body is empty.")
 		}
 		if resp.StatusCode != http.StatusOK {
-			beego.Warning("getObject() failed, URI = ", uri, ", response code = ", resp.StatusCode)
+			log.Warn("getObject() failed, URI = ", uri, ", response code = ", resp.StatusCode)
 			return fmt.Errorf("Response code = %d.", resp.StatusCode)
 		}
 		if err := json.NewDecoder(resp.Body).Decode(o); err != nil {
-			beego.Warning("NewDecoder() failed, URI = ", uri, ", error = ", err)
+			log.Warn("NewDecoder() failed, URI = ", uri, ", error = ", err)
 			return err
 		}
 		return nil
@@ -420,7 +420,7 @@ func (this *RedfishClient) postObject(uri string, req interface{}, resp interfac
 
 		if resp.StatusCode != http.StatusCreated {
 			// respBody, _ := ioutil.ReadAll(resp.Body)
-			beego.Warning("postObject() failed, URI = ", uri, ", response code = ", resp.StatusCode)
+			log.Warn("postObject() failed, URI = ", uri, ", response code = ", resp.StatusCode)
 			return fmt.Errorf("Response code = %d.", resp.StatusCode)
 		}
 		if resp.Body == nil {
@@ -429,7 +429,7 @@ func (this *RedfishClient) postObject(uri string, req interface{}, resp interfac
 		// Decode only when the client asked for.
 		if resp != nil {
 			if err := json.NewDecoder(resp.Body).Decode(resp); err != nil {
-				beego.Warning("NewDecoder() failed, URI = ", uri, ", error = ", err)
+				log.Warn("NewDecoder() failed, URI = ", uri, ", error = ", err)
 				return err
 			}
 		}

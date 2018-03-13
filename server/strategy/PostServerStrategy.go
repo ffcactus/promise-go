@@ -1,7 +1,7 @@
 package strategy
 
 import (
-	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 	"promise/server/context"
 	"promise/server/object/model"
 )
@@ -21,7 +21,7 @@ func CreatePostServerStrategy(server *model.Server) PostServerStrategy {
 	case model.MockType:
 		return new(MockServerPostStrategy)
 	default:
-		beego.Warning("CreatePostServerStrategy() failed, server type = ", server.Type)
+		log.Warn("CreatePostServerStrategy() failed, server type = ", server.Type)
 		return nil
 	}
 }
