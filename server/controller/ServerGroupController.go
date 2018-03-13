@@ -18,10 +18,12 @@ type ServerGroupController struct {
 // Get will return the server group by ID.
 func (c *ServerGroupController) Get() {
 	var resp dto.GetServerGroupResponse
-	log.Debug("GET server group ID = ", c.Ctx.Input.Param(":id"))
-	if sg, messages := service.GetServerGroup(c.Ctx.Input.Param(":id")); messages != nil {
+	var id = c.Ctx.Input.Param(":id")
+	log.WithFields(log.Fields{"id": id}).Debug("Get server group.")
+	if sg, messages := service.GetServerGroup(id); messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		log.WithFields(log.Fields{"id": id, "message": messages[0].ID}).Debug("Get server group failed.")
 	} else {
 		resp.Load(sg)
 		c.Data["json"] = &resp
@@ -32,11 +34,14 @@ func (c *ServerGroupController) Get() {
 
 // Delete will delete the server group by ID.
 func (c *ServerGroupController) Delete() {
-	if messages := service.DeleteServerGroup(c.Ctx.Input.Param(":id")); messages != nil {
+	var id = c.Ctx.Input.Param(":id")
+	log.WithFields(log.Fields{"id": id}).Debug("Delete server group.")
+	if messages := service.DeleteServerGroup(id); messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		log.WithFields(log.Fields{"id": id, "message": messages[0].ID}).Debug("Delete server group failed.")
 	}
 	c.Ctx.Output.SetStatus(http.StatusAccepted)
-	log.Info("DELETE server group ", c.Ctx.Input.Param(":id"))
+	
 	c.ServeJSON()
 }

@@ -21,12 +21,13 @@ type ServerActionController struct {
 func (c *ServerActionController) Post() {
 	action := c.Ctx.Input.Param(":action")
 	id := c.Ctx.Input.Param(":id")
-	log.Debug("Post(), action = ", action, ", server ID = ", action, id)
+	log.WithFields(log.Fields{"action": action, "id": id}).Info("Cast action on server.")
 	switch strings.ToLower(action) {
 	case util.ServerActionRefresh:
 		if resp, messages := service.RefreshServer(id); messages != nil {
 			c.Data["json"] = commonDto.MessagesToDto(messages)
 			c.Ctx.Output.SetStatus(messages[0].StatusCode)
+			log.WithFields(log.Fields{"action": action, "id": id, "message": messages[0].ID}).Info("Cast action on server failed.")
 		} else {
 			c.Data["json"] = &resp
 			c.Ctx.Output.SetStatus(http.StatusAccepted)

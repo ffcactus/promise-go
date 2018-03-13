@@ -30,13 +30,13 @@ func (s *RackServerPostStrategy) CreateManagementAccount(c *context.PostServerCo
 	// TODO
 	credential := username + " " + password
 	c.Server.Credential = credential
-	log.Debug("Server management account created, server address = ", c.Server.Address)
+	log.WithFields(log.Fields{"address": c.Request.Address}).Info("Create management account.")
 	return nil
 }
 
 // Claim the server.
 func (s *RackServerPostStrategy) Claim(c *context.PostServerContext) error {
-	log.Debug("Server claimed, server address = ", c.Server.Address)
+	log.WithFields(log.Fields{"address": c.Request.Address}).Info("Claim server.")
 	return nil
 }
 

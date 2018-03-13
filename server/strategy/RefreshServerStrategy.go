@@ -30,7 +30,7 @@ func CreateRefreshServerStrategy(server *model.Server) RefreshServerStrategy {
 	case model.MockType:
 		return new(MockServerRefreshStrategy)
 	default:
-		log.Warn("CreateRefreshServerStrategy() failed, server type =", server.Type)
+		log.WithFields(log.Fields{"id": server.ID, "type": server.Type}).Warn("Can not find refresh server strategy.")
 		return nil
 	}
 }

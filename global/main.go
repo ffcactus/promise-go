@@ -8,8 +8,7 @@ import (
 )
 
 func main() {
-	app.InitLog()
-	app.ReadConfig("GlobalApp")
+	app.Init("GlobalApp")
 	beego.SetLevel(beego.LevelDebug)
 
 	ns := beego.NewNamespace(

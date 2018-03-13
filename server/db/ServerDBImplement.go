@@ -41,7 +41,7 @@ func (i *ServerDBImplement) PostServer(s *model.Server) (*model.Server, error) {
 	c := commonDB.GetConnection()
 	if exist, _ := i.IsServerExist(s); exist {
 		// TODO get the server to return.
-		log.Debug("PostServer(), server exist.")
+		log.WithFields(log.Fields{"physicalUUID": s.PhysicalUUID}).Info("Post server in DB failed, server exist.")
 		return nil, errors.New("server exist")
 	}
 	var server = createServerEntityFromServer(s)
@@ -146,7 +146,6 @@ func (i *ServerDBImplement) GetAndLockServer(ID string) (bool, *model.Server) {
 	tx.Where("ID = ?", ID).First(s)
 	if s.ID != ID {
 		// Can't find server, rollback.
-		log.Info("GetAndLockServer() failed, server not exist.")
 		tx.Rollback()
 		return false, nil
 	}
@@ -159,11 +158,6 @@ func (i *ServerDBImplement) GetAndLockServer(ID string) (bool, *model.Server) {
 	tx.Model(s).UpdateColumn("State", util.ServerStateLocked)
 	// Commit.
 	tx.Commit()
-	errs := c.GetErrors()
-	if len(errs) != 0 {
-		log.Warn("GetAndLockServer() failed, server ID = ", ID, ", error = ", errs)
-		return false, nil
-	}
 	return true, createServerModel(s)
 }
 
@@ -175,7 +169,7 @@ func (i *ServerDBImplement) SetServerState(ID string, state string) bool {
 		return false
 	}
 	if err := c.Model(s).UpdateColumn("State", state).Error; err != nil {
-		log.Warn("SetServerState() failed, server ID = ", ID, ", error = ", err)
+		log.WithFields(log.Fields{"id": ID, "op": "SetServerState", "err": err}).Warn("DB opertion failed.")
 		return false
 	}
 	return true
@@ -189,7 +183,7 @@ func (i *ServerDBImplement) SetServerHealth(ID string, health string) bool {
 		return false
 	}
 	if err := c.Model(s).UpdateColumn("Health", health).Error; err != nil {
-		log.Warn("SetServerHealth() failed, server ID = ", ID, ", error = ", err)
+		log.WithFields(log.Fields{"id": ID, "op": "SetServerHealth", "err": err}).Warn("DB opertion failed.")
 		return false
 	}
 	return true
@@ -203,7 +197,7 @@ func (i *ServerDBImplement) SetServerTask(ID string, taskURI string) bool {
 		return false
 	}
 	if err := c.Model(s).UpdateColumn("CurrentTask", taskURI).Error; err != nil {
-		log.Warn("SetServerTask() failed, server ID = ", ID, ", error = ", err)
+		log.WithFields(log.Fields{"id": ID, "op": "SetServerTask", "err": err}).Warn("DB opertion failed.")
 	}
 	return true
 }
@@ -228,7 +222,7 @@ func (i *ServerDBImplement) UpdateProcessors(ID string, processors []model.Proce
 		server.Processors = append(server.Processors, *createProcessor(&processors[i]))
 	}
 	if err := c.Save(server).Error; err != nil {
-		log.Warn("UpdateProcessors() failed, server ID = ", ID, ", error = ", err)
+		log.WithFields(log.Fields{"id": ID, "op": "UpdateProcessors", "err": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -254,7 +248,7 @@ func (i *ServerDBImplement) UpdateMemory(ID string, memory []model.Memory) error
 		server.Memory = append(server.Memory, *createMemory(&memory[i]))
 	}
 	if err := c.Save(server).Error; err != nil {
-		log.Warn("UpdateMemory() failed, server ID = ", ID, ", error = ", err)
+		log.WithFields(log.Fields{"id": ID, "op": "UpdateMemory", "err": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -296,7 +290,7 @@ func (i *ServerDBImplement) UpdateEthernetInterfaces(ID string, ethernet []model
 		server.EthernetInterfaces = append(server.EthernetInterfaces, *createEthernetInterface(&ethernet[i]))
 	}
 	if err := c.Save(server).Error; err != nil {
-		log.Warn("UpdateEthernetInterfaces() failed, server ID = ", ID, ", error = ", err)
+		log.WithFields(log.Fields{"id": ID, "op": "UpdateEthernetInterfaces", "err": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -324,7 +318,7 @@ func (i *ServerDBImplement) UpdateNetworkInterfaces(ID string, networkInterface 
 	}
 	server.NetworkInterfaces = networkInterfacesE
 	if err := c.Save(server).Error; err != nil {
-		log.Warn("UpdateNetworkInterfaces() failed, server ID = ", ID, ", error = ", err)
+		log.WithFields(log.Fields{"id": ID, "op": "UpdateNetworkInterfaces", "err": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -354,7 +348,7 @@ func (i *ServerDBImplement) UpdateStorages(ID string, storages []model.Storage) 
 	}
 	server.Storages = storagesE
 	if err := c.Save(server).Error; err != nil {
-		log.Warn("UpdateStorages() failed, server ID = ", ID, ", error = ", err)
+		log.WithFields(log.Fields{"id": ID, "op": "UpdateStorages", "err": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -390,7 +384,7 @@ func (i *ServerDBImplement) UpdatePower(ID string, power *model.Power) error {
 	c.Delete(server.Power)
 	server.Power = *createPower(power)
 	if err := c.Save(server).Error; err != nil {
-		log.Warn("UpdatePower() failed, server ID = ", ID, ", error = ", err)
+		log.WithFields(log.Fields{"id": ID, "op": "UpdatePower", "err": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -418,7 +412,7 @@ func (i *ServerDBImplement) UpdateThermal(ID string, thermal *model.Thermal) err
 	c.Delete(server.Thermal)
 	server.Thermal = *createThermal(thermal)
 	if err := c.Save(server).Error; err != nil {
-		log.Warn("UpdateThermal() failed, server ID = ", ID, ", error = ", err)
+		log.WithFields(log.Fields{"id": ID, "op": "UpdateThermal", "err": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -444,7 +438,7 @@ func (i *ServerDBImplement) UpdateOemHuaweiBoards(ID string, boards []model.OemH
 	}
 	server.OemHuaweiBoards = boardsE
 	if err := c.Save(server).Error; err != nil {
-		log.Warn("UpdateOemHuaweiBoards() failed, server ID = ", ID, ", error = ", err)
+		log.WithFields(log.Fields{"id": ID, "op": "UpdateOemHuaweiBoards", "err": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -480,7 +474,7 @@ func (i *ServerDBImplement) UpdateNetworkAdapters(ID string, networkAdapters []m
 	}
 	server.NetworkAdapters = networkAdaptersE
 	if err := c.Save(server).Error; err != nil {
-		log.Warn("UpdateNetworkAdapters() failed, server ID = ", ID, ", error = ", err)
+		log.WithFields(log.Fields{"id": ID, "op": "UpdateNetworkAdapters", "err": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -519,7 +513,7 @@ func (i *ServerDBImplement) UpdateDrives(ID string, drives []model.Drive) error 
 	}
 	server.Drives = drivesE
 	if err := c.Save(server).Error; err != nil {
-		log.Warn("UpdateDrives() failed, server ID = ", ID, ", error = ", err)
+		log.WithFields(log.Fields{"id": ID, "op": "UpdateDrives", "err": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -550,7 +544,7 @@ func (i *ServerDBImplement) UpdatePCIeDevices(ID string, pcieDevices []model.PCI
 	}
 	server.PCIeDevices = *pcieDevicesE
 	if err := c.Save(server).Error; err != nil {
-		log.Warn("UpdatePCIeDevices() failed, server ID = ", ID, ", error = ", err)
+		log.WithFields(log.Fields{"id": ID, "op": "UpdatePCIeDevices", "err": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil

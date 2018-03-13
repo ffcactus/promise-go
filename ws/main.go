@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	app.ReadConfig("WSApp")
+	app.Init("WSApp")
 	beego.SetLevel(beego.LevelDebug)
 	go service.StartEventDispatcher()
 

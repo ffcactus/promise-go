@@ -30,8 +30,7 @@ func initDB() {
 }
 
 func main() {
-	app.InitLog()
-	app.ReadConfig("TaskApp")
+	app.Init("TaskApp")
 	beego.SetLevel(beego.LevelDebug)
 	initDB()
 	ns := beego.NewNamespace(

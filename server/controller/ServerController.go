@@ -16,10 +16,12 @@ type ServerController struct {
 
 // Get Get server by ID.
 func (c *ServerController) Get() {
-	log.Debug("Get(), server ID = ", c.Ctx.Input.Param(":id"))
-	if server, messages := service.GetServer(c.Ctx.Input.Param(":id")); messages != nil {
+	var id = c.Ctx.Input.Param(":id")
+	log.WithFields(log.Fields{"id": id}).Debug("Get server.")
+	if server, messages := service.GetServer(id); messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		log.WithFields(log.Fields{"id": id, "message": messages[0].ID}).Info("Get server failed.")
 	} else {
 		resp := dto.GetServerResponse{}
 		resp.Load(server)

@@ -3,21 +3,22 @@ package service
 import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
-	. "promise/server/client"
+	"promise/server/client"
 	"promise/server/object/dto"
-	. "promise/server/object/model"
+	"promise/server/object/model"
 )
 
-func Probe(request *dto.PostServerRequest) (*ServerBasicInfo, error) {
-	client := FindBestClient(request.Address, request.Username, request.Password)
-	if client == nil {
-		log.Fatal("Probe() failed, failed to get the client for the server, address = ", request.Address)
-		return nil, fmt.Errorf("Failed to get server client.")
+// Probe will try to probe the server.
+func Probe(request *dto.PostServerRequest) (*model.ServerBasicInfo, error) {
+	c := client.FindBestClient(request.Address, request.Username, request.Password)
+	if c == nil {
+		log.WithFields(log.Fields{"address": request.Address}).Warn("Probe server failed, can not find client.")
+		return nil, fmt.Errorf("failed to get server client")
 	}
 
-	serverBasicInfo, err := client.GetBasicInfo()
+	serverBasicInfo, err := c.GetBasicInfo()
 	if err != nil {
-		log.Fatal("Probe() failed, failed to get basic info, address = ", request.Address, ", error = ", err)
+		log.WithFields(log.Fields{"address": request.Address, "err": err}).Warn("Probe server failed, can not get basic info.")
 	}
 
 	serverBasicInfo.Address = request.Address

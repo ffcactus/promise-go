@@ -24,23 +24,28 @@ func (c *ServerGroupRootController) Post() {
 		request  dto.PostServerGroupRequest
 		response dto.PostServerGroupResponse
 	)
-
+	
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &request); err != nil {
-		log.Warn("error: ", err)
+		log.WithFields(log.Fields{"err": err}).Info("Post server group failed, unable to get request.")
+		messages := []commonM.Message{}
+		messages = append(messages, message.NewServerParameterError())
+		c.Data["json"] = commonDto.MessagesToDto(messages)
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.ServeJSON()
+		return
 	}
+	log.WithFields(log.Fields{"name": request.Name}).Info("Post server group.")
 	// Create the context for this operation.
 	serverGroup, messages := service.PostServerGroup(&request)
 	if messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		log.Info("POST server group failed", messages[0].ID)
-		// TODO Why the header not includes application/json?
+		log.WithFields(log.Fields{"message": messages[0].ID}).Info("Post server group failed.")
 	} else {
 		response.Load(serverGroup)
 		c.Data["json"] = &response
 		c.Ctx.Output.SetStatus(http.StatusCreated)
-
-		log.Info("POST server group", response.Name, response.ID)
+		log.WithFields(log.Fields{"name": response.Name, "ID": response.ID}).Info("Post server group done.")
 	}
 	c.ServeJSON()
 }
@@ -52,11 +57,10 @@ func (c *ServerGroupRootController) Get() {
 		startInt, countInt int    = 0, -1
 		parameterError     bool
 	)
-	log.Debug("Get server group collection, start = ", start, ", count = ", count)
+	log.WithFields(log.Fields{"start": start, "count": count}).Debug("Get server group collection.")
 	if start != "" {
 		_startInt, err := strconv.Atoi(start)
 		if err != nil || _startInt < 0 {
-			log.Warn("Get(), invalid 'start' parameter, error = ", err)
 			parameterError = true
 		} else {
 			startInt = _startInt
@@ -66,7 +70,6 @@ func (c *ServerGroupRootController) Get() {
 		_countInt, err := strconv.Atoi(count)
 		// -1 means all.
 		if err != nil || _countInt < -1 {
-			log.Warn("Get() 'count' parameter error = %s\n", err)
 			parameterError = true
 		} else {
 			countInt = _countInt
@@ -78,10 +81,12 @@ func (c *ServerGroupRootController) Get() {
 		messages = append(messages, message.NewServerParameterError())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		log.Warn("Get server group collection failed, parameter error.")
 	} else {
 		if serverCollection, messages := service.GetServerGroupCollection(startInt, countInt); messages != nil {
 			c.Data["json"] = commonDto.MessagesToDto(messages)
 			c.Ctx.Output.SetStatus(messages[0].StatusCode)
+			log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Get server group collection failed")
 		} else {
 			resp := new(dto.GetServerGroupCollectionResponse)
 			resp.Load(serverCollection)

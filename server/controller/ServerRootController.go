@@ -23,23 +23,29 @@ type ServerRootController struct {
 func (c *ServerRootController) Post() {
 	request := new(dto.PostServerRequest)
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
-		log.Warn("error: ", err)
+		log.WithFields(log.Fields{"err": err}).Info("Post server failed, unable to get request.")
+		messages := []commonM.Message{}
+		messages = append(messages, message.NewServerParameterError())
+		c.Data["json"] = commonDto.MessagesToDto(messages)
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.ServeJSON()
+		return
 	}
-	log.Info("Post() start, address = " + request.Address)
+	log.WithFields(log.Fields{"address": request.Address}).Info("Post server.")
 	// Create the context for this operation.
 	server, messages := service.PostServer(request)
 	if messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		// TODO Why the header not includes application/json?
+		log.WithFields(log.Fields{"message": messages[0].ID}).Info("Post server failed.")
 	} else {
 		resp := dto.PostServerResponse{}
 		resp.Load(server)
 		c.Data["json"] = &resp
 		c.Ctx.Output.SetStatus(http.StatusCreated)
+		log.WithFields(log.Fields{"name": request.Address, "ID": resp.ID}).Info("Post server done.")
 	}
 	c.ServeJSON()
-	log.Info("Post() done, server ID = ", server.ID)
 }
 
 // Get Get server collection.
@@ -49,11 +55,10 @@ func (c *ServerRootController) Get() {
 		startInt, countInt int    = 0, -1
 		parameterError     bool
 	)
-	log.Debug("Get server collection, start = ", start, ", count = ", count)
+	log.WithFields(log.Fields{"start": start, "count": count}).Debug("Get server collection.")
 	if start != "" {
 		_startInt, err := strconv.Atoi(start)
 		if err != nil || _startInt < 0 {
-			log.Warn("Get(), invalid 'start' parameter, error = ", err)
 			parameterError = true
 		} else {
 			startInt = _startInt
@@ -63,7 +68,6 @@ func (c *ServerRootController) Get() {
 		_countInt, err := strconv.Atoi(count)
 		// -1 means all.
 		if err != nil || _countInt < -1 {
-			log.Warn("Get() 'count' parameter error = %s\n", err)
 			parameterError = true
 		} else {
 			countInt = _countInt
@@ -75,10 +79,12 @@ func (c *ServerRootController) Get() {
 		messages = append(messages, message.NewServerParameterError())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		log.Warn("Get server collection failed, parameter error.")
 	} else {
 		if serverCollection, messages := service.GetServerCollection(startInt, countInt); messages != nil {
 			c.Data["json"] = commonDto.MessagesToDto(messages)
 			c.Ctx.Output.SetStatus(messages[0].StatusCode)
+			log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Get server collection failed")
 		} else {
 			resp := new(dto.GetServerCollectionResponse)
 			resp.Load(serverCollection)

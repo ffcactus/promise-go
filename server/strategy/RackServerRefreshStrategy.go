@@ -17,8 +17,7 @@ func (s *RackServerRefreshStrategy) Execute(c *context.RefreshServerContext) err
 	// defer s.IndexServer(&c.ServerContext)
 	// defer s.SetServerState(&c.ServerContext, ServerStateReady)
 	// defer s.SetServerHealth(&c.ServerContext, ServerHealthOK)
-
-	log.Info("Refresh server start", "Server ID =", c.Server.ID)
+	log.WithFields(log.Fields{"id": c.Server.ID}).Info("Refresh server.")
 	// Lock server.
 	if err := s.LockServer(&c.ServerContext); err != nil {
 		return err
@@ -73,7 +72,7 @@ func (s *RackServerRefreshStrategy) Execute(c *context.RefreshServerContext) err
 	s.SetServerHealth(&c.ServerContext, util.ServerHealthOK)
 	s.SetServerState(&c.ServerContext, util.ServerStateReady)
 	s.IndexServer(&c.ServerContext)
-	log.Info("Refresh server done", "Server ID =", c.Server.ID)
+	log.WithFields(log.Fields{"id": c.Server.ID}).Info("Refresh server done.")
 	return nil
 }
 
@@ -94,166 +93,177 @@ func (s *RackServerRefreshStrategy) StepWarper(stepName string, c *context.Refre
 
 // RefreshProcessors refresh the processor of the server.
 func (s *RackServerRefreshStrategy) RefreshProcessors(c *context.RefreshServerContext) error {
+	var component = "Processor"
 	processors, err := c.ServerClient.GetProcessors(*c.Server.OriginURIs.System)
 	if err != nil {
-		log.Warn("GetProcessors() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.ServerDBImplement.UpdateProcessors(c.Server.ID, processors); err != nil {
-		log.Warn("UpdateProcessors() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Update server component failed.")
 		return err
 	}
 	c.DispatchServerUpdate()
-	log.Debug("RefreshProcessors() done, server ID =", c.Server.ID)
+	log.WithFields(log.Fields{"id": c.Server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
 
 // RefreshMemory refresh the memory
 func (s *RackServerRefreshStrategy) RefreshMemory(c *context.RefreshServerContext) error {
+	var component = "Memory"
 	memory, err := c.ServerClient.GetMemory(*c.Server.OriginURIs.System)
 	if err != nil {
-		log.Warn("GetMemory() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.ServerDBImplement.UpdateMemory(c.Server.ID, memory); err != nil {
-		log.Warn("UpdateMemory() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Update server component failed.")
 	}
 	c.DispatchServerUpdate()
-	log.Debug("RefreshMemory() done, server ID =", c.Server.ID)
+	log.WithFields(log.Fields{"id": c.Server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
 
 // RefreshEthernetInterfaces refresh the ethernet interfaces.
 func (s *RackServerRefreshStrategy) RefreshEthernetInterfaces(c *context.RefreshServerContext) error {
+	var component = "EthernetInterfaces"
 	ethernet, err := c.ServerClient.GetEthernetInterfaces(*c.Server.OriginURIs.System)
 	if err != nil {
-		log.Warn("GetEthernetInterfaces() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.ServerDBImplement.UpdateEthernetInterfaces(c.Server.ID, ethernet); err != nil {
-		log.Warn("UpdateEthernetInterfaces() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Update server component failed.")
 	}
 	c.DispatchServerUpdate()
-	log.Debug("RefreshEthernetInterfaces() done, server ID =", c.Server.ID)
+	log.WithFields(log.Fields{"id": c.Server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
 
 // RefreshNetworkInterfaces refresh the network interfaces.
 func (s *RackServerRefreshStrategy) RefreshNetworkInterfaces(c *context.RefreshServerContext) error {
+	var component = "NetworkInterfaces"
 	networks, err := c.ServerClient.GetNetworkInterfaces(*c.Server.OriginURIs.System)
 	if err != nil {
-		log.Warn("GetNetworkInterfaces() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.ServerDBImplement.UpdateNetworkInterfaces(c.Server.ID, networks); err != nil {
-		log.Warn("UpdateNetworkInterfaces() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Update server component failed.")
 	}
 	c.DispatchServerUpdate()
-	log.Debug("RefreshNetworkInterfaces() done, server ID =", c.Server.ID)
+	log.WithFields(log.Fields{"id": c.Server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
 
 // RefreshStorages refresh the storages.
 func (s *RackServerRefreshStrategy) RefreshStorages(c *context.RefreshServerContext) error {
+	var component = "Storages"
 	storages, err := c.ServerClient.GetStorages(*c.Server.OriginURIs.System)
 	if err != nil {
-		log.Warn("GetStorages() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.ServerDBImplement.UpdateStorages(c.Server.ID, storages); err != nil {
-		log.Warn("UpdateStorages() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Update server component failed.")
 	}
 	c.DispatchServerUpdate()
-	log.Debug("RefreshStorages() done, server ID =", c.Server.ID)
+	log.WithFields(log.Fields{"id": c.Server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
 
 // RefreshPower refresh the power.
 func (s *RackServerRefreshStrategy) RefreshPower(c *context.RefreshServerContext) error {
+	var component = "Power"
 	power, err := c.ServerClient.GetPower(*c.Server.OriginURIs.Chassis)
 	if err != nil {
-		log.Warn("GetPower() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.ServerDBImplement.UpdatePower(c.Server.ID, power); err != nil {
-		log.Warn("UpdatePower() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Update server component failed.")
 	}
 	c.DispatchServerUpdate()
-	log.Debug("RefreshPower() done, server ID =", c.Server.ID)
+	log.WithFields(log.Fields{"id": c.Server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
 
 // RefreshThermal refresh the thermal.
 func (s *RackServerRefreshStrategy) RefreshThermal(c *context.RefreshServerContext) error {
+	var component = "Thermal"
 	thermal, err := c.ServerClient.GetThermal(*c.Server.OriginURIs.Chassis)
 	if err != nil {
-		log.Warn("GetThermal() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.ServerDBImplement.UpdateThermal(c.Server.ID, thermal); err != nil {
-		log.Warn("UpdateThermal() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Update server component failed.")
 	}
 	c.DispatchServerUpdate()
-	log.Debug("RefreshThermal() done, server ID =", c.Server.ID)
+	log.WithFields(log.Fields{"id": c.Server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
 
 // RefreshOemHuaweiBoards refresh the OEM boards.
 func (s *RackServerRefreshStrategy) RefreshOemHuaweiBoards(c *context.RefreshServerContext) error {
+	var component = "OemHuaweiBoards"
 	boards, err := c.ServerClient.GetOemHuaweiBoards(*c.Server.OriginURIs.Chassis)
 	if err != nil {
-		log.Warn("GetOemHuaweiBoards() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.ServerDBImplement.UpdateOemHuaweiBoards(c.Server.ID, boards); err != nil {
-		log.Warn("UpdateOemHuaweiBoards() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Update server component failed.")
 	}
 	c.DispatchServerUpdate()
-	log.Debug("RefreshOemHuaweiBoards() done, server ID =", c.Server.ID)
+	log.WithFields(log.Fields{"id": c.Server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
 
 // RefreshNetworkAdapters refresh the network adapters.
 func (s *RackServerRefreshStrategy) RefreshNetworkAdapters(c *context.RefreshServerContext) error {
+	var component = "NetworkAdapters"
 	networkAdapters, err := c.ServerClient.GetNetworkAdapters(*c.Server.OriginURIs.Chassis)
 	if err != nil {
-		log.Warn("GetOemHuaweiBoards() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.ServerDBImplement.UpdateNetworkAdapters(c.Server.ID, networkAdapters); err != nil {
-		log.Warn("UpdateOemHuaweiBoards() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Update server component failed.")
 	}
 	c.DispatchServerUpdate()
-	log.Debug("RefreshOemHuaweiBoards() done, server ID =", c.Server.ID)
+	log.WithFields(log.Fields{"id": c.Server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
 
 // RefreshDrives refresh the drives.
 func (s *RackServerRefreshStrategy) RefreshDrives(c *context.RefreshServerContext) error {
+	var component = "Drives"
 	drives, err := c.ServerClient.GetDrives(*c.Server.OriginURIs.Chassis)
 	if err != nil {
-		log.Warn("GetDrives() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.ServerDBImplement.UpdateDrives(c.Server.ID, drives); err != nil {
-		log.Warn("UpdateDrives() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Update server component failed.")
 	}
 	c.DispatchServerUpdate()
-	log.Debug("RefreshDrives() done, server ID =", c.Server.ID)
+	log.WithFields(log.Fields{"id": c.Server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
 
 // RefreshPCIeDevices refresh the PCIe devices.
 func (s *RackServerRefreshStrategy) RefreshPCIeDevices(c *context.RefreshServerContext) error {
+	var component = "PCIeDevices"
 	pcieDevice, err := c.ServerClient.GetPCIeDevices(*c.Server.OriginURIs.Chassis)
 	if err != nil {
-		log.Warn("GetPCIeDevices() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.ServerDBImplement.UpdatePCIeDevices(c.Server.ID, pcieDevice); err != nil {
-		log.Warn("UpdatePCIeDevices() failed, error =", err)
+		log.WithFields(log.Fields{"id": c.Server.ID, "component": component, "err": err}).Warn("Update server component failed.")
 	}
 	c.DispatchServerUpdate()
-	log.Debug("RefreshPCIeDevices() done, server ID =", c.Server.ID)
+	log.WithFields(log.Fields{"id": c.Server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }

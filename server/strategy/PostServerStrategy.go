@@ -21,7 +21,7 @@ func CreatePostServerStrategy(server *model.Server) PostServerStrategy {
 	case model.MockType:
 		return new(MockServerPostStrategy)
 	default:
-		log.Warn("CreatePostServerStrategy() failed, server type = ", server.Type)
+		log.WithFields(log.Fields{"address": server.Address, "type": server.Type}).Warn("Can not find post server strategy.")
 		return nil
 	}
 }

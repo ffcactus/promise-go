@@ -17,12 +17,12 @@ type ServerStrategy struct {
 func (s *ServerStrategy) LockServer(c *context.ServerContext) error {
 	success, server := c.ServerDBImplement.GetAndLockServer(c.Server.ID)
 	if server == nil {
-		log.Warn("GetAndLockServer() failed, can't find the server, ID = ", c.Server.ID)
+		log.WithFields(log.Fields{"id": c.Server.ID}).Info("Can not get and lock server, server not exist.")
 		c.AppendMessage(message.NewServerNotExist())
 		return errors.New("failed to lock server, server not exist")
 	}
 	if !success {
-		log.Info("GetAndLockServer() failed, server state = ", server.State)
+		log.WithFields(log.Fields{"id": c.Server.ID, "state": server.State}).Info("Can not get and lock server")
 		c.AppendMessage(message.NewServerLockFailed(server))
 		return errors.New("failed to lock server. server can't be lock")
 	}
@@ -53,7 +53,7 @@ func (s *ServerStrategy) SetServerHealth(c *context.ServerContext, health string
 func (s *ServerStrategy) SaveServer(c *context.ServerContext) error {
 	server, err := c.ServerDBImplement.PostServer(c.Server)
 	if err != nil {
-		log.Warn("SaveServer() failed, physical UUID = ", c.Server.PhysicalUUID, ", error = ", err)
+		log.WithFields(log.Fields{"Address": c.Server.Address, "err": err}).Warn("Save server failed.")
 		c.AppendMessage(message.NewServerInternalError())
 		return errors.New("failed to save server")
 	}
@@ -67,7 +67,7 @@ func (s *ServerStrategy) GetServerFull(c *context.ServerContext) (*model.Server,
 	if server != nil {
 		return server, nil
 	}
-	log.Warn("GetServerFull() failed, server ID = ", c.Server.ID)
+	log.WithFields(log.Fields{"id": c.Server.ID}).Warn("Get full server failed.")
 	return nil, errors.New("internel error")
 
 }

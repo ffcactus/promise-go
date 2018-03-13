@@ -15,8 +15,8 @@ const (
 	RootURL = "/promise/v1"
 )
 
-// ReadConfig will read config for this app.
-func ReadConfig(appName string) {
+// Init will init the app.
+func Init(appName string) {
 	err := beego.LoadAppConfig("ini", "/opt/promise/conf/promise.conf")
 	if err != nil {
 		panic(err)
@@ -26,17 +26,12 @@ func ReadConfig(appName string) {
 		panic(err)
 	}
 	beego.BConfig.Listen.HTTPPort = port
-}
-
-// InitLog the log.
-func InitLog() {
-	//log.SetFormatter(&log.TextFormatter{ForceColors: true})
-	log.SetFormatter(&PromiseTextFormatter{App: "Server"})
-	log.SetLevel(log.InfoLevel)
+	log.SetFormatter(&PromiseTextFormatter{App: appName, ForceColors: true})
+	log.SetLevel(log.InfoLevel)	
 	file, err := os.OpenFile("/tmp/promise.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 	if err == nil {
 		log.SetOutput(file)
 	} else {
 		log.Info("Failed to log to file, using default stderr")
-	}
+	}	
 }
