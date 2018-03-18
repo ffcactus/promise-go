@@ -32,7 +32,7 @@ type GetServerResponse struct {
 	State          string         `json:"State"`
 	Health         string         `json:"Health"`
 	PhysicalUUID   string         `json:"PhysicalUUID"`
-	Address        string         `json:"Address"`
+	Hostname       string         `json:"Hostname"`
 	Type           string         `json:"Type"`
 	CurrentTask    string         `json:"CurrentTask"`
 	ComputerSystem ComputerSystem `json:"ComputerSystem"`
@@ -51,7 +51,7 @@ func (dto *GetServerResponse) Load(m *model.Server) {
 	dto.State = m.State
 	dto.Health = m.Health
 	dto.PhysicalUUID = m.PhysicalUUID
-	dto.Address = m.Address
+	dto.Hostname = m.Hostname
 	dto.Type = m.Type
 	dto.CurrentTask = m.CurrentTask
 	// ComputerSystem.Processors

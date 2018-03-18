@@ -66,7 +66,7 @@ type ServerIndex struct {
 
 // CreateServerIndex Create server index object.
 func CreateServerIndex() *ServerIndex {
-	return nil
+	return new(ServerIndex)
 }
 
 // Init Init server index.

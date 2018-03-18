@@ -4,46 +4,48 @@ import (
 	log "github.com/sirupsen/logrus"
 	"promise/server/client/mock"
 	"promise/server/client/redfish"
-	. "promise/server/object/model"
+	"promise/server/object/constvalue"
+	"promise/server/object/model"
 	"strings"
 )
 
+// ServerClientInterface is the server client interface.
 type ServerClientInterface interface {
 	Support() bool
-	GetProtocol() *string
-	GetBasicInfo() (*ServerBasicInfo, error)
+	GetProtocol() string
+	GetBasicInfo() (*model.ServerBasicInfo, error)
 	CreateManagementAccount(username string, password string) error
-	GetProcessors(systemID string) ([]Processor, error)
-	GetMemory(systemID string) ([]Memory, error)
-	GetEthernetInterfaces(systemID string) ([]EthernetInterface, error)
-	GetNetworkInterfaces(systemID string) ([]NetworkInterface, error)
-	GetStorages(systemID string) ([]Storage, error)
+	GetProcessors(systemID string) ([]model.Processor, error)
+	GetMemory(systemID string) ([]model.Memory, error)
+	GetEthernetInterfaces(systemID string) ([]model.EthernetInterface, error)
+	GetNetworkInterfaces(systemID string) ([]model.NetworkInterface, error)
+	GetStorages(systemID string) ([]model.Storage, error)
 	// For chassis info
-	GetOemHuaweiBoards(chassisID string) ([]OemHuaweiBoard, error)
-	GetPower(chassisID string) (*Power, error)
-	GetThermal(chassisID string) (*Thermal, error)
-	GetNetworkAdapters(chassisID string) ([]NetworkAdapter, error)
-	GetDrives(chassisID string) ([]Drive, error)
-	GetPCIeDevices(chassisID string) ([]PCIeDevice, error)
+	GetOemHuaweiBoards(chassisID string) ([]model.OemHuaweiBoard, error)
+	GetPower(chassisID string) (*model.Power, error)
+	GetThermal(chassisID string) (*model.Thermal, error)
+	GetNetworkAdapters(chassisID string) ([]model.NetworkAdapter, error)
+	GetDrives(chassisID string) ([]model.Drive, error)
+	GetPCIeDevices(chassisID string) ([]model.PCIeDevice, error)
 }
 
-// Find the best client for the server.
-func FindBestClient(address string, username string, password string) ServerClientInterface {
+// FindBestClient will find the best client for the server.
+func FindBestClient(hostname string, username string, password string) ServerClientInterface {
 	var client ServerClientInterface
-	client = mock.GetInstance(address)
+	client = mock.GetInstance(hostname)
 	if client.Support() {
 		return client
 	}
-	client = redfish.GetInstance(address, username, password, true)
+	client = redfish.GetInstance(hostname, username, password, true)
 	if client.Support() {
 		return client
 	}
-	log.Warn("FindBestClient(), can't find a client, server address = ", address)
+	log.WithFields(log.Fields{"hostname": hostname}).Warn("FindBestClient(), can't find a client, server address = ", hostname)
 	return nil
 }
 
 // TODO.
-func getServerManagementAccount(server *Server) (string, string) {
+func getServerManagementAccount(server *model.Server) (string, string) {
 	if server.OriginUsername != nil && *server.OriginUsername != "" {
 		return *server.OriginUsername, *server.OriginPassword
 	}
@@ -55,13 +57,14 @@ func getServerManagementAccount(server *Server) (string, string) {
 	return "", ""
 }
 
-func GetServerClient(server *Server) ServerClientInterface {
+// GetServerClient will return the server client based on protocol.
+func GetServerClient(server *model.Server) ServerClientInterface {
 	switch server.Protocol {
-	case RedfishV1:
+	case constvalue.RedfishV1:
 		username, password := getServerManagementAccount(server)
-		return redfish.GetInstance(server.Address, username, password, true)
-	case MockProtocol:
-		return mock.GetInstance(server.Address)
+		return redfish.GetInstance(server.Hostname, username, password, true)
+	case constvalue.MockProtocol:
+		return mock.GetInstance(server.Hostname)
 	default:
 		return nil
 	}

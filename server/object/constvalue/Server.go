@@ -28,6 +28,28 @@ const (
 	ServerHealthUnknown = "Unknown"
 )
 
+const (
+	// MockProtocol Protocol enum.
+	MockProtocol = "MockProtocol"
+	// RedfishV1 Protocol enum.
+	RedfishV1 = "RedfishV1"
+)
+
+const (
+	// MockType Server type enum.
+	MockType = "Mock"
+	// BladeType Server type enum.
+	BladeType = "Blade"
+	// RackType Server type enum.
+	RackType = "Rack"
+	// EnclosureType Server type enum.
+	EnclosureType = "Enclosure"
+	// SwitchType Server type enum.
+	SwitchType = "Switch"
+	// UnknownServerType Server type enum.
+	UnknownServerType = "Unknown"
+)
+
 // ServerLockable will return wether the server can be locked.
 func ServerLockable(state string) bool {
 	var ret bool

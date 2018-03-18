@@ -12,12 +12,12 @@ type MockServerPostStrategy struct {
 
 // CreateManagementAccount Create the management account.
 func (s *MockServerPostStrategy) CreateManagementAccount(c *context.PostServerContext) error {
-	log.WithFields(log.Fields{"address": c.Request.Address}).Info("Create management account.")
+	log.WithFields(log.Fields{"address": c.Request.Hostname}).Info("Create management account.")
 	return nil
 }
 
 // Claim the server.
 func (s *MockServerPostStrategy) Claim(c *context.PostServerContext) error {
-	log.WithFields(log.Fields{"address": c.Request.Address}).Info("Claim server.")
+	log.WithFields(log.Fields{"address": c.Request.Hostname}).Info("Claim server.")
 	return nil
 }

@@ -564,7 +564,7 @@ func createServerModel(e *entity.Server) *model.Server {
 	m.Name = e.Name
 	m.Description = e.Description
 	m.URI = toServerURI(e.ID)
-	m.Address = e.Address
+	m.Hostname = e.Hostname
 	m.Type = e.Type
 	m.Protocol = e.Protocol
 	m.Credential = e.Credential
@@ -1065,7 +1065,7 @@ func createServerEntityFromServer(s *model.Server) *entity.Server {
 	server.OriginURIsChassis = s.OriginURIs.Chassis
 	server.OriginURIsSystem = s.OriginURIs.System
 	server.PhysicalUUID = s.PhysicalUUID
-	server.Address = s.Address
+	server.Hostname = s.Hostname
 	server.Credential = s.Credential
 	server.Type = s.Type
 	server.Protocol = s.Protocol

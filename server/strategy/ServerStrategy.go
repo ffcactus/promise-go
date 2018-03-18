@@ -53,7 +53,7 @@ func (s *ServerStrategy) SetServerHealth(c *context.ServerContext, health string
 func (s *ServerStrategy) SaveServer(c *context.ServerContext) error {
 	server, err := c.ServerDBImplement.PostServer(c.Server)
 	if err != nil {
-		log.WithFields(log.Fields{"Address": c.Server.Address, "err": err}).Warn("Save server failed.")
+		log.WithFields(log.Fields{"hostname": c.Server.Hostname, "err": err}).Warn("Save server failed.")
 		c.AppendMessage(message.NewServerInternalError())
 		return errors.New("failed to save server")
 	}

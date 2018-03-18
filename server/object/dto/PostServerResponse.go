@@ -10,7 +10,7 @@ type PostServerResponse struct {
 	ID           string `json:"ID"`
 	URI          string `json:"URI"`
 	PhysicalUUID string `json:"PhysicalUUID"`
-	Address      string `json:"Address"`
+	Hostname     string `json:"Hostname"`
 	Type         string `json:"Type"`
 }
 
@@ -19,6 +19,6 @@ func (dto *PostServerResponse) Load(m *model.Server) {
 	dto.ID = m.ID
 	dto.URI = m.URI
 	dto.PhysicalUUID = m.PhysicalUUID
-	dto.Address = m.Address
+	dto.Hostname = m.Hostname
 	dto.Type = m.Type
 }

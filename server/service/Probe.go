@@ -10,18 +10,18 @@ import (
 
 // Probe will try to probe the server.
 func Probe(request *dto.PostServerRequest) (*model.ServerBasicInfo, error) {
-	c := client.FindBestClient(request.Address, request.Username, request.Password)
+	c := client.FindBestClient(request.Hostname, request.Username, request.Password)
 	if c == nil {
-		log.WithFields(log.Fields{"address": request.Address}).Warn("Probe server failed, can not find client.")
+		log.WithFields(log.Fields{"hostname": request.Hostname}).Warn("Probe server failed, can not find client.")
 		return nil, fmt.Errorf("failed to get server client")
 	}
 
 	serverBasicInfo, err := c.GetBasicInfo()
 	if err != nil {
-		log.WithFields(log.Fields{"address": request.Address, "err": err}).Warn("Probe server failed, can not get basic info.")
+		log.WithFields(log.Fields{"hostname": request.Hostname, "err": err}).Warn("Probe server failed, can not get basic info.")
 	}
 
-	serverBasicInfo.Address = request.Address
+	serverBasicInfo.Hostname = request.Hostname
 	serverBasicInfo.OriginUsername = &request.Username
 	serverBasicInfo.OriginPassword = &request.Password
 	serverBasicInfo.Name = "Name???"

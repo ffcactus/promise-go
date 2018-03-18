@@ -9,20 +9,23 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/google/uuid"
+	"promise/server/object/constvalue"
 )
 
 var (
 	delay = 5000
 )
 
+// MockClient is a mock client.
 type MockClient struct {
-	Address string
+	Hostname string
 }
 
+// GetInstance will return a mock client.
 func GetInstance(address string) *MockClient {
 	delay, _ = beego.AppConfig.Int("MockClientDelay")
 	return &MockClient{
-		Address: address,
+		Hostname: address,
 	}
 }
 
@@ -30,35 +33,40 @@ func mockDelay() {
 	time.Sleep(time.Duration(delay) * time.Millisecond)
 }
 
-func (this *MockClient) Support() bool {
-	if strings.HasPrefix(this.Address, model.MockType) {
+// Support return if the server support this client.
+func (c *MockClient) Support() bool {
+	if strings.HasPrefix(c.Hostname, constvalue.MockType) {
 		return true
-	} else {
-		return false
 	}
+	return false
+
 }
 
-func (this *MockClient) GetProtocol() *string {
-	return &model.MockProtocol
+// GetProtocol will the the protocol
+func (c *MockClient) GetProtocol() string {
+	return constvalue.MockProtocol
 }
 
-func (this *MockClient) GetBasicInfo() (*model.ServerBasicInfo, error) {
+// GetBasicInfo return the basic info.
+func (c *MockClient) GetBasicInfo() (*model.ServerBasicInfo, error) {
 	ret := model.ServerBasicInfo{}
 	ret.OriginURIs.Chassis = randString()
 	ret.OriginURIs.System = randString()
 	ret.PhysicalUUID = uuid.New().String()
-	ret.Name = this.Address
+	ret.Name = c.Hostname
 	ret.Description = *randString()
-	ret.Type = model.MockType
-	ret.Protocol = model.MockProtocol
+	ret.Type = constvalue.MockType
+	ret.Protocol = constvalue.MockProtocol
 	return &ret, nil
 }
 
-func (this *MockClient) CreateManagementAccount(username string, password string) error {
+// CreateManagementAccount is a mock method.
+func (c *MockClient) CreateManagementAccount(username string, password string) error {
 	return nil
 }
 
-func (this *MockClient) GetProcessors(systemID string) ([]model.Processor, error) {
+// GetProcessors is a mock method.
+func (c *MockClient) GetProcessors(systemID string) ([]model.Processor, error) {
 	var ret []model.Processor
 	ret = append(ret, *randProcessor("1"))
 	ret = append(ret, *randProcessor("2"))
@@ -66,7 +74,8 @@ func (this *MockClient) GetProcessors(systemID string) ([]model.Processor, error
 	return ret, nil
 }
 
-func (this *MockClient) GetMemory(systemID string) ([]model.Memory, error) {
+// GetMemory is a mock method.
+func (c *MockClient) GetMemory(systemID string) ([]model.Memory, error) {
 	var ret []model.Memory
 	ret = append(ret, *randMemory("1"))
 	ret = append(ret, *randMemory("2"))
@@ -74,7 +83,8 @@ func (this *MockClient) GetMemory(systemID string) ([]model.Memory, error) {
 	return ret, nil
 }
 
-func (this *MockClient) GetEthernetInterfaces(systemID string) ([]model.EthernetInterface, error) {
+// GetEthernetInterfaces is a mock method.
+func (c *MockClient) GetEthernetInterfaces(systemID string) ([]model.EthernetInterface, error) {
 	var ret []model.EthernetInterface
 	ret = append(ret, *randEthernetInterface("eth0"))
 	ret = append(ret, *randEthernetInterface("eth1"))
@@ -82,7 +92,8 @@ func (this *MockClient) GetEthernetInterfaces(systemID string) ([]model.Ethernet
 	return ret, nil
 }
 
-func (this *MockClient) GetNetworkInterfaces(systemID string) ([]model.NetworkInterface, error) {
+// GetNetworkInterfaces is a mock method.
+func (c *MockClient) GetNetworkInterfaces(systemID string) ([]model.NetworkInterface, error) {
 	var ret []model.NetworkInterface
 	ret = append(ret, *randNetworkInterface("NetworkInterface0"))
 	ret = append(ret, *randNetworkInterface("NetworkInterface1"))
@@ -90,7 +101,8 @@ func (this *MockClient) GetNetworkInterfaces(systemID string) ([]model.NetworkIn
 	return ret, nil
 }
 
-func (this *MockClient) GetStorages(systemID string) ([]model.Storage, error) {
+// GetStorages is a mock method.
+func (c *MockClient) GetStorages(systemID string) ([]model.Storage, error) {
 	var ret []model.Storage
 	ret = append(ret, *randStorage("Storage0"))
 	ret = append(ret, *randStorage("Storage1"))
@@ -98,28 +110,34 @@ func (this *MockClient) GetStorages(systemID string) ([]model.Storage, error) {
 	return ret, nil
 }
 
-func (this *MockClient) GetPower(chassisID string) (*model.Power, error) {
+// GetPower is a mock method.
+func (c *MockClient) GetPower(chassisID string) (*model.Power, error) {
 	return &model.Power{}, nil
 }
 
-func (this *MockClient) GetThermal(chassisID string) (*model.Thermal, error) {
+// GetThermal is a mock method.
+func (c *MockClient) GetThermal(chassisID string) (*model.Thermal, error) {
 	return &model.Thermal{}, nil
 }
 
-func (this *MockClient) GetOemHuaweiBoards(chassisID string) ([]model.OemHuaweiBoard, error) {
+// GetOemHuaweiBoards is a mock method.
+func (c *MockClient) GetOemHuaweiBoards(chassisID string) ([]model.OemHuaweiBoard, error) {
 	return []model.OemHuaweiBoard{}, nil
 }
 
-func (this *MockClient) GetNetworkAdapters(chassisID string) ([]model.NetworkAdapter, error) {
+// GetNetworkAdapters is a mock method.
+func (c *MockClient) GetNetworkAdapters(chassisID string) ([]model.NetworkAdapter, error) {
 	var ret []model.NetworkAdapter
 	return ret, nil
 }
 
-func (this *MockClient) GetDrives(chassisID string) ([]model.Drive, error) {
+// GetDrives is a mock method.
+func (c *MockClient) GetDrives(chassisID string) ([]model.Drive, error) {
 	return []model.Drive{}, nil
 }
 
-func (this *MockClient) GetPCIeDevices(chassisID string) ([]model.PCIeDevice, error) {
+// GetPCIeDevices is a mock method.
+func (c *MockClient) GetPCIeDevices(chassisID string) ([]model.PCIeDevice, error) {
 	return []model.PCIeDevice{}, nil
 }
 
@@ -337,6 +355,7 @@ const (
 	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
 )
 
+// RandStringBytesMaskImpr return a rand string
 func RandStringBytesMaskImpr(n int) string {
 	b := make([]byte, n)
 	// A rand.Int63() generates 63 random bits, enough for letterIdxMax letters!

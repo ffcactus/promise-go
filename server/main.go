@@ -25,14 +25,20 @@ func main() {
 		beego.NSRouter("/:id/action/:action", &controller.ServerActionController{}),
 	)
 	beego.AddNamespace(serverNS)
+
 	serverGroupNS := beego.NewNamespace(
 		app.RootURL+"/servergroup",
 		beego.NSRouter("/", &controller.ServerGroupRootController{}),
 		beego.NSRouter("/:id", &controller.ServerGroupController{}),
-		// beego.NSRouter("/:id/action/:action", &controller.ServerGroupActionController{}),
-
 	)
 	beego.AddNamespace(serverGroupNS)
+
+	serverServerGroupNS := beego.NewNamespace(
+		app.RootURL+"/servergroup",
+		beego.NSRouter("/", &controller.ServerServerGroupRootController{}),
+		beego.NSRouter("/:id", &controller.ServerServerGroupController{}),
+	)
+	beego.AddNamespace(serverServerGroupNS)
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins:  true,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},

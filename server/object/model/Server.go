@@ -1,27 +1,5 @@
 package model
 
-var (
-	// MockProtocol Protocol enum.
-	MockProtocol = "MockProtocol"
-	// RedfishV1 Protocol enum.
-	RedfishV1 = "RedfishV1"
-)
-
-var (
-	// MockType Server type enum.
-	MockType = "Mock"
-	// BladeType Server type enum.
-	BladeType = "Blade"
-	// RackType Server type enum.
-	RackType = "Rack"
-	// EnclosureType Server type enum.
-	EnclosureType = "Enclosure"
-	// SwitchType Server type enum.
-	SwitchType = "Switch"
-	// UnknownServerType Server type enum.
-	UnknownServerType = "Unknown"
-)
-
 // OriginURIs The
 type OriginURIs struct {
 	Chassis *string
@@ -53,7 +31,7 @@ type ServerBasicInfo struct {
 	PhysicalUUID   string
 	Name           string
 	Description    string
-	Address        string
+	Hostname       string
 	Type           string
 	Protocol       string
 	OriginUsername *string
@@ -70,7 +48,7 @@ type Server struct {
 	Health         string
 	OriginURIs     OriginURIs // The URIs that we retrieve info from.
 	PhysicalUUID   string
-	Address        string
+	Hostname       string
 	Type           string
 	Protocol       string
 	OriginUsername *string
@@ -91,7 +69,7 @@ func (o *ServerBasicInfo) CreateServer() *Server {
 	server.OriginURIs.Chassis = o.OriginURIs.Chassis
 	server.OriginURIs.System = o.OriginURIs.System
 	server.PhysicalUUID = o.PhysicalUUID
-	server.Address = o.Address
+	server.Hostname = o.Hostname
 	server.Type = o.Type
 	server.Protocol = o.Protocol
 	server.OriginUsername = o.OriginUsername

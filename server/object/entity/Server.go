@@ -17,7 +17,7 @@ type Server struct {
 	OriginURIsChassis  *string
 	OriginURIsSystem   *string
 	PhysicalUUID       string
-	Address            string
+	Hostname           string
 	Type               string
 	Protocol           string
 	Credential         string

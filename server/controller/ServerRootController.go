@@ -31,7 +31,7 @@ func (c *ServerRootController) Post() {
 		c.ServeJSON()
 		return
 	}
-	log.WithFields(log.Fields{"address": request.Address}).Info("Post server.")
+	log.WithFields(log.Fields{"hostname": request.Hostname}).Info("Post server.")
 	// Create the context for this operation.
 	server, messages := service.PostServer(request)
 	if messages != nil {
@@ -43,7 +43,7 @@ func (c *ServerRootController) Post() {
 		resp.Load(server)
 		c.Data["json"] = &resp
 		c.Ctx.Output.SetStatus(http.StatusCreated)
-		log.WithFields(log.Fields{"name": request.Address, "ID": resp.ID}).Info("Post server done.")
+		log.WithFields(log.Fields{"name": request.Hostname, "ID": resp.ID}).Info("Post server done.")
 	}
 	c.ServeJSON()
 }
