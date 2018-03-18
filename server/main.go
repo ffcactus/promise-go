@@ -27,9 +27,9 @@ func main() {
 	beego.AddNamespace(serverNS)
 	serverGroupNS := beego.NewNamespace(
 		app.RootURL+"/servergroup",
-		beego.NSRouter("/", &controller.GroupRootController{}),
-		beego.NSRouter("/:id", &controller.GroupController{}),
-		// beego.NSRouter("/:id/action/:action", &controller.GroupActionController{}),
+		beego.NSRouter("/", &controller.ServerGroupRootController{}),
+		beego.NSRouter("/:id", &controller.ServerGroupController{}),
+		// beego.NSRouter("/:id/action/:action", &controller.ServerGroupActionController{}),
 
 	)
 	beego.AddNamespace(serverGroupNS)
@@ -59,5 +59,5 @@ func initDB() {
 			log.Info("DB schema created.")
 		}
 	}
-	service.CreateDefaultGroup()
+	service.CreateDefaultServerGroup()
 }

@@ -9,7 +9,7 @@ import (
 
 func init() {
 	refreshTaskTotalTime = 0
-	for i, _ := range ServerTaskRefreshStepLIST {
+	for i := range ServerTaskRefreshStepLIST {
 		refreshTaskTotalTime += ServerTaskRefreshStepLIST[i].ExpectedExecutionMs
 	}
 }

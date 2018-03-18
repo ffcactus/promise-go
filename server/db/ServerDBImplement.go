@@ -8,9 +8,9 @@ import (
 	"promise/common/app"
 	commonDB "promise/common/db"
 	commonUtil "promise/common/util"
+	"promise/server/object/constvalue"
 	"promise/server/object/entity"
 	"promise/server/object/model"
-	"promise/server/util"
 )
 
 // ServerDBImplement The DB implementation.
@@ -131,7 +131,7 @@ func (i *ServerDBImplement) GetServerFull(ID string) *model.Server {
 func (i *ServerDBImplement) FindServerStateAdded() string {
 	c := commonDB.GetConnection()
 	var s = new(entity.Server)
-	if notFound := c.Where("State = ?", util.ServerStateAdded).First(s).RecordNotFound(); notFound {
+	if notFound := c.Where("State = ?", constvalue.ServerStateAdded).First(s).RecordNotFound(); notFound {
 		return ""
 	}
 	return s.ID
@@ -149,13 +149,13 @@ func (i *ServerDBImplement) GetAndLockServer(ID string) (bool, *model.Server) {
 		tx.Rollback()
 		return false, nil
 	}
-	if !util.ServerLockable(s.State) {
+	if !constvalue.ServerLockable(s.State) {
 		// Server not ready, rollback.
 		tx.Rollback()
 		return false, createServerModel(s)
 	}
 	// Change the state.
-	tx.Model(s).UpdateColumn("State", util.ServerStateLocked)
+	tx.Model(s).UpdateColumn("State", constvalue.ServerStateLocked)
 	// Commit.
 	tx.Commit()
 	return true, createServerModel(s)

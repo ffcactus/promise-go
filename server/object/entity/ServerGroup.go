@@ -1,11 +1,13 @@
 package entity
 
 import (
+	"promise/common/app"
+	"promise/server/object/constvalue"
 	"promise/server/object/model"
 	"time"
 )
 
-// ServerGroup is the entity of server group.
+// ServerGroup is the entity of servergroup.
 type ServerGroup struct {
 	Entity
 	CreatedAt   time.Time
@@ -18,6 +20,7 @@ type ServerGroup struct {
 func (e *ServerGroup) ToModel() *model.ServerGroup {
 	ret := new(model.ServerGroup)
 	ret.ID = e.ID
+	ret.URI = app.RootURL + constvalue.ToServerGroupURI(e.ID)
 	ret.Name = e.Name
 	ret.Description = e.Description
 	return ret

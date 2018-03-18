@@ -2,8 +2,8 @@ package com.promise.integrationtest.servergroup.message;
 
 public enum ServerGroupMessage
 {
-    EXIST ("MessageIDGroupExist"),
-    NOT_EXIST ("MessageIDGroupNotExist");
+    EXIST ("MessageIDServerGroupExist"),
+    NOT_EXIST ("MessageIDServerGroupNotExist");
 
     private String id;
 

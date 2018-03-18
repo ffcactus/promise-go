@@ -1,7 +1,7 @@
 package model
 
-// Group is the model of server group.
-type Group struct {
+// ServerGroup is the model of servergroup.
+type ServerGroup struct {
 	ID          string
 	URI         string
 	Name        string

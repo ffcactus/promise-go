@@ -4,8 +4,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	wsSDK "promise/sdk/ws"
 	"promise/server/context"
+	"promise/server/object/constvalue"
 	"promise/server/object/message"
-	"promise/server/util"
 )
 
 // RackServerPostStrategy is the strategy for post rack server.
@@ -49,8 +49,8 @@ func (s *RackServerPostStrategy) Execute(c *context.PostServerContext) error {
 		return err
 	}
 	// Set the servers init state and health.
-	c.Server.State = util.ServerStateAdded
-	c.Server.Health = util.ServerHealthOK
+	c.Server.State = constvalue.ServerStateAdded
+	c.Server.Health = constvalue.ServerHealthOK
 	if err := s.SaveServer(&c.ServerContext); err != nil {
 		return err
 	}
