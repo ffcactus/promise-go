@@ -1,7 +1,5 @@
 package com.promise.integrationtest.servergroup;
 
-import java.util.List;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -11,10 +9,8 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.promise.integrationtest.base.DeleteResourceResponse;
 import com.promise.integrationtest.base.PromiseIntegrationTest;
-import com.promise.integrationtest.dto.Message;
 import com.promise.integrationtest.servergroup.dto.GetServerGroupResponse;
 import com.promise.integrationtest.servergroup.dto.PostServerGroupRequest;
 import com.promise.integrationtest.servergroup.message.ServerGroupMessage;
@@ -40,11 +36,11 @@ public class ServerGroupTest extends PromiseIntegrationTest
     public void setUp()
             throws Exception
     {
-    	// Remove all the server group.
+        // Remove all the server group.
         final ResponseEntity<DeleteResourceResponse> response = RestClient.delete(
-        		getRootURL() + "/promise/v1/servergroup/",
+                getRootURL() + "/promise/v1/servergroup/",
                 DeleteResourceResponse.class);
-        Assert.assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());    	    	
+        Assert.assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
     }
 
     @After
@@ -72,7 +68,7 @@ public class ServerGroupTest extends PromiseIntegrationTest
 
         // Get it.
         final ResponseEntity<GetServerGroupResponse> response2 = RestClient.get(
-        		getRootURL() + "/promise/v1/servergroup/" + response1.getBody().getId(),
+                getRootURL() + "/promise/v1/servergroup/" + response1.getBody().getId(),
                 GetServerGroupResponse.class);
         Assert.assertEquals(HttpStatus.OK, response2.getStatusCode());
         PromiseAssertUtil.isResource(response2.getBody());
@@ -81,16 +77,16 @@ public class ServerGroupTest extends PromiseIntegrationTest
 
         // Delete it.
         final ResponseEntity<DeleteResourceResponse> response3 = RestClient.delete(
-        		getRootURL() + "/promise/v1/servergroup/" + response1.getBody().getId(),
+                getRootURL() + "/promise/v1/servergroup/" + response1.getBody().getId(),
                 DeleteResourceResponse.class);
         Assert.assertEquals(HttpStatus.ACCEPTED, response3.getStatusCode());
     }
-    
+
     @Test
     public void testPostExist()
     {
-    	// Create the default "all" server group should fail.
-    	final PostServerGroupRequest request = new PostServerGroupRequest("all", "default server group");
-    	PromiseAssertUtil.assertPostMessage(ServerGroupMessage.EXIST.getId(), getRootURL() + "/promise/v1/servergroup/", request);
+        // Create the default "all" server group should fail.
+        final PostServerGroupRequest request = new PostServerGroupRequest("all", "default server group");
+        PromiseAssertUtil.assertPostMessage(ServerGroupMessage.EXIST.getId(), getRootURL() + "/promise/v1/servergroup/", request);
     }
 }
