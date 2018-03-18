@@ -40,13 +40,34 @@ func (i *ServerDBImplement) PostServer(s *model.Server) (*model.Server, error) {
 	c := commonDB.GetConnection()
 	if exist, _ := i.IsServerExist(s); exist {
 		// TODO get the server to return.
-		log.WithFields(log.Fields{"physicalUUID": s.PhysicalUUID}).Info("Post server in DB failed, server exist.")
+		log.WithFields(log.Fields{"hostname": s.Hostname}).Info("Post server in DB failed, server exist.")
 		return nil, errors.New("server exist")
 	}
 	var server = createServerEntityFromServer(s)
+	var serverServerGroup = new(entity.ServerServerGroup)
+
 	// Generate the UUID.
 	server.ID = uuid.New().String()
-	c.Create(server)
+	serverServerGroup.ID = uuid.New().String()
+	serverServerGroup.ServerID = server.ID
+	serverServerGroup.ServerGroupID = DefaultServerGroupID
+	// We need make sure save server and add it to the default server group both success or failure.
+	tx := c.Begin()
+	if err := tx.Error; err != nil {
+		log.WithFields(log.Fields{"hostname": s.Hostname, "error": err}).Info("Post server in DB failed, start transaction failed.")
+		return nil, err
+	}
+	if err := tx.Create(server).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{"hostname": s.Hostname, "error": err}).Info("Post server in DB failed, create server failed, transaction rollback.")
+		return nil, err
+	}
+	if err := tx.Create(serverServerGroup).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{"hostname": s.Hostname, "error": err}).Info("Post server in DB failed, create server-servergroup failed, transaction rollback.")
+		return nil, err
+	}
+	tx.Commit()
 	return createServerModel(server), nil
 }
 

@@ -15,7 +15,7 @@ func CreateDefaultServerGroup() {
 	request.Name = "all"
 	request.Description = "The default servergroup that includes all the servers."
 	dbImpl := db.GetServerGroupDB()
-	_, exist, err := dbImpl.PostServerGroup(request.ToModel())
+	sg, exist, err := dbImpl.PostServerGroup(request.ToModel())
 	if exist {
 		log.Debug("The default servergroup exist.")
 	}
@@ -24,7 +24,7 @@ func CreateDefaultServerGroup() {
 	} else {
 		log.Info("Default servergroup created.")
 	}
-
+	db.DefaultServerGroupID = sg.ID
 }
 
 // PostServerGroup post a server group.

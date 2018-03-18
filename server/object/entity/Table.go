@@ -36,5 +36,6 @@ var (
 		{Name: "PCIeFunction", Info: new(PCIeFunction)},
 		{Name: "NetworkPort", Info: new(NetworkPort)},
 		{Name: "ServerGroup", Info: new(ServerGroup)},
+		{Name: "ServerServerGroup", Info: new(ServerServerGroup)},
 	}
 )
