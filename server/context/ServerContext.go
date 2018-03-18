@@ -5,6 +5,7 @@ import (
 	wsSDK "promise/sdk/ws"
 	serverClient "promise/server/client"
 	"promise/server/db"
+	"promise/server/object/constvalue"
 	serverM "promise/server/object/model"
 	taskDto "promise/task/object/dto"
 	taskModel "promise/task/object/model"
@@ -63,7 +64,7 @@ func (c *ServerContext) DispatchServerDelete() {
 	if c.Server == nil {
 		log.Warn("Dispatch server in the context failed, server = nil.")
 	}
-	wsSDK.DispatchServerDelete(c.Server.URI)
+	wsSDK.DispatchServerDelete(constvalue.ToServerURI(c.Server.ID))
 }
 
 // CreateTask Create task.
@@ -90,7 +91,7 @@ func (c *ServerContext) UpdateStepExecutionState(stepName string, state taskMode
 	log.WithFields(log.Fields{"id": c.Server.ID, "task": c.Server.CurrentTask, "step": stepName, "state": state}).Debug("Update step execution state.")
 	_, message, err := taskSDK.SetStepExecutionState(c.Server.CurrentTask, stepName, state)
 	if err != nil {
-		log.WithFields(log.Fields{"id": c.Server.ID, "task": c.Server.CurrentTask, "step": stepName, "state": state, "err": err}).Warn("Update task step execution state failed.")		
+		log.WithFields(log.Fields{"id": c.Server.ID, "task": c.Server.CurrentTask, "step": stepName, "state": state, "err": err}).Warn("Update task step execution state failed.")
 		return
 	}
 	if message != nil {

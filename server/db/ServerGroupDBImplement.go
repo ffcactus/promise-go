@@ -3,7 +3,6 @@ package db
 import (
 	"fmt"
 	"github.com/google/uuid"
-	"promise/common/app"
 	commonDB "promise/common/db"
 	"promise/server/object/entity"
 	"promise/server/object/model"
@@ -75,7 +74,6 @@ func (i *ServerGroupDBImplement) GetServerGroupCollection(start int, count int) 
 	for i := range sgCollection {
 		ret.Members = append(ret.Members, model.ServerGroupMember{
 			ID:   sgCollection[i].ID,
-			URI:  toServerGroupURI(sgCollection[i].ID),
 			Name: sgCollection[i].Name,
 		})
 	}
@@ -99,9 +97,4 @@ func (i *ServerGroupDBImplement) DeleteServerGroup(id string) (bool, error) {
 func (i *ServerGroupDBImplement) DeleteServerGroupCollection() error {
 	c := commonDB.GetConnection()
 	return c.Where("name <> ?", "all").Delete(entity.ServerGroup{}).Error
-}
-
-func toServerGroupURI(ID string) string {
-	s := app.RootURL + "/servergroup" + ID
-	return s
 }

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
-	"promise/common/app"
 	commonDB "promise/common/db"
 	commonUtil "promise/common/util"
 	"promise/server/object/constvalue"
@@ -78,7 +77,6 @@ func (i *ServerDBImplement) GetServerCollection(start int, count int) (*model.Se
 	ret.Total = total
 	for i := range server {
 		ret.Members = append(ret.Members, model.ServerMember{
-			URI:    toServerURI(server[i].ID),
 			Name:   server[i].Name,
 			State:  server[i].State,
 			Health: server[i].Health,
@@ -550,11 +548,6 @@ func (i *ServerDBImplement) UpdatePCIeDevices(ID string, pcieDevices []model.PCI
 	return nil
 }
 
-func toServerURI(ID string) string {
-	s := app.RootURL + "/server" + ID
-	return s
-}
-
 func createServerModel(e *entity.Server) *model.Server {
 	m := model.Server{}
 	m.ID = e.ID
@@ -563,7 +556,6 @@ func createServerModel(e *entity.Server) *model.Server {
 	m.PhysicalUUID = e.PhysicalUUID
 	m.Name = e.Name
 	m.Description = e.Description
-	m.URI = toServerURI(e.ID)
 	m.Hostname = e.Hostname
 	m.Type = e.Type
 	m.Protocol = e.Protocol

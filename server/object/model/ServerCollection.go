@@ -2,7 +2,7 @@ package model
 
 // ServerMember Server member in collection.
 type ServerMember struct {
-	URI    string
+	ID     string
 	Name   string
 	State  string
 	Health string

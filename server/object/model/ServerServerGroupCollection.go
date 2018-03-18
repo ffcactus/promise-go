@@ -2,8 +2,7 @@ package model
 
 // ServerServerGroupMember is the member in collection.
 type ServerServerGroupMember struct {
-	URI string
-	ID  string
+	ID string
 }
 
 // ServerServerGroupCollection is the model of servergroup collection.

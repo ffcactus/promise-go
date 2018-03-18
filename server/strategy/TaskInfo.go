@@ -1,6 +1,7 @@
 package strategy
 
 import (
+	"promise/server/object/constvalue"
 	// commonDto "promise/common/object/dto"
 	"promise/server/object/model"
 	taskDto "promise/task/object/dto"
@@ -126,7 +127,7 @@ func CreateRefreshTaskRequest(server *model.Server) *taskDto.PostTaskRequest {
 	request.CreatedByName = "CreatedByName???"
 	request.CreatedByURI = "CreatedByURI???"
 	request.TargetName = server.Name
-	request.TargetURI = server.URI
+	request.TargetURI = constvalue.ToServerURI(server.ID)
 	request.TaskSteps = ServerTaskRefreshStepLIST
 	return &request
 }

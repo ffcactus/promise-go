@@ -11,7 +11,6 @@ type Server struct {
 	Health             string
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
-	URI                string
 	Name               string
 	Description        string
 	OriginURIsChassis  *string

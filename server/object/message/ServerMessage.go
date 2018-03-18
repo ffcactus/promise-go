@@ -3,6 +3,7 @@ package message
 import (
 	"net/http"
 	commonM "promise/common/object/model"
+	"promise/server/object/constvalue"
 	"promise/server/object/model"
 )
 
@@ -34,7 +35,7 @@ const (
 
 // NewArgumentServerID Get argument by server.
 func NewArgumentServerID(s *model.Server) commonM.Argument {
-	return commonM.Argument{Type: "URI", Name: s.Name, Value: s.URI}
+	return commonM.Argument{Type: "URI", Name: s.Name, Value: constvalue.ToServerURI(s.ID)}
 }
 
 // NewServerInternalError Create internel error.

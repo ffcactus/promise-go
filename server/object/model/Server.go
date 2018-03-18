@@ -41,7 +41,6 @@ type ServerBasicInfo struct {
 // Server Server object.
 type Server struct {
 	ID             string
-	URI            string
 	Name           string
 	Description    string
 	State          string
