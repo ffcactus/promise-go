@@ -4,6 +4,7 @@ import (
 	"promise/server/object/model"
 )
 
+// ComputerSystem is DTO.
 type ComputerSystem struct {
 	Processors         []Processor         `json:"Processors"`
 	Memory             []Memory            `json:"Memory"`
@@ -12,6 +13,7 @@ type ComputerSystem struct {
 	Storages           []Storage           `json:"Storages"`
 }
 
+// Chassis is DTO.
 type Chassis struct {
 	Power           Power            `json:"Power"`
 	Thermal         Thermal          `json:"Thermal"`
@@ -21,6 +23,7 @@ type Chassis struct {
 	PCIeDevices     []PCIeDevice     `json:"PCIeDevices"`
 }
 
+// GetServerResponse is DTO.
 type GetServerResponse struct {
 	ID             string         `json:"ID"`
 	URI            string         `json:"URI"`
@@ -36,6 +39,7 @@ type GetServerResponse struct {
 	Chassis        Chassis        `json:"Chassis"`
 }
 
+// Load will load data from model.
 func (dto *GetServerResponse) Load(m *model.Server) {
 	if m == nil {
 		return

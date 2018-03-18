@@ -13,18 +13,18 @@ import (
 	"strconv"
 )
 
-// ServerGroupRootController The root controller
-type ServerGroupRootController struct {
+// GroupRootController The root controller
+type GroupRootController struct {
 	beego.Controller
 }
 
 // Post a new server group.
-func (c *ServerGroupRootController) Post() {
+func (c *GroupRootController) Post() {
 	var (
-		request  dto.PostServerGroupRequest
-		response dto.PostServerGroupResponse
+		request  dto.PostGroupRequest
+		response dto.PostGroupResponse
 	)
-	
+
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &request); err != nil {
 		log.WithFields(log.Fields{"err": err}).Info("Post server group failed, unable to get request.")
 		messages := []commonM.Message{}
@@ -36,7 +36,7 @@ func (c *ServerGroupRootController) Post() {
 	}
 	log.WithFields(log.Fields{"name": request.Name}).Info("Post server group.")
 	// Create the context for this operation.
-	serverGroup, messages := service.PostServerGroup(&request)
+	serverGroup, messages := service.PostGroup(&request)
 	if messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
@@ -51,7 +51,7 @@ func (c *ServerGroupRootController) Post() {
 }
 
 // Get will return server group collection.
-func (c *ServerGroupRootController) Get() {
+func (c *GroupRootController) Get() {
 	var (
 		start, count       string = c.GetString("start"), c.GetString("count")
 		startInt, countInt int    = 0, -1
@@ -83,12 +83,12 @@ func (c *ServerGroupRootController) Get() {
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		log.Warn("Get server group collection failed, parameter error.")
 	} else {
-		if serverCollection, messages := service.GetServerGroupCollection(startInt, countInt); messages != nil {
+		if serverCollection, messages := service.GetGroupCollection(startInt, countInt); messages != nil {
 			c.Data["json"] = commonDto.MessagesToDto(messages)
 			c.Ctx.Output.SetStatus(messages[0].StatusCode)
 			log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Get server group collection failed")
 		} else {
-			resp := new(dto.GetServerGroupCollectionResponse)
+			resp := new(dto.GetGroupCollectionResponse)
 			resp.Load(serverCollection)
 			c.Data["json"] = resp
 			c.Ctx.Output.SetStatus(http.StatusOK)
@@ -98,8 +98,8 @@ func (c *ServerGroupRootController) Get() {
 }
 
 // Delete will delete all the group except default "all" server group.
-func (c *ServerGroupRootController) Delete() {
-	messages := service.DeleteServerGroupCollection()
+func (c *GroupRootController) Delete() {
+	messages := service.DeleteGroupCollection()
 	if messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)

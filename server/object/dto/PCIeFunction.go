@@ -5,7 +5,7 @@ import (
 	"promise/server/object/model"
 )
 
-// This is the schema definition for the PCIeFunction resource.  It represents the properties of a PCIeFunction attached to a System.
+// PCIeFunction This is the schema definition for the PCIeFunction resource.  It represents the properties of a PCIeFunction attached to a System.
 type PCIeFunction struct {
 	ResourceResponse
 	DeviceClass        *string       // The class for this PCIe Function.
@@ -16,6 +16,7 @@ type PCIeFunction struct {
 	EthernetInterfaces []ResourceRef // An array of references to the ethernet interfaces which the PCIe device produces.
 }
 
+// Load will load data from model.
 func (dto *PCIeFunction) Load(m *model.PCIeFunction, ethernetInterfaces []model.EthernetInterface) {
 	dto.LoadResourceResponse(&m.Resource)
 	dto.DeviceClass = m.DeviceClass

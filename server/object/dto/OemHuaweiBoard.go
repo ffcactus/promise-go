@@ -4,6 +4,7 @@ import (
 	"promise/server/object/model"
 )
 
+// OemHuaweiBoard is DTO.
 type OemHuaweiBoard struct {
 	ResourceResponse
 	ProductInfoResponse
@@ -18,6 +19,7 @@ type OemHuaweiBoard struct {
 	ManufactureDate *string
 }
 
+// Load will load data from model.
 func (dto *OemHuaweiBoard) Load(m *model.OemHuaweiBoard) {
 	dto.LoadResourceResponse(&m.Resource)
 	dto.LoadProductInfoResponse(&m.ProductInfo)

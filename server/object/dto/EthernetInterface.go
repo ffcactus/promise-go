@@ -4,7 +4,7 @@ import (
 	"promise/server/object/model"
 )
 
-// This schema defines a simple ethernet NIC resource.
+// EthernetInterface This schema defines a simple ethernet NIC resource.
 type EthernetInterface struct {
 	ResourceResponse
 	UefiDevicePath         *string                `json:"UefiDevicePath,omitempty"`         // The UEFI device path for this interface.
@@ -25,7 +25,7 @@ type EthernetInterface struct {
 	LinkStatus             *string                `json:"LinkStatus,omitempty"`             // The link status of this interface (port).
 }
 
-// This type describes an IPv4 Address.
+// IPv4Address This type describes an IPv4 Address.
 type IPv4Address struct {
 	Address       *string `json:"Address,omitempty"`       // This is the IPv4 Address.
 	SubnetMask    *string `json:"SubnetMask,omitempty"`    // This is the IPv4 Subnet mask.
@@ -33,7 +33,7 @@ type IPv4Address struct {
 	Gateway       *string `json:"Gateway,omitempty"`       // This is the IPv4 gateway for this address.
 }
 
-// This type describes an IPv6 Address.
+// IPv6Address is DTO's property.
 type IPv6Address struct {
 	Address       *string `json:"Address,omitempty"`       // This is the IPv6 Address.
 	PrefixLength  *int    `json:"PrefixLength,omitempty"`  // This is the IPv6 Address Prefix Length.
@@ -41,54 +41,56 @@ type IPv6Address struct {
 	AddressState  *string `json:"AddressState,omitempty"`  // The current state of this address as defined in RFC 4862.
 }
 
+// VLanNetworkInterface is DTO's property.
 type VLanNetworkInterface struct {
 	VLANEnable *bool `json:"VLANEnable,omitempty"` // This indicates if this VLAN is enabled.
 	VLANID     *int  `json:"VLANID,omitempty"`     // This indicates the VLAN identifier for this VLAN.
 }
 
-func (this *EthernetInterface) Load(m *model.EthernetInterface) {
-	this.LoadResourceResponse(&(*m).Resource)
-	this.UefiDevicePath = m.UefiDevicePath
-	this.InterfaceEnabled = m.InterfaceEnabled
-	this.PermanentMACAddress = m.PermanentMACAddress
-	this.MACAddress = m.MACAddress
-	this.SpeedMbps = m.SpeedMbps
-	this.AutoNeg = m.AutoNeg
-	this.FullDuplex = m.FullDuplex
-	this.MTUSize = m.MTUSize
-	this.HostName = m.HostName
-	this.FQDN = m.FQDN
-	this.MaxIPv6StaticAddresses = m.MaxIPv6StaticAddresses
-	this.LinkStatus = m.LinkStatus
-	this.IPv4Addresses = make([]IPv4Address, 0)
+// Load will load data from model.
+func (dto *EthernetInterface) Load(m *model.EthernetInterface) {
+	dto.LoadResourceResponse(&(*m).Resource)
+	dto.UefiDevicePath = m.UefiDevicePath
+	dto.InterfaceEnabled = m.InterfaceEnabled
+	dto.PermanentMACAddress = m.PermanentMACAddress
+	dto.MACAddress = m.MACAddress
+	dto.SpeedMbps = m.SpeedMbps
+	dto.AutoNeg = m.AutoNeg
+	dto.FullDuplex = m.FullDuplex
+	dto.MTUSize = m.MTUSize
+	dto.HostName = m.HostName
+	dto.FQDN = m.FQDN
+	dto.MaxIPv6StaticAddresses = m.MaxIPv6StaticAddresses
+	dto.LinkStatus = m.LinkStatus
+	dto.IPv4Addresses = make([]IPv4Address, 0)
 	if m.IPv4Addresses != nil {
-		for i, _ := range m.IPv4Addresses {
+		for i := range m.IPv4Addresses {
 			each := IPv4Address{}
 			each.Address = m.IPv4Addresses[i].Address
 			each.SubnetMask = m.IPv4Addresses[i].SubnetMask
 			each.AddressOrigin = m.IPv4Addresses[i].AddressOrigin
 			each.Gateway = m.IPv4Addresses[i].Gateway
-			this.IPv4Addresses = append(this.IPv4Addresses, each)
+			dto.IPv4Addresses = append(dto.IPv4Addresses, each)
 		}
 	}
-	this.IPv6Addresses = make([]IPv6Address, 0)
+	dto.IPv6Addresses = make([]IPv6Address, 0)
 	if m.IPv6Addresses != nil {
-		for i, _ := range m.IPv6Addresses {
+		for i := range m.IPv6Addresses {
 			each := IPv6Address{}
 			each.Address = m.IPv6Addresses[i].Address
 			each.PrefixLength = m.IPv6Addresses[i].PrefixLength
 			each.AddressOrigin = m.IPv6Addresses[i].AddressOrigin
 			each.AddressState = m.IPv6Addresses[i].AddressState
-			this.IPv6Addresses = append(this.IPv6Addresses, each)
+			dto.IPv6Addresses = append(dto.IPv6Addresses, each)
 		}
 	}
-	this.VLANs = make([]VLanNetworkInterface, 0)
+	dto.VLANs = make([]VLanNetworkInterface, 0)
 	if m.VLANs != nil {
-		for i, _ := range m.VLANs {
+		for i := range m.VLANs {
 			each := VLanNetworkInterface{}
 			each.VLANEnable = m.VLANs[i].VLANEnable
 			each.VLANID = m.VLANs[i].VLANID
-			this.VLANs = append(this.VLANs, each)
+			dto.VLANs = append(dto.VLANs, each)
 		}
 	}
 }

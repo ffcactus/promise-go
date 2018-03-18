@@ -10,17 +10,17 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// ServerGroupController Server controller.
-type ServerGroupController struct {
+// GroupController is the group controller.
+type GroupController struct {
 	beego.Controller
 }
 
 // Get will return the server group by ID.
-func (c *ServerGroupController) Get() {
-	var resp dto.GetServerGroupResponse
+func (c *GroupController) Get() {
+	var resp dto.GetGroupResponse
 	var id = c.Ctx.Input.Param(":id")
 	log.WithFields(log.Fields{"id": id}).Debug("Get server group.")
-	if sg, messages := service.GetServerGroup(id); messages != nil {
+	if sg, messages := service.GetGroup(id); messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		log.WithFields(log.Fields{"id": id, "message": messages[0].ID}).Debug("Get server group failed.")
@@ -33,15 +33,15 @@ func (c *ServerGroupController) Get() {
 }
 
 // Delete will delete the server group by ID.
-func (c *ServerGroupController) Delete() {
+func (c *GroupController) Delete() {
 	var id = c.Ctx.Input.Param(":id")
 	log.WithFields(log.Fields{"id": id}).Debug("Delete server group.")
-	if messages := service.DeleteServerGroup(id); messages != nil {
+	if messages := service.DeleteGroup(id); messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		log.WithFields(log.Fields{"id": id, "message": messages[0].ID}).Debug("Delete server group failed.")
 	}
 	c.Ctx.Output.SetStatus(http.StatusAccepted)
-	
+
 	c.ServeJSON()
 }

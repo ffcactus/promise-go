@@ -4,7 +4,7 @@ import (
 	"promise/server/object/model"
 )
 
-// This is the definition for fans.
+// Fan This is the definition for fans.
 type Fan struct {
 	MemberResponse
 	ProductInfoResponse
@@ -16,7 +16,7 @@ type Fan struct {
 	ReadingUnits *string `json:"ReadingUnits"` // Units in which the reading and thresholds are measured.
 }
 
-// This is the definition for temperature sensors.
+// Temperature This is the definition for temperature sensors.
 type Temperature struct {
 	MemberResponse
 	ThresholdResponse
@@ -26,17 +26,19 @@ type Temperature struct {
 	MaxReadingRangeTemp *int `json:"MaxReadingRangeTemp"` // Maximum value for ReadingCelsius.
 }
 
+// Thermal is the DTO.
 type Thermal struct {
 	ResourceResponse
 	Temperatures []Temperature `json:"Temperatures"` // This is the definition for temperature sensors.
 	Fans         []Fan         `json:"Fans"`         // This is the definition for fans.
 }
 
+// Load will load data from model.
 func (dto *Thermal) Load(m *model.Thermal) {
 	dto.LoadResourceResponse(&m.Resource)
 	dto.Temperatures = make([]Temperature, 0)
 	dto.Fans = make([]Fan, 0)
-	for i, _ := range m.Temperatures {
+	for i := range m.Temperatures {
 		d := Temperature{}
 		m := m.Temperatures[i]
 		d.LoadMemberResponse(&m.Member)
@@ -47,7 +49,7 @@ func (dto *Thermal) Load(m *model.Thermal) {
 		d.MaxReadingRangeTemp = m.MaxReadingRangeTemp
 		dto.Temperatures = append(dto.Temperatures, d)
 	}
-	for i, _ := range m.Temperatures {
+	for i := range m.Temperatures {
 		d := Temperature{}
 		m := m.Temperatures[i]
 		d.LoadMemberResponse(&m.Member)
@@ -58,7 +60,7 @@ func (dto *Thermal) Load(m *model.Thermal) {
 		d.MaxReadingRangeTemp = m.MaxReadingRangeTemp
 		dto.Temperatures = append(dto.Temperatures, d)
 	}
-	for i, _ := range m.Fans {
+	for i := range m.Fans {
 		d := Fan{}
 		m := m.Fans[i]
 		d.LoadMemberResponse(&m.Member)

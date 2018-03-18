@@ -4,7 +4,7 @@ import (
 	"promise/server/object/model"
 )
 
-// This is the definition for voltage sensors.
+// Voltage This is the definition for voltage sensors.
 type Voltage struct {
 	ResourceResponse
 	ThresholdResponse
@@ -13,24 +13,23 @@ type Voltage struct {
 	MinReadingRange *float64 `json:"MinReadingRange,omitempty"` // Minimum value for this Voltage sensor.
 	MaxReadingRange *float64 `json:"MaxReadingRange,omitempty"` // Maximum value for this Voltage sensor.
 	PhysicalContext *string  `json:"PhysicalContext,omitempty"`
-	//	RelatedItem     *[]string // Describes the areas or devices to which this voltage measurement applies.
 }
 
-// Power readings for this chassis.
+// PowerMetrics Power readings for this chassis.
 type PowerMetrics struct {
 	MinConsumedWatts     *float64 `json:"MinConsumedWatts,omitempty"`     // The lowest power consumption level over the measurement window (the last IntervalInMin minutes).
 	MaxConsumedWatts     *float64 `json:"MaxConsumedWatts,omitempty"`     // The highest power consumption level that has occured over the measurement window (the last IntervalInMin minutes).
 	AverageConsumedWatts *float64 `json:"AverageConsumedWatts,omitempty"` // The average power level over the measurement window (the last IntervalInMin minutes).
 }
 
-// This object contains power limit status and configuration information for the chassis.
+// PowerLimit This object contains power limit status and configuration information for the chassis.
 type PowerLimit struct {
 	LimitInWatts   *float64 `json:"LimitInWatts"`             // The Power limit in watts. Set to null to disable power capping.
 	LimitException *string  `json:"LimitException"`           // The action that is taken if the power cannot be maintained below the LimitInWatts.
 	CorrectionInMs *float64 `json:"CorrectionInMs,omitempty"` // The time required for the limiting process to reduce power consumption to below the limit.
 }
 
-// This is the definition for power control function (power reading/limiting).
+// PowerControl This is the definition for power control function (power reading/limiting).
 type PowerControl struct {
 	ResourceResponse
 	ProductInfoResponse
@@ -44,7 +43,7 @@ type PowerControl struct {
 	// RelatedItem         *[]string
 }
 
-// This type shall describe an input range that the associated power supply is able to utilize.
+// InputRange This type shall describe an input range that the associated power supply is able to utilize.
 type InputRange struct {
 	InputType          *string `json:"InputType,omitempty"`          // The Input type (AC or DC).
 	MinimumVoltage     *int    `json:"MinimumVoltage,omitempty"`     // The minimum line input voltage at which this power supply input range is effective.
@@ -53,7 +52,7 @@ type InputRange struct {
 	OutputWattage      *int    `json:"OutputWattage,omitempty"`      // The maximum capacity of this Power Supply when operating in this input range.
 }
 
-//
+// PowerSupply is DTO.
 type PowerSupply struct {
 	ResourceResponse
 	ProductInfoResponse
@@ -69,6 +68,7 @@ type PowerSupply struct {
 	IndicatorLed *string `json:"IndicatorLed,omitempty"` // The state of the indicator LED, used to identify the power supply.
 }
 
+// Power is DTO.
 type Power struct {
 	ResourceResponse
 	PowerControl  []PowerControl `json:"PowerControl"`  // This is the definition for power control function (power reading/limiting).
@@ -77,6 +77,7 @@ type Power struct {
 	Redundancy    []Redundancy   `json:"Redundancy"`    // Redundancy information for the power subsystem of this system or device.
 }
 
+// Load will load data from model.
 func (dto *Power) Load(m *model.Power) {
 	dto.LoadResourceResponse(&m.Resource)
 	dto.PowerControl = make([]PowerControl, 0)
@@ -85,7 +86,7 @@ func (dto *Power) Load(m *model.Power) {
 	dto.Redundancy = make([]Redundancy, 0)
 	// PowerControl
 	if m.PowerControl != nil {
-		for i, _ := range *m.PowerControl {
+		for i := range *m.PowerControl {
 			each := PowerControl{}
 			powerControl := (*m.PowerControl)[i]
 			each.LoadResourceResponse(&powerControl.Resource)
@@ -112,7 +113,7 @@ func (dto *Power) Load(m *model.Power) {
 	}
 	// Voltages
 	if m.Voltages != nil {
-		for i, _ := range *m.Voltages {
+		for i := range *m.Voltages {
 			each := Voltage{}
 			voltage := (*m.Voltages)[i]
 			each.LoadResourceResponse(&voltage.Resource)
@@ -127,7 +128,7 @@ func (dto *Power) Load(m *model.Power) {
 	}
 	// PowerSupply
 	if m.PowerSupplies != nil {
-		for i, _ := range *m.PowerSupplies {
+		for i := range *m.PowerSupplies {
 			each := PowerSupply{}
 			powerSupplies := (*m.PowerSupplies)[i]
 			each.LoadResourceResponse(&powerSupplies.Resource)
@@ -144,7 +145,7 @@ func (dto *Power) Load(m *model.Power) {
 	}
 	// Redundancy
 	if m.Redundancy != nil {
-		for i, _ := range *m.Redundancy {
+		for i := range *m.Redundancy {
 			each := Redundancy{}
 			redundancy := (*m.Redundancy)[i]
 			each.Load(&redundancy)

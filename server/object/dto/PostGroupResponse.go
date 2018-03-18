@@ -4,8 +4,8 @@ import (
 	"promise/server/object/model"
 )
 
-// PostServerGroupResponse is the DTO.
-type PostServerGroupResponse struct {
+// PostGroupResponse is the DTO.
+type PostGroupResponse struct {
 	ResourceResponse
 	ID          string `json:"ID"`
 	URI         string `json:"URI"`
@@ -14,7 +14,7 @@ type PostServerGroupResponse struct {
 }
 
 // Load the data from model.
-func (dto *PostServerGroupResponse) Load(m *model.ServerGroup) {
+func (dto *PostGroupResponse) Load(m *model.Group) {
 	dto.ID = m.ID
 	dto.URI = m.URI
 	dto.Name = m.Name

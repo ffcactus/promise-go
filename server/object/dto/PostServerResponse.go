@@ -4,6 +4,7 @@ import (
 	"promise/server/object/model"
 )
 
+// PostServerResponse is DTO.
 type PostServerResponse struct {
 	ResourceResponse
 	ID           string `json:"ID"`
@@ -13,6 +14,7 @@ type PostServerResponse struct {
 	Type         string `json:"Type"`
 }
 
+// Load will load data from model.
 func (dto *PostServerResponse) Load(m *model.Server) {
 	dto.ID = m.ID
 	dto.URI = m.URI

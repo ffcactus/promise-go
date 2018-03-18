@@ -4,7 +4,7 @@ import (
 	"promise/server/object/model"
 )
 
-// This is the schema definition for the PCIeDevice resource.  It represents the properties of a PCIeDevice attached to a System.
+// PCIeDevice This is the schema definition for the PCIeDevice resource.  It represents the properties of a PCIeDevice attached to a System.
 type PCIeDevice struct {
 	ResourceResponse
 	ProductInfoResponse
@@ -13,6 +13,7 @@ type PCIeDevice struct {
 	PCIeFunctions   []PCIeFunction
 }
 
+// Load will load data from model.
 func (dto *PCIeDevice) Load(m *model.PCIeDevice, ethernetInterfaces []model.EthernetInterface) {
 	dto.LoadResourceResponse(&m.Resource)
 	dto.LoadProductInfoResponse(&m.ProductInfo)

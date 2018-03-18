@@ -6,8 +6,8 @@ import (
 	"time"
 )
 
-// ServerGroup is the entity of server group.
-type ServerGroup struct {
+// Group is the entity of server group.
+type Group struct {
 	Entity
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
@@ -16,8 +16,8 @@ type ServerGroup struct {
 }
 
 // ToModel change the entity to model.
-func (e *ServerGroup) ToModel() *model.ServerGroup {
-	ret := new(model.ServerGroup)
+func (e *Group) ToModel() *model.Group {
+	ret := new(model.Group)
 	ret.ID = e.ID
 	ret.URI = app.RootURL + "/servergroup/" + e.ID
 	ret.Name = e.Name
@@ -26,7 +26,7 @@ func (e *ServerGroup) ToModel() *model.ServerGroup {
 }
 
 // Load will load the model to entity.
-func (e *ServerGroup) Load(m *model.ServerGroup) {
+func (e *Group) Load(m *model.Group) {
 	e.ID = m.ID
 	e.Name = m.Name
 	e.Description = m.Description

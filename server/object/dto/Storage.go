@@ -5,7 +5,7 @@ import (
 	"promise/server/object/model"
 )
 
-// This schema defines a storage controller and its respective properties.  A storage controller represents a storage device (physical or virtual) that produces Volumes.
+// StorageController This schema defines a storage controller and its respective properties.  A storage controller represents a storage device (physical or virtual) that produces Volumes.
 type StorageController struct {
 	MemberResponse
 	ProductInfoResponse
@@ -14,6 +14,7 @@ type StorageController struct {
 	SupportedDeviceProtocols []string `json:"SupportedDeviceProtocols"` // This represents the protocols which the storage controller can use to communicate with attached devices.
 }
 
+// Load will load data from model.
 func (dto *StorageController) Load(m *model.StorageController) {
 	dto.LoadMemberResponse(&m.Member)
 	dto.LoadProductInfoResponse(&m.ProductInfo)
@@ -22,23 +23,24 @@ func (dto *StorageController) Load(m *model.StorageController) {
 	dto.SupportedDeviceProtocols = m.SupportedDeviceProtocols
 }
 
-// This schema defines a storage subsystem and its respective properties.  A storage subsystem represents a set of storage controllers (physical or virtual) and the resources such as volumes that can be accessed from that subsystem.
+// Storage This schema defines a storage subsystem and its respective properties.  A storage subsystem represents a set of storage controllers (physical or virtual) and the resources such as volumes that can be accessed from that subsystem.
 type Storage struct {
 	ResourceResponse
 	StorageControllers []StorageController `json:"StorageControllers"` // The set of storage controllers represented by this resource.
 	Drives             []ResourceRef       `json:"Drives"`             // The set of drives attached to the storage controllers represented by this resource.
 }
 
+// Load will load data from model.
 func (dto *Storage) Load(m *model.Storage, drives []model.Drive) {
 	dto.LoadResourceResponse(&m.Resource)
-	for i, _ := range m.StorageControllers {
+	for i := range m.StorageControllers {
 		each := StorageController{}
 		each.Load(&m.StorageControllers[i])
 		dto.StorageControllers = append(dto.StorageControllers, each)
 	}
-	for i, _ := range m.DriveURIs {
+	for i := range m.DriveURIs {
 		src := m.DriveURIs[i]
-		for j, _ := range drives {
+		for j := range drives {
 			target := drives[j]
 			if (target.URI != nil) && (src == *target.URI) {
 				ref := ResourceRef{}

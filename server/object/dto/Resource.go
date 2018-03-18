@@ -4,10 +4,12 @@ import (
 	"promise/server/object/model"
 )
 
+// ResourceRef is DTO.
 type ResourceRef struct {
 	Ref string `json:"$ref"`
 }
 
+// ResourceResponse is DTO.
 type ResourceResponse struct {
 	Name           *string `json:"Name,omitempty"`
 	Description    *string `json:"Description,omitempty"`
@@ -17,6 +19,7 @@ type ResourceResponse struct {
 	PhysicalHealth *string `json:"PhysicalHealth,omitempty"`
 }
 
+// LoadResourceResponse will load data from model.
 func (dto *ResourceResponse) LoadResourceResponse(m *model.Resource) {
 	dto.Name = m.Name
 	dto.Description = m.Description
@@ -26,8 +29,8 @@ func (dto *ResourceResponse) LoadResourceResponse(m *model.Resource) {
 	dto.PhysicalHealth = m.PhysicalHealth
 }
 
+// MemberResponse is DTO.
 type MemberResponse struct {
-	// PageURI            *string  `json:"PageURI,omitempty"`
 	MemberID       string  `json:"MemberID"`
 	Name           *string `json:"Name,omitempty"`
 	Description    *string `json:"Description,omitempty"`
@@ -37,6 +40,7 @@ type MemberResponse struct {
 	PhysicalHealth *string `json:"PhysicalHealth,omitempty"`
 }
 
+// LoadMemberResponse will load data from model.
 func (dto *MemberResponse) LoadMemberResponse(m *model.Member) {
 	// dto.URI = m.URI
 	dto.MemberID = m.MemberID
@@ -48,7 +52,7 @@ func (dto *MemberResponse) LoadMemberResponse(m *model.Member) {
 	dto.PhysicalHealth = m.PhysicalHealth
 }
 
-// The commom number properties of a resource.
+// ProductInfoResponse The commom number properties of a resource.
 type ProductInfoResponse struct {
 	Model           *string `json:"Model,omitempty"`           // The model string for this product.
 	Manufacturer    *string `json:"Manufacturer,omitempty"`    // The manufacturer string  of this product.
@@ -59,6 +63,7 @@ type ProductInfoResponse struct {
 	AssetTag        *string `json:"AssetTag,omitempty"`        // The value of this property shall be an identifying string used to track the resource for inventory purposes.
 }
 
+// LoadProductInfoResponse will load data from model.
 func (dto *ProductInfoResponse) LoadProductInfoResponse(m *model.ProductInfo) {
 	dto.Model = m.Model
 	dto.Manufacturer = m.Manufacturer
@@ -69,6 +74,7 @@ func (dto *ProductInfoResponse) LoadProductInfoResponse(m *model.ProductInfo) {
 	dto.AssetTag = m.AssetTag
 }
 
+// ThresholdResponse is the DTO.
 type ThresholdResponse struct {
 	UpperThresholdNonCritical *float64 `json:"UpperThresholdNonCritical"` // Above normal range.
 	UpperThresholdCritical    *float64 `json:"UpperThresholdCritical"`    // Above normal range but not yet fatal.
@@ -78,6 +84,7 @@ type ThresholdResponse struct {
 	LowerThresholdFatal       *float64 `json:"LowerThresholdFatal"`       // Below normal range and is fatal.
 }
 
+// LoadThresholdResponse will load data from model.
 func (dto *ThresholdResponse) LoadThresholdResponse(m *model.Threshold) {
 	dto.UpperThresholdNonCritical = m.UpperThresholdNonCritical
 	dto.UpperThresholdCritical = m.UpperThresholdCritical
@@ -87,7 +94,7 @@ func (dto *ThresholdResponse) LoadThresholdResponse(m *model.Threshold) {
 	dto.LowerThresholdFatal = m.LowerThresholdFatal
 }
 
-// The placement within the addressed location.
+// Placement The placement within the addressed location.
 type Placement struct {
 	Row             *string `json:"Row,omitempty"`             // Name of row.
 	Rack            *string `json:"Rack,omitempty"`            // Name of a rack location within a row.
@@ -95,7 +102,7 @@ type Placement struct {
 	RackOffset      *int    `json:"RackOffset,omitempty"`      // Vertical location of the item in terms of RackOffsetUnits.
 }
 
-// The PostalAddress for a resource.
+// PostalAddress The PostalAddress for a resource.
 type PostalAddress struct {
 	Country                *string `json:"Country,omitempty"`                // Country.
 	Territory              *string `json:"Territory,omitempty"`              // A top-level subdivision within a country.
@@ -131,7 +138,7 @@ type PostalAddress struct {
 	GPSCoords              *string `json:"GPSCoords,omitempty"`              // The GPS coordinates of the part.
 }
 
-// The location of a resource.
+// Location The location of a resource.
 type Location struct {
 	Info          *string        `json:"Info,omitempty"`          // This indicates the location of the resource.
 	InfoFormat    *string        `json:"InfoFormat,omitempty"`    // This represents the format of the Info property.
@@ -139,6 +146,7 @@ type Location struct {
 	Placement     *Placement     `json:"Placement,omitempty"`     // A place within the addressed location.
 }
 
+// Load will load data from model.
 func (dto *Location) Load(m *model.Location) {
 	dto.Info = m.Info
 	dto.InfoFormat = m.InfoFormat

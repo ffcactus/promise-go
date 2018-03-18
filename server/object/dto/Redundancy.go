@@ -4,7 +4,7 @@ import (
 	"promise/server/object/model"
 )
 
-// This is the redundancy definition to be used in other resource schemas.
+// Redundancy This is the redundancy definition to be used in other resource schemas.
 type Redundancy struct {
 	ResourceResponse
 	Mode              *string   `json:"Mode,omitempty"`              // This is the redundancy mode of the group.
@@ -14,6 +14,7 @@ type Redundancy struct {
 	RedundancyEnabled *bool     `json:"RedundancyEnabled,omitempty"` // This indicates whether redundancy is enabled.
 }
 
+// Load will load data from model.
 func (dto *Redundancy) Load(m *model.Redundancy) {
 	dto.LoadResourceResponse(&m.Resource)
 	dto.Mode = m.Mode

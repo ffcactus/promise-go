@@ -4,6 +4,7 @@ import (
 	"promise/server/object/model"
 )
 
+// ServerMember is DTO.
 type ServerMember struct {
 	URI    string `json:"URI"`
 	Name   string `json:"Name"`
@@ -11,6 +12,7 @@ type ServerMember struct {
 	Health string `json:"Health"`
 }
 
+// GetServerCollectionResponse is DTO.
 type GetServerCollectionResponse struct {
 	Start       int            `json:"Start"`
 	Count       int            `json:"Count"`
@@ -20,6 +22,7 @@ type GetServerCollectionResponse struct {
 	PrevPageURI *string        `json:"PrevPageURI,omitempty"`
 }
 
+// Load will load data from model.
 func (dto *GetServerCollectionResponse) Load(m *model.ServerCollection) {
 	dto.Start = m.Start
 	dto.Count = m.Count

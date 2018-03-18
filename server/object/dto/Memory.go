@@ -4,6 +4,7 @@ import (
 	"promise/server/object/model"
 )
 
+// MemoryLocation is DTO.
 type MemoryLocation struct {
 	Socket     *int `json:"Socket,omitempty"`
 	Controller *int `json:"Controller,omitempty"`
@@ -11,6 +12,7 @@ type MemoryLocation struct {
 	Slot       *int `json:"Slot,omitempty"`
 }
 
+// Memory is DTO.
 type Memory struct {
 	ResourceResponse
 	ProductInfoResponse
@@ -47,6 +49,7 @@ type Memory struct {
 	AllocationAlignmentMiB       *int            `json:"AllocationAlignmentMiB,omitempty"`       // The boundary which memory regions are allocated on, measured in MiB.
 }
 
+// Load will load data from model.
 func (dto *Memory) Load(m *model.Memory) {
 	dto.LoadResourceResponse(&m.Resource)
 	dto.LoadProductInfoResponse(&m.ProductInfo)

@@ -4,8 +4,8 @@ import (
 	"promise/server/object/model"
 )
 
-// GetServerGroupResponse is the DTO.
-type GetServerGroupResponse struct {
+// GetGroupResponse is the DTO.
+type GetGroupResponse struct {
 	ID          string `json:"ID"`
 	URI         string `json:"URI"`
 	Name        string `json:"Name"`
@@ -13,7 +13,7 @@ type GetServerGroupResponse struct {
 }
 
 // Load the data from model.
-func (dto *GetServerGroupResponse) Load(m *model.ServerGroup) {
+func (dto *GetGroupResponse) Load(m *model.Group) {
 	dto.ID = m.ID
 	dto.URI = m.URI
 	dto.Name = m.Name

@@ -1,6 +1,6 @@
 package dto
 
-// The request body of POST server.
+// PostServerRequest The request body of POST server.
 type PostServerRequest struct {
 	Address  string `json:"address"`
 	Username string `json:"username"`

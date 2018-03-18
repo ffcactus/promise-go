@@ -23,23 +23,23 @@ type Drive struct {
 }
 
 // Load the data from model.
-func (this *Drive) Load(m *model.Drive) {
-	this.LoadResourceResponse(&m.Resource)
-	this.LoadProductInfoResponse(&m.ProductInfo)
-	this.StatusIndicator = m.StatusIndicator
-	this.IndicatorLED = m.IndicatorLED
-	this.Revision = m.Revision
-	this.CapacityBytes = m.CapacityBytes
-	this.FailurePredicted = m.FailurePredicted
-	this.Protocol = m.Protocol
-	this.MediaType = m.MediaType
-	this.HotspareType = m.HotspareType
-	this.CapableSpeedGbs = m.CapableSpeedGbs
-	this.NegotiatedSpeedGbs = m.NegotiatedSpeedGbs
-	this.PredictedMediaLifeLeftPercent = m.PredictedMediaLifeLeftPercent
+func (dto *Drive) Load(m *model.Drive) {
+	dto.LoadResourceResponse(&m.Resource)
+	dto.LoadProductInfoResponse(&m.ProductInfo)
+	dto.StatusIndicator = m.StatusIndicator
+	dto.IndicatorLED = m.IndicatorLED
+	dto.Revision = m.Revision
+	dto.CapacityBytes = m.CapacityBytes
+	dto.FailurePredicted = m.FailurePredicted
+	dto.Protocol = m.Protocol
+	dto.MediaType = m.MediaType
+	dto.HotspareType = m.HotspareType
+	dto.CapableSpeedGbs = m.CapableSpeedGbs
+	dto.NegotiatedSpeedGbs = m.NegotiatedSpeedGbs
+	dto.PredictedMediaLifeLeftPercent = m.PredictedMediaLifeLeftPercent
 	for i := range m.Location {
 		each := new(Location)
 		each.Load(&m.Location[i])
-		this.Location = append(this.Location, *each)
+		dto.Location = append(dto.Location, *each)
 	}
 }

@@ -4,7 +4,7 @@ import (
 	"promise/server/object/model"
 )
 
-// This type describes the Identification information for a processor.
+// ProcessorID This type describes the Identification information for a processor.
 type ProcessorID struct {
 	VendorID                *string `json:"VendorID,omitempty"`        // The Vendor Identification for this processor.
 	IdentificationRegisters *string `json:"IdentificationRegisters"`   // The contents of the Identification Registers (CPUID) for this processor.
@@ -14,7 +14,7 @@ type ProcessorID struct {
 	MicrocodeInfo           *string `json:"MicrocodeInfo,omitempty"`   // The Microcode Information for this processor.
 }
 
-// This is the schema definition for the Processor resource.  It represents the properties of a processor attached to a System.
+// Processor This is the schema definition for the Processor resource.  It represents the properties of a processor attached to a System.
 type Processor struct {
 	ResourceResponse
 	ProductInfoResponse
@@ -28,6 +28,7 @@ type Processor struct {
 	TotalThreads          *int         `json:"TotalThreads,omitempty"`          // The total number of execution threads supported by this processor.
 }
 
+// Load will load data from model.
 func (dto *Processor) Load(m *model.Processor) {
 	dto.LoadResourceResponse(&m.Resource)
 	dto.LoadProductInfoResponse(&m.ProductInfo)
