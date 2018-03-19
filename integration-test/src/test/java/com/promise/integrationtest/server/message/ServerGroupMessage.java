@@ -1,4 +1,4 @@
-package com.promise.integrationtest.servergroup.message;
+package com.promise.integrationtest.server.message;
 
 public enum ServerGroupMessage
 {

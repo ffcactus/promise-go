@@ -1,19 +1,26 @@
-package com.promise.integrationtest.servergroup.dto;
+package com.promise.integrationtest.server.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.promise.integrationtest.base.GetResourceResponse;
 
 /**
- * The DTO of get server group response.
+ * The DTO of post server group.
  */
-public class GetServerGroupResponse extends GetResourceResponse
+public class PostServerGroupRequest
 {
     @JsonProperty("Name")
     private String name;
-
     @JsonProperty("Description")
     private String description;
 
+    public PostServerGroupRequest() {
+    	
+    }
+    
+    public PostServerGroupRequest(String name, String description) {
+    	this.name = name;
+    	this.description = description;
+    }
+    
     public String getName()
     {
         return name;

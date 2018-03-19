@@ -231,7 +231,7 @@ func (i *ServerDBImplement) UpdateProcessors(ID string, processors []model.Proce
 		First(server).
 		RecordNotFound()
 	if notFound {
-		return fmt.Errorf("Can't find server %s", ID)
+		return fmt.Errorf("can not find server %s", ID)
 	}
 	for i := range server.Processors {
 		c.Delete(server.Processors[i])

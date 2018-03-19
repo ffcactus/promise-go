@@ -1,4 +1,4 @@
-package com.promise.integrationtest.servergroup;
+package com.promise.integrationtest.server;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -11,9 +11,9 @@ import org.springframework.http.ResponseEntity;
 
 import com.promise.integrationtest.base.DeleteResourceResponse;
 import com.promise.integrationtest.base.PromiseIntegrationTest;
-import com.promise.integrationtest.servergroup.dto.GetServerGroupResponse;
-import com.promise.integrationtest.servergroup.dto.PostServerGroupRequest;
-import com.promise.integrationtest.servergroup.message.ServerGroupMessage;
+import com.promise.integrationtest.server.dto.GetServerGroupResponse;
+import com.promise.integrationtest.server.dto.PostServerGroupRequest;
+import com.promise.integrationtest.server.message.ServerGroupMessage;
 import com.promise.integrationtest.util.PromiseAssertUtil;
 import com.promise.integrationtest.util.RestClient;
 
