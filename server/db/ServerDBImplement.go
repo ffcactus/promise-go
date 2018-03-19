@@ -98,6 +98,7 @@ func (i *ServerDBImplement) GetServerCollection(start int, count int) (*model.Se
 	ret.Total = total
 	for i := range server {
 		ret.Members = append(ret.Members, model.ServerMember{
+			ID:     server[i].ID,
 			Name:   server[i].Name,
 			State:  server[i].State,
 			Health: server[i].Health,
@@ -166,7 +167,7 @@ func (i *ServerDBImplement) DeleteServer(id string) (bool, error) {
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
 			"error": err}).
-			Warn("Delete server in DB failed, start transaction failed.")		
+			Warn("Delete server in DB failed, start transaction failed.")
 		return false, err
 	}
 	// Check if the server exist.
@@ -206,30 +207,30 @@ func (i *ServerDBImplement) DeleteServer(id string) (bool, error) {
 		Preload("PCIeDevices").
 		Preload("PCIeDevices.PCIeFunctions").
 		First(s).Error; err != nil {
-			tx.Rollback()
-			log.WithFields(log.Fields{"id": id}).
-				Debug("Delete server in DB failed, can not load full server info, transaction rollback.")
-			return true, err		
+		tx.Rollback()
+		log.WithFields(log.Fields{"id": id}).
+			Debug("Delete server in DB failed, can not load full server info, transaction rollback.")
+		return true, err
 	}
 	// Delete all.
 	if err := tx.Delete(s).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{"id": id}).
 			Debug("Delete server in DB failed, delete resource failed, transaction rollback.")
-		return true, err			
+		return true, err
 	}
 	// Delete the server-servergroup association.
 	if err := tx.Where("server_id = ?", id).Delete(entity.ServerServerGroup{}).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{"id": id}).
 			Debug("Delete server in DB failed, delete server-servergroup association failed, transaction rollback.")
-		return true, err			
+		return true, err
 	}
 	// Commit.
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"error": err}).
-			Warn("Delete server in DB failed, commit failed.")			
+			Warn("Delete server in DB failed, commit failed.")
 		return true, err
 	}
 	return true, nil
@@ -243,7 +244,7 @@ func (i *ServerDBImplement) DeleteServerCollection() error {
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
 			"error": err}).
-			Warn("Delete server collection in DB failed, start transaction failed.")		
+			Warn("Delete server collection in DB failed, start transaction failed.")
 		return err
 	}
 	for i := range entity.ServerTables {
@@ -252,8 +253,8 @@ func (i *ServerDBImplement) DeleteServerCollection() error {
 			log.WithFields(log.Fields{
 				"table": entity.ServerTables[i].Name,
 				"error": err}).
-				Warn("Delete server collection in DB failed, delete resources failed, transaction rollback.")		
-			return err				
+				Warn("Delete server collection in DB failed, delete resources failed, transaction rollback.")
+			return err
 		}
 	}
 	// When we delete all the servers we also need delete all the server-servergroup.
@@ -261,13 +262,13 @@ func (i *ServerDBImplement) DeleteServerCollection() error {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"error": err}).
-			Warn("Delete server collection in DB failed, delete server-servergroup collection failed, transaction rollback.")		
+			Warn("Delete server collection in DB failed, delete server-servergroup collection failed, transaction rollback.")
 		return err
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"error": err}).
-			Warn("Delete server collection in DB failed, commit failed.")			
+			Warn("Delete server collection in DB failed, commit failed.")
 		return err
 	}
 	return nil
@@ -280,43 +281,43 @@ func (i *ServerDBImplement) GetAndLockServer(ID string) (bool, *model.Server) {
 	tx := c.Begin()
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
-			"id": ID, 
+			"id":    ID,
 			"error": err}).
 			Warn("Get and lock server in DB failed, start transaction failed.")
-		return false, nil	
+		return false, nil
 	}
 	var s = new(entity.Server)
 	if tx.Where("ID = ?", ID).First(s).RecordNotFound() {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID}).
-			Debug("Get and lock server in DB failed, server does not exist.")		
+			Debug("Get and lock server in DB failed, server does not exist.")
 		return false, nil
 	}
 	if !constvalue.ServerLockable(s.State) {
 		// Server not ready, rollback.
 		tx.Rollback()
 		log.WithFields(log.Fields{
-			"id": ID,
+			"id":    ID,
 			"state": s.State}).
-			Debug("Get and lock server in DB failed, server not lockable.")		
+			Debug("Get and lock server in DB failed, server not lockable.")
 		return false, createServerModel(s)
 	}
 	// Change the state.
 	if err := tx.Model(s).UpdateColumn("State", constvalue.ServerStateLocked).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
-			"id": ID,
+			"id":    ID,
 			"state": s.State}).
 			Debug("Get and lock server in DB failed, update state failed.")
-		return false, nil	
+		return false, nil
 	}
 	// Commit.
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
-			"id": ID,
+			"id":    ID,
 			"error": err}).
-			Warn("Get and lock server in DB failed, commit failed.")			
+			Warn("Get and lock server in DB failed, commit failed.")
 		return false, nil
 	}
 	return true, createServerModel(s)

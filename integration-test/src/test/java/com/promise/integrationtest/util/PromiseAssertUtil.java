@@ -7,25 +7,29 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.promise.integrationtest.base.GetResourceResponse;
+import com.promise.integrationtest.base.ResourceResponse;
 import com.promise.integrationtest.dto.Message;
 
 public class PromiseAssertUtil
 {
-    public static void isResource(GetResourceResponse resp)
+    public static void isResource(ResourceResponse resp)
     {
         Assert.assertNotNull(resp.getId());
         Assert.assertNotNull(resp.getUri());
         Assert.assertTrue(resp.getUri().contains(resp.getId()));
     }
-    
-    public static<R> void assertPostMessage(String expectId, String url, R request) {
+
+    public static <R> void assertPostMessage(String expectId, String url, R request)
+    {
         final ResponseEntity<List<Message>> response = RestClient.post(
                 url,
                 request,
-                new TypeReference<List<Message>>(){});
+                new TypeReference<List<Message>>()
+                {
+                });
         Assert.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        List<Message> message = response.getBody();
+        final List<Message> message = response.getBody();
         Assert.assertEquals(expectId, message.get(0).getId());
     }
+
 }

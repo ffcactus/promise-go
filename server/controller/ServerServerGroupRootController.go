@@ -105,6 +105,6 @@ func (c *ServerServerGroupRootController) Delete() {
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 	}
 	c.Ctx.Output.SetStatus(http.StatusAccepted)
-	log.Info("DELETE all server-servergroup")
+	log.Info("DELETE all server-servergroups")
 	c.ServeJSON()
 }

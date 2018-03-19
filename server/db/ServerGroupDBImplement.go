@@ -7,6 +7,7 @@ import (
 	commonDB "promise/common/db"
 	"promise/server/object/entity"
 	"promise/server/object/model"
+	"strings"
 )
 
 // DefaultServerGroupID records the ID of default servergroup. We don't have to retrieve it each time.
@@ -49,16 +50,16 @@ func (i *ServerGroupDBImplement) PostServerGroup(m *model.ServerGroup) (*model.S
 	tx := c.Begin()
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
-			"name": m.Name,
+			"name":  m.Name,
 			"error": err}).
-			Warn("Post servergroup in DB failed, start transaction failed.")		
+			Warn("Post servergroup in DB failed, start transaction failed.")
 		return nil, false, err
 	}
 	if !tx.Where("Name = ?", m.Name).First(&e).RecordNotFound() {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"name": m.Name}).
-			Warn("Post servergroup in DB failed, duplicated resource, transaction rollback.")		
+			Warn("Post servergroup in DB failed, duplicated resource, transaction rollback.")
 		return nil, true, fmt.Errorf("already exist")
 	}
 	e.Load(m)
@@ -66,24 +67,37 @@ func (i *ServerGroupDBImplement) PostServerGroup(m *model.ServerGroup) (*model.S
 	if err := c.Create(&e).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
-			"name": m.Name,
+			"name":  m.Name,
 			"error": err}).
 			Warn("Post servergroup in DB failed, create resource failed, transaction rollback.")
 		return nil, false, err
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
-			"name": m.Name,
+			"name":  m.Name,
 			"error": err}).
-			Warn("Post servergroup in DB failed, commit failed.")			
+			Warn("Post servergroup in DB failed, commit failed.")
 		return nil, false, err
 	}
-	return e.ToModel(), false, nil	
+	return e.ToModel(), false, nil
 
 }
 
+func convertFilter(filter string) (string, error) {
+	cmds := strings.Split(filter, " ")
+	if len(cmds) != 3 {
+		return "", fmt.Errorf("convert filter failed")
+	}
+	switch strings.ToLower(cmds[1]) {
+	case "eq":
+		return cmds[0] + " = " + cmds[2], nil
+	default:
+		return "", fmt.Errorf("convert filter failed")
+	}
+}
+
 // GetServerGroupCollection Get group collection by start and count.
-func (i *ServerGroupDBImplement) GetServerGroupCollection(start int, count int) (*model.ServerGroupCollection, error) {
+func (i *ServerGroupDBImplement) GetServerGroupCollection(start int, count int, filter string) (*model.ServerGroupCollection, error) {
 	var (
 		total        int
 		sgCollection []entity.ServerGroup
@@ -92,7 +106,12 @@ func (i *ServerGroupDBImplement) GetServerGroupCollection(start int, count int) 
 
 	c := commonDB.GetConnection()
 	c.Table("server-group").Count(total)
-	c.Order("Name asc").Limit(count).Offset(start).Select([]string{"ID", "Name"}).Find(&sgCollection)
+	if where, err := convertFilter(filter); err != nil {
+		c.Order("Name asc").Limit(count).Offset(start).Select([]string{"ID", "Name"}).Find(&sgCollection)
+	} else {
+		log.WithFields(log.Fields{"where": where}).Info("Convert filter success.")
+		c.Order("Name asc").Limit(count).Offset(start).Where(where).Select([]string{"ID", "Name"}).Find(&sgCollection)
+	}
 	ret.Start = start
 	ret.Count = len(sgCollection)
 	ret.Total = total

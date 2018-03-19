@@ -14,216 +14,339 @@ import org.springframework.http.ResponseEntity;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class RestClient {
-	public static final int CONNECTION_TIMEOUT = 1000;
-	public static final int READ_TIMEOUT = 1000;
+public class RestClient
+{
+    public static final int CONNECTION_TIMEOUT = 1000;
+    public static final int READ_TIMEOUT = 1000;
 
-	/**
-	 * The general HTTP GET method.
-	 *
-	 */
-	public static <T> ResponseEntity<T> get(String url, Class<T> responseClass) {
-		HttpURLConnection c = null;
-		try {
-			final URL u = new URL(url);
-			c = (HttpURLConnection) u.openConnection();
-			c.setRequestMethod("GET");
-			c.setConnectTimeout(CONNECTION_TIMEOUT);
-			c.setReadTimeout(READ_TIMEOUT);
-			c.setDoInput(true);
-			c.setRequestProperty("Content-Type", "application/json");
-			c.setRequestProperty("Accept", "application/json");
-			c.setUseCaches(false);
-			c.setAllowUserInteraction(false);
-			c.connect();
-			final int status = c.getResponseCode();
-			switch (status) {
-			case HttpURLConnection.HTTP_OK:
-			case HttpURLConnection.HTTP_BAD_REQUEST:
-				final BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
-				final StringBuilder sb = new StringBuilder();
-				String line;
-				while ((line = br.readLine()) != null) {
-					sb.append(line + "\n");
-				}
-				br.close();
-				final ObjectMapper mapper = new ObjectMapper();
-				return new ResponseEntity<>(mapper.readValue(sb.toString(), responseClass), HttpStatus.valueOf(status));
-			case HttpURLConnection.HTTP_NOT_FOUND:
-				return new ResponseEntity<>((T) null, HttpStatus.valueOf(status));
-			}
-		} catch (final MalformedURLException ex) {
-			System.out.println(ex);
-		} catch (final IOException ex) {
-			System.out.println(ex);
-		} finally {
-			if (c != null) {
-				try {
-					c.disconnect();
-				} catch (final Exception ex) {
-					System.out.println(ex);
-				}
-			}
-		}
-		return null;
-	}
+    /**
+     * The general HTTP GET method.
+     *
+     */
+    public static <T> ResponseEntity<T> get(String url, Class<T> responseClass)
+    {
+        HttpURLConnection c = null;
+        try
+        {
+            final URL u = new URL(url);
+            c = (HttpURLConnection) u.openConnection();
+            c.setRequestMethod("GET");
+            c.setConnectTimeout(CONNECTION_TIMEOUT);
+            c.setReadTimeout(READ_TIMEOUT);
+            c.setDoInput(true);
+            c.setRequestProperty("Content-Type", "application/json");
+            c.setRequestProperty("Accept", "application/json");
+            c.setUseCaches(false);
+            c.setAllowUserInteraction(false);
+            c.connect();
+            final int status = c.getResponseCode();
+            switch (status)
+            {
+                case HttpURLConnection.HTTP_OK:
+                case HttpURLConnection.HTTP_BAD_REQUEST:
+                    final BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                    final StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null)
+                    {
+                        sb.append(line + "\n");
+                    }
+                    br.close();
+                    final ObjectMapper mapper = new ObjectMapper();
+                    return new ResponseEntity<>(mapper.readValue(sb.toString(), responseClass), HttpStatus.valueOf(status));
+                case HttpURLConnection.HTTP_NOT_FOUND:
+                    return new ResponseEntity<>((T) null, HttpStatus.valueOf(status));
+            }
+        }
+        catch (final MalformedURLException ex)
+        {
+            System.out.println(ex);
+        }
+        catch (final IOException ex)
+        {
+            System.out.println(ex);
+        }
+        finally
+        {
+            if (c != null)
+            {
+                try
+                {
+                    c.disconnect();
+                }
+                catch (final Exception ex)
+                {
+                    System.out.println(ex);
+                }
+            }
+        }
+        return null;
+    }
 
-	public static <R, T> ResponseEntity<T> post(String url, R request, TypeReference<T> responseClass) {
-		HttpURLConnection c = null;
-		try {
-			final URL u = new URL(url);
-			c = (HttpURLConnection) u.openConnection();
-			c.setRequestMethod("POST");
-			c.setConnectTimeout(CONNECTION_TIMEOUT);
-			c.setReadTimeout(READ_TIMEOUT);
-			c.setDoInput(true);
-			c.setDoOutput(true);
-			c.setRequestProperty("Content-Type", "application/json");
-			c.setRequestProperty("Accept", "application/json");
-			c.setUseCaches(false);
-			c.setAllowUserInteraction(false);
-			final OutputStream os = c.getOutputStream();
-			os.write(new ObjectMapper().writeValueAsBytes(request));
-			os.flush();
-			c.connect();
-			final int status = c.getResponseCode();
-			switch (status) {
-			case HttpURLConnection.HTTP_BAD_REQUEST:
-				final BufferedReader br = new BufferedReader(new InputStreamReader(c.getErrorStream()));
-				final StringBuilder sb = new StringBuilder();
-				String line;
-				while ((line = br.readLine()) != null) {
-					sb.append(line + "\n");
-				}
-				br.close();
-				final ObjectMapper mapper = new ObjectMapper();
-				T v = mapper.readValue(sb.toString(), responseClass);
-				return new ResponseEntity<>(v, HttpStatus.valueOf(status));
-			case HttpURLConnection.HTTP_OK:
-			case HttpURLConnection.HTTP_CREATED:			
-				final BufferedReader br1 = new BufferedReader(new InputStreamReader(c.getInputStream()));
-				final StringBuilder sb1 = new StringBuilder();
-				String line1;
-				while ((line1 = br1.readLine()) != null) {
-					sb1.append(line1 + "\n");
-				}
-				br1.close();
-				final ObjectMapper mapper1 = new ObjectMapper();
-				return new ResponseEntity<>(mapper1.readValue(sb1.toString(), responseClass), HttpStatus.valueOf(status));
-			default:
-				return new ResponseEntity<>(null, HttpStatus.valueOf(status));
-			}
-		} catch (final MalformedURLException ex) {
-			System.out.println(ex);
-		} catch (final IOException ex) {
-			System.out.println(ex);
-		} finally {
-			if (c != null) {
-				try {
-					c.disconnect();
-				} catch (final Exception ex) {
-					System.out.println(ex);
-				}
-			}
-		}
-		return null;
-	}
+    /**
+     * The general HTTP GET method.
+     *
+     */
+    public static <T> ResponseEntity<T> get(String url, TypeReference<T> responseClass)
+    {
+        HttpURLConnection c = null;
+        try
+        {
+            final URL u = new URL(url);
+            c = (HttpURLConnection) u.openConnection();
+            c.setRequestMethod("GET");
+            c.setConnectTimeout(CONNECTION_TIMEOUT);
+            c.setReadTimeout(READ_TIMEOUT);
+            c.setDoInput(true);
+            c.setRequestProperty("Content-Type", "application/json");
+            c.setRequestProperty("Accept", "application/json");
+            c.setUseCaches(false);
+            c.setAllowUserInteraction(false);
+            c.connect();
+            final int status = c.getResponseCode();
+            switch (status)
+            {
+                case HttpURLConnection.HTTP_OK:
+                case HttpURLConnection.HTTP_BAD_REQUEST:
+                    final BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                    final StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null)
+                    {
+                        sb.append(line + "\n");
+                    }
+                    br.close();
+                    final ObjectMapper mapper = new ObjectMapper();
+                    final T v = mapper.readValue(sb.toString(), responseClass);
+                    return new ResponseEntity<>(v, HttpStatus.valueOf(status));
+                case HttpURLConnection.HTTP_NOT_FOUND:
+                    return new ResponseEntity<>((T) null, HttpStatus.valueOf(status));
+            }
+        }
+        catch (final MalformedURLException ex)
+        {
+            System.out.println(ex);
+        }
+        catch (final IOException ex)
+        {
+            System.out.println(ex);
+        }
+        finally
+        {
+            if (c != null)
+            {
+                try
+                {
+                    c.disconnect();
+                }
+                catch (final Exception ex)
+                {
+                    System.out.println(ex);
+                }
+            }
+        }
+        return null;
+    }
 
-	public static <R, T> ResponseEntity<T> post(String url, R request, Class<T> responseClass) {
-		HttpURLConnection c = null;
-		try {
-			final URL u = new URL(url);
-			c = (HttpURLConnection) u.openConnection();
-			c.setRequestMethod("POST");
-			c.setConnectTimeout(CONNECTION_TIMEOUT);
-			c.setReadTimeout(READ_TIMEOUT);
-			c.setDoInput(true);
-			c.setDoOutput(true);
-			c.setRequestProperty("Content-Type", "application/json");
-			c.setRequestProperty("Accept", "application/json");
-			c.setUseCaches(false);
-			c.setAllowUserInteraction(false);
-			final OutputStream os = c.getOutputStream();
-			os.write(new ObjectMapper().writeValueAsBytes(request));
-			os.flush();
-			c.connect();
-			final int status = c.getResponseCode();
-			switch (status) {
-			case HttpURLConnection.HTTP_OK:
-			case HttpURLConnection.HTTP_CREATED:
-			case HttpURLConnection.HTTP_BAD_REQUEST:
-				final BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
-				final StringBuilder sb = new StringBuilder();
-				String line;
-				while ((line = br.readLine()) != null) {
-					sb.append(line + "\n");
-				}
-				br.close();
-				final ObjectMapper mapper = new ObjectMapper();
-				return new ResponseEntity<>(mapper.readValue(sb.toString(), responseClass), HttpStatus.valueOf(status));
-			default:
-				return new ResponseEntity<>(null, HttpStatus.valueOf(status));
-			}
-		} catch (final MalformedURLException ex) {
-			System.out.println(ex);
-		} catch (final IOException ex) {
-			System.out.println(ex);
-		} finally {
-			if (c != null) {
-				try {
-					c.disconnect();
-				} catch (final Exception ex) {
-					System.out.println(ex);
-				}
-			}
-		}
-		return null;
-	}
+    public static <R, T> ResponseEntity<T> post(String url, R request, TypeReference<T> responseClass)
+    {
+        HttpURLConnection c = null;
+        try
+        {
+            final URL u = new URL(url);
+            c = (HttpURLConnection) u.openConnection();
+            c.setRequestMethod("POST");
+            c.setConnectTimeout(CONNECTION_TIMEOUT);
+            c.setReadTimeout(READ_TIMEOUT);
+            c.setDoInput(true);
+            c.setDoOutput(true);
+            c.setRequestProperty("Content-Type", "application/json");
+            c.setRequestProperty("Accept", "application/json");
+            c.setUseCaches(false);
+            c.setAllowUserInteraction(false);
+            final OutputStream os = c.getOutputStream();
+            os.write(new ObjectMapper().writeValueAsBytes(request));
+            os.flush();
+            c.connect();
+            final int status = c.getResponseCode();
+            switch (status)
+            {
+                case HttpURLConnection.HTTP_BAD_REQUEST:
+                    final BufferedReader br = new BufferedReader(new InputStreamReader(c.getErrorStream()));
+                    final StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null)
+                    {
+                        sb.append(line + "\n");
+                    }
+                    br.close();
+                    final ObjectMapper mapper = new ObjectMapper();
+                    final T v = mapper.readValue(sb.toString(), responseClass);
+                    return new ResponseEntity<>(v, HttpStatus.valueOf(status));
+                case HttpURLConnection.HTTP_OK:
+                case HttpURLConnection.HTTP_CREATED:
+                    final BufferedReader br1 = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                    final StringBuilder sb1 = new StringBuilder();
+                    String line1;
+                    while ((line1 = br1.readLine()) != null)
+                    {
+                        sb1.append(line1 + "\n");
+                    }
+                    br1.close();
+                    final ObjectMapper mapper1 = new ObjectMapper();
+                    return new ResponseEntity<>(mapper1.readValue(sb1.toString(), responseClass), HttpStatus.valueOf(status));
+                default:
+                    return new ResponseEntity<>(null, HttpStatus.valueOf(status));
+            }
+        }
+        catch (final MalformedURLException ex)
+        {
+            System.out.println(ex);
+        }
+        catch (final IOException ex)
+        {
+            System.out.println(ex);
+        }
+        finally
+        {
+            if (c != null)
+            {
+                try
+                {
+                    c.disconnect();
+                }
+                catch (final Exception ex)
+                {
+                    System.out.println(ex);
+                }
+            }
+        }
+        return null;
+    }
 
-	public static <T> ResponseEntity<T> delete(String url, Class<T> responseClass) {
-		HttpURLConnection c = null;
-		try {
-			final URL u = new URL(url);
-			c = (HttpURLConnection) u.openConnection();
-			c.setRequestMethod("DELETE");
-			c.setConnectTimeout(CONNECTION_TIMEOUT);
-			c.setReadTimeout(READ_TIMEOUT);
-			c.setDoInput(true);
-			c.setDoOutput(true);
-			c.setRequestProperty("Content-Type", "application/json");
-			c.setRequestProperty("Accept", "application/json");
-			c.setUseCaches(false);
-			c.setAllowUserInteraction(false);
-			c.connect();
-			final int status = c.getResponseCode();
-			switch (status) {
-			case HttpURLConnection.HTTP_BAD_REQUEST:
-			case HttpURLConnection.HTTP_ACCEPTED:
-				final BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
-				final StringBuilder sb = new StringBuilder();
-				String line;
-				while ((line = br.readLine()) != null) {
-					sb.append(line + "\n");
-				}
-				br.close();
-				final ObjectMapper mapper = new ObjectMapper();
-				return new ResponseEntity<>(mapper.readValue(sb.toString(), responseClass), HttpStatus.valueOf(status));
-			case HttpURLConnection.HTTP_NOT_FOUND:
-				return new ResponseEntity<>(null, HttpStatus.valueOf(status));
-			}
-		} catch (final MalformedURLException ex) {
-			System.out.println(ex);
-		} catch (final IOException ex) {
-			System.out.println(ex);
-		} finally {
-			if (c != null) {
-				try {
-					c.disconnect();
-				} catch (final Exception ex) {
-					System.out.println(ex);
-				}
-			}
-		}
-		return null;
-	}
+    public static <R, T> ResponseEntity<T> post(String url, R request, Class<T> responseClass)
+    {
+        HttpURLConnection c = null;
+        try
+        {
+            final URL u = new URL(url);
+            c = (HttpURLConnection) u.openConnection();
+            c.setRequestMethod("POST");
+            c.setConnectTimeout(CONNECTION_TIMEOUT);
+            c.setReadTimeout(READ_TIMEOUT);
+            c.setDoInput(true);
+            c.setDoOutput(true);
+            c.setRequestProperty("Content-Type", "application/json");
+            c.setRequestProperty("Accept", "application/json");
+            c.setUseCaches(false);
+            c.setAllowUserInteraction(false);
+            final OutputStream os = c.getOutputStream();
+            os.write(new ObjectMapper().writeValueAsBytes(request));
+            os.flush();
+            c.connect();
+            final int status = c.getResponseCode();
+            switch (status)
+            {
+                case HttpURLConnection.HTTP_OK:
+                case HttpURLConnection.HTTP_CREATED:
+                case HttpURLConnection.HTTP_BAD_REQUEST:
+                    final BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                    final StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null)
+                    {
+                        sb.append(line + "\n");
+                    }
+                    br.close();
+                    final ObjectMapper mapper = new ObjectMapper();
+                    return new ResponseEntity<>(mapper.readValue(sb.toString(), responseClass), HttpStatus.valueOf(status));
+                default:
+                    return new ResponseEntity<>(null, HttpStatus.valueOf(status));
+            }
+        }
+        catch (final MalformedURLException ex)
+        {
+            System.out.println(ex);
+        }
+        catch (final IOException ex)
+        {
+            System.out.println(ex);
+        }
+        finally
+        {
+            if (c != null)
+            {
+                try
+                {
+                    c.disconnect();
+                }
+                catch (final Exception ex)
+                {
+                    System.out.println(ex);
+                }
+            }
+        }
+        return null;
+    }
+
+    public static <T> ResponseEntity<T> delete(String url, Class<T> responseClass)
+    {
+        HttpURLConnection c = null;
+        try
+        {
+            final URL u = new URL(url);
+            c = (HttpURLConnection) u.openConnection();
+            c.setRequestMethod("DELETE");
+            c.setConnectTimeout(CONNECTION_TIMEOUT);
+            c.setReadTimeout(READ_TIMEOUT);
+            c.setDoInput(true);
+            c.setDoOutput(true);
+            c.setRequestProperty("Content-Type", "application/json");
+            c.setRequestProperty("Accept", "application/json");
+            c.setUseCaches(false);
+            c.setAllowUserInteraction(false);
+            c.connect();
+            final int status = c.getResponseCode();
+            switch (status)
+            {
+                case HttpURLConnection.HTTP_BAD_REQUEST:
+                case HttpURLConnection.HTTP_ACCEPTED:
+                    final BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                    final StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null)
+                    {
+                        sb.append(line + "\n");
+                    }
+                    br.close();
+                    final ObjectMapper mapper = new ObjectMapper();
+                    return new ResponseEntity<>(mapper.readValue(sb.toString(), responseClass), HttpStatus.valueOf(status));
+                case HttpURLConnection.HTTP_NOT_FOUND:
+                    return new ResponseEntity<>(null, HttpStatus.valueOf(status));
+            }
+        }
+        catch (final MalformedURLException ex)
+        {
+            System.out.println(ex);
+        }
+        catch (final IOException ex)
+        {
+            System.out.println(ex);
+        }
+        finally
+        {
+            if (c != null)
+            {
+                try
+                {
+                    c.disconnect();
+                }
+                catch (final Exception ex)
+                {
+                    System.out.println(ex);
+                }
+            }
+        }
+        return null;
+    }
 }

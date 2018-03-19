@@ -1,12 +1,12 @@
 package com.promise.integrationtest.server.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.promise.integrationtest.base.GetResourceResponse;
+import com.promise.integrationtest.base.ResourceResponse;
 
 /**
  * The DTO of get server group response.
  */
-public class GetServerGroupResponse extends GetResourceResponse
+public class GetServerGroupResponse extends ResourceResponse
 {
     @JsonProperty("Name")
     private String name;
