@@ -12,6 +12,8 @@ type ServerDBInterface interface {
 	GetServerCollection(start int, count int) (*model.ServerCollection, error)
 	GetServerFull(id string) *model.Server
 	FindServerStateAdded() string
+	DeleteServer(id string) (bool, error)
+	DeleteServerCollection() error
 	GetAndLockServer(id string) (bool, *model.Server)
 	SetServerState(id string, state string) bool
 	SetServerHealth(id string, health string) bool

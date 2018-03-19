@@ -8,4 +8,5 @@ import (
 type ServerServerGroupInterface interface {
 	PostServerServerGroup(sg *model.ServerServerGroup) (*model.ServerServerGroup, bool, error)
 	GetServerServerGroup(id string) *model.ServerServerGroup
+	DeleteServerServerGroupCollection() error
 }

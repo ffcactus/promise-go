@@ -156,27 +156,169 @@ func (i *ServerDBImplement) FindServerStateAdded() string {
 	return s.ID
 }
 
+// DeleteServer will delete server by ID.
+// Since we also need to delete the server-servergroup association, we need transaction here.
+func (i *ServerDBImplement) DeleteServer(id string) (bool, error) {
+	var s = new(entity.Server)
+
+	c := commonDB.GetConnection()
+	tx := c.Begin()
+	if err := tx.Error; err != nil {
+		log.WithFields(log.Fields{
+			"error": err}).
+			Warn("Delete server in DB failed, start transaction failed.")		
+		return false, err
+	}
+	// Check if the server exist.
+	if tx.Where("ID = ?", id).First(s).RecordNotFound() {
+		tx.Rollback()
+		log.WithFields(log.Fields{"id": id}).
+			Debug("Delete server from DB failed, server does not exist, transaction rollback.")
+		return false, fmt.Errorf("server does not exist")
+	}
+	// Load full server info so we can delete them all together.
+	if err := tx.Where("ID = ?", id).
+		Preload("Processors").
+		Preload("Memory").
+		Preload("EthernetInterfaces").
+		Preload("EthernetInterfaces.IPv4Addresses").
+		Preload("EthernetInterfaces.IPv6Addresses").
+		Preload("EthernetInterfaces.VLANs").
+		Preload("NetworkInterfaces").
+		Preload("Storages").
+		Preload("Storages.StorageControllers").
+		Preload("Power").
+		Preload("Power.PowerControl").
+		Preload("Power.Voltages").
+		Preload("Power.PowerSupplies").
+		Preload("Power.Redundancy").
+		Preload("Thermal").
+		Preload("Thermal.Temperatures").
+		Preload("Thermal.Fans").
+		Preload("OemHuaweiBoards").
+		Preload("NetworkAdapters").
+		Preload("NetworkAdapters.Controllers").
+		Preload("NetworkAdapters.Controllers.NetworkPorts").
+		Preload("Drives").
+		Preload("Drives.Location").
+		Preload("Drives.Location.PostalAddress").
+		Preload("Drives.Location.Placement").
+		Preload("PCIeDevices").
+		Preload("PCIeDevices.PCIeFunctions").
+		First(s).Error; err != nil {
+			tx.Rollback()
+			log.WithFields(log.Fields{"id": id}).
+				Debug("Delete server in DB failed, can not load full server info, transaction rollback.")
+			return true, err		
+	}
+	// Delete all.
+	if err := tx.Delete(s).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{"id": id}).
+			Debug("Delete server in DB failed, delete resource failed, transaction rollback.")
+		return true, err			
+	}
+	// Delete the server-servergroup association.
+	if err := tx.Where("server_id = ?", id).Delete(entity.ServerServerGroup{}).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{"id": id}).
+			Debug("Delete server in DB failed, delete server-servergroup association failed, transaction rollback.")
+		return true, err			
+	}
+	// Commit.
+	if err := tx.Commit().Error; err != nil {
+		log.WithFields(log.Fields{
+			"error": err}).
+			Warn("Delete server in DB failed, commit failed.")			
+		return true, err
+	}
+	return true, nil
+}
+
+// DeleteServerCollection will delete all the server from DB.
+// Since there are many tables, we need transaction here.
+func (i *ServerDBImplement) DeleteServerCollection() error {
+	c := commonDB.GetConnection()
+	tx := c.Begin()
+	if err := tx.Error; err != nil {
+		log.WithFields(log.Fields{
+			"error": err}).
+			Warn("Delete server collection in DB failed, start transaction failed.")		
+		return err
+	}
+	for i := range entity.ServerTables {
+		if err := tx.Delete(entity.ServerTables[i].Info).Error; err != nil {
+			tx.Rollback()
+			log.WithFields(log.Fields{
+				"table": entity.ServerTables[i].Name,
+				"error": err}).
+				Warn("Delete server collection in DB failed, delete resources failed, transaction rollback.")		
+			return err				
+		}
+	}
+	// When we delete all the servers we also need delete all the server-servergroup.
+	if err := tx.Delete(entity.ServerServerGroup{}).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"error": err}).
+			Warn("Delete server collection in DB failed, delete server-servergroup collection failed, transaction rollback.")		
+		return err
+	}
+	if err := tx.Commit().Error; err != nil {
+		log.WithFields(log.Fields{
+			"error": err}).
+			Warn("Delete server collection in DB failed, commit failed.")			
+		return err
+	}
+	return nil
+}
+
 // GetAndLockServer Get and lock the server.
 func (i *ServerDBImplement) GetAndLockServer(ID string) (bool, *model.Server) {
 	c := commonDB.GetConnection()
 	// Transaction start.
 	tx := c.Begin()
+	if err := tx.Error; err != nil {
+		log.WithFields(log.Fields{
+			"id": ID, 
+			"error": err}).
+			Warn("Get and lock server in DB failed, start transaction failed.")
+		return false, nil	
+	}
 	var s = new(entity.Server)
-	tx.Where("ID = ?", ID).First(s)
-	if s.ID != ID {
-		// Can't find server, rollback.
+	if tx.Where("ID = ?", ID).First(s).RecordNotFound() {
 		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id": ID}).
+			Debug("Get and lock server in DB failed, server does not exist.")		
 		return false, nil
 	}
 	if !constvalue.ServerLockable(s.State) {
 		// Server not ready, rollback.
 		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id": ID,
+			"state": s.State}).
+			Debug("Get and lock server in DB failed, server not lockable.")		
 		return false, createServerModel(s)
 	}
 	// Change the state.
-	tx.Model(s).UpdateColumn("State", constvalue.ServerStateLocked)
+	if err := tx.Model(s).UpdateColumn("State", constvalue.ServerStateLocked).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id": ID,
+			"state": s.State}).
+			Debug("Get and lock server in DB failed, update state failed.")
+		return false, nil	
+	}
 	// Commit.
-	tx.Commit()
+	if err := tx.Commit().Error; err != nil {
+		log.WithFields(log.Fields{
+			"id": ID,
+			"error": err}).
+			Warn("Get and lock server in DB failed, commit failed.")			
+		return false, nil
+	}
 	return true, createServerModel(s)
 }
 
@@ -188,7 +330,7 @@ func (i *ServerDBImplement) SetServerState(ID string, state string) bool {
 		return false
 	}
 	if err := c.Model(s).UpdateColumn("State", state).Error; err != nil {
-		log.WithFields(log.Fields{"id": ID, "op": "SetServerState", "err": err}).Warn("DB opertion failed.")
+		log.WithFields(log.Fields{"id": ID, "op": "SetServerState", "error": err}).Warn("DB opertion failed.")
 		return false
 	}
 	return true
@@ -202,7 +344,7 @@ func (i *ServerDBImplement) SetServerHealth(ID string, health string) bool {
 		return false
 	}
 	if err := c.Model(s).UpdateColumn("Health", health).Error; err != nil {
-		log.WithFields(log.Fields{"id": ID, "op": "SetServerHealth", "err": err}).Warn("DB opertion failed.")
+		log.WithFields(log.Fields{"id": ID, "op": "SetServerHealth", "error": err}).Warn("DB opertion failed.")
 		return false
 	}
 	return true
@@ -216,7 +358,7 @@ func (i *ServerDBImplement) SetServerTask(ID string, taskURI string) bool {
 		return false
 	}
 	if err := c.Model(s).UpdateColumn("CurrentTask", taskURI).Error; err != nil {
-		log.WithFields(log.Fields{"id": ID, "op": "SetServerTask", "err": err}).Warn("DB opertion failed.")
+		log.WithFields(log.Fields{"id": ID, "op": "SetServerTask", "error": err}).Warn("DB opertion failed.")
 	}
 	return true
 }
@@ -241,7 +383,7 @@ func (i *ServerDBImplement) UpdateProcessors(ID string, processors []model.Proce
 		server.Processors = append(server.Processors, *createProcessor(&processors[i]))
 	}
 	if err := c.Save(server).Error; err != nil {
-		log.WithFields(log.Fields{"id": ID, "op": "UpdateProcessors", "err": err}).Warn("DB opertion failed.")
+		log.WithFields(log.Fields{"id": ID, "op": "UpdateProcessors", "error": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -267,7 +409,7 @@ func (i *ServerDBImplement) UpdateMemory(ID string, memory []model.Memory) error
 		server.Memory = append(server.Memory, *createMemory(&memory[i]))
 	}
 	if err := c.Save(server).Error; err != nil {
-		log.WithFields(log.Fields{"id": ID, "op": "UpdateMemory", "err": err}).Warn("DB opertion failed.")
+		log.WithFields(log.Fields{"id": ID, "op": "UpdateMemory", "error": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -309,7 +451,7 @@ func (i *ServerDBImplement) UpdateEthernetInterfaces(ID string, ethernet []model
 		server.EthernetInterfaces = append(server.EthernetInterfaces, *createEthernetInterface(&ethernet[i]))
 	}
 	if err := c.Save(server).Error; err != nil {
-		log.WithFields(log.Fields{"id": ID, "op": "UpdateEthernetInterfaces", "err": err}).Warn("DB opertion failed.")
+		log.WithFields(log.Fields{"id": ID, "op": "UpdateEthernetInterfaces", "error": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -337,7 +479,7 @@ func (i *ServerDBImplement) UpdateNetworkInterfaces(ID string, networkInterface 
 	}
 	server.NetworkInterfaces = networkInterfacesE
 	if err := c.Save(server).Error; err != nil {
-		log.WithFields(log.Fields{"id": ID, "op": "UpdateNetworkInterfaces", "err": err}).Warn("DB opertion failed.")
+		log.WithFields(log.Fields{"id": ID, "op": "UpdateNetworkInterfaces", "error": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -367,7 +509,7 @@ func (i *ServerDBImplement) UpdateStorages(ID string, storages []model.Storage) 
 	}
 	server.Storages = storagesE
 	if err := c.Save(server).Error; err != nil {
-		log.WithFields(log.Fields{"id": ID, "op": "UpdateStorages", "err": err}).Warn("DB opertion failed.")
+		log.WithFields(log.Fields{"id": ID, "op": "UpdateStorages", "error": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -403,7 +545,7 @@ func (i *ServerDBImplement) UpdatePower(ID string, power *model.Power) error {
 	c.Delete(server.Power)
 	server.Power = *createPower(power)
 	if err := c.Save(server).Error; err != nil {
-		log.WithFields(log.Fields{"id": ID, "op": "UpdatePower", "err": err}).Warn("DB opertion failed.")
+		log.WithFields(log.Fields{"id": ID, "op": "UpdatePower", "error": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -431,7 +573,7 @@ func (i *ServerDBImplement) UpdateThermal(ID string, thermal *model.Thermal) err
 	c.Delete(server.Thermal)
 	server.Thermal = *createThermal(thermal)
 	if err := c.Save(server).Error; err != nil {
-		log.WithFields(log.Fields{"id": ID, "op": "UpdateThermal", "err": err}).Warn("DB opertion failed.")
+		log.WithFields(log.Fields{"id": ID, "op": "UpdateThermal", "error": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -457,7 +599,7 @@ func (i *ServerDBImplement) UpdateOemHuaweiBoards(ID string, boards []model.OemH
 	}
 	server.OemHuaweiBoards = boardsE
 	if err := c.Save(server).Error; err != nil {
-		log.WithFields(log.Fields{"id": ID, "op": "UpdateOemHuaweiBoards", "err": err}).Warn("DB opertion failed.")
+		log.WithFields(log.Fields{"id": ID, "op": "UpdateOemHuaweiBoards", "error": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -493,7 +635,7 @@ func (i *ServerDBImplement) UpdateNetworkAdapters(ID string, networkAdapters []m
 	}
 	server.NetworkAdapters = networkAdaptersE
 	if err := c.Save(server).Error; err != nil {
-		log.WithFields(log.Fields{"id": ID, "op": "UpdateNetworkAdapters", "err": err}).Warn("DB opertion failed.")
+		log.WithFields(log.Fields{"id": ID, "op": "UpdateNetworkAdapters", "error": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -532,7 +674,7 @@ func (i *ServerDBImplement) UpdateDrives(ID string, drives []model.Drive) error 
 	}
 	server.Drives = drivesE
 	if err := c.Save(server).Error; err != nil {
-		log.WithFields(log.Fields{"id": ID, "op": "UpdateDrives", "err": err}).Warn("DB opertion failed.")
+		log.WithFields(log.Fields{"id": ID, "op": "UpdateDrives", "error": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil
@@ -563,7 +705,7 @@ func (i *ServerDBImplement) UpdatePCIeDevices(ID string, pcieDevices []model.PCI
 	}
 	server.PCIeDevices = *pcieDevicesE
 	if err := c.Save(server).Error; err != nil {
-		log.WithFields(log.Fields{"id": ID, "op": "UpdatePCIeDevices", "err": err}).Warn("DB opertion failed.")
+		log.WithFields(log.Fields{"id": ID, "op": "UpdatePCIeDevices", "error": err}).Warn("DB opertion failed.")
 		return err
 	}
 	return nil

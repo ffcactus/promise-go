@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	"github.com/google/uuid"
+	log "github.com/sirupsen/logrus"
 	commonDB "promise/common/db"
 	"promise/server/object/entity"
 	"promise/server/object/model"
@@ -46,18 +47,39 @@ func (i *ServerGroupDBImplement) PostServerGroup(m *model.ServerGroup) (*model.S
 
 	c := commonDB.GetConnection()
 	tx := c.Begin()
-	if tx.Where("Name = ?", m.Name).First(&e).RecordNotFound() {
-		e.Load(m)
-		e.ID = uuid.New().String()
-		if err := c.Create(&e).Error; err != nil {
-			tx.Rollback()
-			return nil, false, err
-		}
-		tx.Commit()
-		return e.ToModel(), false, nil
+	if err := tx.Error; err != nil {
+		log.WithFields(log.Fields{
+			"name": m.Name,
+			"error": err}).
+			Warn("Post servergroup in DB failed, start transaction failed.")		
+		return nil, false, err
 	}
-	tx.Rollback()
-	return nil, true, fmt.Errorf("already exist")
+	if !tx.Where("Name = ?", m.Name).First(&e).RecordNotFound() {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"name": m.Name}).
+			Warn("Post servergroup in DB failed, duplicated resource, transaction rollback.")		
+		return nil, true, fmt.Errorf("already exist")
+	}
+	e.Load(m)
+	e.ID = uuid.New().String()
+	if err := c.Create(&e).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"name": m.Name,
+			"error": err}).
+			Warn("Post servergroup in DB failed, create resource failed, transaction rollback.")
+		return nil, false, err
+	}
+	if err := tx.Commit().Error; err != nil {
+		log.WithFields(log.Fields{
+			"name": m.Name,
+			"error": err}).
+			Warn("Post servergroup in DB failed, commit failed.")			
+		return nil, false, err
+	}
+	return e.ToModel(), false, nil	
+
 }
 
 // GetServerGroupCollection Get group collection by start and count.

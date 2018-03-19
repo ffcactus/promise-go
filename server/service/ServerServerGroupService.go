@@ -45,5 +45,10 @@ func DeleteServerServerGroup(id string) []commonM.Message {
 
 // DeleteServerServerGroupCollection will delete all the server group except the default "all".
 func DeleteServerServerGroupCollection() []commonM.Message {
+	dbImpl := db.GetServerServerGroupInstance()
+	err := dbImpl.DeleteServerServerGroupCollection()
+	if err != nil {
+		return []commonM.Message{message.NewServerInternalError()}
+	}
 	return nil
 }

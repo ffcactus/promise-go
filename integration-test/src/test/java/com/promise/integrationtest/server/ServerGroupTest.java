@@ -38,7 +38,7 @@ public class ServerGroupTest extends PromiseIntegrationTest
     {
         // Remove all the server group.
         final ResponseEntity<DeleteResourceResponse> response = RestClient.delete(
-                getRootURL() + "/promise/v1/servergroup/",
+                getRootURL() + "/promise/v1/servergroup",
                 DeleteResourceResponse.class);
         Assert.assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
     }

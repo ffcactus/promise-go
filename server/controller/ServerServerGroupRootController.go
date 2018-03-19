@@ -45,19 +45,19 @@ func (c *ServerServerGroupRootController) Post() {
 		response.Load(serverServerGroup)
 		c.Data["json"] = &response
 		c.Ctx.Output.SetStatus(http.StatusCreated)
-		log.WithFields(log.Fields{"name": response.Name, "ID": response.ID}).Info("Post server-group done.")
+		log.WithFields(log.Fields{"name": response.Name, "ID": response.ID}).Info("Post server-servergroup done.")
 	}
 	c.ServeJSON()
 }
 
-// Get will return server-group collection.
+// Get will return server-servergroup collection.
 func (c *ServerServerGroupRootController) Get() {
 	var (
 		start, count       string = c.GetString("start"), c.GetString("count")
 		startInt, countInt int    = 0, -1
 		parameterError     bool
 	)
-	log.WithFields(log.Fields{"start": start, "count": count}).Debug("Get server-group collection.")
+	log.WithFields(log.Fields{"start": start, "count": count}).Debug("Get server-servergroup collection.")
 	if start != "" {
 		_startInt, err := strconv.Atoi(start)
 		if err != nil || _startInt < 0 {
@@ -81,12 +81,12 @@ func (c *ServerServerGroupRootController) Get() {
 		messages = append(messages, message.NewServerParameterError())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		log.Warn("Get server-group collection failed, parameter error.")
+		log.Warn("Get server-servergroup collection failed, parameter error.")
 	} else {
 		if collection, messages := service.GetServerServerGroupCollection(startInt, countInt); messages != nil {
 			c.Data["json"] = commonDto.MessagesToDto(messages)
 			c.Ctx.Output.SetStatus(messages[0].StatusCode)
-			log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Get server-group collection failed")
+			log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Get server-servergroup collection failed")
 		} else {
 			resp := new(dto.GetServerServerGroupCollectionResponse)
 			resp.Load(collection)
@@ -105,6 +105,6 @@ func (c *ServerServerGroupRootController) Delete() {
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 	}
 	c.Ctx.Output.SetStatus(http.StatusAccepted)
-	log.Info("DELETE all server-group")
+	log.Info("DELETE all server-servergroup")
 	c.ServeJSON()
 }

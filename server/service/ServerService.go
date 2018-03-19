@@ -86,3 +86,28 @@ func FindServerStateAdded() {
 		time.Sleep(time.Duration(seconds) * time.Second)
 	}
 }
+
+// DeleteServer will delete server group by ID.
+func DeleteServer(id string) []commonM.Message {
+	// TODO right now, we just remove server from DB.
+	dbImpl := db.GetDBInstance()
+	exist, err := dbImpl.DeleteServer(id)
+	if err != nil {
+		return []commonM.Message{message.NewServerInternalError()}
+	}
+	if !exist {
+		return []commonM.Message{message.NewServerGroupNotExist()}
+	}
+	return nil
+}
+
+// DeleteServerCollection will delete all the servers.
+func DeleteServerCollection() []commonM.Message {
+	// TODO right now, we just remove servers from DB.
+	dbImpl := db.GetDBInstance()
+	err := dbImpl.DeleteServerCollection()
+	if err != nil {
+		return []commonM.Message{message.NewServerInternalError()}
+	}
+	return nil
+}

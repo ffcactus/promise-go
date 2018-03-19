@@ -85,6 +85,20 @@ func (i *ServerServerGroupImplement) PostServerServerGroup(m *model.ServerServer
 			Warn("Post server-servergroup in DB failed, create resource failed, transaction rollback.")
 		return nil, false, err
 	}
-	tx.Commit()
+	if err := tx.Commit().Error; err != nil {
+		log.WithFields(log.Fields{
+			"serverID": ssg.ServerID,
+			"serverGroupID": ssg.ServerGroupID,
+			"error": err}).
+			Warn("Post server-servergroup in DB failed, commit failed.")			
+		return nil, false, err		
+	}
 	return ssg.ToModel(), false, nil
+}
+
+// DeleteServerServerGroupCollection will remove all server-servergroup
+// except the default association to default server group.
+func (i *ServerServerGroupImplement) DeleteServerServerGroupCollection() error {
+	c := commonDB.GetConnection()
+	return c.Where("server_group_id <> ?", DefaultServerGroupID).Delete(entity.ServerServerGroup{}).Error
 }

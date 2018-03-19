@@ -94,3 +94,17 @@ func (c *ServerRootController) Get() {
 	}
 	c.ServeJSON()
 }
+
+// Delete will delete all servers.
+func (c *ServerRootController) Delete() {
+	messages := service.DeleteServerCollection()
+	if messages != nil {
+		c.Data["json"] = commonDto.MessagesToDto(messages)
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+	}
+	c.Ctx.Output.SetStatus(http.StatusAccepted)
+	log.Info("DELETE all servers.")
+	c.ServeJSON()
+}
+
+

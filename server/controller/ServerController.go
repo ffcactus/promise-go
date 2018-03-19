@@ -30,3 +30,17 @@ func (c *ServerController) Get() {
 	}
 	c.ServeJSON()
 }
+
+// Delete will delete the server by ID.
+func (c *ServerController) Delete() {
+	var id = c.Ctx.Input.Param(":id")
+	log.WithFields(log.Fields{"id": id}).Debug("Delete server.")
+	if messages := service.DeleteServer(id); messages != nil {
+		c.Data["json"] = commonDto.MessagesToDto(messages)
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		log.WithFields(log.Fields{"id": id, "message": messages[0].ID}).Info("Delete server failed.")
+	}
+	c.Ctx.Output.SetStatus(http.StatusAccepted)
+
+	c.ServeJSON()
+}
