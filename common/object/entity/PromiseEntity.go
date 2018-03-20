@@ -21,3 +21,10 @@ func (e *PromiseEntity) ToModel() model.PromiseModel {
 	ret.UpdatedAt = e.UpdatedAt
 	return ret
 }
+
+// Load will load data from model.
+func (e *PromiseEntity) Load(m model.PromiseModel) {
+	e.ID = m.ID
+	e.CreatedAt = m.CreatedAt
+	e.UpdatedAt = m.UpdatedAt
+}

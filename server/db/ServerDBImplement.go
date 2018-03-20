@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 	commonDB "promise/common/db"
 	commonUtil "promise/common/util"
@@ -206,13 +207,24 @@ func (i *ServerDBImplement) DeleteServer(id string) (bool, error) {
 		Preload("Drives.Location.Placement").
 		Preload("PCIeDevices").
 		Preload("PCIeDevices.PCIeFunctions").
-		First(s).Error; err != nil {
+		Find(s).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{"id": id}).
 			Debug("Delete server in DB failed, can not load full server info, transaction rollback.")
 		return true, err
 	}
 	// Delete all.
+	i.deleteProcessors(tx, s)
+	i.deleteMemory(tx, s)
+	i.deleteEthernetInterfaces(tx, s)
+	i.deleteNetworkInterfaces(tx, s)
+	i.deleteStorages(tx, s)
+	i.deletePower(tx, s)
+	i.deleteThermal(tx, s)
+	i.deleteOemHuaweiBoards(tx, s)
+	i.deleteNetworkAdapters(tx, s)
+	i.deleteDrives(tx, s)
+	i.deletePCIeDevices(tx, s)
 	if err := tx.Delete(s).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{"id": id}).
@@ -220,7 +232,7 @@ func (i *ServerDBImplement) DeleteServer(id string) (bool, error) {
 		return true, err
 	}
 	// Delete the server-servergroup association.
-	if err := tx.Where("server_id = ?", id).Delete(entity.ServerServerGroup{}).Error; err != nil {
+	if err := tx.Where("\"ServerID\" = ?", id).Delete(entity.ServerServerGroup{}).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{"id": id}).
 			Debug("Delete server in DB failed, delete server-servergroup association failed, transaction rollback.")
@@ -364,6 +376,13 @@ func (i *ServerDBImplement) SetServerTask(ID string, taskURI string) bool {
 	return true
 }
 
+func (i *ServerDBImplement) deleteProcessors(c *gorm.DB, server *entity.Server) error {
+	for i := range server.Processors {
+		c.Delete(server.Processors[i])
+	}
+	return nil
+}
+
 // UpdateProcessors Update processors info.
 func (i *ServerDBImplement) UpdateProcessors(ID string, processors []model.Processor) error {
 	server := new(entity.Server)
@@ -376,9 +395,7 @@ func (i *ServerDBImplement) UpdateProcessors(ID string, processors []model.Proce
 	if notFound {
 		return fmt.Errorf("can not find server %s", ID)
 	}
-	for i := range server.Processors {
-		c.Delete(server.Processors[i])
-	}
+	i.deleteProcessors(c, server)
 	server.Processors = []entity.Processor{}
 	for i := range processors {
 		server.Processors = append(server.Processors, *createProcessor(&processors[i]))
@@ -386,6 +403,13 @@ func (i *ServerDBImplement) UpdateProcessors(ID string, processors []model.Proce
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdateProcessors", "error": err}).Warn("DB opertion failed.")
 		return err
+	}
+	return nil
+}
+
+func (i *ServerDBImplement) deleteMemory(c *gorm.DB, server *entity.Server) error {
+	for i := range server.Memory {
+		c.Delete(server.Memory[i])
 	}
 	return nil
 }
@@ -402,9 +426,7 @@ func (i *ServerDBImplement) UpdateMemory(ID string, memory []model.Memory) error
 	if notFound {
 		return fmt.Errorf("Can't find server %s", ID)
 	}
-	for i := range server.Memory {
-		c.Delete(server.Memory[i])
-	}
+	i.deleteMemory(c, server)
 	server.Memory = []entity.Memory{}
 	for i := range memory {
 		server.Memory = append(server.Memory, *createMemory(&memory[i]))
@@ -412,6 +434,22 @@ func (i *ServerDBImplement) UpdateMemory(ID string, memory []model.Memory) error
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdateMemory", "error": err}).Warn("DB opertion failed.")
 		return err
+	}
+	return nil
+}
+
+func (i *ServerDBImplement) deleteEthernetInterfaces(c *gorm.DB, server *entity.Server) error {
+	for i := range server.EthernetInterfaces {
+		for k := range server.EthernetInterfaces[i].IPv4Addresses {
+			c.Delete(&(server.EthernetInterfaces[i].IPv4Addresses)[k])
+		}
+		for k := range server.EthernetInterfaces[i].IPv6Addresses {
+			c.Delete(&(server.EthernetInterfaces[i].IPv6Addresses)[k])
+		}
+		for k := range server.EthernetInterfaces[i].VLANs {
+			c.Delete(&(server.EthernetInterfaces[i].VLANs)[k])
+		}
+		c.Delete(server.EthernetInterfaces[i])
 	}
 	return nil
 }
@@ -434,18 +472,7 @@ func (i *ServerDBImplement) UpdateEthernetInterfaces(ID string, ethernet []model
 		return fmt.Errorf("Can't find server %s", ID)
 	}
 	// Delete all ethernet interface.
-	for i := range server.EthernetInterfaces {
-		for k := range server.EthernetInterfaces[i].IPv4Addresses {
-			c.Delete(&(server.EthernetInterfaces[i].IPv4Addresses)[k])
-		}
-		for k := range server.EthernetInterfaces[i].IPv6Addresses {
-			c.Delete(&(server.EthernetInterfaces[i].IPv6Addresses)[k])
-		}
-		for k := range server.EthernetInterfaces[i].VLANs {
-			c.Delete(&(server.EthernetInterfaces[i].VLANs)[k])
-		}
-		c.Delete(server.EthernetInterfaces[i])
-	}
+	i.deleteEthernetInterfaces(c, server)
 	// Regenerate ethernet interface.
 	server.EthernetInterfaces = []entity.EthernetInterface{}
 	for i := range ethernet {
@@ -454,6 +481,13 @@ func (i *ServerDBImplement) UpdateEthernetInterfaces(ID string, ethernet []model
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdateEthernetInterfaces", "error": err}).Warn("DB opertion failed.")
 		return err
+	}
+	return nil
+}
+
+func (i *ServerDBImplement) deleteNetworkInterfaces(c *gorm.DB, server *entity.Server) error {
+	for i := range server.NetworkInterfaces {
+		c.Delete(server.NetworkInterfaces[i])
 	}
 	return nil
 }
@@ -471,9 +505,7 @@ func (i *ServerDBImplement) UpdateNetworkInterfaces(ID string, networkInterface 
 		return fmt.Errorf("Can't find server %s", ID)
 	}
 	// Delete them.
-	for i := range server.NetworkInterfaces {
-		c.Delete(server.NetworkInterfaces[i])
-	}
+	i.deleteEthernetInterfaces(c, server)
 	networkInterfacesE := []entity.NetworkInterface{}
 	for i := range networkInterface {
 		networkInterfacesE = append(networkInterfacesE, *createNetworkInterface(&networkInterface[i]))
@@ -482,6 +514,16 @@ func (i *ServerDBImplement) UpdateNetworkInterfaces(ID string, networkInterface 
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdateNetworkInterfaces", "error": err}).Warn("DB opertion failed.")
 		return err
+	}
+	return nil
+}
+
+func (i *ServerDBImplement) deleteStorages(c *gorm.DB, server *entity.Server) error {
+	for i := range server.Storages {
+		for j := range server.Storages[i].StorageControllers {
+			c.Delete(&(server.Storages[i].StorageControllers)[j])
+		}
+		c.Delete(server.Storages[i])
 	}
 	return nil
 }
@@ -498,12 +540,7 @@ func (i *ServerDBImplement) UpdateStorages(ID string, storages []model.Storage) 
 	if notFound {
 		return fmt.Errorf("Can't find server %s", ID)
 	}
-	for i := range server.Storages {
-		for j := range server.Storages[i].StorageControllers {
-			c.Delete(&(server.Storages[i].StorageControllers)[j])
-		}
-		c.Delete(server.Storages[i])
-	}
+	i.deleteEthernetInterfaces(c, server)
 	storagesE := []entity.Storage{}
 	for i := range storages {
 		storagesE = append(storagesE, *createStorage(&storages[i]))
@@ -513,6 +550,23 @@ func (i *ServerDBImplement) UpdateStorages(ID string, storages []model.Storage) 
 		log.WithFields(log.Fields{"id": ID, "op": "UpdateStorages", "error": err}).Warn("DB opertion failed.")
 		return err
 	}
+	return nil
+}
+
+func (i *ServerDBImplement) deletePower(c *gorm.DB, server *entity.Server) error {
+	for i := range server.Power.PowerControl {
+		c.Delete(server.Power.PowerControl[i])
+	}
+	for i := range server.Power.Voltages {
+		c.Delete(server.Power.Voltages[i])
+	}
+	for i := range server.Power.PowerSupplies {
+		c.Delete(server.Power.PowerSupplies[i])
+	}
+	for i := range server.Power.Redundancy {
+		c.Delete(server.Power.Redundancy[i])
+	}
+	c.Delete(server.Power)
 	return nil
 }
 
@@ -531,24 +585,23 @@ func (i *ServerDBImplement) UpdatePower(ID string, power *model.Power) error {
 	if notFound {
 		return fmt.Errorf("Can't find server %s", ID)
 	}
-	for i := range server.Power.PowerControl {
-		c.Delete(server.Power.PowerControl[i])
-	}
-	for i := range server.Power.Voltages {
-		c.Delete(server.Power.Voltages[i])
-	}
-	for i := range server.Power.PowerSupplies {
-		c.Delete(server.Power.PowerSupplies[i])
-	}
-	for i := range server.Power.Redundancy {
-		c.Delete(server.Power.Redundancy[i])
-	}
-	c.Delete(server.Power)
+	i.deletePower(c, server)
 	server.Power = *createPower(power)
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdatePower", "error": err}).Warn("DB opertion failed.")
 		return err
 	}
+	return nil
+}
+
+func (i *ServerDBImplement) deleteThermal(c *gorm.DB, server *entity.Server) error {
+	for i := range server.Thermal.Temperatures {
+		c.Delete(server.Thermal.Temperatures[i])
+	}
+	for i := range server.Thermal.Fans {
+		c.Delete(server.Thermal.Fans[i])
+	}
+	c.Delete(server.Thermal)
 	return nil
 }
 
@@ -565,17 +618,18 @@ func (i *ServerDBImplement) UpdateThermal(ID string, thermal *model.Thermal) err
 	if notFound {
 		return fmt.Errorf("Can't find server %s", ID)
 	}
-	for i := range server.Thermal.Temperatures {
-		c.Delete(server.Thermal.Temperatures[i])
-	}
-	for i := range server.Thermal.Fans {
-		c.Delete(server.Thermal.Fans[i])
-	}
-	c.Delete(server.Thermal)
+	i.deleteThermal(c, server)
 	server.Thermal = *createThermal(thermal)
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdateThermal", "error": err}).Warn("DB opertion failed.")
 		return err
+	}
+	return nil
+}
+
+func (i *ServerDBImplement) deleteOemHuaweiBoards(c *gorm.DB, server *entity.Server) error {
+	for i := range server.OemHuaweiBoards {
+		c.Delete(server.OemHuaweiBoards[i])
 	}
 	return nil
 }
@@ -591,9 +645,7 @@ func (i *ServerDBImplement) UpdateOemHuaweiBoards(ID string, boards []model.OemH
 	if notFound {
 		return fmt.Errorf("Can't find server %s", ID)
 	}
-	for i := range server.OemHuaweiBoards {
-		c.Delete(server.OemHuaweiBoards[i])
-	}
+	i.deleteOemHuaweiBoards(c, server)
 	boardsE := []entity.OemHuaweiBoard{}
 	for i := range boards {
 		boardsE = append(boardsE, *createOemHuaweiBoard(&boards[i]))
@@ -602,6 +654,21 @@ func (i *ServerDBImplement) UpdateOemHuaweiBoards(ID string, boards []model.OemH
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdateOemHuaweiBoards", "error": err}).Warn("DB opertion failed.")
 		return err
+	}
+	return nil
+}
+
+func (i *ServerDBImplement) deleteNetworkAdapters(c *gorm.DB, server *entity.Server) error {
+	for i := range server.NetworkAdapters {
+		adapter := server.NetworkAdapters[i]
+		for j := range adapter.Controllers {
+			controller := adapter.Controllers[j]
+			for k := range controller.NetworkPorts {
+				c.Delete(&controller.NetworkPorts[k])
+			}
+			c.Delete(&controller)
+		}
+		c.Delete(&adapter)
 	}
 	return nil
 }
@@ -619,17 +686,7 @@ func (i *ServerDBImplement) UpdateNetworkAdapters(ID string, networkAdapters []m
 	if notFound {
 		return fmt.Errorf("Can't find server %s", ID)
 	}
-	for i := range server.NetworkAdapters {
-		adapter := server.NetworkAdapters[i]
-		for j := range adapter.Controllers {
-			controller := adapter.Controllers[j]
-			for k := range controller.NetworkPorts {
-				c.Delete(&controller.NetworkPorts[k])
-			}
-			c.Delete(&controller)
-		}
-		c.Delete(&adapter)
-	}
+	i.deleteNetworkAdapters(c, server)
 	networkAdaptersE := []entity.NetworkAdapter{}
 	for i := range networkAdapters {
 		networkAdaptersE = append(networkAdaptersE, *createNetworkAdapter(&networkAdapters[i]))
@@ -638,6 +695,23 @@ func (i *ServerDBImplement) UpdateNetworkAdapters(ID string, networkAdapters []m
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdateNetworkAdapters", "error": err}).Warn("DB opertion failed.")
 		return err
+	}
+	return nil
+}
+
+func (i *ServerDBImplement) deleteDrives(c *gorm.DB, server *entity.Server) error {
+	for i := range server.Drives {
+		drive := server.Drives[i]
+		for j := range drive.Location {
+			if drive.Location[j].PostalAddress != nil {
+				c.Delete(&drive.Location[j].PostalAddress)
+			}
+			if drive.Location[j].Placement != nil {
+				c.Delete(&drive.Location[j].Placement)
+			}
+			c.Delete(&drive.Location[j])
+		}
+		c.Delete(&drive)
 	}
 	return nil
 }
@@ -656,19 +730,7 @@ func (i *ServerDBImplement) UpdateDrives(ID string, drives []model.Drive) error 
 	if notFound {
 		return fmt.Errorf("Can't find server %s", ID)
 	}
-	for i := range server.Drives {
-		drive := server.Drives[i]
-		for j := range drive.Location {
-			if drive.Location[j].PostalAddress != nil {
-				c.Delete(&drive.Location[j].PostalAddress)
-			}
-			if drive.Location[j].Placement != nil {
-				c.Delete(&drive.Location[j].Placement)
-			}
-			c.Delete(&drive.Location[j])
-		}
-		c.Delete(&drive)
-	}
+	i.deleteDrives(c, server)
 	drivesE := []entity.Drive{}
 	for i := range drives {
 		drivesE = append(drivesE, *createDrive(&drives[i]))
@@ -677,6 +739,17 @@ func (i *ServerDBImplement) UpdateDrives(ID string, drives []model.Drive) error 
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdateDrives", "error": err}).Warn("DB opertion failed.")
 		return err
+	}
+	return nil
+}
+
+func (i *ServerDBImplement) deletePCIeDevices(c *gorm.DB, server *entity.Server) error {
+	for i := range server.PCIeDevices {
+		pcieDevice := server.PCIeDevices[i]
+		for j := range pcieDevice.PCIeFunctions {
+			c.Delete(&pcieDevice.PCIeFunctions[j])
+		}
+		c.Delete(&pcieDevice)
 	}
 	return nil
 }
@@ -693,13 +766,7 @@ func (i *ServerDBImplement) UpdatePCIeDevices(ID string, pcieDevices []model.PCI
 	if notFound {
 		return fmt.Errorf("Can't find server %s", ID)
 	}
-	for i := range server.PCIeDevices {
-		pcieDevice := server.PCIeDevices[i]
-		for j := range pcieDevice.PCIeFunctions {
-			c.Delete(&pcieDevice.PCIeFunctions[j])
-		}
-		c.Delete(&pcieDevice)
-	}
+	i.deletePCIeDevices(c, server)
 	pcieDevicesE := new([]entity.PCIeDevice)
 	for i := range pcieDevices {
 		*pcieDevicesE = append(*pcieDevicesE, *createPCIeDevice(&pcieDevices[i]))

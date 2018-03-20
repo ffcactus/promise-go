@@ -17,7 +17,7 @@ func (ServerGroup) TableName() string {
 	return "ServerGroup"
 }
 
-// ToModel change the entity to model.
+// ToModel will create a new model from entity.
 func (e *ServerGroup) ToModel() *model.ServerGroup {
 	ret := new(model.ServerGroup)
 	ret.PromiseModel = e.PromiseEntity.ToModel()
@@ -26,9 +26,9 @@ func (e *ServerGroup) ToModel() *model.ServerGroup {
 	return ret
 }
 
-// Load will load the model to entity.
+// Load will load data from model.
 func (e *ServerGroup) Load(m *model.ServerGroup) {
-	e.ID = m.ID
+	e.PromiseEntity.Load(m.PromiseModel)
 	e.Name = m.Name
 	e.Description = m.Description
 }

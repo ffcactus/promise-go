@@ -120,10 +120,14 @@ func (i *ServerServerGroupImplement) GetServerServerGroupCollection(start int, c
 	c := commonDB.GetConnection()
 	c.Table("ServerServerGroup").Count(&total)
 	if where, err := i.convertFilter(filter); err != nil {
-		c.Order("Name asc").Limit(count).Offset(start).Find(&collection)
+		log.WithFields(log.Fields{
+			"filter": filter,
+			"error":  err}).
+			Warn("Get server-servergroup in DB failed, convert filter failed.")		
+		c.Limit(count).Offset(start).Find(&collection)
 	} else {
-		log.WithFields(log.Fields{"where": where}).Info("Convert filter success.")
-		c.Order("Name asc").Limit(count).Offset(start).Where(where).Find(&collection)
+		log.WithFields(log.Fields{"where": where}).Debug("Convert filter success.")
+		c.Limit(count).Offset(start).Where(where).Find(&collection)
 	}
 	ret.Start = start
 	ret.Count = len(collection)

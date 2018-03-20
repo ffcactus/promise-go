@@ -53,7 +53,7 @@ func (c *ServerServerGroupRootController) Post() {
 // Get will return server-servergroup collection.
 func (c *ServerServerGroupRootController) Get() {
 	var (
-		start, count, filter string = c.GetString("start"), c.GetString("count"), c.GetString("filter")
+		start, count, filter string = c.GetString("start"), c.GetString("count"), c.GetString("$filter")
 		startInt, countInt   int    = 0, -1
 		parameterError       bool
 	)

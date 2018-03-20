@@ -36,7 +36,7 @@ func (i *ServerGroupDBImplement) GetServerGroup(id string) *model.ServerGroup {
 func (i *ServerGroupDBImplement) GetServerGroupByName(name string) *model.ServerGroup {
 	var sg entity.ServerGroup
 	c := commonDB.GetConnection()
-	if c.Where("Name = ?", name).First(&sg).RecordNotFound() {
+	if c.Where("\"Name\" = ?", name).First(&sg).RecordNotFound() {
 		return nil
 	}
 	return sg.ToModel()
@@ -113,7 +113,7 @@ func (i *ServerGroupDBImplement) GetServerGroupCollection(start int, count int, 
 			Warn("Get servergroup in DB failed, convert filter failed.")
 		c.Order("\"Name\" asc").Limit(count).Offset(start).Select([]string{"\"ID\"", "\"Name\""}).Find(&sgCollection)
 	} else {
-		log.WithFields(log.Fields{"where": where}).Info("Convert filter success.")
+		log.WithFields(log.Fields{"where": where}).Debug("Convert filter success.")
 		c.Order("\"Name\" asc").Limit(count).Offset(start).Where(where).Select([]string{"\"ID\"", "\"Name\""}).Find(&sgCollection)
 	}
 	ret.Start = start
@@ -144,5 +144,5 @@ func (i *ServerGroupDBImplement) DeleteServerGroup(id string) (bool, error) {
 // DeleteServerGroupCollection will delete all the group except the default "all".
 func (i *ServerGroupDBImplement) DeleteServerGroupCollection() error {
 	c := commonDB.GetConnection()
-	return c.Where("name <> ?", "all").Delete(entity.ServerGroup{}).Error
+	return c.Where("\"Name\" <> ?", "all").Delete(entity.ServerGroup{}).Error
 }
