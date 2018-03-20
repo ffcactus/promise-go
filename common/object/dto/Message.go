@@ -5,20 +5,23 @@ import (
 	"time"
 )
 
+// Argument is DTO.
 type Argument struct {
 	Type  string `json:"Type"`
 	Name  string `json:"Name"`
 	Value string `json:"Value"`
 }
 
-func (this *Argument) Model() *m.Argument {
+// Model convert to model.
+func (dto *Argument) Model() *m.Argument {
 	ret := new(m.Argument)
-	ret.Type = this.Type
-	ret.Name = this.Name
-	ret.Value = this.Value
+	ret.Type = dto.Type
+	ret.Name = dto.Name
+	ret.Value = dto.Value
 	return ret
 }
 
+// Support is the DTO.
 type Support struct {
 	ID                string     `json:"ID"`
 	Reason            string     `json:"Reason"`
@@ -27,21 +30,23 @@ type Support struct {
 	SolutionArguments []Argument `json:"SolutionArguments"`
 }
 
-func (this *Support) Model() *m.Support {
+// Model convert to model.
+func (dto *Support) Model() *m.Support {
 	ret := new(m.Support)
 	ret.ReasonArguments = make([]m.Argument, 0)
 	ret.SolutionArguments = make([]m.Argument, 0)
-	ret.ID = this.ID
-	ret.Reason = this.Reason
-	for i, _ := range this.ReasonArguments {
-		ret.ReasonArguments = append(ret.ReasonArguments, *this.ReasonArguments[i].Model())
+	ret.ID = dto.ID
+	ret.Reason = dto.Reason
+	for i := range dto.ReasonArguments {
+		ret.ReasonArguments = append(ret.ReasonArguments, *dto.ReasonArguments[i].Model())
 	}
-	for i, _ := range this.SolutionArguments {
-		ret.SolutionArguments = append(ret.SolutionArguments, *this.SolutionArguments[i].Model())
+	for i := range dto.SolutionArguments {
+		ret.SolutionArguments = append(ret.SolutionArguments, *dto.SolutionArguments[i].Model())
 	}
 	return ret
 }
 
+// Message is the DTO.
 type Message struct {
 	ID          string `json:"ID"`
 	Severity    string `json:"Severity"`
@@ -52,6 +57,7 @@ type Message struct {
 	Supports    []Support  `json:"Supports"`
 }
 
+// NewArgument create a default Argument.
 func NewArgument(m m.Argument) Argument {
 	r := Argument{
 		Type:  m.Type,
@@ -61,6 +67,7 @@ func NewArgument(m m.Argument) Argument {
 	return r
 }
 
+// NewSupport create a default Support.
 func NewSupport(m m.Support) Support {
 	r := Support{
 		Reason:   m.Reason,
@@ -68,52 +75,55 @@ func NewSupport(m m.Support) Support {
 	}
 	r.ReasonArguments = make([]Argument, 0)
 	r.SolutionArguments = make([]Argument, 0)
-	for i, _ := range m.ReasonArguments {
+	for i := range m.ReasonArguments {
 		r.ReasonArguments = append(r.ReasonArguments, NewArgument(m.ReasonArguments[i]))
 	}
-	for i, _ := range m.SolutionArguments {
+	for i := range m.SolutionArguments {
 		r.SolutionArguments = append(r.SolutionArguments, NewArgument(m.SolutionArguments[i]))
 	}
 	return r
 }
 
-func (this *Message) Load(m *m.Message) {
-	this.Arguments = make([]Argument, 0)
-	this.Supports = make([]Support, 0)
-	this.ID = m.ID
-	this.Severity = m.Severity
-	this.Category = m.Category
-	this.Description = m.Description
-	this.CreateAt = m.CreatedAt
-	for i, _ := range m.Arguments {
-		this.Arguments = append(this.Arguments, NewArgument(m.Arguments[i]))
+// Load will load message from model.
+func (dto *Message) Load(m *m.Message) {
+	dto.Arguments = make([]Argument, 0)
+	dto.Supports = make([]Support, 0)
+	dto.ID = m.ID
+	dto.Severity = m.Severity
+	dto.Category = m.Category
+	dto.Description = m.Description
+	dto.CreateAt = m.CreatedAt
+	for i := range m.Arguments {
+		dto.Arguments = append(dto.Arguments, NewArgument(m.Arguments[i]))
 	}
-	for i, _ := range m.Supports {
-		this.Supports = append(this.Supports, NewSupport(m.Supports[i]))
+	for i := range m.Supports {
+		dto.Supports = append(dto.Supports, NewSupport(m.Supports[i]))
 	}
 }
 
-func (this *Message) Model() *m.Message {
+// Model will convert DTO to model.
+func (dto *Message) Model() *m.Message {
 	ret := new(m.Message)
 	ret.Arguments = make([]m.Argument, 0)
 	ret.Supports = make([]m.Support, 0)
-	ret.ID = this.ID
-	ret.Severity = this.Severity
-	ret.Category = this.Category
-	ret.Description = this.Description
-	ret.CreatedAt = this.CreateAt
-	for i, _ := range this.Arguments {
-		ret.Arguments = append(ret.Arguments, *this.Arguments[i].Model())
+	ret.ID = dto.ID
+	ret.Severity = dto.Severity
+	ret.Category = dto.Category
+	ret.Description = dto.Description
+	ret.CreatedAt = dto.CreateAt
+	for i := range dto.Arguments {
+		ret.Arguments = append(ret.Arguments, *dto.Arguments[i].Model())
 	}
-	for i, _ := range this.Supports {
-		ret.Supports = append(ret.Supports, *this.Supports[i].Model())
+	for i := range dto.Supports {
+		ret.Supports = append(ret.Supports, *dto.Supports[i].Model())
 	}
 	return ret
 }
 
+// MessagesToDto convert messages to DTO.
 func MessagesToDto(messages []m.Message) []Message {
 	ret := []Message{}
-	for i, _ := range messages {
+	for i := range messages {
 		m := Message{}
 		m.Load(&messages[i])
 		ret = append(ret, m)

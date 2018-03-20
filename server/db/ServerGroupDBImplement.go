@@ -55,7 +55,7 @@ func (i *ServerGroupDBImplement) PostServerGroup(m *model.ServerGroup) (*model.S
 			Warn("Post servergroup in DB failed, start transaction failed.")
 		return nil, false, err
 	}
-	if !tx.Where("Name = ?", m.Name).First(&e).RecordNotFound() {
+	if !tx.Where("'Name' = ?", m.Name).First(&e).RecordNotFound() {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"name": m.Name}).
@@ -83,14 +83,14 @@ func (i *ServerGroupDBImplement) PostServerGroup(m *model.ServerGroup) (*model.S
 
 }
 
-func convertFilter(filter string) (string, error) {
+func (i *ServerGroupDBImplement) convertFilter(filter string) (string, error) {
 	cmds := strings.Split(filter, " ")
 	if len(cmds) != 3 {
 		return "", fmt.Errorf("convert filter failed")
 	}
 	switch strings.ToLower(cmds[1]) {
 	case "eq":
-		return cmds[0] + " = " + cmds[2], nil
+		return "\"" + cmds[0] + "\"" + " = " + cmds[2], nil
 	default:
 		return "", fmt.Errorf("convert filter failed")
 	}
@@ -105,12 +105,16 @@ func (i *ServerGroupDBImplement) GetServerGroupCollection(start int, count int, 
 	)
 
 	c := commonDB.GetConnection()
-	c.Table("server-group").Count(total)
-	if where, err := convertFilter(filter); err != nil {
-		c.Order("Name asc").Limit(count).Offset(start).Select([]string{"ID", "Name"}).Find(&sgCollection)
+	c.Table("ServerGroup").Count(&total)
+	if where, err := i.convertFilter(filter); err != nil {
+		log.WithFields(log.Fields{
+			"filter": filter,
+			"error":  err}).
+			Warn("Get servergroup in DB failed, convert filter failed.")
+		c.Order("\"Name\" asc").Limit(count).Offset(start).Select([]string{"\"ID\"", "\"Name\""}).Find(&sgCollection)
 	} else {
 		log.WithFields(log.Fields{"where": where}).Info("Convert filter success.")
-		c.Order("Name asc").Limit(count).Offset(start).Where(where).Select([]string{"ID", "Name"}).Find(&sgCollection)
+		c.Order("\"Name\" asc").Limit(count).Offset(start).Where(where).Select([]string{"\"ID\"", "\"Name\""}).Find(&sgCollection)
 	}
 	ret.Start = start
 	ret.Count = len(sgCollection)

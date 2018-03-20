@@ -24,7 +24,7 @@ func InitConnection() error {
 			log.Info("gorm.Open() failed, error = ", err)
 			return err
 		}
-		db.LogMode(false)
+		db.LogMode(true)
 		db.SingularTable(true)
 		connection = db
 	} else {

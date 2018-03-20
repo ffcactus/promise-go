@@ -76,7 +76,7 @@ func (c *ServerGroupRootController) Get() {
 		}
 	}
 
-	if !isValidFilter(filter) {
+	if !c.isValidFilter(filter) {
 		parameterError = true
 	}
 
@@ -113,6 +113,6 @@ func (c *ServerGroupRootController) Delete() {
 	c.ServeJSON()
 }
 
-func isValidFilter(filter string) bool {
+func (c *ServerGroupRootController) isValidFilter(filter string) bool {
 	return true
 }

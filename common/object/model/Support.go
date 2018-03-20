@@ -1,6 +1,6 @@
 package model
 
-// The support tells how to solve a problem.
+// Support tells how to solve a problem.
 type Support struct {
 	ID                string // The unique ID within a micro service.
 	Reason            string
@@ -9,6 +9,7 @@ type Support struct {
 	SolutionArguments []Argument
 }
 
+// NewSupport create a new Support.
 func NewSupport() Support {
 	ret := Support{}
 	ret.ReasonArguments = make([]Argument, 0)

@@ -3,12 +3,12 @@ package app
 import (
 	"bytes"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"io"
 	"sort"
 	"strings"
 	"sync"
 	"time"
-	"github.com/sirupsen/logrus"
 )
 
 const (

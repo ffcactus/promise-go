@@ -2,10 +2,10 @@ package service
 
 import (
 	commonM "promise/common/object/model"
+	"promise/server/db"
 	"promise/server/object/dto"
 	"promise/server/object/message"
 	"promise/server/object/model"
-	"promise/server/db"
 )
 
 // PostServerServerGroup post a server-group.
@@ -34,8 +34,13 @@ func GetServerServerGroup(id string) (*model.ServerServerGroup, []commonM.Messag
 }
 
 // GetServerServerGroupCollection will get server collection.
-func GetServerServerGroupCollection(start int, count int) (*model.ServerServerGroupCollection, []commonM.Message) {
-	return nil, nil
+func GetServerServerGroupCollection(start int, count int, filter string) (*model.ServerServerGroupCollection, []commonM.Message) {
+	dbImpl := db.GetServerServerGroupInstance()
+	ret, err := dbImpl.GetServerServerGroupCollection(start, count, filter)
+	if err != nil {
+		return nil, []commonM.Message{message.NewServerInternalError()}
+	}
+	return ret, nil
 }
 
 // DeleteServerServerGroup will delete server group by ID.

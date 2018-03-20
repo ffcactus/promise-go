@@ -106,5 +106,3 @@ func (c *ServerRootController) Delete() {
 	log.Info("DELETE all servers.")
 	c.ServeJSON()
 }
-
-

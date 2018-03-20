@@ -91,7 +91,7 @@ func (i *ServerDBImplement) GetServerCollection(start int, count int) (*model.Se
 	)
 
 	c := commonDB.GetConnection()
-	c.Table("server").Count(total)
+	c.Table("server").Count(&total)
 	c.Order("Name asc").Limit(count).Offset(start).Select([]string{"ID", "Name", "State", "Health"}).Find(&server)
 	ret.Start = start
 	ret.Count = len(server)

@@ -1,23 +1,26 @@
 package entity
 
 import (
+	"promise/common/object/entity"
 	"promise/server/object/model"
-	"time"
 )
 
 // ServerGroup is the entity of servergroup.
 type ServerGroup struct {
-	Entity
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	Name        string
-	Description string
+	entity.PromiseEntity
+	Name        string `gorm:"column:Name"`
+	Description string `gorm:"column:Description"`
+}
+
+// TableName will set the table name.
+func (ServerGroup) TableName() string {
+	return "ServerGroup"
 }
 
 // ToModel change the entity to model.
 func (e *ServerGroup) ToModel() *model.ServerGroup {
 	ret := new(model.ServerGroup)
-	ret.ID = e.ID
+	ret.PromiseModel = e.PromiseEntity.ToModel()
 	ret.Name = e.Name
 	ret.Description = e.Description
 	return ret

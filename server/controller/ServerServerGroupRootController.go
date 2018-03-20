@@ -53,9 +53,9 @@ func (c *ServerServerGroupRootController) Post() {
 // Get will return server-servergroup collection.
 func (c *ServerServerGroupRootController) Get() {
 	var (
-		start, count       string = c.GetString("start"), c.GetString("count")
-		startInt, countInt int    = 0, -1
-		parameterError     bool
+		start, count, filter string = c.GetString("start"), c.GetString("count"), c.GetString("filter")
+		startInt, countInt   int    = 0, -1
+		parameterError       bool
 	)
 	log.WithFields(log.Fields{"start": start, "count": count}).Debug("Get server-servergroup collection.")
 	if start != "" {
@@ -76,6 +76,10 @@ func (c *ServerServerGroupRootController) Get() {
 		}
 	}
 
+	if !c.isValidFilter(filter) {
+		parameterError = true
+	}
+
 	if parameterError {
 		messages := []commonM.Message{}
 		messages = append(messages, message.NewServerParameterError())
@@ -83,7 +87,7 @@ func (c *ServerServerGroupRootController) Get() {
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		log.Warn("Get server-servergroup collection failed, parameter error.")
 	} else {
-		if collection, messages := service.GetServerServerGroupCollection(startInt, countInt); messages != nil {
+		if collection, messages := service.GetServerServerGroupCollection(startInt, countInt, filter); messages != nil {
 			c.Data["json"] = commonDto.MessagesToDto(messages)
 			c.Ctx.Output.SetStatus(messages[0].StatusCode)
 			log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Get server-servergroup collection failed")
@@ -107,4 +111,8 @@ func (c *ServerServerGroupRootController) Delete() {
 	c.Ctx.Output.SetStatus(http.StatusAccepted)
 	log.Info("DELETE all server-servergroups")
 	c.ServeJSON()
+}
+
+func (c *ServerServerGroupRootController) isValidFilter(filter string) bool {
+	return true
 }
