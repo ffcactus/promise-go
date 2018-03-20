@@ -23,7 +23,7 @@ func (i *ServerServerGroupImplement) GetServerServerGroup(id string) *model.Serv
 	var e = new(entity.ServerServerGroup)
 
 	c := commonDB.GetConnection()
-	if c.Where("ID = ?, ID").First(e).RecordNotFound() {
+	if c.Where("\"ID\" = ?", id).First(e).RecordNotFound() {
 		return nil
 	}
 	return e.ToModel()
@@ -53,21 +53,21 @@ func (i *ServerServerGroupImplement) PostServerServerGroup(m *model.ServerServer
 			Warn("Post server-servergroup in DB failed, start transaction failed.")
 	}
 	// Check if server ID exist.
-	if tx.Where("ID = ?", s.ID).First(s).RecordNotFound() {
+	if tx.Where("\"id\" = ?", s.ID).First(s).RecordNotFound() {
 		tx.Rollback()
 		log.WithFields(log.Fields{"serverID": s.ID}).
-			Debug("Post server-servergroup in DB failed, server ID does not exist, transaction rollback.")
+			Warn("Post server-servergroup in DB failed, server ID does not exist, transaction rollback.")
 		return nil, false, fmt.Errorf("server ID does not exist")
 	}
 	// Check if servergroup ID exsit.
-	if tx.Where("ID = ?", sg.ID).First(sg).RecordNotFound() {
+	if tx.Where("\"ID\" = ?", sg.ID).First(sg).RecordNotFound() {
 		tx.Rollback()
 		log.WithFields(log.Fields{"serverGroupID": sg.ID}).
-			Debug("Post server-servergroup in DB failed, servergroup ID does not exist, transaction rollback.")
+			Warn("Post server-servergroup in DB failed, servergroup ID does not exist, transaction rollback.")
 		return nil, false, fmt.Errorf("servergroup ID does not exist")
 	}
 	// Check duplication.
-	if !tx.Where("server_id = ? AND server_group_id = ?", ssg.ServerID, ssg.ServerGroupID).First(tempSsg).RecordNotFound() {
+	if !tx.Where("\"ServerID\" = ? AND \"ServerGroupID\" = ?", ssg.ServerID, ssg.ServerGroupID).First(tempSsg).RecordNotFound() {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"serverID":      tempSsg.ServerID,
@@ -123,7 +123,7 @@ func (i *ServerServerGroupImplement) GetServerServerGroupCollection(start int, c
 		log.WithFields(log.Fields{
 			"filter": filter,
 			"error":  err}).
-			Warn("Get server-servergroup in DB failed, convert filter failed.")		
+			Warn("Get server-servergroup in DB failed, convert filter failed.")
 		c.Limit(count).Offset(start).Find(&collection)
 	} else {
 		log.WithFields(log.Fields{"where": where}).Debug("Convert filter success.")
@@ -146,5 +146,5 @@ func (i *ServerServerGroupImplement) GetServerServerGroupCollection(start int, c
 // except the default association to default server group.
 func (i *ServerServerGroupImplement) DeleteServerServerGroupCollection() error {
 	c := commonDB.GetConnection()
-	return c.Where("server_group_id <> ?", DefaultServerGroupID).Delete(entity.ServerServerGroup{}).Error
+	return c.Where("\"ServerGroupID\" <> ?", DefaultServerGroupID).Delete(entity.ServerServerGroup{}).Error
 }

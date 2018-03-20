@@ -16,7 +16,7 @@ func main() {
 	app.Init("ServerApp")
 	initDB()
 
-	go service.FindServerStateAdded()
+	// go service.FindServerStateAdded()
 
 	serverNS := beego.NewNamespace(
 		app.RootURL+"/server",

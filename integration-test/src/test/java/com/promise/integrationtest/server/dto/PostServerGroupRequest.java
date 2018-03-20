@@ -7,20 +7,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class PostServerGroupRequest
 {
-    @JsonProperty("Name")
+    @JsonProperty(value = "Name", required = true)
     private String name;
     @JsonProperty("Description")
     private String description;
 
-    public PostServerGroupRequest() {
-    	
+    public PostServerGroupRequest()
+    {
+
     }
-    
-    public PostServerGroupRequest(String name, String description) {
-    	this.name = name;
-    	this.description = description;
+
+    public PostServerGroupRequest(String name, String description)
+    {
+        this.name = name;
+        this.description = description;
     }
-    
+
     public String getName()
     {
         return name;

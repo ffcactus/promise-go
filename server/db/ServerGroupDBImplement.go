@@ -26,7 +26,7 @@ func GetServerGroupDB() ServerGroupDBInterface {
 func (i *ServerGroupDBImplement) GetServerGroup(id string) *model.ServerGroup {
 	var sg entity.ServerGroup
 	c := commonDB.GetConnection()
-	if c.Where("ID = ?", id).First(&sg).RecordNotFound() {
+	if c.Where("\"ID\" = ?", id).First(&sg).RecordNotFound() {
 		return nil
 	}
 	return sg.ToModel()

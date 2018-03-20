@@ -7,7 +7,7 @@ import (
 // PostServerServerGroupRequest is the DTO for post server-group.
 type PostServerServerGroupRequest struct {
 	ServerID      string `json:"ServerID"`
-	ServerGroupID string `json:"GroupID"`
+	ServerGroupID string `json:"ServerGroupID"`
 }
 
 // ToModel will return a model based on DTO.

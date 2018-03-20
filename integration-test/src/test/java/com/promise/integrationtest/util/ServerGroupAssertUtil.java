@@ -38,10 +38,10 @@ public class ServerGroupAssertUtil
     public static GetServerGroupResponse assertGetServerGroupByName(String name)
             throws UnsupportedEncodingException
     {
-        final String filter = URLEncoder.encode("name eq '" + name + "'", "UTF-8");
+        final String filter = URLEncoder.encode("Name eq '" + name + "'", "UTF-8");
         final ResponseEntity<ResourceCollectionResponse<MemberResponse>> response1 = RestClient.get(
                 // PromiseIntegrationTest.getRootURL() + "/promise/v1/servergroup",
-                PromiseIntegrationTest.getRootURL() + "/promise/v1/servergroup?filter=" + filter,
+                PromiseIntegrationTest.getRootURL() + "/promise/v1/servergroup?$filter=" + filter,
                 new TypeReference<ResourceCollectionResponse<MemberResponse>>()
                 {
                 });

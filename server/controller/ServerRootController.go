@@ -101,8 +101,9 @@ func (c *ServerRootController) Delete() {
 	if messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+	} else {
+		c.Ctx.Output.SetStatus(http.StatusAccepted)
+		log.Info("DELETE all servers.")
 	}
-	c.Ctx.Output.SetStatus(http.StatusAccepted)
-	log.Info("DELETE all servers.")
 	c.ServeJSON()
 }

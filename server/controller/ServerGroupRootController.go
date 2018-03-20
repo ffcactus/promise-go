@@ -107,9 +107,10 @@ func (c *ServerGroupRootController) Delete() {
 	if messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+	} else {
+		c.Ctx.Output.SetStatus(http.StatusAccepted)
+		log.Info("DELETE all servergroups.")
 	}
-	c.Ctx.Output.SetStatus(http.StatusAccepted)
-	log.Info("DELETE all servergroups.")
 	c.ServeJSON()
 }
 

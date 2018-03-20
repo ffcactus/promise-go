@@ -90,7 +90,7 @@ func (c *ServerServerGroupRootController) Get() {
 		if collection, messages := service.GetServerServerGroupCollection(startInt, countInt, filter); messages != nil {
 			c.Data["json"] = commonDto.MessagesToDto(messages)
 			c.Ctx.Output.SetStatus(messages[0].StatusCode)
-			log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Get server-servergroup collection failed")
+			log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Get server-servergroup collection failed.")
 		} else {
 			resp := new(dto.GetServerServerGroupCollectionResponse)
 			resp.Load(collection)
@@ -107,9 +107,11 @@ func (c *ServerServerGroupRootController) Delete() {
 	if messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Delete server-servergroup collection failed.")
+	} else {
+		c.Ctx.Output.SetStatus(http.StatusAccepted)
+		log.Info("DELETE all server-servergroups.")
 	}
-	c.Ctx.Output.SetStatus(http.StatusAccepted)
-	log.Info("DELETE all server-servergroups")
 	c.ServeJSON()
 }
 
