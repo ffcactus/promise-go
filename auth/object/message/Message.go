@@ -2,8 +2,8 @@ package message
 
 import (
 	"net/http"
-	"promise/common/object/message"
 	"promise/common/object/constValue"
+	"promise/common/object/message"
 )
 
 const (

@@ -2,8 +2,8 @@ package controller
 
 import (
 	"encoding/json"
-	commonMessage "promise/common/object/message"
 	commonDto "promise/common/object/dto"
+	commonMessage "promise/common/object/message"
 	"promise/task/object/dto"
 	"promise/task/object/message"
 	"promise/task/service"
@@ -42,7 +42,7 @@ func (c *RootController) Get() {
 	var (
 		start, count       string = c.GetString("start"), c.GetString("count")
 		startInt, countInt int    = 0, -1
-		parameterError     = false
+		parameterError            = false
 	)
 	log.Debug("Get task collection, start = ", start, ", count = ", count)
 	if start != "" {

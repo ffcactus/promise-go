@@ -35,7 +35,7 @@ func (c *ServerGroupController) Get() {
 // Delete will delete the servergroup by ID.
 func (c *ServerGroupController) Delete() {
 	var id = c.Ctx.Input.Param(":id")
-	log.WithFields(log.Fields{"id": id}).Debug("Delete servergroup.")
+	log.WithFields(log.Fields{"id": id}).Info("Delete servergroup.")
 	if messages := service.DeleteServerGroup(id); messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)

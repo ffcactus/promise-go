@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	commonDB "promise/common/db"
 	"promise/server/object/entity"
@@ -76,6 +77,7 @@ func (i *ServerServerGroupImplement) PostServerServerGroup(m *model.ServerServer
 			Warn("Post server-servergroup in DB failed, duplicated resource.")
 		return tempSsg.ToModel(), true, nil
 	}
+	ssg.ID = uuid.New().String()
 	if err := tx.Create(ssg).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{

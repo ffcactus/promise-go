@@ -10,4 +10,3 @@ const (
 	// CategoryServer means the server category.
 	CategoryServer = "Server"
 )
-

@@ -2,10 +2,9 @@ package service
 
 import (
 	log "github.com/sirupsen/logrus"
-	commomMessage "promise/common/object/message"
+	commonMessage "promise/common/object/message"
 	"promise/server/db"
 	"promise/server/object/dto"
-	"promise/server/object/message"
 	"promise/server/object/model"
 )
 
@@ -28,59 +27,59 @@ func CreateDefaultServerGroup() {
 }
 
 // PostServerGroup post a server group.
-func PostServerGroup(request *dto.PostServerGroupRequest) (*model.ServerGroup, []commomMessage.Message) {
+func PostServerGroup(request *dto.PostServerGroupRequest) (*model.ServerGroup, []commonMessage.Message) {
 	dbImpl := db.GetServerGroupDB()
 
 	posted, exist, err := dbImpl.PostServerGroup(request.ToModel())
 	if exist {
-		return nil, []commomMessage.Message{message.NewServerGroupExist()}
+		return nil, []commonMessage.Message{commonMessage.NewResourceDuplicate()}
 	}
 	if err != nil {
-		return nil, []commomMessage.Message{message.NewServerInternalError()}
+		return nil, []commonMessage.Message{commonMessage.NewInternalError()}
 	}
 	return posted, nil
 }
 
 // GetServerGroup will get server group by ID.
-func GetServerGroup(id string) (*model.ServerGroup, []commomMessage.Message) {
+func GetServerGroup(id string) (*model.ServerGroup, []commonMessage.Message) {
 	dbImpl := db.GetServerGroupDB()
 
 	sg := dbImpl.GetServerGroup(id)
 	if sg == nil {
-		return nil, []commomMessage.Message{message.NewServerGroupNotExist()}
+		return nil, []commonMessage.Message{commonMessage.NewResourceNotExist()}
 	}
 	return sg, nil
 }
 
 // GetServerGroupCollection will get server collection.
-func GetServerGroupCollection(start int, count int, filter string) (*model.ServerGroupCollection, []commomMessage.Message) {
+func GetServerGroupCollection(start int, count int, filter string) (*model.ServerGroupCollection, []commonMessage.Message) {
 	dbImpl := db.GetServerGroupDB()
 	ret, err := dbImpl.GetServerGroupCollection(start, count, filter)
 	if err != nil {
-		return nil, []commomMessage.Message{message.NewServerInternalError()}
+		return nil, []commonMessage.Message{commonMessage.NewInternalError()}
 	}
 	return ret, nil
 }
 
 // DeleteServerGroup will delete server group by ID.
-func DeleteServerGroup(id string) []commomMessage.Message {
+func DeleteServerGroup(id string) []commonMessage.Message {
 	dbImpl := db.GetServerGroupDB()
 	exist, err := dbImpl.DeleteServerGroup(id)
 	if err != nil {
-		return []commomMessage.Message{message.NewServerInternalError()}
+		return []commonMessage.Message{commonMessage.NewInternalError()}
 	}
 	if !exist {
-		return []commomMessage.Message{message.NewServerGroupNotExist()}
+		return []commonMessage.Message{commonMessage.NewResourceNotExist()}
 	}
 	return nil
 }
 
 // DeleteServerGroupCollection will delete all the server group except the default "all".
-func DeleteServerGroupCollection() []commomMessage.Message {
+func DeleteServerGroupCollection() []commonMessage.Message {
 	dbImpl := db.GetServerGroupDB()
 	err := dbImpl.DeleteServerGroupCollection()
 	if err != nil {
-		return []commomMessage.Message{message.NewServerInternalError()}
+		return []commonMessage.Message{commonMessage.NewInternalError()}
 	}
 	return nil
 }

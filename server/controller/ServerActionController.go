@@ -7,7 +7,6 @@ import (
 	commonDto "promise/common/object/dto"
 	commomMessage "promise/common/object/message"
 	"promise/server/object/constValue"
-	"promise/server/object/message"
 	"promise/server/service"
 	"strings"
 )
@@ -34,7 +33,7 @@ func (c *ServerActionController) Post() {
 		}
 	default:
 		messages := []commomMessage.Message{}
-		messages = append(messages, message.NewServerParameterError())
+		messages = append(messages, commomMessage.NewInvalidRequest())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 	}

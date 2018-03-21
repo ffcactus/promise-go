@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	log "github.com/sirupsen/logrus"
+	commonMessage "promise/common/object/message"
 	"promise/server/context"
 	"promise/server/object/message"
 	"promise/server/object/model"
@@ -18,7 +19,7 @@ func (s *ServerStrategy) LockServer(c *context.ServerContext) error {
 	success, server := c.ServerDBImplement.GetAndLockServer(c.Server.ID)
 	if server == nil {
 		log.WithFields(log.Fields{"id": c.Server.ID}).Info("Can not get and lock server, server not exist.")
-		c.AppendMessage(message.NewServerNotExist())
+		c.AppendMessage(commonMessage.NewResourceNotExist())
 		return errors.New("failed to lock server, server not exist")
 	}
 	if !success {
@@ -54,7 +55,7 @@ func (s *ServerStrategy) SaveServer(c *context.ServerContext) error {
 	server, err := c.ServerDBImplement.PostServer(c.Server)
 	if err != nil {
 		log.WithFields(log.Fields{"hostname": c.Server.Hostname, "err": err}).Warn("Save server failed.")
-		c.AppendMessage(message.NewServerInternalError())
+		c.AppendMessage(commonMessage.NewInternalError())
 		return errors.New("failed to save server")
 	}
 	c.Server = server

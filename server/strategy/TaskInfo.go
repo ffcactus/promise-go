@@ -20,50 +20,50 @@ var (
 	ServerTaskRefresh = "Server.Task.Refresh"
 
 	// ServerRefreshTaskStepIDPower is an ID.
-	ServerRefreshTaskStepIDPower              = "Server.Refresh.Power"
+	ServerRefreshTaskStepIDPower = "Server.Refresh.Power"
 	// ServerRefreshTaskStepIDThermal is an ID.
-	ServerRefreshTaskStepIDThermal            = "Server.Refresh.Thermal"
+	ServerRefreshTaskStepIDThermal = "Server.Refresh.Thermal"
 	// ServerRefreshTaskStepIDBoards is an ID.
-	ServerRefreshTaskStepIDBoards             = "Server.Refresh.OemHuaweiBoards"
+	ServerRefreshTaskStepIDBoards = "Server.Refresh.OemHuaweiBoards"
 	// ServerRefreshTaskStepIDNetworkAdapters is an ID.
-	ServerRefreshTaskStepIDNetworkAdapters    = "Server.Refresh.NetworkAdapters"
+	ServerRefreshTaskStepIDNetworkAdapters = "Server.Refresh.NetworkAdapters"
 	// ServerRefreshTaskStepIDDrives is an ID.
-	ServerRefreshTaskStepIDDrives             = "Server.Refresh.Drives"
+	ServerRefreshTaskStepIDDrives = "Server.Refresh.Drives"
 	// ServerRefreshTaskStepIDPCIeDevices is an ID.
-	ServerRefreshTaskStepIDPCIeDevices        = "Server.Refresh.PCIeDevices"
+	ServerRefreshTaskStepIDPCIeDevices = "Server.Refresh.PCIeDevices"
 	// ServerRefreshTaskStepIDProcessors is an ID.
-	ServerRefreshTaskStepIDProcessors         = "Server.Refresh.Processors"
+	ServerRefreshTaskStepIDProcessors = "Server.Refresh.Processors"
 	// ServerRefreshTaskStepIDMemory is an ID.
-	ServerRefreshTaskStepIDMemory             = "Server.Refresh.Memory"
+	ServerRefreshTaskStepIDMemory = "Server.Refresh.Memory"
 	// ServerRefreshTaskStepIDEthernetInterfaces is an ID.
 	ServerRefreshTaskStepIDEthernetInterfaces = "Server.Refresh.EthernetInterfaces"
 	// ServerRefreshTaskStepIDNetworkInterfaces is an ID.
-	ServerRefreshTaskStepIDNetworkInterfaces  = "Server.Refresh.NetworkInterfaces"
+	ServerRefreshTaskStepIDNetworkInterfaces = "Server.Refresh.NetworkInterfaces"
 	// ServerRefreshTaskStepIDStorages is an ID.
-	ServerRefreshTaskStepIDStorages           = "Server.Refresh.Storages"
+	ServerRefreshTaskStepIDStorages = "Server.Refresh.Storages"
 
 	// ServerRefreshTaskStepNamePower is task step name.
-	ServerRefreshTaskStepNamePower              = "Power"
+	ServerRefreshTaskStepNamePower = "Power"
 	// ServerRefreshTaskStepNameThermal is task step name.
-	ServerRefreshTaskStepNameThermal            = "Thermal"
+	ServerRefreshTaskStepNameThermal = "Thermal"
 	// ServerRefreshTaskStepNameBoards is task step name.
-	ServerRefreshTaskStepNameBoards             = "OemHuaweiBoards"
+	ServerRefreshTaskStepNameBoards = "OemHuaweiBoards"
 	// ServerRefreshTaskStepNameNetworkAdapters is task step name.
-	ServerRefreshTaskStepNameNetworkAdapters    = "NetworkAdapters"
+	ServerRefreshTaskStepNameNetworkAdapters = "NetworkAdapters"
 	// ServerRefreshTaskStepNameDrives is task step name.
-	ServerRefreshTaskStepNameDrives             = "Drives"
+	ServerRefreshTaskStepNameDrives = "Drives"
 	// ServerRefreshTaskStepNamePCIeDevices is task step name.
-	ServerRefreshTaskStepNamePCIeDevices        = "PCIeDevices"
+	ServerRefreshTaskStepNamePCIeDevices = "PCIeDevices"
 	// ServerRefreshTaskStepNameProcessors is task step name.
-	ServerRefreshTaskStepNameProcessors         = "Processors"
+	ServerRefreshTaskStepNameProcessors = "Processors"
 	// ServerRefreshTaskStepNameMemory is task step name.
-	ServerRefreshTaskStepNameMemory             = "Memory"
+	ServerRefreshTaskStepNameMemory = "Memory"
 	// ServerRefreshTaskStepNameEthernetInterfaces is task step name.
 	ServerRefreshTaskStepNameEthernetInterfaces = "EthernetInterfaces"
 	// ServerRefreshTaskStepNameNetworkInterfaces is task step name.
-	ServerRefreshTaskStepNameNetworkInterfaces  = "NetworkInterfaces"
+	ServerRefreshTaskStepNameNetworkInterfaces = "NetworkInterfaces"
 	// ServerRefreshTaskStepNameStorages is task step name.
-	ServerRefreshTaskStepNameStorages           = "Storages"
+	ServerRefreshTaskStepNameStorages = "Storages"
 
 	// ServerTaskRefreshStepPower is a task step.
 	ServerTaskRefreshStepPower = taskDto.PostTaskStepRequest{

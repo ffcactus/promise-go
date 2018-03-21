@@ -5,41 +5,19 @@ import (
 )
 
 const (
-	// SupportServerInternalError Support ID enum.
-	SupportServerInternalError = "SupportServerInternalError"
-	// SupportServerParameterError Support ID enum.
-	SupportServerParameterError = "SupportServerParameterError"
 	// SupportServerUnableConnect Support ID enum.
-	SupportServerUnableConnect = "SupportServerUnableConnect"
+	SupportServerUnableConnect = "Server.Support.ServerUnableConnect"
 	// SupportServerUnknownProtocol Support ID enum.
-	SupportServerUnknownProtocol = "SupportServerUnknownProtocol"
+	SupportServerUnknownProtocol = "Server.Support.ServerUnknownProtocol"
 	// SupportServerNoBasicInfo Support ID enum.
-	SupportServerNoBasicInfo = "SupportServerNoBasicInfo"
+	SupportServerNoBasicInfo = "Server.Support.ServerNoBasicInfo"
 	// SupportServerWaitForReady Support ID enum.
-	SupportServerWaitForReady = "SupportServerWaitForReady"
+	SupportServerWaitForReady = "Server.Support.ServerWaitForReady"
 	// SupportServerAccountExist1 Support ID enum.
-	SupportServerAccountExist1 = "SupportServerAccountExist1"
+	SupportServerAccountExist1 = "Server.Support.ServerAccountExist1"
 	// SupportServerAccountExist2 Support ID enum.
-	SupportServerAccountExist2 = "SupportServerAccountExist2"
+	SupportServerAccountExist2 = "Server.Support.ServerAccountExist2"
 )
-
-// NewSupportServerInternalError Create a new support.
-func NewSupportServerInternalError() commonMessage.Support {
-	ret := commonMessage.Support{}
-	ret.ID = SupportServerInternalError
-	ret.Reason = "An internal error happened."
-	ret.Solution = "Contact Support."
-	return ret
-}
-
-// NewSupportServerParameterError Create a new support.
-func NewSupportServerParameterError() commonMessage.Support {
-	ret := commonMessage.Support{}
-	ret.ID = SupportServerParameterError
-	ret.Reason = "Input parameter may missing, incorrect or unrecognized."
-	ret.Solution = "Provide the right parameter."
-	return ret
-}
 
 // NewSupportServerUnableConnect Create a new support.
 func NewSupportServerUnableConnect() commonMessage.Support {

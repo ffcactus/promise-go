@@ -55,7 +55,7 @@ func (i *ServerGroupDBImplement) PostServerGroup(m *model.ServerGroup) (*model.S
 			Warn("Post servergroup in DB failed, start transaction failed.")
 		return nil, false, err
 	}
-	if !tx.Where("'Name' = ?", m.Name).First(&e).RecordNotFound() {
+	if !tx.Where("\"Name\" = ?", m.Name).First(&e).RecordNotFound() {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"name": m.Name}).
@@ -132,7 +132,15 @@ func (i *ServerGroupDBImplement) GetServerGroupCollection(start int, count int, 
 func (i *ServerGroupDBImplement) DeleteServerGroup(id string) (bool, error) {
 	var sg entity.ServerGroup
 
+	if id == DefaultServerGroupID {
+		return true, fmt.Errorf("can not delete default servergroup")
+	}
+
+	if id == "" {
+		return false, fmt.Errorf("id can not be empty")
+	}
 	// If I need check the existance and error at the same time, should I use transaction?
+	log.Info("------ id " + id)
 	sg.ID = id
 	c := commonDB.GetConnection()
 	if c.Delete(&sg).RecordNotFound() {

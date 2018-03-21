@@ -11,9 +11,9 @@ import org.springframework.http.ResponseEntity;
 
 import com.promise.integrationtest.base.DeleteResourceResponse;
 import com.promise.integrationtest.base.PromiseIntegrationTest;
+import com.promise.integrationtest.common.object.message.PromiseMessage;
 import com.promise.integrationtest.server.dto.GetServerGroupResponse;
 import com.promise.integrationtest.server.dto.PostServerGroupRequest;
-import com.promise.integrationtest.server.message.ServerGroupMessage;
 import com.promise.integrationtest.util.PromiseAssertUtil;
 import com.promise.integrationtest.util.RestClient;
 
@@ -87,6 +87,7 @@ public class ServerGroupTest extends PromiseIntegrationTest
     {
         // Create the default "all" server group should fail.
         final PostServerGroupRequest request = new PostServerGroupRequest("all", "default server group");
-        PromiseAssertUtil.assertPostMessage(ServerGroupMessage.EXIST.getId(), getRootURL() + "/promise/v1/servergroup/", request);
+        PromiseAssertUtil
+                .assertPostMessage(PromiseMessage.ResourceDuplicate.getId(), getRootURL() + "/promise/v1/servergroup/", request);
     }
 }

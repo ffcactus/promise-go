@@ -2,8 +2,8 @@ package message
 
 import (
 	"net/http"
-	"time"
 	"promise/common/object/constValue"
+	"time"
 )
 
 // Argument is used to replace a portion in a string. For example, to express
@@ -29,14 +29,14 @@ type Message struct {
 }
 
 const (
+	// MessageInternalError is message ID.
+	MessageInternalError = "Promise.Message.InternalError"
 	// MessageResourceNotExist is message ID.
 	MessageResourceNotExist = "Promise.Message.ResourceNotExist"
 	// MessageResourceDuplicate is message ID.
 	MessageResourceDuplicate = "Promise.Message.ResourceDuplicate"
 	// MessageInvalidRequest is message ID.
 	MessageInvalidRequest = "Promise.Message.InvalidRequest"
-	// MessageInternalError is message ID.
-	MessageInternalError = "Promise.Message.InternalError"
 	// MessageTimeout is message ID.
 	MessageTimeout = "Promise.Message.Timeout"
 )

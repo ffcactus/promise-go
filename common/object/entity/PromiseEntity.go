@@ -7,7 +7,7 @@ import (
 
 // PromiseEntity is the common entity used in Promise.
 type PromiseEntity struct {
-	ID        string    `gorm:"column:ID"`
+	ID        string    `gorm:"column:ID;primary_key"`
 	CreatedAt time.Time `gorm:"column:CreatedAt"`
 	UpdatedAt time.Time `gorm:"column:UpdatedAt"`
 }

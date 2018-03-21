@@ -8,7 +8,6 @@ import (
 	commonDto "promise/common/object/dto"
 	commomMessage "promise/common/object/message"
 	"promise/server/object/dto"
-	"promise/server/object/message"
 	"promise/server/service"
 	"strconv"
 )
@@ -28,7 +27,7 @@ func (c *ServerServerGroupRootController) Post() {
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &request); err != nil {
 		log.WithFields(log.Fields{"err": err}).Info("Post server-servergroup failed, unable to get request.")
 		messages := []commomMessage.Message{}
-		messages = append(messages, message.NewServerParameterError())
+		messages = append(messages, commomMessage.NewInvalidRequest())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
@@ -82,7 +81,7 @@ func (c *ServerServerGroupRootController) Get() {
 
 	if parameterError {
 		messages := []commomMessage.Message{}
-		messages = append(messages, message.NewServerParameterError())
+		messages = append(messages, commomMessage.NewInvalidRequest())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		log.Warn("Get server-servergroup collection failed, parameter error.")
