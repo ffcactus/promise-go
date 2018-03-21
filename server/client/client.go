@@ -4,7 +4,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"promise/server/client/mock"
 	"promise/server/client/redfish"
-	"promise/server/object/constvalue"
+	"promise/server/object/constValue"
 	"promise/server/object/model"
 	"strings"
 )
@@ -60,10 +60,10 @@ func getServerManagementAccount(server *model.Server) (string, string) {
 // GetServerClient will return the server client based on protocol.
 func GetServerClient(server *model.Server) ServerClientInterface {
 	switch server.Protocol {
-	case constvalue.RedfishV1:
+	case constValue.RedfishV1:
 		username, password := getServerManagementAccount(server)
 		return redfish.GetInstance(server.Hostname, username, password, true)
-	case constvalue.MockProtocol:
+	case constValue.MockProtocol:
 		return mock.GetInstance(server.Hostname)
 	default:
 		return nil

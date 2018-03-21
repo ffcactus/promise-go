@@ -1,30 +1,31 @@
 package message
 
 import (
-	commonM "promise/common/object/model"
+	commonMessage "promise/common/object/message"
+	"promise/common/object/constValue"
 )
 
 const (
-	// MessageIDServerGroupExist is message ID.
-	MessageIDServerGroupExist = "MessageIDServerGroupExist"
-	// MessageIDServerGroupNotExist is message ID.
-	MessageIDServerGroupNotExist = "MessageIDServerGroupNotExist"
+	// MessageServerGroupExist is message ID.
+	MessageServerGroupExist = "MessageServerGroupExist"
+	// MessageServerGroupNotExist is message ID.
+	MessageServerGroupNotExist = "MessageServerGroupNotExist"
 )
 
 // NewServerGroupExist return a new message.
-func NewServerGroupExist() commonM.Message {
-	ret := commonM.NewMessage(commonM.CategoryServer)
-	ret.ID = MessageIDServerGroupExist
-	ret.Severity = commonM.SeverityNormal
+func NewServerGroupExist() commonMessage.Message {
+	ret := commonMessage.NewMessage(constValue.CategoryServer)
+	ret.ID = MessageServerGroupExist
+	ret.Severity = constValue.SeverityNormal
 	ret.Description = "Server group already exists."
 	return ret
 }
 
 // NewServerGroupNotExist return a new message.
-func NewServerGroupNotExist() commonM.Message {
-	ret := commonM.NewMessage(commonM.CategoryServer)
-	ret.ID = MessageIDServerGroupNotExist
-	ret.Severity = commonM.SeverityNormal
+func NewServerGroupNotExist() commonMessage.Message {
+	ret := commonMessage.NewMessage(constValue.CategoryServer)
+	ret.ID = MessageServerGroupNotExist
+	ret.Severity = constValue.SeverityNormal
 	ret.Description = "Server group not exists."
 	return ret
 }

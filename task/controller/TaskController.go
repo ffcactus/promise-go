@@ -2,7 +2,7 @@ package controller
 
 import (
 	commonDto "promise/common/object/dto"
-	. "promise/task/object/dto"
+	"promise/task/object/dto"
 	"promise/task/service"
 
 	"github.com/astaxie/beego"
@@ -21,7 +21,7 @@ func (c *TaskController) Get() {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
 	} else {
-		resp := new(PostTaskResponse)
+		resp := new(dto.PostTaskResponse)
 		resp.Load(task)
 		c.Data["json"] = resp
 	}

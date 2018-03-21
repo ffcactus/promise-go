@@ -2,10 +2,10 @@ package controller
 
 import (
 	"encoding/json"
+	commonMessage "promise/common/object/message"
 	commonDto "promise/common/object/dto"
-	. "promise/common/object/model"
-	. "promise/task/object/dto"
-	"promise/task/object/model"
+	"promise/task/object/dto"
+	"promise/task/object/message"
 	"promise/task/service"
 	"strconv"
 
@@ -21,7 +21,7 @@ type RootController struct {
 // Post Post a new task.
 func (c *RootController) Post() {
 	log.Debug("Post task.")
-	request := new(PostTaskRequest)
+	request := new(dto.PostTaskRequest)
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
 		log.Warn("Unmarshal() failed, error = ", err)
 	}
@@ -30,9 +30,9 @@ func (c *RootController) Post() {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 	} else {
-		resp := PostTaskResponse{}
+		resp := new(dto.PostTaskResponse)
 		resp.Load(task)
-		c.Data["json"] = &resp
+		c.Data["json"] = resp
 	}
 	c.ServeJSON()
 }
@@ -42,7 +42,7 @@ func (c *RootController) Get() {
 	var (
 		start, count       string = c.GetString("start"), c.GetString("count")
 		startInt, countInt int    = 0, -1
-		parameterError     bool   = false
+		parameterError     = false
 	)
 	log.Debug("Get task collection, start = ", start, ", count = ", count)
 	if start != "" {
@@ -66,8 +66,8 @@ func (c *RootController) Get() {
 	}
 
 	if parameterError {
-		messages := []Message{}
-		messages = append(messages, model.NewMessageTaskBadRequest())
+		messages := []commonMessage.Message{}
+		messages = append(messages, message.NewMessageTaskBadRequest())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.ResponseWriter.WriteHeader((messages)[0].StatusCode)
 	} else {
@@ -75,9 +75,9 @@ func (c *RootController) Get() {
 			c.Data["json"] = commonDto.MessagesToDto(messages)
 			c.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
 		} else {
-			resp := GetTaskCollectionResponse{}
+			resp := new(dto.GetTaskCollectionResponse)
 			resp.Load(serverCollection)
-			c.Data["json"] = &resp
+			c.Data["json"] = resp
 		}
 	}
 	c.ServeJSON()

@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"promise/server/object/constvalue"
+	"promise/common/object/constValue"
 	"promise/server/object/model"
 )
 
@@ -30,7 +30,7 @@ func (dto *GetServerGroupCollectionResponse) Load(m *model.ServerGroupCollection
 	dto.Members = make([]ServerGroupMember, 0)
 	for i := range m.Members {
 		dto.Members = append(dto.Members, ServerGroupMember{
-			URI:  constvalue.ToServerGroupURI(m.Members[i].ID),
+			URI:  constValue.ToServerGroupURI(m.Members[i].ID),
 			ID:   m.Members[i].ID,
 			Name: m.Members[i].Name,
 		})

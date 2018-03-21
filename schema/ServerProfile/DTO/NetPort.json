@@ -1,0 +1,100 @@
+{
+    "@odata.id": "/redfish/v1/rich/NetworkService/TempSwitchProfiles/{UUID}",
+    "UUID": "",
+    "SourceSwitchProfileURL": "/redfish/v1/rich/NetworkService/SwitchProfiles/xxxx",
+    "Name": "",
+    "Description": "",
+    "ProductType": "E9000",
+    "SwitchBoards": [
+        {
+            "SwitchSlotID": "1",
+            "BoardName": "CX320",
+            "FlexibleCards": [
+                {
+                    "CardSlotID": "1",
+                    "CardName": "MX517"
+                },
+                {
+                    "CardSlotID": "2",
+                    "CardName": "MX527"
+                }
+            ]
+        },
+        {
+            "SwitchSlotID": "2",
+            "BoardName": "CX920",
+            "FlexibleCard": []
+        },
+        {
+            "SwitchSlotID": "3",
+            "BoardName": "CX920",
+            "FlexibleCards": []
+        },
+        {
+            "SwitchSlotID": "4",
+            "BoardName": "CX320",
+            "FlexibleCards": [
+                {
+                    "CardSlotID": "1",
+                    "CardName": "MX517"
+                },
+                {
+                    "CardSlotID": "2",
+                    "CardName": "MX527"
+                }
+            ]
+        }
+    ],
+    "NetPorts": [
+        {
+            "NetPortID": "1-1-1-1",
+            "ServerSlotID": "1",
+            "NetCardSlotID": "1",
+            "PortID": "1",
+            "PfID": "1",
+            "NetCardName": "MZ710",
+            "PortType": "ETH",
+            "Speed": "40GE"
+        },
+        {
+            "NetPortID": "1-1-2-1",
+            "ServerSlotID": "1",
+            "NetCardSlotID": "1",
+            "PortID": "2",
+            "PfID": "1",
+            "NetCardName": "MZ710",
+            "PortType": "ETH",
+            "Speed": "40GE"
+        }
+    ],
+    "Split40GeTo10GePorts": {
+        "@odata.id": "/redfish/v1/rich/NetworkService/TempSwitchProfiles/{UUID}/Split40GeTo10GePorts"
+    },
+    "Aggregate10GeTo40GePorts": {
+        "@odata.id": "/redfish/v1/rich/NetworkService/TempSwitchProfiles/{UUID}/Aggregate10GeTo40GePorts"
+    },
+    "SwitchEthToFcPorts": {
+        "@odata.id": "/redfish/v1/rich/NetworkService/TempSwitchProfiles/{UUID}/SwitchEthToFcPorts"
+    },
+    "FlowControlPorts": {
+        "@odata.id": "/redfish/v1/rich/NetworkService/TempSwitchProfiles/{UUID}/FlowControlPorts"
+    },
+    "ETSProfiles": {
+        "@odata.id": "/redfish/v1/rich/NetworkService/TempSwitchProfiles/{UUID}/ETSProfiles"
+    },
+    "PfcPriority": {
+        "@odata.id": "/redfish/v1/rich/NetworkService/TempSwitchProfiles/{UUID}/PfcPriority"
+    },
+    "LogicalSwitches": {
+        "@odata.id": "/redfish/v1/rich/NetworkService/TempSwitchProfiles/{UUID}/LogicalSwitches"
+    },
+    "Uplinks": {
+        "@odata.id": "/redfish/v1/rich/NetworkService/TempSwitchProfiles/{UUID}/Uplinks"
+    },
+    "Networks": {
+        "@odata.id": "/redfish/v1/rich/NetworkService/TempSwitchProfiles/{UUID}/Networks"
+    },
+    "Connections": {
+        "@odata.id": "/redfish/v1/rich/NetworkService/TempSwitchProfiles/{UUID}/Connections"
+    }
+}

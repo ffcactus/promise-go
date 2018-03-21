@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	commonDB "promise/common/db"
 	commonUtil "promise/common/util"
-	"promise/server/object/constvalue"
+	"promise/server/object/constValue"
 	"promise/server/object/entity"
 	"promise/server/object/model"
 )
@@ -152,7 +152,7 @@ func (i *ServerDBImplement) GetServerFull(ID string) *model.Server {
 func (i *ServerDBImplement) FindServerStateAdded() string {
 	c := commonDB.GetConnection()
 	var s = new(entity.Server)
-	if notFound := c.Where("State = ?", constvalue.ServerStateAdded).First(s).RecordNotFound(); notFound {
+	if notFound := c.Where("State = ?", constValue.ServerStateAdded).First(s).RecordNotFound(); notFound {
 		return ""
 	}
 	return s.ID
@@ -306,7 +306,7 @@ func (i *ServerDBImplement) GetAndLockServer(ID string) (bool, *model.Server) {
 			Debug("Get and lock server in DB failed, server does not exist.")
 		return false, nil
 	}
-	if !constvalue.ServerLockable(s.State) {
+	if !constValue.ServerLockable(s.State) {
 		// Server not ready, rollback.
 		tx.Rollback()
 		log.WithFields(log.Fields{
@@ -316,7 +316,7 @@ func (i *ServerDBImplement) GetAndLockServer(ID string) (bool, *model.Server) {
 		return false, createServerModel(s)
 	}
 	// Change the state.
-	if err := tx.Model(s).UpdateColumn("State", constvalue.ServerStateLocked).Error; err != nil {
+	if err := tx.Model(s).UpdateColumn("State", constValue.ServerStateLocked).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id":    ID,

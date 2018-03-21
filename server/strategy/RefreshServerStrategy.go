@@ -3,7 +3,7 @@ package strategy
 import (
 	log "github.com/sirupsen/logrus"
 	"promise/server/context"
-	"promise/server/object/constvalue"
+	"promise/server/object/constValue"
 	"promise/server/object/model"
 )
 
@@ -26,9 +26,9 @@ type RefreshServerStrategy interface {
 // CreateRefreshServerStrategy creates the strategy based on server.
 func CreateRefreshServerStrategy(server *model.Server) RefreshServerStrategy {
 	switch server.Type {
-	case constvalue.RackType:
+	case constValue.RackType:
 		return new(RackServerRefreshStrategy)
-	case constvalue.MockType:
+	case constValue.MockType:
 		return new(MockServerRefreshStrategy)
 	default:
 		log.WithFields(log.Fields{"id": server.ID, "type": server.Type}).Warn("Can not find refresh server strategy.")

@@ -5,7 +5,7 @@ import (
 	wsSDK "promise/sdk/ws"
 	serverClient "promise/server/client"
 	"promise/server/db"
-	"promise/server/object/constvalue"
+	"promise/common/object/constValue"
 	serverM "promise/server/object/model"
 	taskDto "promise/task/object/dto"
 	taskModel "promise/task/object/model"
@@ -64,7 +64,7 @@ func (c *ServerContext) DispatchServerDelete() {
 	if c.Server == nil {
 		log.Warn("Dispatch server in the context failed, server = nil.")
 	}
-	wsSDK.DispatchServerDelete(constvalue.ToServerURI(c.Server.ID))
+	wsSDK.DispatchServerDelete(constValue.ToServerURI(c.Server.ID))
 }
 
 // CreateTask Create task.

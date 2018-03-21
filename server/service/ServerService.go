@@ -1,7 +1,7 @@
 package service
 
 import (
-	commonM "promise/common/object/model"
+	commomMessage "promise/common/object/message"
 	"promise/server/context"
 	"promise/server/db"
 	"promise/server/object/dto"
@@ -12,18 +12,18 @@ import (
 )
 
 // PostServer since the server is not known yet. we have to create the context step by step.
-func PostServer(request *dto.PostServerRequest) (*model.Server, []commonM.Message) {
+func PostServer(request *dto.PostServerRequest) (*model.Server, []commomMessage.Message) {
 	dbImpl := db.GetDBInstance()
 
 	// Try to get the basic info.
 	serverBasicInfo, err := Probe(request)
 	if err != nil {
-		return nil, []commonM.Message{message.NewServerPostFailed()}
+		return nil, []commomMessage.Message{message.NewServerPostFailed()}
 	}
 
 	server := serverBasicInfo.CreateServer()
 	if exist, existedServer := dbImpl.IsServerExist(server); exist {
-		return nil, []commonM.Message{message.NewServerExist(existedServer)}
+		return nil, []commomMessage.Message{message.NewServerExist(existedServer)}
 	}
 
 	// Before save the server to the DB. We need configure the server first.
@@ -36,32 +36,32 @@ func PostServer(request *dto.PostServerRequest) (*model.Server, []commonM.Messag
 }
 
 // GetServer will get server by server ID.
-func GetServer(id string) (*model.Server, []commonM.Message) {
+func GetServer(id string) (*model.Server, []commomMessage.Message) {
 	dbImpl := db.GetDBInstance()
 	server := dbImpl.GetServerFull(id)
 	// util.PrintJson(server)
 	if server == nil {
-		return nil, []commonM.Message{message.NewServerNotExist()}
+		return nil, []commomMessage.Message{message.NewServerNotExist()}
 	}
 	return server, nil
 }
 
 // GetServerCollection will get server collection.
-func GetServerCollection(start int, count int) (*model.ServerCollection, []commonM.Message) {
+func GetServerCollection(start int, count int) (*model.ServerCollection, []commomMessage.Message) {
 	dbImpl := db.GetDBInstance()
 	ret, err := dbImpl.GetServerCollection(start, count)
 	if err != nil {
-		return nil, []commonM.Message{message.NewServerInternalError()}
+		return nil, []commomMessage.Message{message.NewServerInternalError()}
 	}
 	return ret, nil
 }
 
 // RefreshServer will refresh server.
-func RefreshServer(id string) (*dto.RefreshServerResponse, []commonM.Message) {
+func RefreshServer(id string) (*dto.RefreshServerResponse, []commomMessage.Message) {
 	dbImpl := db.GetDBInstance()
 	server := dbImpl.GetServer(id)
 	if server == nil {
-		return nil, []commonM.Message{message.NewServerNotExist()}
+		return nil, []commomMessage.Message{message.NewServerNotExist()}
 	}
 	ctx := context.CreateRefreshServerContext(server)
 	st := strategy.CreateRefreshServerStrategy(server)
@@ -88,26 +88,26 @@ func FindServerStateAdded() {
 }
 
 // DeleteServer will delete server group by ID.
-func DeleteServer(id string) []commonM.Message {
+func DeleteServer(id string) []commomMessage.Message {
 	// TODO right now, we just remove server from DB.
 	dbImpl := db.GetDBInstance()
 	exist, err := dbImpl.DeleteServer(id)
 	if err != nil {
-		return []commonM.Message{message.NewServerInternalError()}
+		return []commomMessage.Message{message.NewServerInternalError()}
 	}
 	if !exist {
-		return []commonM.Message{message.NewServerGroupNotExist()}
+		return []commomMessage.Message{message.NewServerGroupNotExist()}
 	}
 	return nil
 }
 
 // DeleteServerCollection will delete all the servers.
-func DeleteServerCollection() []commonM.Message {
+func DeleteServerCollection() []commomMessage.Message {
 	// TODO right now, we just remove servers from DB.
 	dbImpl := db.GetDBInstance()
 	err := dbImpl.DeleteServerCollection()
 	if err != nil {
-		return []commonM.Message{message.NewServerInternalError()}
+		return []commomMessage.Message{message.NewServerInternalError()}
 	}
 	return nil
 }

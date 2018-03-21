@@ -10,7 +10,7 @@ import (
 	"io"
 	"net/http"
 	. "promise/server/client/redfish/dto"
-	"promise/server/object/constvalue"
+	"promise/server/object/constValue"
 	"promise/server/object/model"
 )
 
@@ -64,7 +64,7 @@ func (c *RedfishClient) Support() bool {
 
 // GetProtocol Get the protocal used by this client.
 func (c *RedfishClient) GetProtocol() string {
-	return constvalue.RedfishV1
+	return constValue.RedfishV1
 }
 
 // GetBasicInfo Get server basic info.
@@ -92,7 +92,7 @@ func (c *RedfishClient) GetBasicInfo() (*model.ServerBasicInfo, error) {
 		ret.OriginURIs.System = &systemCollection.Members[0].Id
 		ret.OriginURIs.Chassis = &chassisCollection.Members[0].Id
 		ret.PhysicalUUID = system.PhysicalUUID
-		ret.Protocol = constvalue.RedfishV1
+		ret.Protocol = constValue.RedfishV1
 		// Get info from chassis.
 		var chassis = GetChassisResponse{}
 		if err := c.getObject(chassisCollection.Members[0].Id, &chassis); err != nil {

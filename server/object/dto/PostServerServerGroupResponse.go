@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"promise/server/object/constvalue"
+	"promise/common/object/constValue"
 	"promise/server/object/model"
 )
 
@@ -19,9 +19,9 @@ type PostServerServerGroupResponse struct {
 // Load the data from model.
 func (dto *PostServerServerGroupResponse) Load(m *model.ServerServerGroup) {
 	dto.ID = m.ID
-	dto.URI = constvalue.ToServerServerGroupURI(m.ID)
+	dto.URI = constValue.ToServerServerGroupURI(m.ID)
 	dto.ServerID = m.ServerID
-	dto.ServerURI = constvalue.ToServerURI(m.ServerID)
+	dto.ServerURI = constValue.ToServerURI(m.ServerID)
 	dto.ServerGroupID = m.ServerGroupID
-	dto.ServerGroupURI = constvalue.ToServerGroupURI(m.ServerGroupID)
+	dto.ServerGroupURI = constValue.ToServerGroupURI(m.ServerGroupID)
 }

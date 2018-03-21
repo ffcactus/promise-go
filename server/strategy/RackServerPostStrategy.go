@@ -4,7 +4,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	wsSDK "promise/sdk/ws"
 	"promise/server/context"
-	"promise/server/object/constvalue"
+	"promise/server/object/constValue"
 	"promise/server/object/message"
 )
 
@@ -49,8 +49,8 @@ func (s *RackServerPostStrategy) Execute(c *context.PostServerContext) error {
 		return err
 	}
 	// Set the servers init state and health.
-	c.Server.State = constvalue.ServerStateAdded
-	c.Server.Health = constvalue.ServerHealthOK
+	c.Server.State = constValue.ServerStateAdded
+	c.Server.Health = constValue.ServerHealthOK
 	if err := s.SaveServer(&c.ServerContext); err != nil {
 		return err
 	}

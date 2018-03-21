@@ -2,61 +2,56 @@ package message
 
 import (
 	"net/http"
-	commonM "promise/common/object/model"
-	"promise/server/object/constvalue"
+	commonMessage "promise/common/object/message"
+	"promise/common/object/constValue"
 	"promise/server/object/model"
 )
 
 const (
-	// IDMessageServerSuccess Message ID
-	IDMessageServerSuccess = "IDMessageServerSuccess"
-	// IDMessageServerInternalError Message ID
-	IDMessageServerInternalError = "IDMessageServerInternalError"
-	// IDMessageServerParameterError Message ID
-	IDMessageServerParameterError = "IDMessageServerParameterError"
-	// IDMessageServerPostFailed Message ID
-	IDMessageServerPostFailed = "IDMessageServerPostFailed"
-	// IDMessageServerExist Message ID
-	IDMessageServerExist = "IDMessageServerExist"
-	// IDMessageServerNotExist Message ID
-	IDMessageServerNotExist = "IDMessageServerNotExist"
-	// IDMessageServerLockFailed Message ID
-	IDMessageServerLockFailed = "LockFailed"
-	// IDMessageServerAccountExist Message ID
-	IDMessageServerAccountExist = "IDMessageServerAccountExist"
-	// IDMessageServerRefreshTaskFailed Message ID
-	IDMessageServerRefreshTaskFailed = "IDMessageServerRefreshTaskFailed"
-)
-
-const (
-	// MessageIDServerGroupServerExist means server group ServerExist.
-	MessageIDServerGroupServerExist = "MessageIDServerGroupServerExist"
+	// MessageServerSuccess Message ID
+	MessageServerSuccess = "MessageServerSuccess"
+	// MessageServerInternalError Message ID
+	MessageServerInternalError = "MessageServerInternalError"
+	// MessageServerParameterError Message ID
+	MessageServerParameterError = "MessageServerParameterError"
+	// MessageServerPostFailed Message ID
+	MessageServerPostFailed = "MessageServerPostFailed"
+	// MessageServerExist Message ID
+	MessageServerExist = "MessageServerExist"
+	// MessageServerNotExist Message ID
+	MessageServerNotExist = "MessageServerNotExist"
+	// MessageServerLockFailed Message ID
+	MessageServerLockFailed = "LockFailed"
+	// MessageServerAccountExist Message ID
+	MessageServerAccountExist = "MessageServerAccountExist"
+	// MessageServerRefreshTaskFailed Message ID
+	MessageServerRefreshTaskFailed = "MessageServerRefreshTaskFailed"
 )
 
 // NewArgumentServerID Get argument by server.
-func NewArgumentServerID(s *model.Server) commonM.Argument {
-	return commonM.Argument{Type: "URI", Name: s.Name, Value: constvalue.ToServerURI(s.ID)}
+func NewArgumentServerID(s *model.Server) commonMessage.Argument {
+	return commonMessage.Argument{Type: "URI", Name: s.Name, Value: constValue.ToServerURI(s.ID)}
 }
 
 // NewServerInternalError Create internel error.
-func NewServerInternalError() commonM.Message {
-	ret := commonM.NewMessage(commonM.CategoryServer)
-	ret.ID = IDMessageServerInternalError
-	ret.Severity = commonM.SeverityCritical
+func NewServerInternalError() commonMessage.Message {
+	ret := commonMessage.NewMessage(constValue.CategoryServer)
+	ret.ID = MessageServerInternalError
+	ret.Severity = constValue.SeverityCritical
 	ret.Description = "Internal error."
-	ret.Supports = []commonM.Support{
+	ret.Supports = []commonMessage.Support{
 		NewSupportServerInternalError(),
 	}
 	return ret
 }
 
 // NewServerPostFailed create new message.
-func NewServerPostFailed() commonM.Message {
-	ret := commonM.NewMessage(commonM.CategoryServer)
-	ret.ID = IDMessageServerPostFailed
-	ret.Severity = commonM.SeverityWarning
+func NewServerPostFailed() commonMessage.Message {
+	ret := commonMessage.NewMessage(constValue.CategoryServer)
+	ret.ID = MessageServerPostFailed
+	ret.Severity = constValue.SeverityWarning
 	ret.Description = "Post server failed."
-	ret.Supports = []commonM.Support{
+	ret.Supports = []commonMessage.Support{
 		NewSupportServerUnableConnect(),
 		NewSupportServerUnknownProtocol(),
 		NewSupportServerNoBasicInfo()}
@@ -64,37 +59,37 @@ func NewServerPostFailed() commonM.Message {
 }
 
 // NewServerExist create new message.
-func NewServerExist(s *model.Server) commonM.Message {
-	ret := commonM.NewMessage(commonM.CategoryServer)
-	ret.ID = IDMessageServerExist
-	ret.Severity = commonM.SeverityNormal
+func NewServerExist(s *model.Server) commonMessage.Message {
+	ret := commonMessage.NewMessage(constValue.CategoryServer)
+	ret.ID = MessageServerExist
+	ret.Severity = constValue.SeverityNormal
 	ret.Description = "Server already ServerExists. See {0}"
-	ret.Arguments = []commonM.Argument{NewArgumentServerID(s)}
+	ret.Arguments = []commonMessage.Argument{NewArgumentServerID(s)}
 	return ret
 }
 
 // NewServerNotExist create new message.
-func NewServerNotExist() commonM.Message {
-	ret := commonM.NewMessage(commonM.CategoryServer)
-	ret.ID = IDMessageServerNotExist
+func NewServerNotExist() commonMessage.Message {
+	ret := commonMessage.NewMessage(constValue.CategoryServer)
+	ret.ID = MessageServerNotExist
 	ret.StatusCode = http.StatusNotFound
-	ret.Severity = commonM.SeverityNormal
+	ret.Severity = constValue.SeverityNormal
 	ret.Description = "Server doesn't ServerExist."
 	return ret
 }
 
 // NewServerLockFailed create new message.
-func NewServerLockFailed(s *model.Server) commonM.Message {
-	ret := commonM.NewMessage(commonM.CategoryServer)
-	ret.ID = IDMessageServerLockFailed
+func NewServerLockFailed(s *model.Server) commonMessage.Message {
+	ret := commonMessage.NewMessage(constValue.CategoryServer)
+	ret.ID = MessageServerLockFailed
 	ret.StatusCode = http.StatusConflict
-	ret.Severity = commonM.SeverityNormal
+	ret.Severity = constValue.SeverityNormal
 	ret.Description = "Server {0} failed to lock, server state = {1}."
-	ret.Arguments = []commonM.Argument{
+	ret.Arguments = []commonMessage.Argument{
 		NewArgumentServerID(s),
 		{Type: "String", Name: s.State, Value: s.State},
 	}
-	ret.Supports = []commonM.Support{
+	ret.Supports = []commonMessage.Support{
 		NewSupportServerUnableConnect(),
 		NewSupportServerUnknownProtocol(),
 		NewSupportServerNoBasicInfo()}
@@ -102,15 +97,15 @@ func NewServerLockFailed(s *model.Server) commonM.Message {
 }
 
 // NewServerAccountExist create new message.
-func NewServerAccountExist(s *model.Server) commonM.Message {
-	ret := commonM.NewMessage(commonM.CategoryServer)
-	ret.ID = IDMessageServerAccountExist
-	ret.Severity = commonM.SeverityNormal
+func NewServerAccountExist(s *model.Server) commonMessage.Message {
+	ret := commonMessage.NewMessage(constValue.CategoryServer)
+	ret.ID = MessageServerAccountExist
+	ret.Severity = constValue.SeverityNormal
 	ret.Description = "Server {0} failed to create management account."
-	ret.Arguments = []commonM.Argument{
+	ret.Arguments = []commonMessage.Argument{
 		{Type: "String", Name: s.Name, Value: s.Name},
 	}
-	ret.Supports = []commonM.Support{
+	ret.Supports = []commonMessage.Support{
 		NewSupportServerAccountExist1(),
 		NewSupportServerAccountExist2(),
 	}
@@ -118,24 +113,24 @@ func NewServerAccountExist(s *model.Server) commonM.Message {
 }
 
 // NewServerParameterError create new message.
-func NewServerParameterError() commonM.Message {
-	ret := commonM.NewMessage(commonM.CategoryServer)
-	ret.ID = IDMessageServerParameterError
-	ret.Severity = commonM.SeverityNormal
+func NewServerParameterError() commonMessage.Message {
+	ret := commonMessage.NewMessage(constValue.CategoryServer)
+	ret.ID = MessageServerParameterError
+	ret.Severity = constValue.SeverityNormal
 	ret.Description = "Input parameter error."
-	ret.Supports = []commonM.Support{
+	ret.Supports = []commonMessage.Support{
 		NewSupportServerParameterError(),
 	}
 	return ret
 }
 
 // NewServerRefreshTaskFailed create new message.
-func NewServerRefreshTaskFailed() commonM.Message {
-	ret := commonM.NewMessage(commonM.CategoryServer)
-	ret.ID = IDMessageServerRefreshTaskFailed
-	ret.Severity = commonM.SeverityNormal
+func NewServerRefreshTaskFailed() commonMessage.Message {
+	ret := commonMessage.NewMessage(constValue.CategoryServer)
+	ret.ID = MessageServerRefreshTaskFailed
+	ret.Severity = constValue.SeverityNormal
 	ret.Description = "Failed to create refresh task"
-	ret.Supports = []commonM.Support{
+	ret.Supports = []commonMessage.Support{
 		NewSupportServerInternalError(),
 	}
 	return ret

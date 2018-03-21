@@ -1,4 +1,4 @@
-package constvalue
+package constValue
 
 const (
 	// ServerStateAdded means the server is added but not ready.

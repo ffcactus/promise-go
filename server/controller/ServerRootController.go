@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	commonDto "promise/common/object/dto"
-	commonM "promise/common/object/model"
+	commomMessage "promise/common/object/message"
 	"promise/server/object/dto"
 	"promise/server/object/message"
 	"promise/server/service"
@@ -24,7 +24,7 @@ func (c *ServerRootController) Post() {
 	request := new(dto.PostServerRequest)
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
 		log.WithFields(log.Fields{"err": err}).Info("Post server failed, unable to get request.")
-		messages := []commonM.Message{}
+		messages := []commomMessage.Message{}
 		messages = append(messages, message.NewServerParameterError())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
@@ -75,7 +75,7 @@ func (c *ServerRootController) Get() {
 	}
 
 	if parameterError {
-		messages := []commonM.Message{}
+		messages := []commomMessage.Message{}
 		messages = append(messages, message.NewServerParameterError())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)

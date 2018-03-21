@@ -3,9 +3,9 @@ package controller
 import (
 	"encoding/json"
 	commonDto "promise/common/object/dto"
-	. "promise/common/object/model"
-	. "promise/task/object/dto"
-	m "promise/task/object/model"
+	commonMessage "promise/common/object/message"
+	"promise/task/object/dto"
+	"promise/task/object/message"
 	"promise/task/service"
 	"strings"
 
@@ -27,16 +27,16 @@ type TaskActionController struct {
 
 // Post POST method.
 func (c *TaskActionController) Post() {
-	var messages []Message
+	var messages []commonMessage.Message
 	action := c.Ctx.Input.Param(":action")
 	id := c.Ctx.Input.Param(":id")
 	log.Debug("Post() start, action = ", action, ", id = ", id)
 	switch strings.ToLower(action) {
 	case ActionUpdate:
-		updateRequest := new(UpdateTaskRequest)
+		updateRequest := new(dto.UpdateTaskRequest)
 		if err := json.Unmarshal(c.Ctx.Input.RequestBody, updateRequest); err != nil {
 			log.Warn("Unmarshal() failed, action = ", action, ", id = ", id, " error = ", err)
-			messages = []Message{m.NewMessageTaskBadRequest()}
+			messages = []commonMessage.Message{message.NewMessageTaskBadRequest()}
 			c.Data["json"] = commonDto.MessagesToDto(messages)
 			c.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
 		} else {
@@ -48,10 +48,10 @@ func (c *TaskActionController) Post() {
 			}
 		}
 	case ActionUpdateTaskStep:
-		updateTaskStepRequest := new(UpdateTaskStepRequest)
+		updateTaskStepRequest := new(dto.UpdateTaskStepRequest)
 		if err := json.Unmarshal(c.Ctx.Input.RequestBody, updateTaskStepRequest); err != nil {
 			log.Warn("Unmarshal() failed, action = ", action, ", id = ", id, " error = ", err)
-			messages = []Message{m.NewMessageTaskBadRequest()}
+			messages = []commonMessage.Message{message.NewMessageTaskBadRequest()}
 			c.Data["json"] = commonDto.MessagesToDto(messages)
 			c.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
 		} else {
@@ -64,8 +64,8 @@ func (c *TaskActionController) Post() {
 		}
 	default:
 		log.Info("Unknown task action ", action)
-		messages := []Message{}
-		messages = append(messages, m.NewMessageTaskBadRequest())
+		messages := []commonMessage.Message{}
+		messages = append(messages, message.NewMessageTaskBadRequest())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.ResponseWriter.WriteHeader((messages)[0].StatusCode)
 	}

@@ -4,35 +4,35 @@ import (
 	"promise/auth/db"
 	"promise/auth/object/dto"
 	"promise/auth/object/model"
-	commonModel "promise/common/object/model"
-
+	commonMessage "promise/common/object/message"
+	"promise/auth/object/message"
 	log "github.com/sirupsen/logrus"
 )
 
 // Login On success return the session.
-func Login(request *dto.PostLoginRequest) (*model.Session, []commonModel.Message) {
+func Login(request *dto.PostLoginRequest) (*model.Session, []commonMessage.Message) {
 	dbInstance := db.GetDBInstance()
 	account := dbInstance.GetAccountByName(request.Name)
 	if account == nil {
-		return nil, []commonModel.Message{model.NewMessageAuthIncorrectCredential()}
+		return nil, []commonMessage.Message{message.NewMessageAuthIncorrectCredential()}
 	}
 	// We should valid the password here.
 	session := CreateSession(account)
 	savedSession := dbInstance.PostSession(session)
 	if savedSession == nil {
 		log.Warn("Failed to save session in DB.")
-		return nil, []commonModel.Message{model.NewMessageAuthInternalError()}
+		return nil, []commonMessage.Message{message.NewMessageAuthInternalError()}
 	}
 	log.Info("User", request.Name, "login.")
 	return savedSession, nil
 }
 
 // GetSession Get session by token
-func GetSession(token string) (*model.Session, []commonModel.Message) {
+func GetSession(token string) (*model.Session, []commonMessage.Message) {
 	dbInstance := db.GetDBInstance()
 	session := dbInstance.GetSessionByToken(token)
 	if session == nil {
-		return nil, []commonModel.Message{model.NewMessageAuthNotFoundSession()}
+		return nil, []commonMessage.Message{message.NewMessageAuthNotFoundSession()}
 	}
 	return session, nil
 }

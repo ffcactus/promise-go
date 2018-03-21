@@ -1,7 +1,7 @@
 package dto
 
 import (
-	m "promise/common/object/model"
+	"promise/common/object/message"
 	"time"
 )
 
@@ -13,8 +13,8 @@ type Argument struct {
 }
 
 // Model convert to model.
-func (dto *Argument) Model() *m.Argument {
-	ret := new(m.Argument)
+func (dto *Argument) Model() *message.Argument {
+	ret := new(message.Argument)
 	ret.Type = dto.Type
 	ret.Name = dto.Name
 	ret.Value = dto.Value
@@ -31,10 +31,10 @@ type Support struct {
 }
 
 // Model convert to model.
-func (dto *Support) Model() *m.Support {
-	ret := new(m.Support)
-	ret.ReasonArguments = make([]m.Argument, 0)
-	ret.SolutionArguments = make([]m.Argument, 0)
+func (dto *Support) Model() *message.Support {
+	ret := new(message.Support)
+	ret.ReasonArguments = make([]message.Argument, 0)
+	ret.SolutionArguments = make([]message.Argument, 0)
 	ret.ID = dto.ID
 	ret.Reason = dto.Reason
 	for i := range dto.ReasonArguments {
@@ -58,7 +58,7 @@ type Message struct {
 }
 
 // NewArgument create a default Argument.
-func NewArgument(m m.Argument) Argument {
+func NewArgument(m message.Argument) Argument {
 	r := Argument{
 		Type:  m.Type,
 		Name:  m.Name,
@@ -68,7 +68,7 @@ func NewArgument(m m.Argument) Argument {
 }
 
 // NewSupport create a default Support.
-func NewSupport(m m.Support) Support {
+func NewSupport(m message.Support) Support {
 	r := Support{
 		Reason:   m.Reason,
 		Solution: m.Solution,
@@ -85,7 +85,7 @@ func NewSupport(m m.Support) Support {
 }
 
 // Load will load message from model.
-func (dto *Message) Load(m *m.Message) {
+func (dto *Message) Load(m *message.Message) {
 	dto.Arguments = make([]Argument, 0)
 	dto.Supports = make([]Support, 0)
 	dto.ID = m.ID
@@ -102,10 +102,10 @@ func (dto *Message) Load(m *m.Message) {
 }
 
 // Model will convert DTO to model.
-func (dto *Message) Model() *m.Message {
-	ret := new(m.Message)
-	ret.Arguments = make([]m.Argument, 0)
-	ret.Supports = make([]m.Support, 0)
+func (dto *Message) Model() *message.Message {
+	ret := new(message.Message)
+	ret.Arguments = make([]message.Argument, 0)
+	ret.Supports = make([]message.Support, 0)
 	ret.ID = dto.ID
 	ret.Severity = dto.Severity
 	ret.Category = dto.Category
@@ -121,7 +121,7 @@ func (dto *Message) Model() *m.Message {
 }
 
 // MessagesToDto convert messages to DTO.
-func MessagesToDto(messages []m.Message) []Message {
+func MessagesToDto(messages []message.Message) []Message {
 	ret := []Message{}
 	for i := range messages {
 		m := Message{}

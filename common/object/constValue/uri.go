@@ -1,4 +1,4 @@
-package constvalue
+package constValue
 
 import (
 	"promise/common/app"

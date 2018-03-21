@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"promise/server/object/constvalue"
+	"promise/common/object/constValue"
 	"promise/server/object/model"
 )
 
@@ -46,7 +46,7 @@ func (dto *GetServerResponse) Load(m *model.Server) {
 		return
 	}
 	dto.ID = m.ID
-	dto.URI = constvalue.ToServerURI(m.ID)
+	dto.URI = constValue.ToServerURI(m.ID)
 	dto.Name = m.Name
 	dto.Description = m.Description
 	dto.State = m.State

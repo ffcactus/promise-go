@@ -1,7 +1,7 @@
 package model
 
 import (
-	commonM "promise/common/object/model"
+	"promise/common/object/message"
 	"time"
 )
 
@@ -38,7 +38,7 @@ var (
 // ExecutionResult Used by Task and it's TaskStep
 type ExecutionResult struct {
 	State   ExecutionResultState
-	Message *commonM.Message
+	Message *message.Message
 }
 
 // TaskStep The TaskStep represents each planned steps in a task.

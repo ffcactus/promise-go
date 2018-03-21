@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"promise/server/object/constvalue"
+	"promise/common/object/constValue"
 	"promise/server/object/model"
 )
 
@@ -18,7 +18,7 @@ type PostServerResponse struct {
 // Load will load data from model.
 func (dto *PostServerResponse) Load(m *model.Server) {
 	dto.ID = m.ID
-	dto.URI = constvalue.ToServerURI(m.ID)
+	dto.URI = constValue.ToServerURI(m.ID)
 	dto.PhysicalUUID = m.PhysicalUUID
 	dto.Hostname = m.Hostname
 	dto.Type = m.Type
