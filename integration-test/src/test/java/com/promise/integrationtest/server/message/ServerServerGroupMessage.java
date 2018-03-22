@@ -1,11 +1,11 @@
 package com.promise.integrationtest.server.message;
 
-public enum ServerGroupMessage
+public enum ServerServerGroupMessage
 {
-    DeleteDefault ("Server.Message.ServerGroupDeleteDefault");
+    DeleteDefault ("Server.Message.ServerServerGroupDeleteDefault");
     private String id;
 
-    ServerGroupMessage(String id)
+    ServerServerGroupMessage(String id)
     {
         this.id = id;
     }

@@ -22,7 +22,7 @@ public class ServerAssertUtil
                 request,
                 PostServerResponse.class);
         Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        PromiseAssertUtil.isResource(response.getBody());
+        PromiseAssertUtil.isResourceResponse(response.getBody());
         return response.getBody();
     }
 }

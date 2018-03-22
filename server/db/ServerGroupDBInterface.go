@@ -10,6 +10,6 @@ type ServerGroupDBInterface interface {
 	PostServerGroup(s *model.ServerGroup) (*model.ServerGroup, bool, error)
 	GetServerGroup(id string) *model.ServerGroup
 	GetServerGroupCollection(start int, count int, filter string) (*model.ServerGroupCollection, error)
-	DeleteServerGroup(id string) (bool, error)
+	DeleteServerGroup(id string) (*model.ServerGroup, error)
 	DeleteServerGroupCollection() error
 }

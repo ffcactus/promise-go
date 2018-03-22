@@ -1,12 +1,13 @@
 package db
 
 import (
-	"fmt"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	commonDB "promise/common/db"
 	"promise/server/object/entity"
 	"promise/server/object/model"
+	"promise/server/object/constError"
+	commonConstError "promise/common/object/constError"
 	"strings"
 )
 
@@ -60,7 +61,7 @@ func (i *ServerGroupDBImplement) PostServerGroup(m *model.ServerGroup) (*model.S
 		log.WithFields(log.Fields{
 			"name": m.Name}).
 			Warn("Post servergroup in DB failed, duplicated resource, transaction rollback.")
-		return nil, true, fmt.Errorf("already exist")
+		return nil, true, commonConstError.ErrorResourceExist
 	}
 	e.Load(m)
 	e.ID = uuid.New().String()
@@ -86,13 +87,13 @@ func (i *ServerGroupDBImplement) PostServerGroup(m *model.ServerGroup) (*model.S
 func (i *ServerGroupDBImplement) convertFilter(filter string) (string, error) {
 	cmds := strings.Split(filter, " ")
 	if len(cmds) != 3 {
-		return "", fmt.Errorf("convert filter failed")
+		return "", commonConstError.ErrorConvertFilter
 	}
 	switch strings.ToLower(cmds[1]) {
 	case "eq":
 		return "\"" + cmds[0] + "\"" + " = " + cmds[2], nil
 	default:
-		return "", fmt.Errorf("convert filter failed")
+		return "", commonConstError.ErrorConvertFilter
 	}
 }
 
@@ -128,25 +129,52 @@ func (i *ServerGroupDBImplement) GetServerGroupCollection(start int, count int, 
 	return ret, nil
 }
 
-// DeleteServerGroup will delete group if exist.
-func (i *ServerGroupDBImplement) DeleteServerGroup(id string) (bool, error) {
-	var sg entity.ServerGroup
+// DeleteServerGroup will delete the servergroup and return the deleted one.
+// If it's the default servergroup, previous one equals nil, error will return.
+// If the servergroup doesn't exist, previous one equals nil, error equals nil.
+// If any error happended in DB operation, previous one equals nil, error will return.
+// In any other cases, return the previous one and error equals nil.
+func (i *ServerGroupDBImplement) DeleteServerGroup(id string) (*model.ServerGroup, error) {
+	var sg, previous entity.ServerGroup
 
 	if id == DefaultServerGroupID {
-		return true, fmt.Errorf("can not delete default servergroup")
+		return nil, constError.ErrorDeleteDefaultServerGroup
 	}
 
 	if id == "" {
-		return false, fmt.Errorf("id can not be empty")
+		return nil, commonConstError.ErrorIDFormat
 	}
-	// If I need check the existance and error at the same time, should I use transaction?
-	log.Info("------ id " + id)
-	sg.ID = id
+
 	c := commonDB.GetConnection()
-	if c.Delete(&sg).RecordNotFound() {
-		return false, nil
+
+	tx := c.Begin()
+	if err := tx.Error; err != nil {
+		log.WithFields(log.Fields{
+			"id":  id,
+			"error": err}).
+			Warn("Delete servergroup in DB failed, start transaction failed.")
+		return nil, err
 	}
-	return true, nil
+	if tx.Where("\"ID\" = ?", id).First(&previous).RecordNotFound() {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id": id}).
+			Warn("Delete servergroup in DB failed, resource does not exist, transaction rollback.")
+		return nil, nil
+	}
+
+	sg.ID = id	
+	if err := tx.Delete(&sg).Error; err!= nil {
+		return nil, err
+	}
+	if err := tx.Commit().Error; err != nil {
+		log.WithFields(log.Fields{
+			"id":  id,
+			"error": err}).
+			Warn("Delete servergroup in DB failed, commit failed.")
+		return nil, err
+	}
+	return previous.ToModel(), nil
 }
 
 // DeleteServerGroupCollection will delete all the group except the default "all".

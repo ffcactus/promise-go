@@ -1,11 +1,12 @@
 package db
 
 import (
-	"fmt"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	commonDB "promise/common/db"
 	"promise/server/object/entity"
+	"promise/server/object/constError"
+	commonConstError "promise/common/object/constError"
 	"promise/server/object/model"
 	"strings"
 )
@@ -58,14 +59,14 @@ func (i *ServerServerGroupImplement) PostServerServerGroup(m *model.ServerServer
 		tx.Rollback()
 		log.WithFields(log.Fields{"serverID": s.ID}).
 			Warn("Post server-servergroup in DB failed, server ID does not exist, transaction rollback.")
-		return nil, false, fmt.Errorf("server ID does not exist")
+		return nil, false, commonConstError.ErrorResourceNotExist
 	}
 	// Check if servergroup ID exsit.
 	if tx.Where("\"ID\" = ?", sg.ID).First(sg).RecordNotFound() {
 		tx.Rollback()
 		log.WithFields(log.Fields{"serverGroupID": sg.ID}).
 			Warn("Post server-servergroup in DB failed, servergroup ID does not exist, transaction rollback.")
-		return nil, false, fmt.Errorf("servergroup ID does not exist")
+		return nil, false, commonConstError.ErrorResourceNotExist
 	}
 	// Check duplication.
 	if !tx.Where("\"ServerID\" = ? AND \"ServerGroupID\" = ?", ssg.ServerID, ssg.ServerGroupID).First(tempSsg).RecordNotFound() {
@@ -101,13 +102,13 @@ func (i *ServerServerGroupImplement) PostServerServerGroup(m *model.ServerServer
 func (i *ServerServerGroupImplement) convertFilter(filter string) (string, error) {
 	cmds := strings.Split(filter, " ")
 	if len(cmds) != 3 {
-		return "", fmt.Errorf("convert filter failed")
+		return "", commonConstError.ErrorConvertFilter
 	}
 	switch strings.ToLower(cmds[1]) {
 	case "eq":
 		return "\"" + cmds[0] + "\"" + " = " + cmds[2], nil
 	default:
-		return "", fmt.Errorf("convert filter failed")
+		return "", commonConstError.ErrorConvertFilter
 	}
 }
 
@@ -142,6 +143,52 @@ func (i *ServerServerGroupImplement) GetServerServerGroupCollection(start int, c
 		})
 	}
 	return ret, nil
+}
+
+// DeleteServerServerGroup will delete the servergroup and return the deleted one.
+// If it's the default servergroup, previous one equals nil, error will return.
+// If the server-servergroup doesn't exist, previous one equals nil, error equals nil.
+// If any error happended in DB operation, previous one equals nil, error will return.
+// In any other cases, return the previous one and error equals nil.
+func (i *ServerServerGroupImplement) DeleteServerServerGroup(id string) (*model.ServerServerGroup, error) {
+	var ssg, previous entity.ServerServerGroup
+
+	if id == "" {
+		return nil, commonConstError.ErrorIDFormat
+	}
+
+	c := commonDB.GetConnection()
+
+	tx := c.Begin()
+	if err := tx.Error; err != nil {
+		log.WithFields(log.Fields{
+			"id":  id,
+			"error": err}).
+			Warn("Delete server-servergroup in DB failed, start transaction failed.")
+		return nil, err
+	}
+	if tx.Where("\"ID\" = ?", id).First(&previous).RecordNotFound() {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id": id}).
+			Warn("Delete server-servergroup in DB failed, resource does not exist, transaction rollback.")
+		return nil, nil
+	}
+	if previous.ServerGroupID == DefaultServerGroupID {
+		return nil, constError.ErrorDeleteDefaultServerServerGroup
+	}
+	ssg.ID = id	
+	if err := tx.Delete(&ssg).Error; err!= nil {
+		return nil, err
+	}
+	if err := tx.Commit().Error; err != nil {
+		log.WithFields(log.Fields{
+			"id":  id,
+			"error": err}).
+			Warn("Delete server-servergroup in DB failed, commit failed.")
+		return nil, err
+	}
+	return previous.ToModel(), nil
 }
 
 // DeleteServerServerGroupCollection will remove all server-servergroup

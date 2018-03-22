@@ -21,15 +21,16 @@ public class ServerGroupAssertUtil
      */
     public static GetServerGroupResponse assertServerGroupPosted(String name, String description)
     {
+        
         final PostServerGroupRequest request = new PostServerGroupRequest(name, description);
         // Create a servergroup.
-        final ResponseEntity<GetServerGroupResponse> response = RestClient.post(
-                PromiseIntegrationTest.getRootURL() + "/promise/v1/servergroup",
-                request,
+        GetServerGroupResponse response = PromiseAssertUtil.assertPostResponse(
+                PromiseIntegrationTest.getRootURL() + "/promise/v1/servergroup", 
+                request, 
                 GetServerGroupResponse.class);
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        PromiseAssertUtil.isResource(response.getBody());
-        return response.getBody();
+        Assert.assertEquals(name, response.getName());
+        Assert.assertEquals(description, response.getDescription());
+        return response;
     }
 
     /*
@@ -40,7 +41,6 @@ public class ServerGroupAssertUtil
     {
         final String filter = URLEncoder.encode("Name eq '" + name + "'", "UTF-8");
         final ResponseEntity<ResourceCollectionResponse<MemberResponse>> response1 = RestClient.get(
-                // PromiseIntegrationTest.getRootURL() + "/promise/v1/servergroup",
                 PromiseIntegrationTest.getRootURL() + "/promise/v1/servergroup?$filter=" + filter,
                 new TypeReference<ResourceCollectionResponse<MemberResponse>>()
                 {
@@ -51,7 +51,7 @@ public class ServerGroupAssertUtil
                 PromiseIntegrationTest.getRootURL() + response1.getBody().getMember().get(0).getUri(),
                 GetServerGroupResponse.class);
         Assert.assertEquals(HttpStatus.OK, response2.getStatusCode());
-        PromiseAssertUtil.isResource(response2.getBody());
+        PromiseAssertUtil.isResourceResponse(response2.getBody());
         Assert.assertEquals(name, response2.getBody().getName());
         return response2.getBody();
 

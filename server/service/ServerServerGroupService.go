@@ -5,6 +5,8 @@ import (
 	"promise/server/db"
 	"promise/server/object/dto"
 	"promise/server/object/model"
+	"promise/server/object/message"
+	"promise/server/object/constError"
 )
 
 // PostServerServerGroup post a server-group.
@@ -44,6 +46,18 @@ func GetServerServerGroupCollection(start int, count int, filter string) (*model
 
 // DeleteServerServerGroup will delete server group by ID.
 func DeleteServerServerGroup(id string) []commonMessage.Message {
+	dbImpl := db.GetServerServerGroupInstance()
+	previous, err := dbImpl.DeleteServerServerGroup(id)
+	if err != nil && err.Error() == constError.ErrorDeleteDefaultServerServerGroup.Error() {
+		return []commonMessage.Message{message.NewDeleteDefaultServerServerGroup()}
+	}
+	if previous == nil {
+		return []commonMessage.Message{commonMessage.NewResourceNotExist()}
+	}	
+	if err != nil {
+		return []commonMessage.Message{commonMessage.NewInternalError()}
+	}
+
 	return nil
 }
 

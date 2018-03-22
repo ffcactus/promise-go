@@ -30,7 +30,7 @@ func (c *ServerRootController) Post() {
 		c.ServeJSON()
 		return
 	}
-	log.WithFields(log.Fields{"hostname": request.Hostname}).Info("Post server.")
+	log.WithFields(log.Fields{"hostname": request.Hostname}).Info("Post server start.")
 	// Create the context for this operation.
 	server, messages := service.PostServer(request)
 	if messages != nil {
@@ -102,7 +102,7 @@ func (c *ServerRootController) Delete() {
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 	} else {
 		c.Ctx.Output.SetStatus(http.StatusAccepted)
-		log.Info("DELETE all servers.")
+		log.Info("DELETE all servers done.")
 	}
 	c.ServeJSON()
 }
