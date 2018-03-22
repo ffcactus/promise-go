@@ -18,6 +18,8 @@ import com.promise.integrationtest.base.PromiseIntegrationTest;
 import com.promise.integrationtest.base.ResourceCollectionResponse;
 import com.promise.integrationtest.server.dto.PostServerServerGroupRequest;
 import com.promise.integrationtest.server.dto.PostServerServerGroupResponse;
+import com.promise.integrationtest.server.message.ServerServerGroupMessage;
+import com.promise.integrationtest.util.PromiseAssertUtil;
 import com.promise.integrationtest.util.RestClient;
 import com.promise.integrationtest.util.ServerAssertUtil;
 import com.promise.integrationtest.util.ServerGroupAssertUtil;
@@ -137,6 +139,28 @@ public class ServerServerGroupTest extends PromiseIntegrationTest
                 {
                 });
         Assert.assertEquals(HttpStatus.OK, ssgResponse6.getStatusCode());
-        Assert.assertEquals(2, ssgResponse5.getBody().getMember().size());
+        Assert.assertEquals(2, ssgResponse6.getBody().getMember().size());
+    }
+    
+    /**
+     * You can't delete the default server-servergroup relationship.
+     * @throws UnsupportedEncodingException 
+     * 
+     */
+    @Test
+    public void testDeleteServerServerGroup() throws UnsupportedEncodingException
+    {
+        final String serverID = ServerAssertUtil.assertServerPosted("Mock_Hostname_1", "Username", "Password").getId();
+        final String filter = URLEncoder.encode("ServerID eq '" + serverID + "'", "UTF-8");
+        final ResponseEntity<ResourceCollectionResponse<MemberResponse>> ssgResponse = RestClient.get(
+                PromiseIntegrationTest.getRootURL() + "/promise/v1/server-servergroup?$filter=" + filter,
+                new TypeReference<ResourceCollectionResponse<MemberResponse>>()
+                {
+                });
+        Assert.assertEquals(HttpStatus.OK, ssgResponse.getStatusCode());
+        Assert.assertEquals(1, ssgResponse.getBody().getMember().size());
+        final String ssgUrl = ssgResponse.getBody().getMember().get(0).getUri();
+        PromiseAssertUtil.assertDeleteMessage(PromiseIntegrationTest.getRootURL() + ssgUrl, ServerServerGroupMessage.DeleteDefault.getId());
+        
     }
 }

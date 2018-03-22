@@ -36,7 +36,7 @@ func (c *ServerRootController) Post() {
 	if messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		log.WithFields(log.Fields{"message": messages[0].ID}).Info("Post server failed.")
+		log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Post server failed.")
 	} else {
 		resp := dto.PostServerResponse{}
 		resp.Load(server)
@@ -100,6 +100,7 @@ func (c *ServerRootController) Delete() {
 	if messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Delete server collection failed")
 	} else {
 		c.Ctx.Output.SetStatus(http.StatusAccepted)
 		log.Info("DELETE all servers done.")

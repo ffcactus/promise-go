@@ -175,6 +175,10 @@ func (i *ServerServerGroupImplement) DeleteServerServerGroup(id string) (*model.
 		return nil, nil
 	}
 	if previous.ServerGroupID == DefaultServerGroupID {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id": id}).
+			Warn("Delete server-servergroup in DB failed, delete default server-servergroup, transaction rollback.")		
 		return nil, constError.ErrorDeleteDefaultServerServerGroup
 	}
 	ssg.ID = id	

@@ -3,6 +3,7 @@ package service
 import (
 	log "github.com/sirupsen/logrus"
 	commonMessage "promise/common/object/message"
+	"promise/server/object/constError"
 	"promise/server/object/message"
 	"promise/server/db"
 	"promise/server/object/dto"
@@ -66,7 +67,7 @@ func GetServerGroupCollection(start int, count int, filter string) (*model.Serve
 func DeleteServerGroup(id string) []commonMessage.Message {
 	dbImpl := db.GetServerGroupDB()
 	previous, err := dbImpl.DeleteServerGroup(id)
-	if err != nil && err.Error() == "can not delete default servergroup" {
+	if err != nil && err.Error() == constError.ErrorDeleteDefaultServerGroup.Error() {
 		return []commonMessage.Message{message.NewDeleteDefaultServerGroup()}
 	}
 	if previous == nil {

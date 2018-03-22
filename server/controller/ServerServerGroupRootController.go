@@ -39,12 +39,12 @@ func (c *ServerServerGroupRootController) Post() {
 	if messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		log.WithFields(log.Fields{"message": messages[0].ID}).Info("Post server-servergroup failed.")
+		log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Post server-servergroup failed.")
 	} else {
 		response.Load(serverServerGroup)
 		c.Data["json"] = &response
 		c.Ctx.Output.SetStatus(http.StatusCreated)
-		log.WithFields(log.Fields{"name": response.Name, "ID": response.ID}).Info("Post server-servergroup done.")
+		log.WithFields(log.Fields{"ID": response.ID}).Info("Post server-servergroup done.")
 	}
 	c.ServeJSON()
 }

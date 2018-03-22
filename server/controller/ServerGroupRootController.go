@@ -39,7 +39,7 @@ func (c *ServerGroupRootController) Post() {
 	if messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		log.WithFields(log.Fields{"message": messages[0].ID}).Info("Post servergroup failed.")
+		log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Post servergroup failed.")
 	} else {
 		response.Load(serverGroup)
 		c.Data["json"] = &response
@@ -106,6 +106,7 @@ func (c *ServerGroupRootController) Delete() {
 	if messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Delete servergroup collection failed.")
 	} else {
 		c.Ctx.Output.SetStatus(http.StatusAccepted)
 		log.Info("DELETE all servergroups.")

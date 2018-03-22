@@ -23,7 +23,7 @@ func (c *ServerGroupController) Get() {
 	if sg, messages := service.GetServerGroup(id); messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		log.WithFields(log.Fields{"id": id, "message": messages[0].ID}).Info("Get servergroup failed.")
+		log.WithFields(log.Fields{"id": id, "message": messages[0].ID}).Warn("Get servergroup failed.")
 	} else {
 		resp.Load(sg)
 		c.Data["json"] = &resp
@@ -38,7 +38,7 @@ func (c *ServerGroupController) Delete() {
 	if messages := service.DeleteServerGroup(id); messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		log.WithFields(log.Fields{"id": id, "message": messages[0].ID}).Info("Delete servergroup failed.")
+		log.WithFields(log.Fields{"id": id, "message": messages[0].ID}).Warn("Delete servergroup failed.")
 	} else {
 		c.Ctx.Output.SetStatus(http.StatusAccepted)
 		log.WithFields(log.Fields{"id": id}).Info("Delete servergroup done.")

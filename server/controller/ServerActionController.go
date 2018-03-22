@@ -26,7 +26,7 @@ func (c *ServerActionController) Post() {
 		if resp, messages := service.RefreshServer(id); messages != nil {
 			c.Data["json"] = commonDto.MessagesToDto(messages)
 			c.Ctx.Output.SetStatus(messages[0].StatusCode)
-			log.WithFields(log.Fields{"action": action, "id": id, "message": messages[0].ID}).Info("Cast action on server failed.")
+			log.WithFields(log.Fields{"action": action, "id": id, "message": messages[0].ID}).Warn("Cast action on server failed.")
 		} else {
 			c.Data["json"] = &resp
 			c.Ctx.Output.SetStatus(http.StatusAccepted)
