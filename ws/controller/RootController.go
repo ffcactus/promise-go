@@ -31,7 +31,7 @@ func (c *RootController) Get() {
 		return
 	}
 	service.AddListener(ws)
-	log.WithFields(log.Fields{"remote": c.Ctx.Request.RemoteAddr}).Warn("Websocket add a listener.")
+	log.WithFields(log.Fields{"remote": c.Ctx.Request.RemoteAddr}).Info("Websocket add a listener.")
 }
 
 // Post handles POST requests.

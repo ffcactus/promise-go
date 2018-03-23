@@ -1,6 +1,9 @@
 function onmessage(messageString) {
   const message = JSON.parse(messageString);
   console.info(message);
+  return {
+    type: 'xxxx'
+  };
 }
 
 /**

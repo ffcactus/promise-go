@@ -25,7 +25,7 @@ func StartEventDispatcher() {
 		e := <-EventChannel		
 		for each := wsConnection.Front(); each != nil; each = each.Next() {
 			if each.Value.(*websocket.Conn).WriteMessage(websocket.TextMessage, []byte(util.StructToString(e))) != nil {
-				log.Info("EventDispatcher remove listener.")
+				log.Info("Remove a listener.")
 				wsConnection.Remove(each)
 			}
 		}
@@ -37,42 +37,3 @@ func StartEventDispatcher() {
 func DispatchEvent(e *dto.PostEventRequest) {
 	EventChannel <- e
 }
-
-/*
-// DispatchServerCreate Dispatch server created.
-func (h *EventHandler) DispatchServerCreate(server *model.Server) {
-	serverDto := dto.GetServerResponse{}
-	serverDto.Load(server)
-	event := Event{
-		Type:     CreateEvent,
-		URI:      server.URI,
-		Category: ServerCategory,
-		Message:  util.StructToString(serverDto),
-	}
-	EventChannel <- event
-}
-
-// DispatchServerUpdate Dispatch server updated.
-func (h *EventHandler) DispatchServerUpdate(server *model.Server) {
-	serverDto := dto.GetServerResponse{}
-	serverDto.Load(server)
-	event := Event{
-		Type:     UpdateEvent,
-		URI:      server.URI,
-		Category: ServerCategory,
-		Message:  util.StructToString(serverDto),
-	}
-	EventChannel <- event
-}
-
-// DispatchServerDelete Dispatch server deleted.
-func (h *EventHandler) DispatchServerDelete(URI string) {
-	event := Event{
-		Type:     DeleteEvent,
-		URI:      URI,
-		Category: ServerCategory,
-		Message:  "",
-	}
-	EventChannel <- event
-}
-*/
