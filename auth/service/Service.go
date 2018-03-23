@@ -23,7 +23,6 @@ func Login(request *dto.PostLoginRequest) (*model.Session, []commonMessage.Messa
 		log.Warn("Failed to save session in DB.")
 		return nil, []commonMessage.Message{message.NewMessageAuthInternalError()}
 	}
-	log.Info("User", request.Name, "login.")
 	return savedSession, nil
 }
 

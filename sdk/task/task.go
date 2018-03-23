@@ -7,11 +7,12 @@ import (
 	commonDto "promise/common/object/dto"
 	"promise/task/object/dto"
 	"promise/task/object/model"
+	"promise/common/object/constValue"
 )
 
 var (
 	// TaskServerRoot The root of the service.
-	TaskServerRoot = app.ProtocolScheme + app.Host + app.RootURL + "/task/"
+	TaskServerRoot = app.ProtocolScheme + app.Host + app.RootURL + constValue.TaskBaskURI
 )
 
 // CreateTask Create the task.

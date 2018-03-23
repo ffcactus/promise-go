@@ -6,6 +6,7 @@ import (
 	"promise/server/controller"
 	"promise/server/object/entity"
 	"promise/server/service"
+	"promise/common/object/constValue"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
@@ -19,7 +20,7 @@ func main() {
 	// go service.FindServerStateAdded()
 
 	serverNS := beego.NewNamespace(
-		app.RootURL+"/server",
+		app.RootURL+constValue.ServerBaseURI,
 		beego.NSRouter("/", &controller.ServerRootController{}),
 		beego.NSRouter("/:id", &controller.ServerController{}),
 		beego.NSRouter("/:id/action/:action", &controller.ServerActionController{}),
@@ -27,14 +28,14 @@ func main() {
 	beego.AddNamespace(serverNS)
 
 	serverGroupNS := beego.NewNamespace(
-		app.RootURL+"/servergroup",
+		app.RootURL+constValue.ServerGroupBaseURI,
 		beego.NSRouter("/", &controller.ServerGroupRootController{}),
 		beego.NSRouter("/:id", &controller.ServerGroupController{}),
 	)
 	beego.AddNamespace(serverGroupNS)
 
 	serverServerGroupNS := beego.NewNamespace(
-		app.RootURL+"/server-servergroup",
+		app.RootURL+constValue.ServerServerGroupBaseURI,
 		beego.NSRouter("/", &controller.ServerServerGroupRootController{}),
 		beego.NSRouter("/:id", &controller.ServerServerGroupController{}),
 	)

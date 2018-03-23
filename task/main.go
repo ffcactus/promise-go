@@ -5,7 +5,8 @@ import (
 	commonDB "promise/common/db"
 	"promise/task/controller"
 	"promise/task/object/entity"
-
+	"promise/common/app"
+	"promise/common/object/constValue"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 	log "github.com/sirupsen/logrus"
@@ -34,7 +35,7 @@ func main() {
 	beego.SetLevel(beego.LevelDebug)
 	initDB()
 	ns := beego.NewNamespace(
-		"/promise/v1/task",
+		app.RootURL+constValue.TaskBaseURI,
 		beego.NSRouter("/", &controller.RootController{}),
 		beego.NSRouter("/:id", &controller.TaskController{}),
 		beego.NSRouter("/:id/action/:action", &controller.TaskActionController{}),

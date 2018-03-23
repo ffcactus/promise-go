@@ -5,7 +5,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	commonDto "promise/common/object/dto"
-	commomMessage "promise/common/object/message"
+	commonMessage "promise/common/object/message"
 	"promise/server/object/constValue"
 	"promise/server/service"
 	"strings"
@@ -32,8 +32,8 @@ func (c *ServerActionController) Post() {
 			c.Ctx.Output.SetStatus(http.StatusAccepted)
 		}
 	default:
-		messages := []commomMessage.Message{}
-		messages = append(messages, commomMessage.NewInvalidRequest())
+		messages := []commonMessage.Message{}
+		messages = append(messages, commonMessage.NewInvalidRequest())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 	}

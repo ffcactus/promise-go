@@ -2,6 +2,7 @@ import { push } from 'react-router-redux';
 import * as Client from './Client';
 import { ActionType } from './ConstValue';
 import * as DesktopAction from '../desktop/DesktopAction';
+import * as WsAction from '../ws/WsAction';
 const LOGIN_FAILURE_WAIT_TIME = 3000;
 
 /*
@@ -73,6 +74,7 @@ function login(hostname, username, password, from) {
         // Is it good to do redirection in action?
         // browserHistory.push(afterLoginPath);
         dispatch(push(from));
+        dispatch(WsAction.createWsConnection(hostname));
         dispatch(DesktopAction.setAppCollection());
         return;
       }

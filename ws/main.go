@@ -6,19 +6,28 @@ import (
 	"promise/common/app"
 	"promise/ws/controller"
 	"promise/ws/service"
+	"promise/common/object/constValue"
 )
 
 func main() {
 	app.Init("WSApp")
-	beego.SetLevel(beego.LevelDebug)
+
 	go service.StartEventDispatcher()
 
-	ns := beego.NewNamespace(
-		app.RootURL+"/ws",
+	// ws namesapce.
+	wsNS := beego.NewNamespace(
+		app.RootURL+constValue.WSBaseURI,
 		beego.NSRouter("/", &controller.RootController{}),
 	)
+	beego.AddNamespace(wsNS)
 
-	beego.AddNamespace(ns)
+	// ws-sender namespace.
+	wsSenderNS := beego.NewNamespace(
+		app.RootURL+constValue.WSSenderBaseURI,
+		beego.NSRouter("/", &controller.WsSenderRootController{}),		
+	)
+	beego.AddNamespace(wsSenderNS)
+	
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins:  true,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},

@@ -5,56 +5,36 @@ import (
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
 	"promise/common/util"
+	"promise/ws/object/dto"
 )
-
-var (
-	// CreateEvent create event.
-	CreateEvent = "Create"
-	// UpdateEvent update event.
-	UpdateEvent = "Update"
-	// DeleteEvent delete event.
-	DeleteEvent = "Delete"
-
-	// ServerCategory server category
-	ServerCategory = "Server"
-)
-
-// Event The event object.
-type Event struct {
-	Type     string
-	URI      string
-	Category string
-	Message  string
-}
 
 var (
 	// EventChannel The event channel
-	EventChannel = make(chan *Event, 10)
+	EventChannel = make(chan *dto.PostEventRequest, 10)
 	wsConnection = list.New()
 )
 
 // AddListener Add a listener
 func AddListener(listener *websocket.Conn) {
 	wsConnection.PushBack(listener)
-	log.Info("EventDispatcher add listener.")
 }
 
 // StartEventDispatcher Start the event dispater.
 func StartEventDispatcher() {
 	for {
-		e := <-EventChannel
-		log.Debug("StartEventDispatcher(), event type =", e.Type, "Category =", e.Category, "URI =", e.URI)
+		e := <-EventChannel		
 		for each := wsConnection.Front(); each != nil; each = each.Next() {
 			if each.Value.(*websocket.Conn).WriteMessage(websocket.TextMessage, []byte(util.StructToString(e))) != nil {
 				log.Info("EventDispatcher remove listener.")
 				wsConnection.Remove(each)
 			}
 		}
+		log.WithFields(log.Fields{"type": e.Type, "category": e.Category, "resource":e.ResourceID}).Info("Event dispatched.")
 	}
 }
 
 // DispatchEvent will push the event to the pipe.
-func DispatchEvent(e *Event) {
+func DispatchEvent(e *dto.PostEventRequest) {
 	EventChannel <- e
 }
 

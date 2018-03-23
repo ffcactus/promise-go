@@ -1,12 +1,26 @@
 package ws
 
 import (
+	"net/http"
 	"promise/server/object/model"
 )
 
-// DispatchServerCreate Dispatch server created.
-func DispatchServerCreate(server *model.Server) {
+var (
+	// WsServerRoot The root of the service.
+	WsServerRoot = app.ProtocolScheme + app.Host + app.RootURL + constValue.WSBaskURI
+)
 
+
+// DispatchServerCreate Dispatch server created.
+func DispatchServerCreate(server *model.Server) ([]commonDto.Message, error) {
+	messages, err := rest.Do(
+		http.MethodPost,
+		WsServerRoot,
+		*server,
+		nil,
+		[]int{http.StatusCreated})
+	)
+	return messages, err
 }
 
 // DispatchServerUpdate Dispatch server updated.

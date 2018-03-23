@@ -5,6 +5,7 @@ import (
 	"promise/auth/object/entity"
 	"promise/auth/service"
 	"promise/common/app"
+	"promise/common/object/constValue"
 	commonDB "promise/common/db"
 
 	"github.com/astaxie/beego"
@@ -36,7 +37,7 @@ func main() {
 	beego.SetLevel(beego.LevelDebug)
 	initDB()
 	ns := beego.NewNamespace(
-		app.RootURL+"/auth",
+		app.RootURL+constValue.AuthBaseURI,
 		beego.NSRouter("/login", &controller.LoginController{}),
 	)
 	beego.AddNamespace(ns)

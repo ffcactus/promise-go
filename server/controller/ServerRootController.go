@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	commonDto "promise/common/object/dto"
-	commomMessage "promise/common/object/message"
+	commonMessage "promise/common/object/message"
 	"promise/server/object/dto"
 	"promise/server/service"
 	"strconv"
@@ -22,9 +22,9 @@ type ServerRootController struct {
 func (c *ServerRootController) Post() {
 	request := new(dto.PostServerRequest)
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
-		log.WithFields(log.Fields{"err": err}).Info("Post server failed, unable to get request.")
-		messages := []commomMessage.Message{}
-		messages = append(messages, commomMessage.NewInvalidRequest())
+		log.WithFields(log.Fields{"err": err}).Warn("Post server failed, unable to unmarshal request.")
+		messages := []commonMessage.Message{}
+		messages = append(messages, commonMessage.NewInvalidRequest())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
@@ -74,8 +74,8 @@ func (c *ServerRootController) Get() {
 	}
 
 	if parameterError {
-		messages := []commomMessage.Message{}
-		messages = append(messages, commomMessage.NewInvalidRequest())
+		messages := []commonMessage.Message{}
+		messages = append(messages, commonMessage.NewInvalidRequest())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		log.Warn("Get server collection failed, parameter error.")

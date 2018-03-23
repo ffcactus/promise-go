@@ -11,6 +11,14 @@ const (
 	ServerGroupBaseURI = "/servergroup"
 	// ServerServerGroupBaseURI is server-servergroup base URI.
 	ServerServerGroupBaseURI = "/server-servergroup"
+	// AuthBaseURI is auth base URI.
+	AuthBaseURI = "/auth"
+	// WSBaseURI is websocket base URI.
+	WSBaseURI = "/ws"
+	// WSSenderBaseURI is websocket sender base URI.
+	WSSenderBaseURI = "/ws-sender"
+	// TaskBaseURI is task base URI.
+	TaskBaseURI = "/task"
 )
 
 // ToServerURI convert id to URI
