@@ -13,4 +13,6 @@ var (
 	ErrorConvertFilter = fmt.Errorf("can not convert filter")
 	// ErrorIDFormat is an error.
 	ErrorIDFormat = fmt.Errorf("ID format error")
+	// ErrorDataConvert is an error.
+	ErrorDataConvert = fmt.Errorf("data convert error.")
 )

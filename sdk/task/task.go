@@ -12,7 +12,7 @@ import (
 
 var (
 	// TaskServerRoot The root of the service.
-	TaskServerRoot = app.ProtocolScheme + app.Host + app.RootURL + constValue.TaskBaskURI
+	TaskServerRoot = app.ProtocolScheme + app.Host + app.RootURL + constValue.TaskBaseURI
 )
 
 // CreateTask Create the task.

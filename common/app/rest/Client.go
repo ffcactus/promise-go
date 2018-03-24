@@ -73,13 +73,16 @@ func Do(method string, uri string, requestDto interface{}, responseDtoP interfac
 			log.WithFields(log.Fields{"method": method, "uri": uri}).Warn("REST call failed, response body is empty")
 			return nil, errors.New("response body is empty")
 		}
+		if resp.Body == nil || responseDtoP == nil {
+			return nil, nil
+		}
 		if err := json.NewDecoder(resp.Body).Decode(responseDtoP); err != nil {
 			log.WithFields(log.Fields{"method": method, "uri": uri}).Warn("REST call failed, can not decode response.")
 			return nil, err
 		}
 		return nil, nil
 	}
-	log.WithFields(log.Fields{"method": method, "uri": uri, "status": resp.StatusCode, "expect": expectStatusCode}).Debug("Not the expected http status code.")
+	log.WithFields(log.Fields{"method": method, "uri": uri, "status": resp.StatusCode, "expect": expectStatusCode}).Info("Not the expected http status code.")
 	// TODO Not all the response body can be translate to messages.
 	message := new([]commonDto.Message)
 	if resp.Body == nil {
