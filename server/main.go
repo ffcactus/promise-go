@@ -3,10 +3,10 @@ package main
 import (
 	"promise/common/app"
 	commonDB "promise/common/db"
+	"promise/common/object/constValue"
 	"promise/server/controller"
 	"promise/server/object/entity"
 	"promise/server/service"
-	"promise/common/object/constValue"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"

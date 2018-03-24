@@ -9,8 +9,8 @@ function GroupCollectionApp(props) {
       <div styleName="Group">
         {props.group}
       </div>
-      <div styleName="ElementList">
-        {props.elementList}
+      <div styleName="Element">
+        {props.element}
       </div>
       <div styleName="Detail">
         {props.detail}
@@ -21,7 +21,7 @@ function GroupCollectionApp(props) {
 
 GroupCollectionApp.propTypes = {
   group: PropTypes.object,
-  elementList: PropTypes.object,
+  element: PropTypes.object,
   detail: PropTypes.object
 };
 

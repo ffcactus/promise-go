@@ -1,19 +1,19 @@
 package ws
 
 import (
-	"net/http"
-	"time"
 	"encoding/json"
-	"promise/server/object/model"
+	log "github.com/sirupsen/logrus"
+	"net/http"
 	"promise/common/app"
+	"promise/common/app/rest"
 	commonConstError "promise/common/object/constError"
 	commonConstValue "promise/common/object/constValue"
 	commonDTO "promise/common/object/dto"
-	"promise/common/app/rest"
-	"promise/ws/object/constValue"
 	serverDTO "promise/server/object/dto"
+	"promise/server/object/model"
+	"promise/ws/object/constValue"
 	wsDTO "promise/ws/object/dto"
-	log "github.com/sirupsen/logrus"
+	"time"
 )
 
 var (
@@ -23,7 +23,7 @@ var (
 
 func dispatchServerCreateOrUpdate(server *model.Server, eventType string) ([]commonDTO.Message, error) {
 	var (
-		s serverDTO.GetServerResponse
+		s     serverDTO.GetServerResponse
 		event wsDTO.PostEventRequest
 	)
 	event.CreatedAt = time.Now()
@@ -31,13 +31,13 @@ func dispatchServerCreateOrUpdate(server *model.Server, eventType string) ([]com
 	event.Type = eventType // constValue.CreateEvent
 	event.ResourceID = server.ID
 	s.Load(server)
-	b, err := json.Marshal(s); 
+	b, err := json.Marshal(s)
 	if err != nil {
 		log.WithFields(log.Fields{
-			"category":event.Category, 
-			"type":event.Type, 
-			"resource": event.ResourceID, 
-			"error":err}).Warn("Dispatch server event failed, failed to unmarshal resource.")
+			"category": event.Category,
+			"type":     event.Type,
+			"resource": event.ResourceID,
+			"error":    err}).Warn("Dispatch server event failed, failed to unmarshal resource.")
 		return nil, commonConstError.ErrorDataConvert
 	}
 	event.Data = json.RawMessage(b)
@@ -48,7 +48,7 @@ func dispatchServerCreateOrUpdate(server *model.Server, eventType string) ([]com
 		event,
 		nil,
 		[]int{http.StatusCreated})
-	return messages, err	
+	return messages, err
 }
 
 // DispatchServerCreate Dispatch server created.
@@ -76,5 +76,5 @@ func DispatchServerDelete(id string) ([]commonDTO.Message, error) {
 		event,
 		nil,
 		[]int{http.StatusCreated})
-	return messages, err	
+	return messages, err
 }

@@ -1,15 +1,14 @@
 package main
 
 import (
-	"promise/common/app"
-	commonDB "promise/common/db"
-	"promise/task/controller"
-	"promise/task/object/entity"
-	"promise/common/app"
-	"promise/common/object/constValue"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 	log "github.com/sirupsen/logrus"
+	"promise/common/app"
+	commonDB "promise/common/db"
+	"promise/common/object/constValue"
+	"promise/task/controller"
+	"promise/task/object/entity"
 )
 
 func initDB() {

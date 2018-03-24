@@ -2,31 +2,26 @@ import { ActionType, ServerAppState } from './ConstValue';
 
 const defaultState = {
   state: ServerAppState.UNKNOWN,
-  groupList: [{
-    Name: 'All'
-  }, {
-    Name: 'Rack'
-  }, {
-    Name: 'Blade'
-  }],
+  serverGroupList: [],
   serverList: [],
 };
 
 const server = (state = defaultState, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case ActionType.APP_INIT_START:
       return Object.assign({}, state, {
         state: ServerAppState.APP_INIT_START,
+        serverGroupList: [],
         serverList: [],
       });
     case ActionType.APP_INIT_SUCCESS:
       return Object.assign({}, state, {
         state: ServerAppState.APP_INIT_SUCCESS,
-        serverList: [],
       });
     case ActionType.APP_INIT_FAILURE:
       return Object.assign({}, state, {
         state: ServerAppState.APP_INIT_FAILURE,
+        serverGroupList: [],
         serverList: [],
       });
     case ActionType.GET_SERVER_LIST_START:
@@ -44,8 +39,22 @@ const server = (state = defaultState, action) => {
       });
     case ActionType.GET_SERVER_LIST_FAILURE:
       return Object.assign({}, state, {
-        state: ServerAppState.APP_INIT_FAILURE,
         serverList: [],
+      });
+    case ActionType.GET_SERVERGROUP_LIST_START:
+      return state;
+    case ActionType.GET_SERVERGROUP_LIST_SUCCESS:
+      return Object.assign({}, state, {
+        serverGroupList: action.info.Members.map((each) => {
+          return {
+            URI: each.URI,
+            Name: each.Name,
+          };
+        })
+      });
+    case ActionType.GET_SERVERGROUP_LIST_FAILURE:
+      return Object.assign({}, state, {
+        serverGroupList: [],
       });
     default:
       return state;

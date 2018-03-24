@@ -1,14 +1,14 @@
 package controller
 
 import (
-	"net/http"
 	"encoding/json"
-	"promise/ws/service"
-	"promise/ws/object/dto"
-	commonMessage "promise/common/object/message"
-	commonDto "promise/common/object/dto"
 	"github.com/astaxie/beego"
 	log "github.com/sirupsen/logrus"
+	"net/http"
+	commonDto "promise/common/object/dto"
+	commonMessage "promise/common/object/message"
+	"promise/ws/object/dto"
+	"promise/ws/service"
 )
 
 // WsSenderRootController is the root controller.
@@ -31,8 +31,8 @@ func (c *WsSenderRootController) Post() {
 	service.DispatchEvent(&request)
 	c.Ctx.Output.SetStatus(http.StatusCreated)
 	log.WithFields(log.Fields{
-		"category": request.Category, 
-		"type": request.Type, 
-		"resource": request.ResourceID}).Info("Post ws message done.")		
+		"category": request.Category,
+		"type":     request.Type,
+		"resource": request.ResourceID}).Info("Post ws message done.")
 	c.ServeJSON()
 }

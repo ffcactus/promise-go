@@ -4,10 +4,10 @@ import (
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	commonDB "promise/common/db"
+	commonConstError "promise/common/object/constError"
+	"promise/server/object/constError"
 	"promise/server/object/entity"
 	"promise/server/object/model"
-	"promise/server/object/constError"
-	commonConstError "promise/common/object/constError"
 	"strings"
 )
 
@@ -85,6 +85,9 @@ func (i *ServerGroupDBImplement) PostServerGroup(m *model.ServerGroup) (*model.S
 }
 
 func (i *ServerGroupDBImplement) convertFilter(filter string) (string, error) {
+	if filter == "" {
+		return "", nil
+	}
 	cmds := strings.Split(filter, " ")
 	if len(cmds) != 3 {
 		return "", commonConstError.ErrorConvertFilter
@@ -150,7 +153,7 @@ func (i *ServerGroupDBImplement) DeleteServerGroup(id string) (*model.ServerGrou
 	tx := c.Begin()
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
-			"id":  id,
+			"id":    id,
 			"error": err}).
 			Warn("Delete servergroup in DB failed, start transaction failed.")
 		return nil, err
@@ -163,13 +166,13 @@ func (i *ServerGroupDBImplement) DeleteServerGroup(id string) (*model.ServerGrou
 		return nil, nil
 	}
 
-	sg.ID = id	
-	if err := tx.Delete(&sg).Error; err!= nil {
+	sg.ID = id
+	if err := tx.Delete(&sg).Error; err != nil {
 		return nil, err
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
-			"id":  id,
+			"id":    id,
 			"error": err}).
 			Warn("Delete servergroup in DB failed, commit failed.")
 		return nil, err

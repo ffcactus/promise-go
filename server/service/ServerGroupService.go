@@ -3,10 +3,10 @@ package service
 import (
 	log "github.com/sirupsen/logrus"
 	commonMessage "promise/common/object/message"
-	"promise/server/object/constError"
-	"promise/server/object/message"
 	"promise/server/db"
+	"promise/server/object/constError"
 	"promise/server/object/dto"
+	"promise/server/object/message"
 	"promise/server/object/model"
 )
 
@@ -72,7 +72,7 @@ func DeleteServerGroup(id string) []commonMessage.Message {
 	}
 	if previous == nil {
 		return []commonMessage.Message{commonMessage.NewResourceNotExist()}
-	}	
+	}
 	if err != nil {
 		return []commonMessage.Message{commonMessage.NewInternalError()}
 	}

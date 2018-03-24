@@ -28,7 +28,8 @@
     line-height: 0.4;
     font-weight: bold;
     text-decoration: none;
-    border-bottom: 1px solid rgb(11, 188, 233)
+    border-bottom: 1px solid rgb(11, 188, 233);
+    cursor: pointer;
 }
 
 .AppCollectionMenuText {

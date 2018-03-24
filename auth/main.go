@@ -5,8 +5,8 @@ import (
 	"promise/auth/object/entity"
 	"promise/auth/service"
 	"promise/common/app"
-	"promise/common/object/constValue"
 	commonDB "promise/common/db"
+	"promise/common/object/constValue"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"

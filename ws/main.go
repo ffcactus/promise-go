@@ -4,9 +4,9 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 	"promise/common/app"
+	"promise/common/object/constValue"
 	"promise/ws/controller"
 	"promise/ws/service"
-	"promise/common/object/constValue"
 )
 
 func main() {
@@ -24,10 +24,10 @@ func main() {
 	// ws-sender namespace.
 	wsSenderNS := beego.NewNamespace(
 		app.RootURL+constValue.WSSenderBaseURI,
-		beego.NSRouter("/", &controller.WsSenderRootController{}),		
+		beego.NSRouter("/", &controller.WsSenderRootController{}),
 	)
 	beego.AddNamespace(wsSenderNS)
-	
+
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins:  true,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},

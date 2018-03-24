@@ -22,14 +22,14 @@ func AddListener(listener *websocket.Conn) {
 // StartEventDispatcher Start the event dispater.
 func StartEventDispatcher() {
 	for {
-		e := <-EventChannel		
+		e := <-EventChannel
 		for each := wsConnection.Front(); each != nil; each = each.Next() {
 			if each.Value.(*websocket.Conn).WriteMessage(websocket.TextMessage, []byte(util.StructToString(e))) != nil {
 				log.Info("Remove a listener.")
 				wsConnection.Remove(each)
 			}
 		}
-		log.WithFields(log.Fields{"type": e.Type, "category": e.Category, "resource":e.ResourceID}).Info("Event dispatched.")
+		log.WithFields(log.Fields{"type": e.Type, "category": e.Category, "resource": e.ResourceID}).Info("Event dispatched.")
 	}
 }
 

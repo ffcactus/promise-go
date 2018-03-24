@@ -16,5 +16,5 @@ func NewDeleteDefaultServerGroup() commonMessage.Message {
 	ret.ID = MessageServerGroupDeleteDefault
 	ret.Severity = constValue.SeverityWarning
 	ret.Description = "Delete default server group is not allowed."
-	return ret	
+	return ret
 }

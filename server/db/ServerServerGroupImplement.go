@@ -4,9 +4,9 @@ import (
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	commonDB "promise/common/db"
-	"promise/server/object/entity"
-	"promise/server/object/constError"
 	commonConstError "promise/common/object/constError"
+	"promise/server/object/constError"
+	"promise/server/object/entity"
 	"promise/server/object/model"
 	"strings"
 )
@@ -100,6 +100,9 @@ func (i *ServerServerGroupImplement) PostServerServerGroup(m *model.ServerServer
 }
 
 func (i *ServerServerGroupImplement) convertFilter(filter string) (string, error) {
+	if filter == "" {
+		return "", nil
+	}
 	cmds := strings.Split(filter, " ")
 	if len(cmds) != 3 {
 		return "", commonConstError.ErrorConvertFilter
@@ -162,7 +165,7 @@ func (i *ServerServerGroupImplement) DeleteServerServerGroup(id string) (*model.
 	tx := c.Begin()
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
-			"id":  id,
+			"id":    id,
 			"error": err}).
 			Warn("Delete server-servergroup in DB failed, start transaction failed.")
 		return nil, err
@@ -178,16 +181,16 @@ func (i *ServerServerGroupImplement) DeleteServerServerGroup(id string) (*model.
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": id}).
-			Warn("Delete server-servergroup in DB failed, delete default server-servergroup, transaction rollback.")		
+			Warn("Delete server-servergroup in DB failed, delete default server-servergroup, transaction rollback.")
 		return nil, constError.ErrorDeleteDefaultServerServerGroup
 	}
-	ssg.ID = id	
-	if err := tx.Delete(&ssg).Error; err!= nil {
+	ssg.ID = id
+	if err := tx.Delete(&ssg).Error; err != nil {
 		return nil, err
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
-			"id":  id,
+			"id":    id,
 			"error": err}).
 			Warn("Delete server-servergroup in DB failed, commit failed.")
 		return nil, err

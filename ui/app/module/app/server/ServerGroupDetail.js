@@ -11,7 +11,7 @@ class ServerGroupDetail extends React.Component {
   render() {
     return (
       <React.Fragment>
-        {this.props.server.groupList.map((each) => {
+        {this.props.server.serverGroupList.map((each) => {
           return <ServerGroupElement key={each.Name} name={each.Name} />;
         })}
       </React.Fragment>

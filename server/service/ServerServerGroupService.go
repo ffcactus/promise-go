@@ -3,10 +3,10 @@ package service
 import (
 	commonMessage "promise/common/object/message"
 	"promise/server/db"
-	"promise/server/object/dto"
-	"promise/server/object/model"
-	"promise/server/object/message"
 	"promise/server/object/constError"
+	"promise/server/object/dto"
+	"promise/server/object/message"
+	"promise/server/object/model"
 )
 
 // PostServerServerGroup post a server-group.
@@ -53,7 +53,7 @@ func DeleteServerServerGroup(id string) []commonMessage.Message {
 	}
 	if previous == nil {
 		return []commonMessage.Message{commonMessage.NewResourceNotExist()}
-	}	
+	}
 	if err != nil {
 		return []commonMessage.Message{commonMessage.NewInternalError()}
 	}
