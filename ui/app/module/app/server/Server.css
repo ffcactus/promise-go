@@ -4,15 +4,27 @@
     border-bottom: 1px solid rgb(11, 188, 233);
     overflow: hidden;
     margin: 0px;
-    padding: 0px 10px 0px 10px;     
+    padding: 0px;
+    position: relative;
+    height: 40px;
+    display: flex;
 }
 
 .ServerGroupControlButton {
     border: 0px;
     float: left;
-    margin: 3px 10px 3px 10px;
+    margin: 0px 10px 0px 10px;
     padding: 0px;
     cursor: pointer;
+    flex: 1;
+    height: 100%;
+    max-width: 40px;
+    position: relative;
+}
+
+.ServerGroupControlButton .img {
+    display: block;
+    margin: auto;
 }
 
 .ServerList {
