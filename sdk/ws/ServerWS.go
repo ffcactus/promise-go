@@ -9,6 +9,7 @@ import (
 	commonConstError "promise/common/object/constError"
 	commonConstValue "promise/common/object/constValue"
 	commonDTO "promise/common/object/dto"
+	"promise/common/util"
 	serverDTO "promise/server/object/dto"
 	"promise/server/object/model"
 	"promise/ws/object/constValue"
@@ -68,6 +69,68 @@ func DispatchServerDelete(id string) ([]commonDTO.Message, error) {
 	)
 	event.CreatedAt = time.Now()
 	event.Category = commonConstValue.CategoryServer
+	event.Type = constValue.DeleteEvent
+	event.ResourceID = id
+	messages, err := rest.Do(
+		http.MethodPost,
+		WsServerRoot,
+		event,
+		nil,
+		[]int{http.StatusCreated})
+	return messages, err
+}
+
+func dispatchResourceCreateOrUpdate(dto commonDTO.PromiseResponseInterface, eventType string) ([]commonDTO.Message, error) {
+	var (
+		event wsDTO.PostEventRequest
+	)
+	event.CreatedAt = time.Now()
+	event.Category = dto.GetCategory()
+	event.Type = eventType // constValue.CreateEvent
+	event.ResourceID = dto.GetID()
+	b, err := json.Marshal(dto)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"category": event.Category,
+			"type":     event.Type,
+			"resource": event.ResourceID,
+			"error":    err}).Warn("Dispatch event failed, failed to unmarshal resource.")
+		return nil, commonConstError.ErrorDataConvert
+	}
+	event.Data = json.RawMessage(b)
+
+	messages, err := rest.Do(
+		http.MethodPost,
+		WsServerRoot,
+		event,
+		nil,
+		[]int{http.StatusCreated})
+	return messages, err
+}
+
+// DispatchServerGroupCreate Dispatch servergroup created.
+func DispatchServerGroupCreate(sg *model.ServerGroup) ([]commonDTO.Message, error) {
+	var dto serverDTO.GetServerGroupResponse
+	dto.Load(sg)
+	util.PrintJson(dto)
+	return dispatchResourceCreateOrUpdate(&dto, constValue.CreateEvent)
+}
+
+// DispatchServerGroupUpdate Dispatch servergroup updated.
+func DispatchServerGroupUpdate(sg *model.ServerGroup) ([]commonDTO.Message, error) {
+	var dto serverDTO.GetServerGroupResponse
+	dto.Load(sg)
+	util.PrintJson(dto)
+	return dispatchResourceCreateOrUpdate(&dto, constValue.UpdateEvent)
+}
+
+// DispatchServerGroupDelete Dispatch servergroup deleted.
+func DispatchServerGroupDelete(id string) ([]commonDTO.Message, error) {
+	var (
+		event wsDTO.PostEventRequest
+	)
+	event.CreatedAt = time.Now()
+	event.Category = commonConstValue.CategoryServerGroup
 	event.Type = constValue.DeleteEvent
 	event.ResourceID = id
 	messages, err := rest.Do(

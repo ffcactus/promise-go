@@ -3,6 +3,7 @@ package service
 import (
 	log "github.com/sirupsen/logrus"
 	commonMessage "promise/common/object/message"
+	wsSDK "promise/sdk/ws"
 	"promise/server/db"
 	"promise/server/object/constError"
 	"promise/server/object/dto"
@@ -23,6 +24,7 @@ func CreateDefaultServerGroup() {
 	if err != nil {
 		log.Fatal("Failed to create default servergroup.")
 	} else {
+		wsSDK.DispatchServerGroupCreate(sg)
 		log.Info("Default servergroup created.")
 	}
 	db.DefaultServerGroupID = sg.ID
@@ -39,6 +41,7 @@ func PostServerGroup(request *dto.PostServerGroupRequest) (*model.ServerGroup, [
 	if err != nil {
 		return nil, []commonMessage.Message{commonMessage.NewInternalError()}
 	}
+	wsSDK.DispatchServerGroupCreate(posted)
 	return posted, nil
 }
 
@@ -76,7 +79,7 @@ func DeleteServerGroup(id string) []commonMessage.Message {
 	if err != nil {
 		return []commonMessage.Message{commonMessage.NewInternalError()}
 	}
-
+	wsSDK.DispatchServerGroupDelete(previous.ID)
 	return nil
 }
 

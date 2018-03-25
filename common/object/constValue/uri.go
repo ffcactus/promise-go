@@ -21,6 +21,24 @@ const (
 	TaskBaseURI = "/task"
 )
 
+// CategoryToURI turns ID to to URI depends on category.
+func CategoryToURI(category string, id string) string {
+	switch category {
+	case CategoryAA:
+		return app.RootURL + AuthBaseURI + "/" + id
+	case CategoryTask:
+		return app.RootURL + TaskBaseURI + "/" + id
+	case CategoryServer:
+		return app.RootURL + ServerBaseURI + "/" + id
+	case CategoryServerGroup:
+		return app.RootURL + ServerGroupBaseURI + "/" + id
+	case CategoryServerServerGroup:
+		return app.RootURL + ServerServerGroupBaseURI + "/" + id
+	default:
+		return ""
+	}
+}
+
 // ToServerURI convert id to URI
 func ToServerURI(id string) string {
 	return app.RootURL + ServerBaseURI + "/" + id

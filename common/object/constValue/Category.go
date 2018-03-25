@@ -1,12 +1,16 @@
 package constValue
 
 const (
-	// CategoryPromise means the Promise category.
+	// CategoryPromise is a category name.
 	CategoryPromise = "Promise"
-	// CategoryAA means the authentication and authorization category.
+	// CategoryAA is a category name.
 	CategoryAA = "AA"
-	// CategoryTask means the task category.
+	// CategoryTask is a category name.
 	CategoryTask = "Task"
-	// CategoryServer means the server category.
+	// CategoryServer is a category name..
 	CategoryServer = "Server"
+	// CategoryServerGroup is a category name.
+	CategoryServerGroup = "ServerGroup"
+	// CategoryServerServerGroup is a category name.
+	CategoryServerServerGroup = "ServerServerGroup"
 )
