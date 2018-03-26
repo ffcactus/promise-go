@@ -1,7 +1,9 @@
 package dto
 
 import (
-	"promise/common/object/constValue"
+	log "github.com/sirupsen/logrus"
+	"promise/common/object/constError"
+	commonDTO "promise/common/object/dto"
 	"promise/server/object/model"
 )
 
@@ -26,8 +28,7 @@ type Chassis struct {
 
 // GetServerResponse is DTO.
 type GetServerResponse struct {
-	ID             string         `json:"ID"`
-	URI            string         `json:"URI"`
+	commonDTO.PromiseResponse
 	Name           string         `json:"Name"`
 	Description    string         `json:"Description"`
 	State          string         `json:"State"`
@@ -41,12 +42,13 @@ type GetServerResponse struct {
 }
 
 // Load will load data from model.
-func (dto *GetServerResponse) Load(m *model.Server) {
-	if m == nil {
-		return
+func (dto *GetServerResponse) Load(data interface{}) error {
+	m, ok := data.(*model.Server)
+	if !ok {
+		log.Warn("GetServerGroupResponse load data from model failed.")
+		return constError.ErrorDataConvert
 	}
-	dto.ID = m.ID
-	dto.URI = constValue.ToServerURI(m.ID)
+	dto.PromiseResponse.Load(&m.PromiseModel)
 	dto.Name = m.Name
 	dto.Description = m.Description
 	dto.State = m.State
@@ -128,4 +130,5 @@ func (dto *GetServerResponse) Load(m *model.Server) {
 		each.Load(&m.Chassis.PCIeDevices[i], m.ComputerSystem.EthernetInterfaces)
 		dto.Chassis.PCIeDevices = append(dto.Chassis.PCIeDevices, *each)
 	}
+	return nil
 }

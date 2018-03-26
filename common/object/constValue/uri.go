@@ -2,6 +2,7 @@ package constValue
 
 import (
 	"promise/common/app"
+	"promise/common/category"
 )
 
 const (
@@ -22,17 +23,17 @@ const (
 )
 
 // CategoryToURI turns ID to to URI depends on category.
-func CategoryToURI(category string, id string) string {
-	switch category {
-	case CategoryAA:
+func CategoryToURI(c string, id string) string {
+	switch c {
+	case category.AA:
 		return app.RootURL + AuthBaseURI + "/" + id
-	case CategoryTask:
+	case category.Task:
 		return app.RootURL + TaskBaseURI + "/" + id
-	case CategoryServer:
+	case category.Server:
 		return app.RootURL + ServerBaseURI + "/" + id
-	case CategoryServerGroup:
+	case category.ServerGroup:
 		return app.RootURL + ServerGroupBaseURI + "/" + id
-	case CategoryServerServerGroup:
+	case category.ServerServerGroup:
 		return app.RootURL + ServerServerGroupBaseURI + "/" + id
 	default:
 		return ""

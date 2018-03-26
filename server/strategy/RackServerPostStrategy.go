@@ -2,7 +2,6 @@ package strategy
 
 import (
 	log "github.com/sirupsen/logrus"
-	wsSDK "promise/sdk/ws"
 	"promise/server/context"
 	"promise/server/object/constValue"
 	"promise/server/object/message"
@@ -55,6 +54,6 @@ func (s *RackServerPostStrategy) Execute(c *context.PostServerContext) error {
 		return err
 	}
 	// At this point, the server in the context is what we can use..
-	wsSDK.DispatchServerCreate(c.Server)
+	c.DispatchServerCreate(c.Server)
 	return nil
 }

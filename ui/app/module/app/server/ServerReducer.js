@@ -2,12 +2,14 @@ import { ActionType, ServerAppState } from './ConstValue';
 
 const defaultState = {
   state: ServerAppState.UNKNOWN,
+  defaultServerGroup: {},
   currentServerGroup: 'all',
   serverGroupList: [],
   serverList: [],
 };
 
 const server = (state = defaultState, action) => {
+  let tempDefaultServerGroup;
   switch (action.type) {
     case ActionType.APP_INIT_START:
       return Object.assign({}, state, {
@@ -45,14 +47,21 @@ const server = (state = defaultState, action) => {
     case ActionType.GET_SERVERGROUP_LIST_START:
       return state;
     case ActionType.GET_SERVERGROUP_LIST_SUCCESS:
-      return Object.assign({}, state, {
+      for (const each of action.info.Members) {
+        if (each.Name === 'all') {
+          tempDefaultServerGroup = each;
+        }
+      }
+      return {
+        ...state,
         serverGroupList: action.info.Members.map((each) => {
           return {
             URI: each.URI,
             Name: each.Name,
           };
-        })
-      });
+        }),
+        defaultServerGroup: tempDefaultServerGroup
+      };
     case ActionType.GET_SERVERGROUP_LIST_FAILURE:
       return Object.assign({}, state, {
         serverGroupList: [],
@@ -76,6 +85,11 @@ const server = (state = defaultState, action) => {
       return {
         ...state,
         serverGroupList: state.serverGroupList.filter(each => each.ID !== action.info)
+      };
+    case ActionType.ON_SERVERGROUP_DELETE_COLLECTION:
+      return {
+        ...state,
+        serverGroupList: [state.defaultServerGroup]
       };
     default:
       return state;

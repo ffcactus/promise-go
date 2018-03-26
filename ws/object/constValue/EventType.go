@@ -1,10 +1,12 @@
 package constValue
 
 const (
-	// CreateEvent the create event.
+	// CreateEvent is a event type.
 	CreateEvent = "Create"
-	// UpdateEvent the update event.
+	// UpdateEvent is a event type.
 	UpdateEvent = "Update"
-	// DeleteEvent the delete event.
+	// DeleteEvent is a event type.
 	DeleteEvent = "Delete"
+	// DeleteCollectionEvent is a event type for resource collection deletion.
+	DeleteCollectionEvent = "DeleteCollection"
 )

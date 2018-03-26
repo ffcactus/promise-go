@@ -27,14 +27,14 @@ func (s *ServerStrategy) LockServer(c *context.ServerContext) error {
 		c.AppendMessage(message.NewServerLockFailed(server))
 		return errors.New("failed to lock server. server can't be lock")
 	}
-	c.DispatchServerUpdate()
+	c.DispatchServerUpdate(nil)
 	return nil
 }
 
 // SetServerState Set server state.
 func (s *ServerStrategy) SetServerState(c *context.ServerContext, state string) error {
 	if c.ServerDBImplement.SetServerState(c.Server.ID, state) {
-		c.DispatchServerUpdate()
+		c.DispatchServerUpdate(nil)
 		return nil
 	}
 	return fmt.Errorf("failed to set server %s to %s", c.Server.ID, state)
@@ -43,7 +43,7 @@ func (s *ServerStrategy) SetServerState(c *context.ServerContext, state string) 
 // SetServerHealth Set server health.
 func (s *ServerStrategy) SetServerHealth(c *context.ServerContext, health string) error {
 	if c.ServerDBImplement.SetServerHealth(c.Server.ID, health) {
-		c.DispatchServerUpdate()
+		c.DispatchServerUpdate(nil)
 		return nil
 	}
 	return fmt.Errorf("failed to set server %s to %s", c.Server.ID, health)

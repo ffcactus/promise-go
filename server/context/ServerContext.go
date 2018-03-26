@@ -1,13 +1,14 @@
 package context
 
 import (
-	"promise/common/object/constValue"
+	"promise/common/category"
 	taskSDK "promise/sdk/task"
 	wsSDK "promise/sdk/ws"
 	serverClient "promise/server/client"
 	"promise/server/db"
-	serverM "promise/server/object/model"
-	taskDto "promise/task/object/dto"
+	"promise/server/object/dto"
+	"promise/server/object/model"
+	taskDTO "promise/task/object/dto"
 	taskModel "promise/task/object/model"
 
 	log "github.com/sirupsen/logrus"
@@ -30,11 +31,11 @@ type ServerContext struct {
 	ServerClient serverClient.ServerClientInterface
 	db.ServerDBImplement
 	ServerIndex
-	Server *serverM.Server
+	Server *model.Server
 }
 
 // CreateServerContext Create server context by server.
-func CreateServerContext(server *serverM.Server) *ServerContext {
+func CreateServerContext(server *model.Server) *ServerContext {
 	var context ServerContext
 	context.ServerClient = serverClient.GetServerClient(server)
 	context.Server = server
@@ -53,10 +54,26 @@ func (c *ServerContext) UpdateServer() {
 	c.Server = c.ServerDBImplement.GetServerFull(c.Server.ID)
 }
 
+// DispatchServerCreate Dispatch the server updated event.
+func (c *ServerContext) DispatchServerCreate(server *model.Server) {
+	if server == nil {
+		c.UpdateServer()
+		server = c.Server
+	}
+	var serverDTO dto.GetServerResponse
+	serverDTO.Load(server)
+	wsSDK.DispatchResourceCreate(&serverDTO)
+}
+
 // DispatchServerUpdate Dispatch the server updated event.
-func (c *ServerContext) DispatchServerUpdate() {
-	c.UpdateServer()
-	wsSDK.DispatchServerUpdate(c.Server)
+func (c *ServerContext) DispatchServerUpdate(server *model.Server) {
+	if server == nil {
+		c.UpdateServer()
+		server = c.Server
+	}
+	var serverDTO dto.GetServerResponse
+	serverDTO.Load(c.Server)
+	wsSDK.DispatchResourceUpdate(&serverDTO)
 }
 
 // DispatchServerDelete Dispatch the server deleted event.
@@ -64,11 +81,11 @@ func (c *ServerContext) DispatchServerDelete() {
 	if c.Server == nil {
 		log.Warn("Dispatch server in the context failed, server = nil.")
 	}
-	wsSDK.DispatchServerDelete(constValue.ToServerURI(c.Server.ID))
+	wsSDK.DispatchResourceDelete(category.Server, c.Server.ID)
 }
 
 // CreateTask Create task.
-func (c *ServerContext) CreateTask(request *taskDto.PostTaskRequest) {
+func (c *ServerContext) CreateTask(request *taskDTO.PostTaskRequest) {
 	log.WithFields(log.Fields{"id": c.Server.ID, "task": request.Name}).Debug("Create server task.")
 	taskResp, message, err := taskSDK.CreateTask(request)
 	if err != nil {
@@ -83,7 +100,7 @@ func (c *ServerContext) CreateTask(request *taskDto.PostTaskRequest) {
 	log.WithFields(log.Fields{"id": c.Server.ID, "taskName": taskResp.Name, "taskID": taskResp.ID}).Info("Create server task.")
 	c.Server.CurrentTask = taskResp.ID
 	c.SetServerTask(c.Server.ID, taskResp.ID)
-	wsSDK.DispatchServerUpdate(c.Server)
+	c.DispatchServerUpdate(c.Server)
 }
 
 // UpdateStepExecutionState Update the step's execution state.
@@ -131,10 +148,10 @@ func (c *ServerContext) SetTaskStepRunning(stepName string) {
 // SetTaskStepFinished Set the task to finished.
 func (c *ServerContext) SetTaskStepFinished(stepName string) {
 	log.WithFields(log.Fields{"id": c.Server.ID, "task": c.Server.CurrentTask, "step": stepName}).Debug("Set task step to finished.")
-	request := new(taskDto.UpdateTaskStepRequest)
+	request := new(taskDTO.UpdateTaskStepRequest)
 	request.Name = stepName
 	request.ExecutionState = &taskModel.ExecutionStateTerminated
-	request.ExecutionResult = new(taskDto.UpdateExecutionResultRequest)
+	request.ExecutionResult = new(taskDTO.UpdateExecutionResultRequest)
 	request.ExecutionResult.State = &taskModel.ExecutionResultStateFinished
 	_, message, err := taskSDK.UpdateStep(c.Server.CurrentTask, request)
 	if err != nil {
@@ -150,10 +167,10 @@ func (c *ServerContext) SetTaskStepFinished(stepName string) {
 // SetTaskStepWarning Set the task step to warning.
 func (c *ServerContext) SetTaskStepWarning(stepName string) {
 	log.WithFields(log.Fields{"id": c.Server.ID, "task": c.Server.CurrentTask, "step": stepName}).Debug("Set task step to warning.")
-	request := new(taskDto.UpdateTaskStepRequest)
+	request := new(taskDTO.UpdateTaskStepRequest)
 	request.Name = stepName
 	request.ExecutionState = &taskModel.ExecutionStateTerminated
-	request.ExecutionResult = new(taskDto.UpdateExecutionResultRequest)
+	request.ExecutionResult = new(taskDTO.UpdateExecutionResultRequest)
 	request.ExecutionResult.State = &taskModel.ExecutionResultStateWarning
 	_, message, err := taskSDK.UpdateStep(c.Server.CurrentTask, request)
 	if err != nil {
@@ -169,10 +186,10 @@ func (c *ServerContext) SetTaskStepWarning(stepName string) {
 // SetTaskStepError Set the task step to error.
 func (c *ServerContext) SetTaskStepError(stepName string) {
 	log.WithFields(log.Fields{"id": c.Server.ID, "task": c.Server.CurrentTask, "step": stepName}).Debug("Set task step to error.")
-	request := new(taskDto.UpdateTaskStepRequest)
+	request := new(taskDTO.UpdateTaskStepRequest)
 	request.Name = stepName
 	request.ExecutionState = &taskModel.ExecutionStateTerminated
-	request.ExecutionResult = new(taskDto.UpdateExecutionResultRequest)
+	request.ExecutionResult = new(taskDTO.UpdateExecutionResultRequest)
 	request.ExecutionResult.State = &taskModel.ExecutionResultStateError
 	log.Debug("SetTaskStepError(), task ID =", c.Server.CurrentTask, "step name =", stepName)
 	_, message, err := taskSDK.UpdateStep(c.Server.CurrentTask, request)

@@ -3,7 +3,6 @@ package dto
 import (
 	log "github.com/sirupsen/logrus"
 	"promise/common/object/constError"
-	"promise/common/object/constValue"
 	commonDTO "promise/common/object/dto"
 	"promise/server/object/model"
 )
@@ -23,7 +22,6 @@ func (dto *GetServerGroupResponse) Load(data interface{}) error {
 		return constError.ErrorDataConvert
 	}
 	dto.PromiseResponse.Load(&m.PromiseModel)
-	dto.URI = constValue.ToServerGroupURI(m.ID)
 	dto.Name = m.Name
 	dto.Description = m.Description
 	return nil

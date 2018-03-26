@@ -119,6 +119,12 @@ function onServerGroupDelete(id) {
   };
 }
 
+function onServerGroupDeleteCollection() {
+  return {
+    type: ActionType.ON_SERVERGROUP_DELETE_COLLECTION
+  };
+}
+
 function onServerMessage(message) {
   switch(message.Type) {
     case 'Create':
@@ -140,6 +146,8 @@ function onServerGroupMessage(message) {
       return onServerGroupUpdate(message.Data);
     case 'Delete':
       return onServerGroupDelete(message.ResourceID);
+    case 'DeleteCollection':
+      return onServerGroupDeleteCollection();
     default:
       return {};
   }

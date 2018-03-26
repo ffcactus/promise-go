@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"promise/common/object/constValue"
+	"promise/common/category"
 	"promise/server/object/model"
 )
 
@@ -14,7 +14,7 @@ type PostServerGroupRequest struct {
 // ToModel will return a model based on DTO.
 func (dto *PostServerGroupRequest) ToModel() *model.ServerGroup {
 	ret := new(model.ServerGroup)
-	ret.Category = constValue.CategoryServerGroup
+	ret.Category = category.ServerGroup
 	ret.Name = dto.Name
 	ret.Description = dto.Description
 	return ret

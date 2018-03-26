@@ -1,5 +1,9 @@
 package model
 
+import (
+	"promise/common/object/model"
+)
+
 // OriginURIs The
 type OriginURIs struct {
 	Chassis *string
@@ -40,7 +44,7 @@ type ServerBasicInfo struct {
 
 // Server Server object.
 type Server struct {
-	ID             string
+	model.PromiseModel
 	Name           string
 	Description    string
 	State          string

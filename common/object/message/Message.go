@@ -2,6 +2,7 @@ package message
 
 import (
 	"net/http"
+	"promise/common/category"
 	"promise/common/object/constValue"
 	"time"
 )
@@ -53,7 +54,7 @@ func NewMessage(category string) Message {
 
 // NewResourceNotExist return a message that means the resource does not exist.
 func NewResourceNotExist() Message {
-	ret := NewMessage(constValue.CategoryPromise)
+	ret := NewMessage(category.Promise)
 	ret.ID = MessageResourceNotExist
 	ret.Severity = constValue.SeverityNormal
 	ret.Description = "Resource does not exist."
@@ -65,7 +66,7 @@ func NewResourceNotExist() Message {
 
 // NewResourceDuplicate return a message that means resource duplication happened.
 func NewResourceDuplicate() Message {
-	ret := NewMessage(constValue.CategoryPromise)
+	ret := NewMessage(category.Promise)
 	ret.ID = MessageResourceDuplicate
 	ret.Severity = constValue.SeverityNormal
 	ret.Description = "Resource duplicated."
@@ -77,7 +78,7 @@ func NewResourceDuplicate() Message {
 
 // NewBadRequest return a message that means the request is Invalid.
 func NewInvalidRequest() Message {
-	ret := NewMessage(constValue.CategoryPromise)
+	ret := NewMessage(category.Promise)
 	ret.ID = MessageInvalidRequest
 	ret.Severity = constValue.SeverityNormal
 	ret.Description = "The request is invalid."
@@ -89,7 +90,7 @@ func NewInvalidRequest() Message {
 
 // NewInternalError return a message that means there is a internal error happened.
 func NewInternalError() Message {
-	ret := NewMessage(constValue.CategoryPromise)
+	ret := NewMessage(category.Promise)
 	ret.ID = MessageInternalError
 	ret.Severity = constValue.SeverityNormal
 	ret.Description = "Internal error happened while process the request."
@@ -101,7 +102,7 @@ func NewInternalError() Message {
 
 // NewTimeout return a message that means there is a timeout happend.
 func NewTimeout() Message {
-	ret := NewMessage(constValue.CategoryPromise)
+	ret := NewMessage(category.Promise)
 	ret.ID = MessageTimeout
 	ret.Severity = constValue.SeverityNormal
 	ret.Description = "I/O operation timeout."

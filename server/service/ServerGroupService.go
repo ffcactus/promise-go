@@ -2,6 +2,7 @@ package service
 
 import (
 	log "github.com/sirupsen/logrus"
+	"promise/common/category"
 	commonMessage "promise/common/object/message"
 	wsSDK "promise/sdk/ws"
 	"promise/server/db"
@@ -24,7 +25,9 @@ func CreateDefaultServerGroup() {
 	if err != nil {
 		log.Fatal("Failed to create default servergroup.")
 	} else {
-		wsSDK.DispatchServerGroupCreate(sg)
+		var sgDTO dto.GetServerGroupResponse
+		sgDTO.Load(sg)
+		wsSDK.DispatchResourceCreate(&sgDTO)
 		log.Info("Default servergroup created.")
 	}
 	db.DefaultServerGroupID = sg.ID
@@ -41,7 +44,9 @@ func PostServerGroup(request *dto.PostServerGroupRequest) (*model.ServerGroup, [
 	if err != nil {
 		return nil, []commonMessage.Message{commonMessage.NewInternalError()}
 	}
-	wsSDK.DispatchServerGroupCreate(posted)
+	var sgDTO dto.GetServerGroupResponse
+	sgDTO.Load(posted)
+	wsSDK.DispatchResourceCreate(&sgDTO)
 	return posted, nil
 }
 
@@ -79,7 +84,7 @@ func DeleteServerGroup(id string) []commonMessage.Message {
 	if err != nil {
 		return []commonMessage.Message{commonMessage.NewInternalError()}
 	}
-	wsSDK.DispatchServerGroupDelete(previous.ID)
+	wsSDK.DispatchResourceDelete(category.ServerGroup, previous.ID)
 	return nil
 }
 
@@ -90,5 +95,6 @@ func DeleteServerGroupCollection() []commonMessage.Message {
 	if err != nil {
 		return []commonMessage.Message{commonMessage.NewInternalError()}
 	}
+	wsSDK.DispatchResourceCollectionDelete(category.ServerGroup)
 	return nil
 }

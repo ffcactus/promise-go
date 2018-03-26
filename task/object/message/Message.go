@@ -2,6 +2,7 @@ package message
 
 import (
 	"net/http"
+	"promise/common/category"
 	"promise/common/object/constValue"
 	"promise/common/object/message"
 )
@@ -23,7 +24,7 @@ const (
 
 // NewMessageTaskInternalError Create new message.
 func NewMessageTaskInternalError() message.Message {
-	ret := message.NewMessage(constValue.CategoryTask)
+	ret := message.NewMessage(category.Task)
 	ret.ID = MessageInternalError
 	ret.StatusCode = http.StatusInternalServerError
 	ret.Severity = constValue.SeverityCritical
@@ -36,7 +37,7 @@ func NewMessageTaskInternalError() message.Message {
 
 // NewMessageTaskBadRequest Create new message.
 func NewMessageTaskBadRequest() message.Message {
-	m := message.NewMessage(constValue.CategoryTask)
+	m := message.NewMessage(category.Task)
 	m.ID = MessageTaskBadRequest
 	m.StatusCode = http.StatusBadRequest
 	m.Severity = constValue.SeverityNormal
@@ -49,7 +50,7 @@ func NewMessageTaskBadRequest() message.Message {
 
 // NewMessageTaskSaveFailure Create new message.
 func NewMessageTaskSaveFailure() message.Message {
-	m := message.NewMessage(constValue.CategoryTask)
+	m := message.NewMessage(category.Task)
 	m.ID = MessageTaskNotExist
 	m.StatusCode = http.StatusInternalServerError
 	m.Severity = constValue.SeverityCritical
@@ -62,7 +63,7 @@ func NewMessageTaskSaveFailure() message.Message {
 
 // NewMessageTaskNotExist Create new message.
 func NewMessageTaskNotExist() message.Message {
-	m := message.NewMessage(constValue.CategoryTask)
+	m := message.NewMessage(category.Task)
 	m.ID = MessageTaskSaveFailure
 	m.StatusCode = http.StatusNotFound
 	m.Severity = constValue.SeverityNormal
@@ -75,7 +76,7 @@ func NewMessageTaskNotExist() message.Message {
 
 // NewMessageTaskMissingProperty Create new message.
 func NewMessageTaskMissingProperty() message.Message {
-	m := message.NewMessage(constValue.CategoryTask)
+	m := message.NewMessage(category.Task)
 	m.ID = MessageTaskMissingProperty
 	m.StatusCode = http.StatusNotFound
 	m.Severity = constValue.SeverityNormal
