@@ -1,9 +1,33 @@
+// function onServerMessage(message)
+// {
+//   switch(message.Type) {
+//     case 'Create':
+//       return {
+//         type: ''
+//       }
+//   }
+//   return {
+//     type: 'xxxx'
+//   };
+// }
+
+const handlerMap = new Map();
+
 function onmessage(messageString) {
   const message = JSON.parse(messageString);
-  console.info(message);
-  return {
-    type: 'xxxx'
-  };
+  const handler = handlerMap[message.Category];
+  if (handler) {
+    return handler(message);
+  }
+  return ()=>{};
+}
+
+function registerMessageAction(category, handler) {
+  handlerMap[category] = handler;
+}
+
+function unregisterMessageAction(category) {
+  return handlerMap.delete(category);
 }
 
 /**
@@ -28,4 +52,4 @@ function createWsConnection(hostname) {
   };
 }
 
-export { createWsConnection };
+export { createWsConnection, registerMessageAction, unregisterMessageAction };

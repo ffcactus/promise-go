@@ -1,5 +1,6 @@
 import * as Client from './Client';
 import { ActionType } from './ConstValue';
+import * as WsAction from '../../promise/ws/WsAction';
 
 function appInitStart() {
   return {
@@ -59,24 +60,94 @@ function getServerListFailure() {
 
 function getServerStart() {
   return {
-    type: ActionType.GET_SERVER_LIST_START
+    type: ActionType.GET_SERVER_START
   };
 }
 
 function getServerSuccess(resp) {
   return {
-    type: ActionType.GET_SERVER_LIST_SUCCESS,
+    type: ActionType.GET_SERVER_SUCCESS,
     info: resp
   };
 }
 
 function getServerFailure() {
   return {
-    type: ActionType.GET_SERVER_LIST_FAILURE
+    type: ActionType.GET_SERVER_FAILURE
   };
 }
 
+function onServerCreate(server) {
+  return {
+    type: ActionType.ON_SERVER_CREATE,
+    info: server
+  };
+}
+
+function onServerUpdate(server) {
+  return {
+    type: ActionType.ON_SERVER_UPDATE,
+    info: server
+  };
+}
+
+function onServerDelete(id) {
+  return {
+    type: ActionType.ON_SERVER_DELETE,
+    info: id
+  };
+}
+
+function onServerGroupCreate(server) {
+  return {
+    type: ActionType.ON_SERVERGROUP_CREATE,
+    info: server
+  };
+}
+
+function onServerGroupUpdate(server) {
+  return {
+    type: ActionType.ON_SERVERGROUP_UPDATE,
+    info: server
+  };
+}
+
+function onServerGroupDelete(id) {
+  return {
+    type: ActionType.ON_SERVERGROUP_DELETE,
+    info: id
+  };
+}
+
+function onServerMessage(message) {
+  switch(message.Type) {
+    case 'Create':
+      return onServerCreate(message.Data);
+    case 'Update':
+      return onServerUpdate(message.Data);
+    case 'Delete':
+      return onServerDelete(message.ResourceID);
+    default:
+      return {};
+  }
+}
+
+function onServerGroupMessage(message) {
+  switch(message.Type) {
+    case 'Create':
+      return onServerGroupCreate(message.Data);
+    case 'Update':
+      return onServerGroupUpdate(message.Data);
+    case 'Delete':
+      return onServerGroupDelete(message.ResourceID);
+    default:
+      return {};
+  }
+}
+
 export function appInit(hostname) {
+  WsAction.registerMessageAction('Server', onServerMessage);
+  WsAction.registerMessageAction('ServerGroup', onServerGroupMessage);
   return (dispatch, state) => {
     dispatch(appInitStart());
     // First, we need get all the servergroup.

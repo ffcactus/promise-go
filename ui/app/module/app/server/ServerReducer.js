@@ -2,6 +2,7 @@ import { ActionType, ServerAppState } from './ConstValue';
 
 const defaultState = {
   state: ServerAppState.UNKNOWN,
+  currentServerGroup: 'all',
   serverGroupList: [],
   serverList: [],
 };
@@ -56,6 +57,26 @@ const server = (state = defaultState, action) => {
       return Object.assign({}, state, {
         serverGroupList: [],
       });
+    case ActionType.ON_SERVERGROUP_CREATE:
+      return {
+        ...state,
+        serverGroupList: state.serverGroupList.concat(action.info)
+      };
+    case ActionType.ON_SERVER_SERVERGROUP_UPDATE:
+      return {
+        ...state,
+        serverGroupList: state.serverGroupList.map((each) => {
+          if (each.ID === action.info.ID) {
+            return action.info;
+          }
+          return each;
+        })
+      };
+    case ActionType.ON_SERVERGROUP_DELETE:
+      return {
+        ...state,
+        serverGroupList: state.serverGroupList.filter(each => each.ID !== action.info)
+      };
     default:
       return state;
   }
