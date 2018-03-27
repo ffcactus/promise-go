@@ -70,6 +70,12 @@ const server = (state = defaultState, action) => {
       return Object.assign({}, state, {
         serverGroupList: [],
       });
+    case ActionType.CREATE_SERVERGROUP_START:
+      return state;
+    case ActionType.CREATE_SERVERGROUP_SUCCESS:
+      return state;
+    case ActionType.CREATE_SERVERGROUP_FAILURE:
+      return state;
     // servergroup event.
     case ActionType.ON_SERVERGROUP_CREATE:
       return {

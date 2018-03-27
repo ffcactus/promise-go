@@ -18,12 +18,9 @@ const LOGIN_FAILURE_WAIT_TIME = 3000;
  * @param {string} username
  * @param {string} password
  */
-function loginRequest(hostname, username, password) {
+function loginStart() {
   return {
     type: ActionType.LOGIN_START,
-    hostname,
-    username,
-    password
   };
 }
 
@@ -51,10 +48,14 @@ function loginFailureTimeout() {
  * Login success.
  * @param {string} token
  */
-function loginSuccess(token) {
+function loginSuccess(hostname, username, token) {
   return {
     type: ActionType.LOGIN_SUCCESS,
-    token
+    info: {
+      hostname,
+      username,
+      token
+    }
   };
 }
 
@@ -66,10 +67,10 @@ function loginSuccess(token) {
  */
 function login(hostname, username, password, from) {
   return (dispatch) => {
-    dispatch(loginRequest(hostname, username, password));
+    dispatch(loginStart());
     Client.login(hostname, username, password).then((response) => {
       if (response.status === 200) {
-        dispatch(loginSuccess(response.response.token));
+        dispatch(loginSuccess(hostname, username, response.response.token));
         // TODO
         // Is it good to do redirection in action?
         // browserHistory.push(afterLoginPath);

@@ -165,16 +165,40 @@ export function closeCreateServerGroupDialog() {
   };
 }
 
-function createServerGroupSuccess() {
+function createServerGroupStart() {
   return {
-    type: ActionType.CREATE_SERVERGROUP_SUCCESS
+    type: ActionType.CREATE_SERVERGROUP_START
   };
+}
+
+function createServerGroupSuccess(responseDto) {
+  return {
+    type: ActionType.CREATE_SERVERGROUP_SUCCESS,
+    info: responseDto
+  };
+}
+
+function createServerGroupFailure(messages) {
+  return {
+    type: ActionType.CREATE_SERVERGROUP_FAILURE,
+    info: messages
+  }
 }
 
 export function createServerGroup(servergroup) {
   return (dispatch, getState) => {
     const state = getState();
-    dispatch(createServerGroupSuccess());
+    const hostname = state.session.hostname;
+    Client.postServerGroup(hostname, servergroup).then((resp) => {
+      if (resp.status === 201) {
+        dispatch(createServerGroupSuccess(resp.response));
+        dispatch(closeCreateServerGroupDialog())
+        return;
+      }
+      dispatch(createServerGroupFailure(resp.response))
+    }).catch(e => {
+      createServerGroupFailure(e)
+    })
   };
 }
 

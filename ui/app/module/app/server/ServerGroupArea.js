@@ -1,6 +1,6 @@
 import React from 'react';
 import AppCollectionMenu from '../../promise/app/AppCollectionMenu';
-import ServerGroupDetail from './ServerGroupDetail';
+import ServerGroupList from './ServerGroupList';
 import ServerGroupControlArea from './ServerGroupControlArea';
 
 function ServerGroupArea() {
@@ -8,7 +8,7 @@ function ServerGroupArea() {
     <React.Fragment>
       <AppCollectionMenu />
       <ServerGroupControlArea />
-      <ServerGroupDetail />
+      <ServerGroupList />
     </React.Fragment>
   );
 }

@@ -1,6 +1,7 @@
 import { ActionType, LoginState } from './ConstValue';
 
 const defaultSessionState = {
+  hostname: null,
   state: LoginState.LOGOUT,
   username: null,
   token: null,
@@ -12,18 +13,21 @@ const session = (state = defaultSessionState, action) => {
   switch (action.type) {
     case ActionType.LOGIN_REQUEST:
       return {
+        ...state,
         state: LoginState.LOGGING,
-        username: action.username,
         token: null
       };
     case ActionType.LOGIN_SUCCESS:
       return {
+        ...state,
         state: LoginState.LOGGED,
-        username: null,
+        username: action.info.username,
+        hostname: action.info.hostname,
         token: action.token
       };
     case ActionType.LOGIN_FAILURE:
       return {
+        ...state,
         state: LoginState.LOGIN_FAILURE_WAIT,
         username: null,
         token: null,
@@ -31,6 +35,7 @@ const session = (state = defaultSessionState, action) => {
       };
     case ActionType.LOGIN_FAILURE_TIMEOUT:
       return {
+        ...state,
         state: LoginState.LOGOUT,
         username: null,
         token: null

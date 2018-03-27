@@ -56,9 +56,9 @@ class CreateServerGroupDialog extends React.Component {
           <DialogHR />
           <DialogContentDiv>
             <p>Name</p>
-            <input />
+            <input onChange={this.handleNameChange}/>
             <p>Discription</p>
-            <input />
+            <input onChange={this.handleDiscriptionChange}/>
           </DialogContentDiv>
           <DialogHR />
           <DialogControlDiv>

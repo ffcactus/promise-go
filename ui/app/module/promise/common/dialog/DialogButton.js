@@ -11,7 +11,7 @@ const DialogButton = (props) => {
 
 DialogButton.propTypes = {
   name: PropTypes.string,
-  onClick: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  onClick: PropTypes.func
 };
 
 export default CSSModules(DialogButton, styles);
