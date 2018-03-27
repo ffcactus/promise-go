@@ -27,11 +27,15 @@ func dispatch(event *wsDTO.PostEventRequest) ([]commonDTO.Message, error) {
 		nil,
 		[]int{http.StatusCreated})
 	if err != nil {
+		m := ""
+		if (messages != nil && len(messages) > 1) {
+			m = messages[0].ID
+		}
 		log.WithFields(log.Fields{
 			"category": event.Category,
 			"type":     event.Type,
 			"resource": event.ResourceID,
-			"message":  messages[0].ID,
+			"message": m,
 			"error":    err}).Warn("Dispatch event failed.")
 	}
 	return messages, err

@@ -8,7 +8,7 @@ import com.promise.integrationtest.base.ResourceResponse;
  */
 public class GetServerGroupResponse extends ResourceResponse
 {
-    @JsonProperty("Name")
+    @JsonProperty(value = "Name", required = true)
     private String name;
 
     @JsonProperty("Description")
