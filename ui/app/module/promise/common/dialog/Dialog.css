@@ -1,11 +1,11 @@
-.FormContainer {
+.DialogFrameContainer {
 	position: fixed;
 	top: 50%;
 	left: 50%;
 	z-index: 100;
 }
 
-.Form {
+.DialogFrame {
 	position: relative;
 	transform: translateY(-50%);
 	left: -50%;
@@ -16,11 +16,11 @@
 	box-shadow: 10px 10px 10px rgba(100,163,184,0.4);	
 }
 
-.FormTitleDiv {
+.DialogTitleDiv {
 	text-align: center;
 }
 
-.FormTitleText {
+.DialogTitleText {
 	color: blue;
 	font-family: arial;
 	font-size: 2rem;
@@ -28,11 +28,11 @@
 	white-space: nowrap;
 }
 
-.FormButtonDiv {
+.DialogControlDiv {
 	text-align: center;
 }
 
-.FormButtonText {
+.DialogButton {
 	color: blue;
 	font-family: arial;
 	font-size: 1.5rem;
@@ -40,13 +40,13 @@
 	white-space: nowrap;
 }
 
-.FormContentDiv {
+.DialogContentDiv {
     margin-left: 10px;
     margin-right: 10px;
 }
 
 
-.FormHr {
+.DialogHR {
     margin-left: 10px;
     margin-right: 10px;
 }
