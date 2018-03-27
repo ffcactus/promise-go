@@ -1,0 +1,63 @@
+.popup {
+	width: 400px;
+	height: 600px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin: -300px 0 0 -200px; /* [-(height/2)px 0 0 -(width/2)px] */ /* -300px 0 0 -200px; */
+	display: block;
+	background: #9e9e9e;
+}
+
+.ConfirmDialog {
+	/*
+	width: 400px;
+	height: 600px;
+	*/
+	border: 1px solid rgba(100,163,184,1);
+	border-radius: 20px;
+	/*
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin: -300px 0 0 -200px; 
+	*/
+	/* [-(height/2)px 0 0 -(width/2)px] */
+	display: block;
+	background: #f1f1f1;
+	box-shadow: 5px 5px 5px rgba(100,163,184,0.4);
+}
+
+.ConfirmTitleDiv {
+	text-align: center;
+}
+
+.ConfirmButtonDiv {
+	text-align: center;
+}
+
+.ConfirmContentDiv {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.ConfirmTitleText {
+	color: blue;
+	font-family: arial;
+	font-size: 2rem;
+	margin: 10px 50px;
+	white-space: nowrap;
+}
+
+.ConfirmHr {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.ConfirmButtonText {
+	color: blue;
+	font-family: arial;
+	font-size: 1.5rem;
+	margin: 5px;
+	white-space: nowrap;
+}

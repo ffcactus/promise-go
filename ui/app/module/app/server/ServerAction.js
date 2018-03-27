@@ -153,6 +153,43 @@ function onServerGroupMessage(message) {
   }
 }
 
+export function openCreateServerGroupDialog() {
+  return {
+    type: ActionType.OPEN_CREATE_SERVERGROUP_DIALOG
+  };
+}
+
+export function closeCreateServerGroupDialog() {
+  return {
+    type: ActionType.CLOSE_CREATE_SERVERGROUP_DIALOG
+  };
+}
+
+function createServerGroupSuccess() {
+  return {
+    type: ActionType.CREATE_SERVERGROUP_SUCCESS
+  };
+}
+
+export function createServerGroup(servergroup) {
+  return (dispatch, getState) => {
+    const state = getState();
+    dispatch(createServerGroupSuccess());
+  };
+}
+
+export function openAddServerDialog() {
+  return {
+    type: ActionType.OPEN_ADD_SERVER_DIALOG
+  };
+}
+
+export function closeAddServerDialog() {
+  return {
+    type: ActionType.CLOSE_ADD_SERVER_DIALOG
+  };
+}
+
 export function appInit(hostname) {
   WsAction.registerMessageAction('Server', onServerMessage);
   WsAction.registerMessageAction('ServerGroup', onServerGroupMessage);

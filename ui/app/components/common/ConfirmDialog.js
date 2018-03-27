@@ -7,18 +7,18 @@ import CenterDiv from './CenterDiv';
 const ConfirmDialog = (props) => {
   return (
     <CenterDiv>
-    <div styleName="ConfirmDialog">
-      <div styleName="ConfirmTitleDiv">
-        <p styleName="ConfirmTitleText">{props.title}</p>
+      <div styleName="ConfirmDialog">
+        <div styleName="ConfirmTitleDiv">
+          <p styleName="ConfirmTitleText">{props.title}</p>
+        </div>
+        <hr styleName="ConfirmHr" />
+        <div styleName="ConfirmContentDiv">
+          <p>{props.message}</p>
+        </div>
+        <div styleName="ConfirmButtonDiv">
+          <p styleName="ConfirmButtonText">Confirm</p>
+        </div>
       </div>
-      <hr styleName="ConfirmHr" />
-      <div styleName="ConfirmContentDiv">
-        <p>{props.message}</p>
-      </div>
-      <div styleName="ConfirmButtonDiv">
-        <p styleName="ConfirmButtonText">Confirm</p>
-      </div>
-    </div>
     </CenterDiv>
   );
 };

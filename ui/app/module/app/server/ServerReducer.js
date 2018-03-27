@@ -6,6 +6,8 @@ const defaultState = {
   currentServerGroup: 'all',
   serverGroupList: [],
   serverList: [],
+  openCreateServerGroupDialog: false,
+  openAddServerDialog: false,
 };
 
 const server = (state = defaultState, action) => {
@@ -27,6 +29,7 @@ const server = (state = defaultState, action) => {
         serverGroupList: [],
         serverList: [],
       });
+    // server REST.
     case ActionType.GET_SERVER_LIST_START:
       return state;
     case ActionType.GET_SERVER_LIST_SUCCESS:
@@ -44,6 +47,7 @@ const server = (state = defaultState, action) => {
       return Object.assign({}, state, {
         serverList: [],
       });
+    // servergroup REST.
     case ActionType.GET_SERVERGROUP_LIST_START:
       return state;
     case ActionType.GET_SERVERGROUP_LIST_SUCCESS:
@@ -66,6 +70,7 @@ const server = (state = defaultState, action) => {
       return Object.assign({}, state, {
         serverGroupList: [],
       });
+    // servergroup event.
     case ActionType.ON_SERVERGROUP_CREATE:
       return {
         ...state,
@@ -90,6 +95,30 @@ const server = (state = defaultState, action) => {
       return {
         ...state,
         serverGroupList: [state.defaultServerGroup]
+      };
+    // create server group dialog.
+    case ActionType.OPEN_CREATE_SERVERGROUP_DIALOG:
+      return {
+        ...state,
+        openCreateServerGroupDialog: true,
+        openAddServerDialog: false
+      };
+    case ActionType.CLOSE_CREATE_SERVERGROUP_DIALOG:
+      return {
+        ...state,
+        openCreateServerGroupDialog: false,
+      };
+    // add server dialog.
+    case ActionType.OPEN_ADD_SERVER_DIALOG:
+      return {
+        ...state,
+        openAddServerDialog: true,
+        openCreateServerGroupDialog: false,
+      };
+    case ActionType.CLOSE_ADD_SERVER_DIALOG:
+      return {
+        ...state,
+        openAddServerDialog: false,
       };
     default:
       return state;
