@@ -37,6 +37,7 @@
         "babel-preset-stage-0": "^6.24.1",
         "babel-preset-stage-1": "latest",
         "babel-preset-stage-2": "latest",
+        "babel-plugin-transform-react-inline-elements": "latest",
         "css-loader": "^0.28.9",
         "eslint": "^4.16.0",
         "eslint-loader": "^1.9.0",

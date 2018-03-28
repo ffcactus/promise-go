@@ -6,6 +6,7 @@
     cursor: auto;
     overflow: hidden;
     position: absolute;
+    padding: 0px;
     margin: 0px;
     border: solid 0 transparent;    
 }
@@ -19,6 +20,7 @@
     position: absolute;
     overflow: hidden;
     margin: 0px;
+    padding: 0px;
     border: solid 0 transparent;
     border-right: 1px solid rgb(11, 188, 233);
 }

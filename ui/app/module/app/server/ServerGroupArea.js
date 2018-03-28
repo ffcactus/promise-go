@@ -1,17 +1,19 @@
 import React from 'react';
+import CSSModules from 'react-css-modules';
+import styles from './Server.css';
 import AppCollectionMenu from '../../promise/app/AppCollectionMenu';
 import ServerGroupList from './ServerGroupList';
 import ServerGroupControlArea from './ServerGroupControlArea';
 
 function ServerGroupArea() {
   return (
-    <React.Fragment>
+    <div styleName="ServerGroupArea">
       <AppCollectionMenu />
       <ServerGroupControlArea />
       <ServerGroupList />
-    </React.Fragment>
+    </div>
   );
 }
 
-export default ServerGroupArea;
+export default CSSModules(ServerGroupArea, styles);
 

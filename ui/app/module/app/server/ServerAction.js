@@ -182,23 +182,24 @@ function createServerGroupFailure(messages) {
   return {
     type: ActionType.CREATE_SERVERGROUP_FAILURE,
     info: messages
-  }
+  };
 }
 
 export function createServerGroup(servergroup) {
   return (dispatch, getState) => {
     const state = getState();
     const hostname = state.session.hostname;
+    dispatch(createServerGroupStart());
     Client.postServerGroup(hostname, servergroup).then((resp) => {
       if (resp.status === 201) {
         dispatch(createServerGroupSuccess(resp.response));
-        dispatch(closeCreateServerGroupDialog())
+        dispatch(closeCreateServerGroupDialog());
         return;
       }
-      dispatch(createServerGroupFailure(resp.response))
+      dispatch(createServerGroupFailure(resp.response));
     }).catch(e => {
-      createServerGroupFailure(e)
-    })
+      createServerGroupFailure(e);
+    });
   };
 }
 

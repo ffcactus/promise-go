@@ -1,3 +1,16 @@
+.ServerGroupArea {
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    display: flex;
+    flex-flow: column;
+    position: absolute;
+    padding: 0px;
+    margin: 0px;
+    border: solid 0 transparent;
+}
+
 .ServerGroupControlArea {
     width: 100%;
     border: solid 0 transparent;
@@ -10,13 +23,6 @@
     display: flex;
 }
 
-.ServerGroupList {
-    width: 100%;
-    margin: 0px;
-    padding: 0px;
-    overflow: auto;
-}
-
 .ServerGroupControlButton {
     border: 0px;
     float: left;
@@ -27,6 +33,18 @@
     height: 100%;
     max-width: 40px;
     position: relative;
+}
+
+.ServerGroupList {
+    margin: 0px;
+    padding: 0px;
+    position: relative;
+    margin: 0px;
+    padding: 0px;
+    overflow: auto;
+    border: 0 solid transparent;
+    flex: 1 1 auto;
+    border-bottom: 1px solid rgb(11, 188, 233);
 }
 
 .ServerGroupControlButton .img {
