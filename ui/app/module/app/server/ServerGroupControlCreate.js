@@ -5,7 +5,7 @@ import CSSModules from 'react-css-modules';
 import styles from './Server.css';
 import CenterDiv from '../../promise/common/CenterDiv';
 import CreateServerGroupDialog from './CreateServerGroupDialog';
-import * as Action from './ServerAction';
+import * as ServerGroupAction from './ServerGroupAction';
 
 
 class ServerGroupControlCreate extends React.Component {
@@ -17,7 +17,7 @@ class ServerGroupControlCreate extends React.Component {
   onClick(event) {
     event.preventDefault();
     if (! this.props.server.openCreateServerGroupDialog) {
-      this.props.dispatch(Action.openCreateServerGroupDialog());
+      this.props.dispatch(ServerGroupAction.openCreateServerGroupDialog());
     }
   }
 

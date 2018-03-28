@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import styles from './Server.css';
-import * as Action from './ServerAction';
+import * as ServerGroupAction from './ServerGroupAction';
 import DialogFrame from '../../promise/common/dialog/DialogFrame';
 import DialogTitle from '../../promise/common/dialog/DialogTitle';
 import DialogHR from '../../promise/common/dialog/DialogHR';
@@ -35,7 +35,7 @@ class CreateServerGroupDialog extends React.Component {
 
   handleOK(event) {
     event.preventDefault();
-    this.props.dispatch(Action.createServerGroup({
+    this.props.dispatch(ServerGroupAction.createServerGroup({
       Name: this.state.name,
       Discription: this.state.discription
     }));
@@ -43,7 +43,7 @@ class CreateServerGroupDialog extends React.Component {
 
   handleCancel(event) {
     event.preventDefault();
-    this.props.dispatch(Action.closeCreateServerGroupDialog());
+    this.props.dispatch(ServerGroupAction.closeCreateServerGroupDialog());
   }
 
   // Why do we pass action here?

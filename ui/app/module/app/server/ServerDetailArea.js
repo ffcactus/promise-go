@@ -1,10 +1,10 @@
 import React from 'react';
 
-function ServerDetail() {
+function ServerDetailArea() {
   return (
     <p>Server Detail Area.</p>
   );
 }
 
-export default ServerDetail;
+export default ServerDetailArea;
 

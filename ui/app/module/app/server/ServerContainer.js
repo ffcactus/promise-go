@@ -5,7 +5,7 @@ import CenterDiv from '../../promise/common/CenterDiv';
 import LoadingIcon from '../../promise/common/LoadingIcon';
 import Server from './Server';
 import { ServerAppState } from './ConstValue';
-import * as Action from './ServerAction';
+import * as ServerAppAction from './ServerAppAction';
 
 class ServerContainer extends React.Component {
   constructor(props) {
@@ -16,7 +16,7 @@ class ServerContainer extends React.Component {
   }
 
   componentWillMount() {
-    this.props.dispatch(Action.appInit(this.state.hostname));
+    this.props.dispatch(ServerAppAction.appInit(this.state.hostname));
   }
 
   render() {

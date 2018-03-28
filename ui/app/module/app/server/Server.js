@@ -1,14 +1,14 @@
 import React from 'react';
 import AppFrame from '../../promise/app/AppFrame';
 import GroupCollectionApp from '../../promise/app/GroupCollectionApp/GroupCollectionApp';
-import ServerList from './ServerList';
+import ServerListArea from './ServerListArea';
 import ServerGroupArea from './ServerGroupArea';
-import ServerDetail from './ServerDetail';
+import ServerDetailArea from './ServerDetailArea';
 
 function Server() {
   return (
     <AppFrame>
-      <GroupCollectionApp group={<ServerGroupArea/>} elementList={<ServerList/>} detail={<ServerDetail/>} />
+      <GroupCollectionApp group={<ServerGroupArea/>} element={<ServerListArea/>} detail={<ServerDetailArea/>} />
     </AppFrame>
   );
 }
