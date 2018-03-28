@@ -15,21 +15,30 @@ var (
 )
 
 // AddListener Add a listener
-func AddListener(listener *websocket.Conn) {
+func AddListener(listener *websocket.Conn) int {
 	wsConnection.PushBack(listener)
+	return wsConnection.Len()
 }
 
 // StartEventDispatcher Start the event dispater.
 func StartEventDispatcher() {
 	for {
 		e := <-EventChannel
-		for each := wsConnection.Front(); each != nil; each = each.Next() {
-			if each.Value.(*websocket.Conn).WriteMessage(websocket.TextMessage, []byte(util.StructToString(e))) != nil {
-				log.Info("Remove a listener.")
+		count := 0
+		var next *list.Element
+		for each := wsConnection.Front(); each != nil; each = next {
+			next = each.Next()
+			if err := each.Value.(*websocket.Conn).WriteMessage(websocket.TextMessage, []byte(util.StructToString(e))); err != nil {
+				log.WithFields(log.Fields{"error": err, "remain": wsConnection.Len()}).Info("Send message to the listener failed, remove the listener.")				
 				wsConnection.Remove(each)
+				
+			} else {
+				count++
 			}
 		}
-		log.WithFields(log.Fields{"type": e.Type, "category": e.Category, "resource": e.ResourceID}).Info("Event dispatched.")
+		if count > 0 {
+			log.WithFields(log.Fields{"count": count, "type": e.Type, "category": e.Category, "resource": e.ResourceID}).Info("Event dispatched.")
+		}
 	}
 }
 
