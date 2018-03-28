@@ -102,6 +102,11 @@ const server = (state = defaultState, action) => {
         ...state,
         serverGroupList: [state.defaultServerGroup]
       };
+    case ActionType.ON_SERVERGROUP_SELECTED:
+      return {
+        ...state,
+        currentServerGroup: action.info,
+      };
     // create server group dialog.
     case ActionType.OPEN_CREATE_SERVERGROUP_DIALOG:
       return {

@@ -50,6 +50,7 @@
     border: 0 solid transparent;
     flex: 1 1 auto;
     border-bottom: 1px solid rgb(11, 188, 233);
+    background-color: #DFEEFC;
     /* For the element inside */
     display: flex;
     flex-flow: column;
@@ -58,22 +59,24 @@
 .ServerGroupElement {
     height: 2em;
     margin: 0px;
-    padding: 0px;
-    border: 1px solid rgb(11, 188, 233);
+    padding: 0px;    
+    border: 0px;
+    border-bottom: 1px solid rgb(11, 188, 233);
     float: none;
-    flex: 0 1 auto;
-    background-color: white;
+    flex: 0 1 auto;    
+    background-color: #DFEEFC;
     position: relative;
 }
 
 .ServerGroupElementSelected {
     height: 2em;
     margin: 0px;
-    padding: 0px;
-    border: 1px solid rgb(11, 188, 233);
+    padding: 0px;    
+    border: 0px;
+    border-bottom: 1px solid rgb(11, 188, 233);
     float: none;
     flex: 0 1 auto;
-    background-color: #03A9F4;
+    background-color: rgb(181, 214, 245);
     position: relative;
 }
 

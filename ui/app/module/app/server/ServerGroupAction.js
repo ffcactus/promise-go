@@ -112,3 +112,10 @@ export function createServerGroup(servergroup) {
     });
   };
 }
+
+export function onServerGroupSelected(name) {
+  return {
+    type: ActionType.ON_SERVERGROUP_SELECTED,
+    info: name
+  };
+}
