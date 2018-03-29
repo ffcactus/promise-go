@@ -1,5 +1,9 @@
 package entity
 
+import (
+	"promise/server/object/model"
+)
+
 // Memory This is the schema definition for definition of a Memory and its configuration.
 type Memory struct {
 	ServerRef string
@@ -40,4 +44,28 @@ type Memory struct {
 	PersistentRegionSizeMaxMiB   *int    // Maximum size of a single persistent region in MiB.
 	AllocationIncrementMiB       *int    // The size of the smallest unit of allocation for a memory region, thus it is the multiple in which regions are actually reserved.
 	AllocationAlignmentMiB       *int    // The boundary which memory regions are allocated on, measured in MiB.
+}
+
+// ToModel will create a new model from entity.
+func (e *Memory) ToModel() *model.Memory {
+	m := model.Memory{}
+	createResourceModel(&e.EmbeddedResource, &m.Resource)
+	createProductInfoModel(&e.ProductInfo, &m.ProductInfo)
+	m.CapacityMiB = e.CapacityMiB
+	m.OperatingSpeedMhz = e.OperatingSpeedMhz
+	m.MemoryDeviceType = e.MemoryDeviceType
+	m.DataWidthBits = e.DataWidthBits
+	m.RankCount = e.RankCount
+	m.DeviceLocator = e.DeviceLocator
+	if e.MemoryLocationSocket != nil ||
+		e.MemoryLocationController != nil ||
+		e.MemoryLocationChannel != nil ||
+		e.MemoryLocationSlot != nil {
+		m.MemoryLocation = new(model.MemoryLocation)
+		m.MemoryLocation.Socket = e.MemoryLocationSocket
+		m.MemoryLocation.Controller = e.MemoryLocationController
+		m.MemoryLocation.Channel = e.MemoryLocationChannel
+		m.MemoryLocation.Slot = e.MemoryLocationSlot
+	}
+	return &m
 }

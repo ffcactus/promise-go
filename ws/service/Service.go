@@ -29,9 +29,9 @@ func StartEventDispatcher() {
 		for each := wsConnection.Front(); each != nil; each = next {
 			next = each.Next()
 			if err := each.Value.(*websocket.Conn).WriteMessage(websocket.TextMessage, []byte(util.StructToString(e))); err != nil {
-				log.WithFields(log.Fields{"error": err, "remain": wsConnection.Len()}).Info("Send message to the listener failed, remove the listener.")				
+				log.WithFields(log.Fields{"error": err, "remain": wsConnection.Len()}).Info("Send message to the listener failed, remove the listener.")
 				wsConnection.Remove(each)
-				
+
 			} else {
 				count++
 			}

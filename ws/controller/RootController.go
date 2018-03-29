@@ -32,7 +32,7 @@ func (c *RootController) Get() {
 		return
 	}
 	count := service.AddListener(ws)
-	log.WithFields(log.Fields{"count":count, "remote": c.Ctx.Request.RemoteAddr}).Info("Websocket add a listener.")
+	log.WithFields(log.Fields{"count": count, "remote": c.Ctx.Request.RemoteAddr}).Info("Websocket add a listener.")
 }
 
 // Post handles POST requests.

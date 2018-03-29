@@ -1,6 +1,7 @@
 package model
 
 import (
+	"promise/common/category"
 	"promise/common/object/model"
 )
 
@@ -57,7 +58,6 @@ type Server struct {
 	OriginUsername *string
 	OriginPassword *string
 	Credential     string
-	CurrentTask    string
 	ComputerSystem ComputerSystem
 	Chassis        Chassis
 }
@@ -65,6 +65,7 @@ type Server struct {
 // CreateServer Create servr object.
 func (o *ServerBasicInfo) CreateServer() *Server {
 	server := new(Server)
+	server.Category = category.Server
 	server.Name = o.Name
 	server.Description = o.Description
 	server.State = "State???"

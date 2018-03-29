@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
+	"promise/common/category"
 	commonDB "promise/common/db"
 	commonUtil "promise/common/util"
 	"promise/server/object/constValue"
@@ -31,7 +32,7 @@ func (i *ServerDBImplement) IsServerExist(s *model.Server) (bool, *model.Server)
 	server := new(entity.Server)
 	c.Where("Physical_UUID = ?", s.PhysicalUUID).First(server)
 	if s.PhysicalUUID == server.PhysicalUUID {
-		return true, createServerModel(server)
+		return true, server.ToModel()
 	}
 	return false, nil
 }
@@ -46,12 +47,14 @@ func (i *ServerDBImplement) PostServer(s *model.Server) (*model.Server, *model.S
 		log.WithFields(log.Fields{"hostname": s.Hostname}).Info("Post server in DB failed, server exist.")
 		return nil, nil, errors.New("server exist")
 	}
-	var server = createServerEntityFromServer(s)
+	server := new(entity.Server)
+	server.Load(s)
 	var serverServerGroup = new(entity.ServerServerGroup)
 
 	// Generate the UUID.
 	server.ID = uuid.New().String()
 	serverServerGroup.ID = uuid.New().String()
+	serverServerGroup.Category = category.ServerServerGroup
 	serverServerGroup.ServerID = server.ID
 	serverServerGroup.ServerGroupID = DefaultServerGroupID
 	// We need make sure save server and add it to the default server group both success or failure.
@@ -72,20 +75,20 @@ func (i *ServerDBImplement) PostServer(s *model.Server) (*model.Server, *model.S
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{"hostname": s.Hostname, "error": err}).Info("Post server in DB failed, commit failed.")
-		return nil, nil, err		
+		return nil, nil, err
 	}
-	return createServerModel(server), serverServerGroup.ToModel(), nil
+	return server.ToModel(), serverServerGroup.ToModel(), nil
 }
 
 // GetServer Get server by ID.
 func (i *ServerDBImplement) GetServer(ID string) *model.Server {
 	c := commonDB.GetConnection()
 	var s = new(entity.Server)
-	c.Where("ID = ?", ID).First(s)
+	c.Where("\"ID\" = ?", ID).First(s)
 	if s.ID != ID {
 		return nil
 	}
-	return createServerModel(s)
+	return s.ToModel()
 }
 
 // GetServerCollection Get server collection by start and count.
@@ -117,11 +120,11 @@ func (i *ServerDBImplement) GetServerCollection(start int, count int) (*model.Se
 func (i *ServerDBImplement) GetServerFull(ID string) *model.Server {
 	c := commonDB.GetConnection()
 	var s = new(entity.Server)
-	c.Where("ID = ?", ID).First(s)
+	c.Where("\"ID\" = ?", ID).First(s)
 	if s.ID != ID {
 		return nil
 	}
-	c.Where("ID = ?", ID).
+	c.Where("\"ID\" = ?", ID).
 		Preload("Processors").
 		Preload("Memory").
 		Preload("EthernetInterfaces").
@@ -150,7 +153,7 @@ func (i *ServerDBImplement) GetServerFull(ID string) *model.Server {
 		Preload("PCIeDevices").
 		Preload("PCIeDevices.PCIeFunctions").
 		First(s)
-	return createServerModel(s)
+	return s.ToModel()
 }
 
 // FindServerStateAdded Find the first server with state "Added" and return the server ID.
@@ -177,14 +180,14 @@ func (i *ServerDBImplement) DeleteServer(id string) (bool, error) {
 		return false, err
 	}
 	// Check if the server exist.
-	if tx.Where("ID = ?", id).First(s).RecordNotFound() {
+	if tx.Where("\"ID\" = ?", id).First(s).RecordNotFound() {
 		tx.Rollback()
 		log.WithFields(log.Fields{"id": id}).
 			Debug("Delete server from DB failed, server does not exist, transaction rollback.")
 		return false, fmt.Errorf("server does not exist")
 	}
 	// Load full server info so we can delete them all together.
-	if err := tx.Where("ID = ?", id).
+	if err := tx.Where("\"ID\" = ?", id).
 		Preload("Processors").
 		Preload("Memory").
 		Preload("EthernetInterfaces").
@@ -304,7 +307,7 @@ func (i *ServerDBImplement) GetAndLockServer(ID string) (bool, *model.Server) {
 		return false, nil
 	}
 	var s = new(entity.Server)
-	if tx.Where("ID = ?", ID).First(s).RecordNotFound() {
+	if tx.Where("\"ID\" = ?", ID).First(s).RecordNotFound() {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID}).
@@ -318,7 +321,7 @@ func (i *ServerDBImplement) GetAndLockServer(ID string) (bool, *model.Server) {
 			"id":    ID,
 			"state": s.State}).
 			Debug("Get and lock server in DB failed, server not lockable.")
-		return false, createServerModel(s)
+		return false, s.ToModel()
 	}
 	// Change the state.
 	if err := tx.Model(s).UpdateColumn("State", constValue.ServerStateLocked).Error; err != nil {
@@ -337,14 +340,14 @@ func (i *ServerDBImplement) GetAndLockServer(ID string) (bool, *model.Server) {
 			Warn("Get and lock server in DB failed, commit failed.")
 		return false, nil
 	}
-	return true, createServerModel(s)
+	return true, s.ToModel()
 }
 
 // SetServerState Set server state.
 func (i *ServerDBImplement) SetServerState(ID string, state string) bool {
 	c := commonDB.GetConnection()
 	var s = new(entity.Server)
-	if c.Where("ID = ?", ID).First(s).RecordNotFound() {
+	if c.Where("\"ID\" = ?", ID).First(s).RecordNotFound() {
 		return false
 	}
 	if err := c.Model(s).UpdateColumn("State", state).Error; err != nil {
@@ -358,25 +361,12 @@ func (i *ServerDBImplement) SetServerState(ID string, state string) bool {
 func (i *ServerDBImplement) SetServerHealth(ID string, health string) bool {
 	c := commonDB.GetConnection()
 	var s = new(entity.Server)
-	if c.Where("ID = ?", ID).First(s).RecordNotFound() {
+	if c.Where("\"ID\" = ?", ID).First(s).RecordNotFound() {
 		return false
 	}
 	if err := c.Model(s).UpdateColumn("Health", health).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "SetServerHealth", "error": err}).Warn("DB opertion failed.")
 		return false
-	}
-	return true
-}
-
-// SetServerTask Set server task.
-func (i *ServerDBImplement) SetServerTask(ID string, taskURI string) bool {
-	c := commonDB.GetConnection()
-	var s = new(entity.Server)
-	if c.Where("ID = ?", ID).First(s).RecordNotFound() {
-		return false
-	}
-	if err := c.Model(s).UpdateColumn("CurrentTask", taskURI).Error; err != nil {
-		log.WithFields(log.Fields{"id": ID, "op": "SetServerTask", "error": err}).Warn("DB opertion failed.")
 	}
 	return true
 }
@@ -393,7 +383,7 @@ func (i *ServerDBImplement) UpdateProcessors(ID string, processors []model.Proce
 	server := new(entity.Server)
 
 	c := commonDB.GetConnection()
-	notFound := c.Where("ID = ?", ID).
+	notFound := c.Where("\"ID\" = ?", ID).
 		Preload("Processors").
 		First(server).
 		RecordNotFound()
@@ -424,7 +414,7 @@ func (i *ServerDBImplement) UpdateMemory(ID string, memory []model.Memory) error
 	server := new(entity.Server)
 
 	c := commonDB.GetConnection()
-	notFound := c.Where("ID = ?", ID).
+	notFound := c.Where("\"ID\" = ?", ID).
 		Preload("Memory").
 		First(server).
 		RecordNotFound()
@@ -466,7 +456,7 @@ func (i *ServerDBImplement) UpdateEthernetInterfaces(ID string, ethernet []model
 	server := new(entity.Server)
 	c := commonDB.GetConnection()
 	// Get Server and it's ethernet interface.
-	notFound := c.Where("ID = ?", ID).
+	notFound := c.Where("\"ID\" = ?", ID).
 		Preload("EthernetInterfaces").
 		Preload("EthernetInterfaces.IPv4Addresses").
 		Preload("EthernetInterfaces.IPv6Addresses").
@@ -502,7 +492,7 @@ func (i *ServerDBImplement) UpdateNetworkInterfaces(ID string, networkInterface 
 	server := new(entity.Server)
 	c := commonDB.GetConnection()
 	// Get resources.
-	notFound := c.Where("ID = ?", ID).
+	notFound := c.Where("\"ID\" = ?", ID).
 		Preload("NetworkInterfaces").
 		First(server).
 		RecordNotFound()
@@ -537,7 +527,7 @@ func (i *ServerDBImplement) deleteStorages(c *gorm.DB, server *entity.Server) er
 func (i *ServerDBImplement) UpdateStorages(ID string, storages []model.Storage) error {
 	server := new(entity.Server)
 	c := commonDB.GetConnection()
-	notFound := c.Where("ID = ?", ID).
+	notFound := c.Where("\"ID\" = ?", ID).
 		Preload("Storages").
 		Preload("Storages.StorageControllers").
 		First(server).
@@ -579,7 +569,7 @@ func (i *ServerDBImplement) deletePower(c *gorm.DB, server *entity.Server) error
 func (i *ServerDBImplement) UpdatePower(ID string, power *model.Power) error {
 	server := new(entity.Server)
 	c := commonDB.GetConnection()
-	notFound := c.Where("ID = ?", ID).
+	notFound := c.Where("\"ID\" = ?", ID).
 		Preload("Power").
 		Preload("Power.PowerControl").
 		Preload("Power.Voltages").
@@ -614,7 +604,7 @@ func (i *ServerDBImplement) deleteThermal(c *gorm.DB, server *entity.Server) err
 func (i *ServerDBImplement) UpdateThermal(ID string, thermal *model.Thermal) error {
 	server := new(entity.Server)
 	c := commonDB.GetConnection()
-	notFound := c.Where("ID = ?", ID).
+	notFound := c.Where("\"ID\" = ?", ID).
 		Preload("Thermal").
 		Preload("Thermal.Temperatures").
 		Preload("Thermal.Fans").
@@ -643,7 +633,7 @@ func (i *ServerDBImplement) deleteOemHuaweiBoards(c *gorm.DB, server *entity.Ser
 func (i *ServerDBImplement) UpdateOemHuaweiBoards(ID string, boards []model.OemHuaweiBoard) error {
 	c := commonDB.GetConnection()
 	var server = new(entity.Server)
-	notFound := c.Where("ID = ?", ID).
+	notFound := c.Where("\"ID\" = ?", ID).
 		Preload("OemHuaweiBoards").
 		First(server).
 		RecordNotFound()
@@ -682,7 +672,7 @@ func (i *ServerDBImplement) deleteNetworkAdapters(c *gorm.DB, server *entity.Ser
 func (i *ServerDBImplement) UpdateNetworkAdapters(ID string, networkAdapters []model.NetworkAdapter) error {
 	c := commonDB.GetConnection()
 	var server = new(entity.Server)
-	notFound := c.Where("ID = ?", ID).
+	notFound := c.Where("\"ID\" = ?", ID).
 		Preload("NetworkAdapters").
 		Preload("NetworkAdapters.Controllers").
 		Preload("NetworkAdapters.Controllers.NetworkPorts").
@@ -725,7 +715,7 @@ func (i *ServerDBImplement) deleteDrives(c *gorm.DB, server *entity.Server) erro
 func (i *ServerDBImplement) UpdateDrives(ID string, drives []model.Drive) error {
 	c := commonDB.GetConnection()
 	var server = new(entity.Server)
-	notFound := c.Where("ID = ?", ID).
+	notFound := c.Where("\"ID\" = ?", ID).
 		Preload("Drives").
 		Preload("Drives.Location").
 		Preload("Drives.Location.PostalAddress").
@@ -763,7 +753,7 @@ func (i *ServerDBImplement) deletePCIeDevices(c *gorm.DB, server *entity.Server)
 func (i *ServerDBImplement) UpdatePCIeDevices(ID string, pcieDevices []model.PCIeDevice) error {
 	c := commonDB.GetConnection()
 	var server = new(entity.Server)
-	notFound := c.Where("ID = ?", ID).
+	notFound := c.Where("\"ID\" = ?", ID).
 		Preload("PCIeDevices").
 		Preload("PCIeDevices.PCIeFunctions").
 		First(server).
@@ -782,523 +772,6 @@ func (i *ServerDBImplement) UpdatePCIeDevices(ID string, pcieDevices []model.PCI
 		return err
 	}
 	return nil
-}
-
-func createServerModel(e *entity.Server) *model.Server {
-	m := model.Server{}
-	m.ID = e.ID
-	m.OriginURIs.Chassis = e.OriginURIsChassis
-	m.OriginURIs.System = e.OriginURIsSystem
-	m.PhysicalUUID = e.PhysicalUUID
-	m.Name = e.Name
-	m.Description = e.Description
-	m.Hostname = e.Hostname
-	m.Type = e.Type
-	m.Protocol = e.Protocol
-	m.Credential = e.Credential
-	m.State = e.State
-	m.Health = e.Health
-	m.CurrentTask = e.CurrentTask
-	// ComputerSystem.Processors
-	processors := []model.Processor{}
-	for i := range e.Processors {
-		processors = append(processors, *createProcessorModel(&e.Processors[i]))
-	}
-	m.ComputerSystem.Processors = processors
-	// ComputerSystem.Memory
-	memory := []model.Memory{}
-	for i := range e.Memory {
-		memory = append(memory, *createMemoryModel(&e.Memory[i]))
-	}
-	m.ComputerSystem.Memory = memory
-	// ComputerSystem.EthernetInterfaces
-	ethernetInterfaces := []model.EthernetInterface{}
-	for i := range e.EthernetInterfaces {
-		ethernetInterfaces = append(ethernetInterfaces, *createEthernetInterfaceModel(&e.EthernetInterfaces[i]))
-	}
-	m.ComputerSystem.EthernetInterfaces = ethernetInterfaces
-	// ComputerSystem.NetworkInterfaces
-	networkInterfaces := []model.NetworkInterface{}
-	for i := range e.NetworkInterfaces {
-		networkInterfaces = append(networkInterfaces, *createNetworkInterfaceModel(&e.NetworkInterfaces[i]))
-	}
-	m.ComputerSystem.NetworkInterfaces = networkInterfaces
-	// ComputerSystem.Storages
-	storages := []model.Storage{}
-	for i := range e.Storages {
-		storages = append(storages, *createStorageModel(&e.Storages[i]))
-	}
-	m.ComputerSystem.Storages = storages
-	// Chassis.Power
-	createResourceModel(&e.Power.EmbeddedResource, &m.Chassis.Power.Resource)
-	powerControl := []model.PowerControl{}
-	for i := range e.Power.PowerControl {
-		powerControl = append(powerControl, *createPowerControlModel(&e.Power.PowerControl[i]))
-	}
-	m.Chassis.Power.PowerControl = &powerControl
-
-	voltages := []model.Voltage{}
-	for i := range e.Power.Voltages {
-		voltages = append(voltages, *createVoltageModel(&e.Power.Voltages[i]))
-	}
-	m.Chassis.Power.Voltages = &voltages
-
-	powerSupplies := []model.PowerSupply{}
-	for i := range e.Power.PowerSupplies {
-		powerSupplies = append(powerSupplies, *createPowerSupplyModel(&e.Power.PowerSupplies[i]))
-	}
-	m.Chassis.Power.PowerSupplies = &powerSupplies
-
-	redundancy := []model.Redundancy{}
-	for i := range e.Power.Redundancy {
-		redundancy = append(redundancy, *createRedundancyModel(&e.Power.Redundancy[i]))
-	}
-	m.Chassis.Power.Redundancy = &redundancy
-	// Chassis.Thermal
-	createResourceModel(&e.Thermal.EmbeddedResource, &m.Chassis.Thermal.Resource)
-	temperatures := []model.Temperature{}
-	for i := range e.Thermal.Temperatures {
-		temperatures = append(temperatures, *createTemperatureModel(&e.Thermal.Temperatures[i]))
-	}
-	m.Chassis.Thermal.Temperatures = temperatures
-	fans := []model.Fan{}
-	for i := range e.Thermal.Fans {
-		fans = append(fans, *createFanModel(&e.Thermal.Fans[i]))
-	}
-	m.Chassis.Thermal.Fans = fans
-	// Chassis.OemHuaweiBoards
-	boards := []model.OemHuaweiBoard{}
-	for i := range e.OemHuaweiBoards {
-		boards = append(boards, *createOemHuaweiBoardModel(&e.OemHuaweiBoards[i]))
-	}
-	m.Chassis.OemHuaweiBoards = boards
-	// Chassis.NetworkAdapters
-	networkAdapters := []model.NetworkAdapter{}
-	for i := range e.NetworkAdapters {
-		networkAdapters = append(networkAdapters, *createNetworkAdapterModel(&e.NetworkAdapters[i]))
-	}
-	m.Chassis.NetworkAdapters = networkAdapters
-	// Chassis.Drives
-	drives := []model.Drive{}
-	for i := range e.Drives {
-		drives = append(drives, *createDriveModel(&e.Drives[i]))
-	}
-	m.Chassis.Drives = drives
-	// Chassis.PCIeDevices
-	pcieDevices := []model.PCIeDevice{}
-	for i := range e.PCIeDevices {
-		pcieDevices = append(pcieDevices, *createPCIeDeviceModel(&e.PCIeDevices[i]))
-	}
-	m.Chassis.PCIeDevices = pcieDevices
-	return &m
-}
-
-func createResourceModel(e *entity.EmbeddedResource, m *model.Resource) {
-	m.URI = e.URI
-	m.OriginID = e.OriginID
-	m.Name = e.Name
-	m.Description = e.Description
-	m.State = e.State
-	m.Health = e.Health
-	m.PhysicalState = e.PhysicalState
-	m.PhysicalHealth = e.PhysicalHealth
-}
-
-func createMemberModel(e *entity.Member, m *model.Member) {
-	m.URI = e.URI
-	m.OriginMemberID = e.OriginMemberID
-	m.MemberID = *e.OriginMemberID
-	m.Name = e.Name
-	m.Description = e.Description
-	m.State = e.State
-	m.Health = e.Health
-	m.PhysicalState = e.PhysicalState
-	m.PhysicalHealth = e.PhysicalHealth
-}
-
-func createProductInfoModel(e *entity.ProductInfo, m *model.ProductInfo) {
-	m.Model = e.Model
-	m.Manufacturer = e.Manufacturer
-	m.SKU = e.SKU
-	m.SerialNumber = e.SerialNumber
-	m.SparePartNumber = e.SparePartNumber
-	m.PartNumber = e.PartNumber
-	m.AssetTag = e.AssetTag
-}
-
-func createThresholdModel(e *entity.Threshold, m *model.Threshold) {
-	m.UpperThresholdNonCritical = e.UpperThresholdNonCritical
-	m.UpperThresholdCritical = e.UpperThresholdCritical
-	m.UpperThresholdFatal = e.UpperThresholdFatal
-	m.LowerThresholdNonCritical = e.LowerThresholdNonCritical
-	m.LowerThresholdCritical = e.LowerThresholdCritical
-	m.LowerThresholdFatal = e.LowerThresholdFatal
-}
-
-func createLocationModel(e *entity.Location, m *model.Location) {
-	m.Info = e.Info
-	m.InfoFormat = e.InfoFormat
-	if e.PostalAddress != nil {
-		postalAddress := new(model.PostalAddress)
-		postalAddress.Country = e.PostalAddress.Country
-		postalAddress.Territory = e.PostalAddress.Territory
-		postalAddress.District = e.PostalAddress.District
-		postalAddress.City = e.PostalAddress.City
-		postalAddress.Division = e.PostalAddress.Division
-		postalAddress.Neighborhood = e.PostalAddress.Neighborhood
-		postalAddress.LeadingStreetDirection = e.PostalAddress.LeadingStreetDirection
-		postalAddress.Street = e.PostalAddress.Street
-		postalAddress.TrailingStreetSuffix = e.PostalAddress.TrailingStreetSuffix
-		postalAddress.StreetSuffix = e.PostalAddress.StreetSuffix
-		postalAddress.HouseNumber = e.PostalAddress.HouseNumber
-		postalAddress.HouseNumberSuffix = e.PostalAddress.HouseNumberSuffix
-		postalAddress.Landmark = e.PostalAddress.Landmark
-		postalAddress.Location = e.PostalAddress.Location
-		postalAddress.Floor = e.PostalAddress.Floor
-		postalAddress.Name = e.PostalAddress.Name
-		postalAddress.PostalCode = e.PostalAddress.PostalCode
-		postalAddress.Building = e.PostalAddress.Building
-		postalAddress.Unit = e.PostalAddress.Unit
-		postalAddress.Room = e.PostalAddress.Room
-		postalAddress.Seat = e.PostalAddress.Seat
-		postalAddress.PlaceType = e.PostalAddress.PlaceType
-		postalAddress.Community = e.PostalAddress.Community
-		postalAddress.POBox = e.PostalAddress.POBox
-		postalAddress.AdditionalCode = e.PostalAddress.AdditionalCode
-		postalAddress.Road = e.PostalAddress.Road
-		postalAddress.RoadSection = e.PostalAddress.RoadSection
-		postalAddress.RoadBranch = e.PostalAddress.RoadBranch
-		postalAddress.RoadSubBranch = e.PostalAddress.RoadSubBranch
-		postalAddress.RoadPreModifier = e.PostalAddress.RoadPreModifier
-		postalAddress.RoadPostModifier = e.PostalAddress.RoadPostModifier
-		postalAddress.GPSCoords = e.PostalAddress.GPSCoords
-
-		m.PostalAddress = postalAddress
-	}
-	if e.Placement != nil {
-		placement := new(model.Placement)
-		placement.Row = e.Placement.Row
-		placement.Rack = e.Placement.Rack
-		placement.RackOffsetUnits = e.Placement.RackOffsetUnits
-		placement.RackOffset = e.Placement.RackOffset
-
-		m.Placement = placement
-	}
-}
-
-func createProcessorModel(e *entity.Processor) *model.Processor {
-	m := model.Processor{}
-	createResourceModel(&e.EmbeddedResource, &m.Resource)
-	createProductInfoModel(&e.ProductInfo, &m.ProductInfo)
-	m.Socket = e.Socket
-	m.ProcessorType = e.ProcessorType
-	m.ProcessorArchitecture = e.ProcessorArchitecture
-	m.InstructionSet = e.InstructionSet
-	m.MaxSpeedMHz = e.MaxSpeedMHz
-	m.TotalCores = e.TotalCores
-	m.TotalThreads = e.TotalThreads
-	m.ProcessorID = new(model.ProcessorID)
-	if e.ProcessorIDVendorID != nil ||
-		e.ProcessorIDIdentificationRegisters != nil ||
-		e.ProcessorIDEffectiveFamily != nil ||
-		e.ProcessorIDEffectiveModel != nil ||
-		e.ProcessorIDStep != nil ||
-		e.ProcessorIDMicrocodeInfo != nil {
-		m.ProcessorID = new(model.ProcessorID)
-		m.ProcessorID.VendorID = e.ProcessorIDVendorID
-		m.ProcessorID.IdentificationRegisters = e.ProcessorIDIdentificationRegisters
-		m.ProcessorID.EffectiveFamily = e.ProcessorIDEffectiveFamily
-		m.ProcessorID.EffectiveModel = e.ProcessorIDEffectiveModel
-		m.ProcessorID.Step = e.ProcessorIDStep
-		m.ProcessorID.MicrocodeInfo = e.ProcessorIDMicrocodeInfo
-	}
-	return &m
-}
-
-func createMemoryModel(e *entity.Memory) *model.Memory {
-	m := model.Memory{}
-	createResourceModel(&e.EmbeddedResource, &m.Resource)
-	createProductInfoModel(&e.ProductInfo, &m.ProductInfo)
-	m.CapacityMiB = e.CapacityMiB
-	m.OperatingSpeedMhz = e.OperatingSpeedMhz
-	m.MemoryDeviceType = e.MemoryDeviceType
-	m.DataWidthBits = e.DataWidthBits
-	m.RankCount = e.RankCount
-	m.DeviceLocator = e.DeviceLocator
-	if e.MemoryLocationSocket != nil ||
-		e.MemoryLocationController != nil ||
-		e.MemoryLocationChannel != nil ||
-		e.MemoryLocationSlot != nil {
-		m.MemoryLocation = new(model.MemoryLocation)
-		m.MemoryLocation.Socket = e.MemoryLocationSocket
-		m.MemoryLocation.Controller = e.MemoryLocationController
-		m.MemoryLocation.Channel = e.MemoryLocationChannel
-		m.MemoryLocation.Slot = e.MemoryLocationSlot
-	}
-	return &m
-}
-
-func createEthernetInterfaceModel(e *entity.EthernetInterface) *model.EthernetInterface {
-	m := model.EthernetInterface{}
-	createResourceModel(&e.EmbeddedResource, &m.Resource)
-	m.UefiDevicePath = e.UefiDevicePath
-	m.InterfaceEnabled = e.InterfaceEnabled
-	m.PermanentMACAddress = e.PermanentMACAddress
-	m.MACAddress = e.MACAddress
-	m.SpeedMbps = e.SpeedMbps
-	m.AutoNeg = e.AutoNeg
-	m.FullDuplex = e.FullDuplex
-	m.MTUSize = e.MTUSize
-	m.HostName = e.HostName
-	m.FQDN = e.FQDN
-	m.MaxIPv6StaticAddresses = e.MaxIPv6StaticAddresses
-	m.LinkStatus = e.LinkStatus
-	m.IPv4Addresses = []model.IPv4Address{}
-	for i := range e.IPv4Addresses {
-		each := model.IPv4Address{}
-		each.Address = e.IPv4Addresses[i].Address
-		each.SubnetMask = e.IPv4Addresses[i].SubnetMask
-		each.AddressOrigin = e.IPv4Addresses[i].AddressOrigin
-		each.Gateway = e.IPv4Addresses[i].Gateway
-		m.IPv4Addresses = append(m.IPv4Addresses, each)
-
-	}
-	m.IPv6Addresses = []model.IPv6Address{}
-	for i := range e.IPv6Addresses {
-		each := model.IPv6Address{}
-		each.Address = e.IPv6Addresses[i].Address
-		each.PrefixLength = e.IPv6Addresses[i].PrefixLength
-		each.AddressOrigin = e.IPv6Addresses[i].AddressOrigin
-		each.AddressState = e.IPv6Addresses[i].AddressState
-		m.IPv6Addresses = append(m.IPv6Addresses, each)
-
-	}
-	m.VLANs = []model.VLanNetworkInterface{}
-	for i := range e.VLANs {
-		each := model.VLanNetworkInterface{}
-		each.VLANEnable = e.VLANs[i].VLANEnable
-		each.VLANID = e.VLANs[i].VLANID
-		m.VLANs = append(m.VLANs, each)
-	}
-	return &m
-}
-
-func createNetworkInterfaceModel(e *entity.NetworkInterface) *model.NetworkInterface {
-	m := model.NetworkInterface{}
-	createResourceModel(&e.EmbeddedResource, &m.Resource)
-	m.NetworkAdapterURI = e.NetworkAdapterURI
-	return &m
-}
-
-func createStorageModel(e *entity.Storage) *model.Storage {
-	m := model.Storage{}
-	createResourceModel(&e.EmbeddedResource, &m.Resource)
-	a := []string{}
-	commonUtil.StringToStruct(e.DriveURIs, &a)
-	m.DriveURIs = a
-	for i := range e.StorageControllers {
-		eachM := model.StorageController{}
-		eachE := e.StorageControllers[i]
-		createMemberModel(&eachE.Member, &eachM.Member)
-		createProductInfoModel(&eachE.ProductInfo, &eachM.ProductInfo)
-		eachM.SpeedGbps = eachE.SpeedGbps
-		eachM.FirmwareVersion = eachE.FirmwareVersion
-		a := []string{}
-		commonUtil.StringToStruct(eachE.SupportedDeviceProtocols, &a)
-		eachM.SupportedDeviceProtocols = a
-		m.StorageControllers = append(m.StorageControllers, eachM)
-	}
-	return &m
-}
-
-func createPowerControlModel(e *entity.PowerControl) *model.PowerControl {
-	m := model.PowerControl{}
-	createResourceModel(&e.EmbeddedResource, &m.Resource)
-	createProductInfoModel(&e.ProductInfo, &m.ProductInfo)
-	m.PowerConsumedWatts = e.PowerConsumedWatts
-	m.PowerRequestedWatts = e.PowerRequestedWatts
-	m.PowerAvailableWatts = e.PowerAvailableWatts
-	m.PowerCapacityWatts = e.PowerCapacityWatts
-	m.PowerAllocatedWatts = e.PowerAllocatedWatts
-
-	m.PowerMetrics = new(model.PowerMetrics)
-	m.PowerMetrics.MinConsumedWatts = e.PowerMetricsMinConsumedWatts
-	m.PowerMetrics.MaxConsumedWatts = e.PowerMetricsMaxConsumedWatts
-	m.PowerMetrics.AverageConsumedWatts = e.PowerMetricsAverageConsumedWatts
-
-	m.PowerLimit = new(model.PowerLimit)
-	m.PowerLimit.LimitInWatts = e.PowerLimitLimitInWatts
-	m.PowerLimit.LimitException = e.PowerLimitLimitException
-	m.PowerLimit.CorrectionInMs = e.PowerLimitCorrectionInMs
-	return &m
-}
-
-func createVoltageModel(e *entity.Voltage) *model.Voltage {
-	m := model.Voltage{}
-	createResourceModel(&e.EmbeddedResource, &m.Resource)
-	createThresholdModel(&e.Threshold, &m.Threshold)
-	m.SensorNumber = e.SensorNumber
-	m.ReadingVolts = e.ReadingVolts
-	m.MinReadingRange = e.MinReadingRange
-	m.MaxReadingRange = e.MaxReadingRange
-	m.PhysicalContext = e.PhysicalContext
-	return &m
-}
-
-func createPowerSupplyModel(e *entity.PowerSupply) *model.PowerSupply {
-	m := model.PowerSupply{}
-	createResourceModel(&e.EmbeddedResource, &m.Resource)
-	createProductInfoModel(&e.ProductInfo, &m.ProductInfo)
-	m.PowerSupplyType = e.PowerSupplyType
-	m.LineInputVoltageType = e.LineInputVoltageType
-	m.LineInputVoltage = e.LineInputVoltage
-	m.PowerCapacityWatts = e.PowerCapacityWatts
-	m.LastPowerOutputWatts = e.LastPowerOutputWatts
-	m.FirmwareVersion = e.FirmwareVersion
-	m.IndicatorLed = e.IndicatorLed
-	return &m
-}
-
-func createRedundancyModel(e *entity.Redundancy) *model.Redundancy {
-	m := model.Redundancy{}
-	createResourceModel(&e.EmbeddedResource, &m.Resource)
-	m.Mode = e.Mode
-	m.MaxNumSupported = e.MaxNumSupported
-	m.MinNumNeeded = e.MinNumNeeded
-	m.RedundancyEnabled = e.RedundancyEnabled
-	a := []string{}
-	commonUtil.StringToStruct(*e.RedundancySet, &a)
-	m.RedundancySet = &a
-	return &m
-}
-
-func createTemperatureModel(e *entity.Temperature) *model.Temperature {
-	m := new(model.Temperature)
-	createMemberModel(&e.Member, &m.Member)
-	createThresholdModel(&e.Threshold, &m.Threshold)
-	m.SensorNumber = e.SensorNumber
-	m.ReadingCelsius = e.ReadingCelsius
-	m.MinReadingRangeTemp = e.MinReadingRangeTemp
-	m.MaxReadingRangeTemp = e.MaxReadingRangeTemp
-	return m
-}
-
-func createFanModel(e *entity.Fan) *model.Fan {
-	m := new(model.Fan)
-	createMemberModel(&e.Member, &m.Member)
-	createProductInfoModel(&e.ProductInfo, &m.ProductInfo)
-	createThresholdModel(&e.Threshold, &m.Threshold)
-	m.Reading = e.Reading
-	m.MinReadingRange = e.MinReadingRange
-	m.MaxReadingRange = e.MaxReadingRange
-	m.ReadingUnits = e.ReadingUnits
-	return m
-}
-
-func createOemHuaweiBoardModel(e *entity.OemHuaweiBoard) *model.OemHuaweiBoard {
-	m := new(model.OemHuaweiBoard)
-	createResourceModel(&e.EmbeddedResource, &m.Resource)
-	createProductInfoModel(&e.ProductInfo, &m.ProductInfo)
-	m.CardNo = e.CardNo
-	m.DeviceLocator = e.DeviceLocator
-	m.DeviceType = e.DeviceType
-	m.Location = e.Location
-	m.CPLDVersion = e.CPLDVersion
-	m.PCBVersion = e.PCBVersion
-	m.BoardName = e.BoardName
-	m.BoardID = e.BoardID
-	m.ManufactureDate = e.ManufactureDate
-	return m
-}
-
-func createNetworkAdapterModel(e *entity.NetworkAdapter) *model.NetworkAdapter {
-	m := new(model.NetworkAdapter)
-	createResourceModel(&e.EmbeddedResource, &m.Resource)
-	createProductInfoModel(&e.ProductInfo, &m.ProductInfo)
-	for i := range e.Controllers {
-		controllerE := e.Controllers[i]
-		controllerM := model.Controller{}
-		controllerM.FirmwarePackageVersion = controllerE.FirmwarePackageVersion
-		controllerM.ControllerCapabilities.NetworkPortCount = controllerE.ControllerCapabilitiesNetworkPortCount
-		for j := range controllerE.NetworkPorts {
-			portE := controllerE.NetworkPorts[j]
-			portM := model.NetworkPort{}
-			portM.PhysicalPortNumber = portE.PhysicalPortNumber
-			portM.LinkStatus = portE.LinkStatus
-			a := []string{}
-			commonUtil.StringToStruct(portE.AssociatedNetworkAddresses, &a)
-			portM.AssociatedNetworkAddresses = a
-			controllerM.NetworkPorts = append(controllerM.NetworkPorts, portM)
-		}
-		m.Controllers = append(m.Controllers, controllerM)
-	}
-	return m
-}
-
-func createDriveModel(e *entity.Drive) *model.Drive {
-	m := new(model.Drive)
-	createResourceModel(&e.EmbeddedResource, &m.Resource)
-	createProductInfoModel(&e.ProductInfo, &m.ProductInfo)
-	m.StatusIndicator = e.StatusIndicator
-	m.IndicatorLED = e.IndicatorLED
-	m.Revision = e.Revision
-	m.CapacityBytes = e.CapacityBytes
-	m.FailurePredicted = e.FailurePredicted
-	m.Protocol = e.Protocol
-	m.MediaType = e.MediaType
-	m.HotspareType = e.HotspareType
-	m.CapableSpeedGbs = e.CapableSpeedGbs
-	m.NegotiatedSpeedGbs = e.NegotiatedSpeedGbs
-	m.PredictedMediaLifeLeftPercent = e.PredictedMediaLifeLeftPercent
-	for i := range e.Location {
-		locationM := new(model.Location)
-		createLocationModel(&e.Location[i], locationM)
-		m.Location = append(m.Location, *locationM)
-	}
-	return m
-}
-
-func createPCIeDeviceModel(e *entity.PCIeDevice) *model.PCIeDevice {
-	m := new(model.PCIeDevice)
-	createResourceModel(&e.EmbeddedResource, &m.Resource)
-	createProductInfoModel(&e.ProductInfo, &m.ProductInfo)
-	m.DeviceType = e.DeviceType
-	m.FirmwareVersion = e.FirmwareVersion
-	for i := range e.PCIeFunctions {
-		m.PCIeFunctions = append(m.PCIeFunctions, *createPCIeFunctionModel(&e.PCIeFunctions[i]))
-	}
-	return m
-}
-
-func createPCIeFunctionModel(e *entity.PCIeFunction) *model.PCIeFunction {
-	m := new(model.PCIeFunction)
-	createResourceModel(&e.EmbeddedResource, &m.Resource)
-	m.DeviceClass = e.DeviceClass
-	m.DeviceID = e.DeviceID
-	m.VendorID = e.VendorID
-	m.SubsystemID = e.SubsystemID
-	m.SubsystemVendorID = e.SubsystemVendorID
-	a := []string{}
-	commonUtil.StringToStruct(e.EthernetInterfaces, &a)
-	m.EthernetInterfaces = a
-	return m
-}
-
-func createServerEntityFromServer(s *model.Server) *entity.Server {
-	var server entity.Server
-	server.State = s.State
-	server.Health = s.Health
-	server.Name = s.Name
-	server.Description = s.Description
-	server.OriginURIsChassis = s.OriginURIs.Chassis
-	server.OriginURIsSystem = s.OriginURIs.System
-	server.PhysicalUUID = s.PhysicalUUID
-	server.Hostname = s.Hostname
-	server.Credential = s.Credential
-	server.Type = s.Type
-	server.Protocol = s.Protocol
-	server.CurrentTask = s.CurrentTask
-	return &server
 }
 
 func updateResourceEntity(e *entity.EmbeddedResource, m *model.Resource) {

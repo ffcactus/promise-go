@@ -2,16 +2,15 @@ package strategy
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
+	"promise/common/object/constValue"
+	commonDTO "promise/common/object/dto"
+	taskSDK "promise/sdk/task"
+	"promise/server/context"
+	"promise/server/object/model"
 	taskDTO "promise/task/object/dto"
 	taskModel "promise/task/object/model"
-	commonDTO "promise/common/object/dto"
-	"promise/server/context"
-	"promise/common/object/constValue"
-	"promise/server/object/model"
-	taskSDK "promise/sdk/task"
-	log "github.com/sirupsen/logrus"
 )
-
 
 func init() {
 	refreshTaskTotalTime = 0
@@ -167,7 +166,6 @@ var (
 
 // ServerTaskStrategy is the server task strategy implementation.
 type ServerTaskStrategy struct {
-
 }
 
 // createRefreshTaskRequest will return a refresh server task request.
@@ -186,28 +184,28 @@ func createRefreshTaskRequest(server *model.Server) *taskDTO.PostTaskRequest {
 }
 
 // createTask creates the task.
-func (s *ServerTaskStrategy) createTask (request *taskDTO.PostTaskRequest, server *model.Server) (string, error) {
+func (s *ServerTaskStrategy) createTask(request *taskDTO.PostTaskRequest, server *model.Server) (string, error) {
 	taskResp, message, err := taskSDK.CreateTask(request)
 	if err != nil {
 		log.WithFields(log.Fields{
-			"server": server.ID, 
-			"name": request.Name, 
-			"err": err}).
+			"server": server.ID,
+			"name":   request.Name,
+			"err":    err}).
 			Warn("Create server task failed.")
 		return "", err
 	}
 	if message != nil {
 		log.WithFields(log.Fields{
-			"server": server.ID, 
-			"name": request.Name, 
+			"server":  server.ID,
+			"name":    request.Name,
 			"message": message[0].ID}).
 			Warn("Create server task failed.")
 		return "", fmt.Errorf("create task failed")
 	}
 	log.WithFields(log.Fields{
-		"server": server.ID, 
-		"name": taskResp.Name, 
-		"task": taskResp.ID}).
+		"server": server.ID,
+		"name":   taskResp.Name,
+		"task":   taskResp.ID}).
 		Info("Create server task.")
 	return taskResp.ID, nil
 }
@@ -222,18 +220,18 @@ func (s *ServerTaskStrategy) UpdateStepExecutionState(id string, stepName string
 	_, message, err := taskSDK.SetStepExecutionState(id, stepName, state)
 	if err != nil {
 		log.WithFields(log.Fields{
-			"server": server.ID, 
-			"task": id, 
-			"step": stepName, 
-			"state": state, 
-			"error": err}).Warn("Update task step execution state failed.")
+			"server": server.ID,
+			"task":   id,
+			"step":   stepName,
+			"state":  state,
+			"error":  err}).Warn("Update task step execution state failed.")
 	}
 	if message != nil {
 		log.WithFields(log.Fields{
-			"server": server.ID, 
-			"task": id, 
-			"step": stepName, 
-			"state": state, 
+			"server":  server.ID,
+			"task":    id,
+			"step":    stepName,
+			"state":   state,
 			"message": message[0].ID}).
 			Warn("Update task step execution state failed.")
 	}
@@ -244,19 +242,19 @@ func (s *ServerTaskStrategy) UpdateStepExecutionResultState(c *context.ServerCon
 	_, message, err := taskSDK.SetStepExecutionResultState(id, stepName, state)
 	if err != nil {
 		log.WithFields(log.Fields{
-			"server": server.ID, 
-			"task": id, 
-			"step": stepName, 
-			"state": state, 
-			"error": err}).
+			"server": server.ID,
+			"task":   id,
+			"step":   stepName,
+			"state":  state,
+			"error":  err}).
 			Warn("Update task step execution result state failed.")
 	}
 	if message != nil {
 		log.WithFields(log.Fields{
-			"server": server.ID, 
-			"task": id, 
-			"step": stepName, 
-			"state": state, 
+			"server":  server.ID,
+			"task":    id,
+			"step":    stepName,
+			"state":   state,
 			"message": message[0].ID}).
 			Warn("Update task step execution result state failed.")
 	}
@@ -265,24 +263,24 @@ func (s *ServerTaskStrategy) UpdateStepExecutionResultState(c *context.ServerCon
 // SetTaskStepRunning Set the task to running.
 func (s *ServerTaskStrategy) SetTaskStepRunning(c *context.ServerContext, id string, stepName string, server *model.Server) {
 	log.WithFields(log.Fields{
-		"server": server.ID, 
-		"task": id, 
-		"step": stepName}).
+		"server": server.ID,
+		"task":   id,
+		"step":   stepName}).
 		Debug("Set task step to running.")
 	_, message, err := taskSDK.SetStepExecutionState(id, stepName, taskModel.ExecutionStateRunning)
 	if err != nil {
 		log.WithFields(log.Fields{
-			"server": server.ID, 
-			"task": id, 
-			"step": stepName, 
-			"error": err}).
+			"server": server.ID,
+			"task":   id,
+			"step":   stepName,
+			"error":  err}).
 			Warn("Set task step to running failed.")
 	}
 	if message != nil {
 		log.WithFields(log.Fields{
-			"server": server.ID, 
-			"task": id, 
-			"step": stepName, 
+			"server":  server.ID,
+			"task":    id,
+			"step":    stepName,
 			"message": message[0].ID}).
 			Warn("Set task step to running failed.")
 	}
@@ -291,17 +289,17 @@ func (s *ServerTaskStrategy) SetTaskStepRunning(c *context.ServerContext, id str
 func (s *ServerTaskStrategy) logUpdateStepResult(c *context.ServerContext, id string, stepName string, server *model.Server, err error, message []commonDTO.Message) {
 	if err != nil {
 		log.WithFields(log.Fields{
-			"server": server.ID, 
-			"task": id, 
-			"step": stepName, 
-			"error": err}).
+			"server": server.ID,
+			"task":   id,
+			"step":   stepName,
+			"error":  err}).
 			Warn("Set task step to finished failed.")
 	}
 	if message != nil {
 		log.WithFields(log.Fields{
-			"server": server.ID, 
-			"task": id, 
-			"step": stepName, 
+			"server":  server.ID,
+			"task":    id,
+			"step":    stepName,
 			"message": message[0].ID}).
 			Warn("Set task step to finished failed.")
 	}

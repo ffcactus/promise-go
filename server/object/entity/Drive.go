@@ -1,5 +1,9 @@
 package entity
 
+import (
+	"promise/server/object/model"
+)
+
 // Drive contains properties describing a single physical disk drive for any system, along with links to associated Volumes.
 type Drive struct {
 	ServerRef string
@@ -17,4 +21,28 @@ type Drive struct {
 	NegotiatedSpeedGbs            *int       // The speed which this drive is currently communicating to the storage controller in Gigabits per second.
 	PredictedMediaLifeLeftPercent *int       // The percentage of reads and writes that are predicted to still be available for the media.
 	Location                      []Location `gorm:"ForeignKey:Ref"` // The Location of the drive.
+}
+
+// ToModel will create a new model from entity.
+func (e *Drive) ToModel() *model.Drive {
+	m := new(model.Drive)
+	createResourceModel(&e.EmbeddedResource, &m.Resource)
+	createProductInfoModel(&e.ProductInfo, &m.ProductInfo)
+	m.StatusIndicator = e.StatusIndicator
+	m.IndicatorLED = e.IndicatorLED
+	m.Revision = e.Revision
+	m.CapacityBytes = e.CapacityBytes
+	m.FailurePredicted = e.FailurePredicted
+	m.Protocol = e.Protocol
+	m.MediaType = e.MediaType
+	m.HotspareType = e.HotspareType
+	m.CapableSpeedGbs = e.CapableSpeedGbs
+	m.NegotiatedSpeedGbs = e.NegotiatedSpeedGbs
+	m.PredictedMediaLifeLeftPercent = e.PredictedMediaLifeLeftPercent
+	for i := range e.Location {
+		locationM := new(model.Location)
+		createLocationModel(&e.Location[i], locationM)
+		m.Location = append(m.Location, *locationM)
+	}
+	return m
 }

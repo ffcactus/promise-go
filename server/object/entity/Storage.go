@@ -1,5 +1,10 @@
 package entity
 
+import (
+	commonUtil "promise/common/util"
+	"promise/server/object/model"
+)
+
 // StorageController This schema defines a storage controller and its respective properties.  A storage controller represents a storage device (physical or virtual) that produces Volumes.
 type StorageController struct {
 	StorageRef uint
@@ -16,4 +21,26 @@ type Storage struct {
 	EmbeddedResource
 	StorageControllers []StorageController `gorm:"ForeignKey:StorageRef"` // The set of storage controllers represented by this resource.
 	DriveURIs          string              // The set of drives attached to the storage controllers represented by this resource.
+}
+
+// ToModel will create a new model from entity.
+func (e *Storage) ToModel() *model.Storage {
+	m := model.Storage{}
+	createResourceModel(&e.EmbeddedResource, &m.Resource)
+	a := []string{}
+	commonUtil.StringToStruct(e.DriveURIs, &a)
+	m.DriveURIs = a
+	for i := range e.StorageControllers {
+		eachM := model.StorageController{}
+		eachE := e.StorageControllers[i]
+		createMemberModel(&eachE.Member, &eachM.Member)
+		createProductInfoModel(&eachE.ProductInfo, &eachM.ProductInfo)
+		eachM.SpeedGbps = eachE.SpeedGbps
+		eachM.FirmwareVersion = eachE.FirmwareVersion
+		a := []string{}
+		commonUtil.StringToStruct(eachE.SupportedDeviceProtocols, &a)
+		eachM.SupportedDeviceProtocols = a
+		m.StorageControllers = append(m.StorageControllers, eachM)
+	}
+	return &m
 }

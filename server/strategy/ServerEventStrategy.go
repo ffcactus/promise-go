@@ -2,11 +2,11 @@ package strategy
 
 import (
 	log "github.com/sirupsen/logrus"
-	wsSDK "promise/sdk/ws"
-	"promise/server/object/dto"
-	"promise/server/context"
-	"promise/server/object/model"
 	"promise/common/category"
+	wsSDK "promise/sdk/ws"
+	"promise/server/context"
+	"promise/server/object/dto"
+	"promise/server/object/model"
 )
 
 /**
@@ -16,7 +16,6 @@ import (
 
 // ServerEventStrategy is the server event strategy implementation.
 type ServerEventStrategy struct {
-
 }
 
 // DispatchServerCreate will send server create event.
@@ -31,13 +30,13 @@ func (s *ServerEventStrategy) DispatchServerCreate(c *context.ServerContext, ser
 	messages, err := wsSDK.DispatchResourceCreate(serverDTO)
 	if err != nil {
 		log.WithFields(log.Fields{
-			"id": server.ID, 
+			"id":    server.ID,
 			"error": err}).
 			Warn("Dispatch server create event failed, event dispatching failed.")
 	}
 	if messages != nil {
 		log.WithFields(log.Fields{
-			"id": server.ID, 
+			"id":      server.ID,
 			"message": messages[0].ID}).
 			Warn("Dispatch server create event failed, event dispatching failed.")
 	}
@@ -55,13 +54,13 @@ func (s *ServerEventStrategy) DispatchServerUpdate(c *context.ServerContext, ser
 	messages, err := wsSDK.DispatchResourceUpdate(serverDTO)
 	if err != nil {
 		log.WithFields(log.Fields{
-			"id": server.ID, 
+			"id":    server.ID,
 			"error": err}).
 			Warn("Dispatch server update event failed, event dispatching failed.")
 	}
 	if messages != nil {
 		log.WithFields(log.Fields{
-			"id": server.ID, 
+			"id":      server.ID,
 			"message": messages[0].ID}).
 			Warn("Dispatch server update event failed, event dispatching failed.")
 	}
@@ -74,13 +73,13 @@ func (s *ServerEventStrategy) DispatchServerDelete(c *context.ServerContext, id 
 	messages, err := wsSDK.DispatchResourceDelete(category.Server, id)
 	if err != nil {
 		log.WithFields(log.Fields{
-			"id": id, 
+			"id":    id,
 			"error": err}).
 			Warn("Dispatch server delete event failed, event dispatching failed.")
 	}
 	if messages != nil {
 		log.WithFields(log.Fields{
-			"id": id, 
+			"id":      id,
 			"message": messages[0].ID}).
 			Warn("Dispatch server delete event failed, event dispatching failed.")
 	}
@@ -93,27 +92,27 @@ func (s *ServerEventStrategy) DispatchServerServerGroupCreate(c *context.ServerC
 	var ssgDTO = new(dto.GetServerServerGroupResponse)
 	if err := ssgDTO.Load(ssg); err != nil {
 		log.WithFields(log.Fields{
-			"id": ssg.ID, 
-			"server": ssg.ServerID,
+			"id":          ssg.ID,
+			"server":      ssg.ServerID,
 			"servergroup": ssg.ServerGroupID,
-			"error": err}).Warn("Dispatch server-servergroup create event failed, create event failed.")
+			"error":       err}).Warn("Dispatch server-servergroup create event failed, create event failed.")
 		return
 	}
 	messages, err := wsSDK.DispatchResourceCreate(ssgDTO)
 	if err != nil {
 		log.WithFields(log.Fields{
-			"id": ssg.ID, 
-			"server": ssg.ServerID,
+			"id":          ssg.ID,
+			"server":      ssg.ServerID,
 			"servergroup": ssg.ServerGroupID,
-			"error": err}).
+			"error":       err}).
 			Warn("Dispatch server-servergroup create event failed, event dispatching failed.")
 	}
 	if messages != nil {
 		log.WithFields(log.Fields{
-			"id": ssg.ID, 
-			"server": ssg.ServerID,
+			"id":          ssg.ID,
+			"server":      ssg.ServerID,
 			"servergroup": ssg.ServerGroupID,
-			"message": messages[0].ID}).
+			"message":     messages[0].ID}).
 			Warn("Dispatch server-servergroup create event failed, event dispatching failed.")
 	}
 }

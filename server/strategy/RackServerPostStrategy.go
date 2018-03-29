@@ -2,9 +2,9 @@ package strategy
 
 import (
 	log "github.com/sirupsen/logrus"
+	commonMessage "promise/common/object/message"
 	"promise/server/context"
 	"promise/server/object/constValue"
-	commonMessage "promise/common/object/message"
 	"promise/server/object/message"
 	"promise/server/object/model"
 )
@@ -43,12 +43,12 @@ func (s *RackServerPostStrategy) Claim(c *context.PostServerContext, server *mod
 }
 
 // Execute will execute all the steps.
-func (s *RackServerPostStrategy) Execute(c *context.PostServerContext, tempServer *model.Server) error {
+func (s *RackServerPostStrategy) Execute(c *context.PostServerContext, tempServer *model.Server) (*model.Server, error) {
 	if err := s.CreateManagementAccount(c, tempServer); err != nil {
-		return err
+		return nil, err
 	}
 	if err := s.Claim(c, tempServer); err != nil {
-		return err
+		return nil, err
 	}
 	// Set the servers init state and health.
 	tempServer.State = constValue.ServerStateAdded
@@ -56,11 +56,13 @@ func (s *RackServerPostStrategy) Execute(c *context.PostServerContext, tempServe
 	server, ssg, err := c.DB.PostServer(tempServer)
 	if err != nil {
 		c.AppendMessage(commonMessage.NewTransactionError())
-		return err
+		return nil, err
 	}
+	tempServer = server
 	// Dispatch event.
+	log.Info("---------- ", server.Category, "   ", ssg.Category)
 	s.DispatchServerCreate(&c.ServerContext, server)
 	s.DispatchServerServerGroupCreate(&c.ServerContext, ssg)
-	
-	return nil
+
+	return server, nil
 }

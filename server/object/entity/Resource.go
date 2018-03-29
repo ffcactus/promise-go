@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"promise/server/object/model"
 	"time"
 )
 
@@ -145,4 +146,97 @@ type Location struct {
 	InfoFormat    *string        // This represents the format of the Info property.
 	PostalAddress *PostalAddress `gorm:"ForeignKey:LocationRef"` // Postal address of the addressed resource.
 	Placement     *Placement     `gorm:"ForeignKey:LocationRef"` // A place within the addressed location.
+}
+
+func createResourceModel(e *EmbeddedResource, m *model.Resource) {
+	m.URI = e.URI
+	m.OriginID = e.OriginID
+	m.Name = e.Name
+	m.Description = e.Description
+	m.State = e.State
+	m.Health = e.Health
+	m.PhysicalState = e.PhysicalState
+	m.PhysicalHealth = e.PhysicalHealth
+}
+
+func createMemberModel(e *Member, m *model.Member) {
+	m.URI = e.URI
+	m.OriginMemberID = e.OriginMemberID
+	m.MemberID = *e.OriginMemberID
+	m.Name = e.Name
+	m.Description = e.Description
+	m.State = e.State
+	m.Health = e.Health
+	m.PhysicalState = e.PhysicalState
+	m.PhysicalHealth = e.PhysicalHealth
+}
+
+func createProductInfoModel(e *ProductInfo, m *model.ProductInfo) {
+	m.Model = e.Model
+	m.Manufacturer = e.Manufacturer
+	m.SKU = e.SKU
+	m.SerialNumber = e.SerialNumber
+	m.SparePartNumber = e.SparePartNumber
+	m.PartNumber = e.PartNumber
+	m.AssetTag = e.AssetTag
+}
+
+func createThresholdModel(e *Threshold, m *model.Threshold) {
+	m.UpperThresholdNonCritical = e.UpperThresholdNonCritical
+	m.UpperThresholdCritical = e.UpperThresholdCritical
+	m.UpperThresholdFatal = e.UpperThresholdFatal
+	m.LowerThresholdNonCritical = e.LowerThresholdNonCritical
+	m.LowerThresholdCritical = e.LowerThresholdCritical
+	m.LowerThresholdFatal = e.LowerThresholdFatal
+}
+
+func createLocationModel(e *Location, m *model.Location) {
+	m.Info = e.Info
+	m.InfoFormat = e.InfoFormat
+	if e.PostalAddress != nil {
+		postalAddress := new(model.PostalAddress)
+		postalAddress.Country = e.PostalAddress.Country
+		postalAddress.Territory = e.PostalAddress.Territory
+		postalAddress.District = e.PostalAddress.District
+		postalAddress.City = e.PostalAddress.City
+		postalAddress.Division = e.PostalAddress.Division
+		postalAddress.Neighborhood = e.PostalAddress.Neighborhood
+		postalAddress.LeadingStreetDirection = e.PostalAddress.LeadingStreetDirection
+		postalAddress.Street = e.PostalAddress.Street
+		postalAddress.TrailingStreetSuffix = e.PostalAddress.TrailingStreetSuffix
+		postalAddress.StreetSuffix = e.PostalAddress.StreetSuffix
+		postalAddress.HouseNumber = e.PostalAddress.HouseNumber
+		postalAddress.HouseNumberSuffix = e.PostalAddress.HouseNumberSuffix
+		postalAddress.Landmark = e.PostalAddress.Landmark
+		postalAddress.Location = e.PostalAddress.Location
+		postalAddress.Floor = e.PostalAddress.Floor
+		postalAddress.Name = e.PostalAddress.Name
+		postalAddress.PostalCode = e.PostalAddress.PostalCode
+		postalAddress.Building = e.PostalAddress.Building
+		postalAddress.Unit = e.PostalAddress.Unit
+		postalAddress.Room = e.PostalAddress.Room
+		postalAddress.Seat = e.PostalAddress.Seat
+		postalAddress.PlaceType = e.PostalAddress.PlaceType
+		postalAddress.Community = e.PostalAddress.Community
+		postalAddress.POBox = e.PostalAddress.POBox
+		postalAddress.AdditionalCode = e.PostalAddress.AdditionalCode
+		postalAddress.Road = e.PostalAddress.Road
+		postalAddress.RoadSection = e.PostalAddress.RoadSection
+		postalAddress.RoadBranch = e.PostalAddress.RoadBranch
+		postalAddress.RoadSubBranch = e.PostalAddress.RoadSubBranch
+		postalAddress.RoadPreModifier = e.PostalAddress.RoadPreModifier
+		postalAddress.RoadPostModifier = e.PostalAddress.RoadPostModifier
+		postalAddress.GPSCoords = e.PostalAddress.GPSCoords
+
+		m.PostalAddress = postalAddress
+	}
+	if e.Placement != nil {
+		placement := new(model.Placement)
+		placement.Row = e.Placement.Row
+		placement.Rack = e.Placement.Rack
+		placement.RackOffsetUnits = e.Placement.RackOffsetUnits
+		placement.RackOffset = e.Placement.RackOffset
+
+		m.Placement = placement
+	}
 }

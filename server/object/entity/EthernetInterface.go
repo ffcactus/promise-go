@@ -1,5 +1,9 @@
 package entity
 
+import (
+	"promise/server/object/model"
+)
+
 // IPv6AddressPolicyEntry A entry in the RFC 6724 Address Selection Policy Table.
 type IPv6AddressPolicyEntry struct {
 	Prefix     *string // The IPv6 Address Prefix (as defined in RFC 6724 section 2.1).
@@ -63,4 +67,50 @@ type VLanNetworkInterface struct {
 	EmbeddedResource
 	VLANEnable *bool // This indicates if this VLAN is enabled.
 	VLANID     *int  // This indicates the VLAN identifier for this VLAN.
+}
+
+// ToModel will create a new model from entity.
+func (e *EthernetInterface) ToModel() *model.EthernetInterface {
+	m := model.EthernetInterface{}
+	createResourceModel(&e.EmbeddedResource, &m.Resource)
+	m.UefiDevicePath = e.UefiDevicePath
+	m.InterfaceEnabled = e.InterfaceEnabled
+	m.PermanentMACAddress = e.PermanentMACAddress
+	m.MACAddress = e.MACAddress
+	m.SpeedMbps = e.SpeedMbps
+	m.AutoNeg = e.AutoNeg
+	m.FullDuplex = e.FullDuplex
+	m.MTUSize = e.MTUSize
+	m.HostName = e.HostName
+	m.FQDN = e.FQDN
+	m.MaxIPv6StaticAddresses = e.MaxIPv6StaticAddresses
+	m.LinkStatus = e.LinkStatus
+	m.IPv4Addresses = []model.IPv4Address{}
+	for i := range e.IPv4Addresses {
+		each := model.IPv4Address{}
+		each.Address = e.IPv4Addresses[i].Address
+		each.SubnetMask = e.IPv4Addresses[i].SubnetMask
+		each.AddressOrigin = e.IPv4Addresses[i].AddressOrigin
+		each.Gateway = e.IPv4Addresses[i].Gateway
+		m.IPv4Addresses = append(m.IPv4Addresses, each)
+
+	}
+	m.IPv6Addresses = []model.IPv6Address{}
+	for i := range e.IPv6Addresses {
+		each := model.IPv6Address{}
+		each.Address = e.IPv6Addresses[i].Address
+		each.PrefixLength = e.IPv6Addresses[i].PrefixLength
+		each.AddressOrigin = e.IPv6Addresses[i].AddressOrigin
+		each.AddressState = e.IPv6Addresses[i].AddressState
+		m.IPv6Addresses = append(m.IPv6Addresses, each)
+
+	}
+	m.VLANs = []model.VLanNetworkInterface{}
+	for i := range e.VLANs {
+		each := model.VLanNetworkInterface{}
+		each.VLANEnable = e.VLANs[i].VLANEnable
+		each.VLANID = e.VLANs[i].VLANID
+		m.VLANs = append(m.VLANs, each)
+	}
+	return &m
 }

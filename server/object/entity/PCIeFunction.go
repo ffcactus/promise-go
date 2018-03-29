@@ -1,5 +1,10 @@
 package entity
 
+import (
+	commonUtil "promise/common/util"
+	"promise/server/object/model"
+)
+
 // PCIeFunction This is the schema definition for the PCIeFunction resource.  It represents the properties of a PCIeFunction attached to a System.
 type PCIeFunction struct {
 	PCIeDeviceRef uint
@@ -10,4 +15,19 @@ type PCIeFunction struct {
 	SubsystemID        *string // The Subsystem ID of this PCIe function.
 	SubsystemVendorID  *string // The Subsystem Vendor ID of this PCIe function.
 	EthernetInterfaces string  // An array of references to the ethernet interfaces which the PCIe device produces.
+}
+
+// ToModel will create a new model from entity.
+func (e *PCIeFunction) ToModel() *model.PCIeFunction {
+	m := new(model.PCIeFunction)
+	createResourceModel(&e.EmbeddedResource, &m.Resource)
+	m.DeviceClass = e.DeviceClass
+	m.DeviceID = e.DeviceID
+	m.VendorID = e.VendorID
+	m.SubsystemID = e.SubsystemID
+	m.SubsystemVendorID = e.SubsystemVendorID
+	a := []string{}
+	commonUtil.StringToStruct(e.EthernetInterfaces, &a)
+	m.EthernetInterfaces = a
+	return m
 }

@@ -1,5 +1,10 @@
 package entity
 
+import (
+	commonUtil "promise/common/util"
+	"promise/server/object/model"
+)
+
 // Controller A network controller ASIC that makes up part of a NetworkAdapter.
 type Controller struct {
 	NetworkAdapterRef uint
@@ -15,4 +20,29 @@ type NetworkAdapter struct {
 	EmbeddedResource
 	ProductInfo
 	Controllers []Controller `gorm:"ForeignKey:NetworkAdapterRef"` // The set of network controllers ASICs that make up this NetworkAdapter.
+}
+
+// ToModel will create a new model from entity.
+func (e *NetworkAdapter) ToModel() *model.NetworkAdapter {
+	m := new(model.NetworkAdapter)
+	createResourceModel(&e.EmbeddedResource, &m.Resource)
+	createProductInfoModel(&e.ProductInfo, &m.ProductInfo)
+	for i := range e.Controllers {
+		controllerE := e.Controllers[i]
+		controllerM := model.Controller{}
+		controllerM.FirmwarePackageVersion = controllerE.FirmwarePackageVersion
+		controllerM.ControllerCapabilities.NetworkPortCount = controllerE.ControllerCapabilitiesNetworkPortCount
+		for j := range controllerE.NetworkPorts {
+			portE := controllerE.NetworkPorts[j]
+			portM := model.NetworkPort{}
+			portM.PhysicalPortNumber = portE.PhysicalPortNumber
+			portM.LinkStatus = portE.LinkStatus
+			a := []string{}
+			commonUtil.StringToStruct(portE.AssociatedNetworkAddresses, &a)
+			portM.AssociatedNetworkAddresses = a
+			controllerM.NetworkPorts = append(controllerM.NetworkPorts, portM)
+		}
+		m.Controllers = append(m.Controllers, controllerM)
+	}
+	return m
 }

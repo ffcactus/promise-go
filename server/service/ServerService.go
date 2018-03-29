@@ -29,10 +29,11 @@ func PostServer(request *dto.PostServerRequest) (*model.Server, []commonMessage.
 	// Before save the server to the DB. We need configure the server first.
 	ctx := context.CreatePostServerContext(server, request)
 	st := strategy.CreatePostServerStrategy(server)
-	if err := st.Execute(ctx, server); err != nil {
+	postServer, err := st.Execute(ctx, server)
+	if err != nil {
 		return nil, ctx.Messages()
 	}
-	return server, nil
+	return postServer, nil
 }
 
 // GetServer will get server by server ID.

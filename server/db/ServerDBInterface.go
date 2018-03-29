@@ -17,7 +17,6 @@ type ServerDBInterface interface {
 	GetAndLockServer(id string) (bool, *model.Server)
 	SetServerState(id string, state string) bool
 	SetServerHealth(id string, health string) bool
-	SetServerTask(id string, taskURI string) bool
 	UpdateProcessors(id string, processors []model.Processor) error
 	UpdateMemory(id string, memory []model.Memory) error
 	UpdateEthernetInterfaces(id string, ethernet []model.EthernetInterface) error

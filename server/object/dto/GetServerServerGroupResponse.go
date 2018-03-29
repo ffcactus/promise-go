@@ -3,8 +3,8 @@ package dto
 import (
 	log "github.com/sirupsen/logrus"
 	"promise/common/object/constError"
-	commonDTO "promise/common/object/dto"
 	"promise/common/object/constValue"
+	commonDTO "promise/common/object/dto"
 	"promise/server/object/model"
 )
 

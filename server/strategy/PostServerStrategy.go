@@ -11,7 +11,7 @@ import (
 type PostServerStrategy interface {
 	CreateManagementAccount(c *context.PostServerContext, server *model.Server) error
 	Claim(c *context.PostServerContext, server *model.Server) error
-	Execute(c *context.PostServerContext, server *model.Server) error
+	Execute(c *context.PostServerContext, server *model.Server) (*model.Server, error)
 }
 
 // CreatePostServerStrategy will create the post server strategy based on the server type.

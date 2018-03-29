@@ -20,7 +20,7 @@ type ServerContext struct {
 	ErrorHandler
 	CredentialHandler
 	ServerClient serverClient.ServerClientInterface
-	DB db.ServerDBImplement
+	DB           db.ServerDBImplement
 }
 
 // CreateServerContext Create server context by server.

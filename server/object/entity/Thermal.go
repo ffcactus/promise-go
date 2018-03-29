@@ -1,5 +1,9 @@
 package entity
 
+import (
+	"promise/server/object/model"
+)
+
 // Fan This is the definition for fans.
 type Fan struct {
 	ThermalRef uint
@@ -30,4 +34,29 @@ type Thermal struct {
 	EmbeddedResource
 	Temperatures []Temperature `gorm:"ForeignKey:ThermalRef"` // This is the definition for temperature sensors.
 	Fans         []Fan         `gorm:"ForeignKey:ThermalRef"` // This is the definition for fans.
+}
+
+// ToModel will create a new model from entity.
+func (e *Temperature) ToModel() *model.Temperature {
+	m := new(model.Temperature)
+	createMemberModel(&e.Member, &m.Member)
+	createThresholdModel(&e.Threshold, &m.Threshold)
+	m.SensorNumber = e.SensorNumber
+	m.ReadingCelsius = e.ReadingCelsius
+	m.MinReadingRangeTemp = e.MinReadingRangeTemp
+	m.MaxReadingRangeTemp = e.MaxReadingRangeTemp
+	return m
+}
+
+// ToModel will create a new model from entity.
+func (e *Fan) ToModel() *model.Fan {
+	m := new(model.Fan)
+	createMemberModel(&e.Member, &m.Member)
+	createProductInfoModel(&e.ProductInfo, &m.ProductInfo)
+	createThresholdModel(&e.Threshold, &m.Threshold)
+	m.Reading = e.Reading
+	m.MinReadingRange = e.MinReadingRange
+	m.MaxReadingRange = e.MaxReadingRange
+	m.ReadingUnits = e.ReadingUnits
+	return m
 }

@@ -1,5 +1,9 @@
 package entity
 
+import (
+	"promise/server/object/model"
+)
+
 // Voltage This is the definition for voltage sensors.
 type Voltage struct {
 	PowerRef uint
@@ -77,4 +81,55 @@ type Power struct {
 	Voltages      []Voltage      `gorm:"ForeignKey:PowerRef"` // This is the definition for voltage sensors.
 	PowerSupplies []PowerSupply  `gorm:"ForeignKey:PowerRef"` // Details of the power supplies associated with this system or device.
 	Redundancy    []Redundancy   `gorm:"ForeignKey:Ref"`      // Redundancy information for the power subsystem of this system or device.
+}
+
+// ToModel will create a new model from entity.
+func (e *PowerControl) ToModel() *model.PowerControl {
+	m := model.PowerControl{}
+	createResourceModel(&e.EmbeddedResource, &m.Resource)
+	createProductInfoModel(&e.ProductInfo, &m.ProductInfo)
+	m.PowerConsumedWatts = e.PowerConsumedWatts
+	m.PowerRequestedWatts = e.PowerRequestedWatts
+	m.PowerAvailableWatts = e.PowerAvailableWatts
+	m.PowerCapacityWatts = e.PowerCapacityWatts
+	m.PowerAllocatedWatts = e.PowerAllocatedWatts
+
+	m.PowerMetrics = new(model.PowerMetrics)
+	m.PowerMetrics.MinConsumedWatts = e.PowerMetricsMinConsumedWatts
+	m.PowerMetrics.MaxConsumedWatts = e.PowerMetricsMaxConsumedWatts
+	m.PowerMetrics.AverageConsumedWatts = e.PowerMetricsAverageConsumedWatts
+
+	m.PowerLimit = new(model.PowerLimit)
+	m.PowerLimit.LimitInWatts = e.PowerLimitLimitInWatts
+	m.PowerLimit.LimitException = e.PowerLimitLimitException
+	m.PowerLimit.CorrectionInMs = e.PowerLimitCorrectionInMs
+	return &m
+}
+
+// ToModel will create a new model from entity.
+func (e *Voltage) ToModel() *model.Voltage {
+	m := model.Voltage{}
+	createResourceModel(&e.EmbeddedResource, &m.Resource)
+	createThresholdModel(&e.Threshold, &m.Threshold)
+	m.SensorNumber = e.SensorNumber
+	m.ReadingVolts = e.ReadingVolts
+	m.MinReadingRange = e.MinReadingRange
+	m.MaxReadingRange = e.MaxReadingRange
+	m.PhysicalContext = e.PhysicalContext
+	return &m
+}
+
+// ToModel will create a new model from entity.
+func (e *PowerSupply) ToModel() *model.PowerSupply {
+	m := model.PowerSupply{}
+	createResourceModel(&e.EmbeddedResource, &m.Resource)
+	createProductInfoModel(&e.ProductInfo, &m.ProductInfo)
+	m.PowerSupplyType = e.PowerSupplyType
+	m.LineInputVoltageType = e.LineInputVoltageType
+	m.LineInputVoltage = e.LineInputVoltage
+	m.PowerCapacityWatts = e.PowerCapacityWatts
+	m.LastPowerOutputWatts = e.LastPowerOutputWatts
+	m.FirmwareVersion = e.FirmwareVersion
+	m.IndicatorLed = e.IndicatorLed
+	return &m
 }

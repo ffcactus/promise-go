@@ -42,7 +42,6 @@ const (
 	MessageTimeout = "Promise.Message.Timeout"
 	// MessageTransactionError is message ID.
 	MessageTransactionError = "Promise.Message.TransactionError"
-	
 )
 
 // NewMessage create a message with default value.

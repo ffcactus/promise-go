@@ -38,7 +38,7 @@ func (c *ServerRootController) Post() {
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Post server failed.")
 	} else {
-		resp := dto.PostServerResponse{}
+		resp := dto.GetServerResponse{}
 		resp.Load(server)
 		c.Data["json"] = &resp
 		c.Ctx.Output.SetStatus(http.StatusCreated)

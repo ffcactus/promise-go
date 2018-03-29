@@ -36,7 +36,6 @@ type GetServerResponse struct {
 	PhysicalUUID   string         `json:"PhysicalUUID"`
 	Hostname       string         `json:"Hostname"`
 	Type           string         `json:"Type"`
-	CurrentTask    string         `json:"CurrentTask"`
 	ComputerSystem ComputerSystem `json:"ComputerSystem"`
 	Chassis        Chassis        `json:"Chassis"`
 }
@@ -56,7 +55,6 @@ func (dto *GetServerResponse) Load(data interface{}) error {
 	dto.PhysicalUUID = m.PhysicalUUID
 	dto.Hostname = m.Hostname
 	dto.Type = m.Type
-	dto.CurrentTask = m.CurrentTask
 	// ComputerSystem.Processors
 	dto.ComputerSystem.Processors = make([]Processor, 0)
 	for i := range m.ComputerSystem.Processors {
