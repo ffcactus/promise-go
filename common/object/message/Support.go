@@ -11,6 +11,8 @@ const (
 	SupportInternalError = "Promise.Support.InternalError"
 	// SupportTimeout is Support ID.
 	SupportTimeout = "Promise.Support.Timeout"
+	// SupportTransactionError is Support ID.
+	SupportTransactionError = "Promise.Support.TransactionError"
 )
 
 // Support tells how to solve a problem.
@@ -72,5 +74,14 @@ func NewSupportTimeout() Support {
 	ret.ID = SupportTimeout
 	ret.Reason = "I/O operation timeout."
 	ret.Solution = "Try again later."
+	return ret
+}
+
+// NewSupportTransactionError will return a support message.
+func NewSupportTransactionError() Support {
+	ret := NewSupport()
+	ret.ID = SupportTransactionError
+	ret.Reason = "DB operation failed."
+	ret.Solution = "Try again later or contact support."
 	return ret
 }

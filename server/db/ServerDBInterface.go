@@ -7,7 +7,7 @@ import (
 // ServerDBInterface The DB interface
 type ServerDBInterface interface {
 	IsServerExist(s *model.Server) (bool, *model.Server)
-	PostServer(s *model.Server) (*model.Server, error)
+	PostServer(s *model.Server) (*model.Server, *model.ServerServerGroup, error)
 	GetServer(id string) *model.Server
 	GetServerCollection(start int, count int) (*model.ServerCollection, error)
 	GetServerFull(id string) *model.Server

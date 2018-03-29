@@ -9,18 +9,18 @@ import (
 
 // RefreshServerStrategy is the strategy for refresh server.
 type RefreshServerStrategy interface {
-	RefreshProcessors(c *context.RefreshServerContext) error
-	RefreshMemory(c *context.RefreshServerContext) error
-	RefreshEthernetInterfaces(c *context.RefreshServerContext) error
-	RefreshNetworkInterfaces(c *context.RefreshServerContext) error
-	RefreshStorages(c *context.RefreshServerContext) error
-	RefreshPower(c *context.RefreshServerContext) error
-	RefreshThermal(c *context.RefreshServerContext) error
-	RefreshOemHuaweiBoards(c *context.RefreshServerContext) error
-	RefreshNetworkAdapters(c *context.RefreshServerContext) error
-	RefreshDrives(c *context.RefreshServerContext) error
-	RefreshPCIeDevices(c *context.RefreshServerContext) error
-	Execute(c *context.RefreshServerContext) error
+	RefreshProcessors(c *context.RefreshServerContext, server *model.Server) error
+	RefreshMemory(c *context.RefreshServerContext, server *model.Server) error
+	RefreshEthernetInterfaces(c *context.RefreshServerContext, server *model.Server) error
+	RefreshNetworkInterfaces(c *context.RefreshServerContext, server *model.Server) error
+	RefreshStorages(c *context.RefreshServerContext, server *model.Server) error
+	RefreshPower(c *context.RefreshServerContext, server *model.Server) error
+	RefreshThermal(c *context.RefreshServerContext, server *model.Server) error
+	RefreshOemHuaweiBoards(c *context.RefreshServerContext, server *model.Server) error
+	RefreshNetworkAdapters(c *context.RefreshServerContext, server *model.Server) error
+	RefreshDrives(c *context.RefreshServerContext, server *model.Server) error
+	RefreshPCIeDevices(c *context.RefreshServerContext, server *model.Server) error
+	Execute(c *context.RefreshServerContext, server *model.Server) error
 }
 
 // CreateRefreshServerStrategy creates the strategy based on server.

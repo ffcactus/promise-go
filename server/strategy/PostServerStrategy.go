@@ -9,9 +9,9 @@ import (
 
 // PostServerStrategy is the interface of post server strategy.
 type PostServerStrategy interface {
-	CreateManagementAccount(c *context.PostServerContext) error
-	Claim(c *context.PostServerContext) error
-	Execute(c *context.PostServerContext) error
+	CreateManagementAccount(c *context.PostServerContext, server *model.Server) error
+	Claim(c *context.PostServerContext, server *model.Server) error
+	Execute(c *context.PostServerContext, server *model.Server) error
 }
 
 // CreatePostServerStrategy will create the post server strategy based on the server type.

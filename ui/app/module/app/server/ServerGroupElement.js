@@ -17,7 +17,7 @@ class ServerGroupElement extends React.Component {
   }
 
   render() {
-    const currentStyle = this.props.server.currentServerGroup === this.props.name ? "ServerGroupElementSelected" : "ServerGroupElement";
+    const currentStyle = this.props.server.currentServerGroup === this.props.name ? 'ServerGroupElementSelected' : 'ServerGroupElement';
     return (
       <div styleName={currentStyle} onClick={this.onClick}>
         <p styleName="ServerGroupElementText">{this.props.name}</p>
@@ -33,6 +33,8 @@ function mapStateToProps(state) {
 
 ServerGroupElement.propTypes = {
   name: PropTypes.string,
+  dispatch: PropTypes.func,
+  server: PropTypes.object,
 };
 
 export default connect(mapStateToProps)(CSSModules(ServerGroupElement, styles));

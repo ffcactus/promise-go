@@ -36,13 +36,15 @@ func (i *ServerDBImplement) IsServerExist(s *model.Server) (bool, *model.Server)
 	return false, nil
 }
 
-// PostServer Post server from server basic info.
-func (i *ServerDBImplement) PostServer(s *model.Server) (*model.Server, error) {
+// PostServer will save the server to the DB.
+// Since a server should belongs to the default servergroup, we need create server and servergroup
+// in DB at the same time, we also need return them both back for event dispatch.
+func (i *ServerDBImplement) PostServer(s *model.Server) (*model.Server, *model.ServerServerGroup, error) {
 	c := commonDB.GetConnection()
 	if exist, _ := i.IsServerExist(s); exist {
 		// TODO get the server to return.
 		log.WithFields(log.Fields{"hostname": s.Hostname}).Info("Post server in DB failed, server exist.")
-		return nil, errors.New("server exist")
+		return nil, nil, errors.New("server exist")
 	}
 	var server = createServerEntityFromServer(s)
 	var serverServerGroup = new(entity.ServerServerGroup)
@@ -56,20 +58,23 @@ func (i *ServerDBImplement) PostServer(s *model.Server) (*model.Server, error) {
 	tx := c.Begin()
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{"hostname": s.Hostname, "error": err}).Info("Post server in DB failed, start transaction failed.")
-		return nil, err
+		return nil, nil, err
 	}
 	if err := tx.Create(server).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{"hostname": s.Hostname, "error": err}).Info("Post server in DB failed, create server failed, transaction rollback.")
-		return nil, err
+		return nil, nil, err
 	}
 	if err := tx.Create(serverServerGroup).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{"hostname": s.Hostname, "error": err}).Info("Post server in DB failed, create server-servergroup failed, transaction rollback.")
-		return nil, err
+		return nil, nil, err
 	}
-	tx.Commit()
-	return createServerModel(server), nil
+	if err := tx.Commit().Error; err != nil {
+		log.WithFields(log.Fields{"hostname": s.Hostname, "error": err}).Info("Post server in DB failed, commit failed.")
+		return nil, nil, err		
+	}
+	return createServerModel(server), serverServerGroup.ToModel(), nil
 }
 
 // GetServer Get server by ID.

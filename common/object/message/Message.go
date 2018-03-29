@@ -40,6 +40,9 @@ const (
 	MessageInvalidRequest = "Promise.Message.InvalidRequest"
 	// MessageTimeout is message ID.
 	MessageTimeout = "Promise.Message.Timeout"
+	// MessageTransactionError is message ID.
+	MessageTransactionError = "Promise.Message.TransactionError"
+	
 )
 
 // NewMessage create a message with default value.
@@ -76,7 +79,7 @@ func NewResourceDuplicate() Message {
 	return ret
 }
 
-// NewBadRequest return a message that means the request is Invalid.
+// NewInvalidRequest return a message that means the request is Invalid.
 func NewInvalidRequest() Message {
 	ret := NewMessage(category.Promise)
 	ret.ID = MessageInvalidRequest
@@ -108,6 +111,18 @@ func NewTimeout() Message {
 	ret.Description = "I/O operation timeout."
 	ret.Supports = []Support{
 		NewSupportTimeout(),
+	}
+	return ret
+}
+
+// NewTransactionError return a message that means transaction error.
+func NewTransactionError() Message {
+	ret := NewMessage(category.Promise)
+	ret.ID = MessageTransactionError
+	ret.Severity = constValue.SeverityNormal
+	ret.Description = "Transaction error."
+	ret.Supports = []Support{
+		NewSupportTransactionError(),
 	}
 	return ret
 }

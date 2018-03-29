@@ -1,14 +1,16 @@
 package dto
 
 import (
+	log "github.com/sirupsen/logrus"
+	"promise/common/object/constError"
+	commonDTO "promise/common/object/dto"
 	"promise/common/object/constValue"
 	"promise/server/object/model"
 )
 
 // GetServerServerGroupResponse is the DTO.
 type GetServerServerGroupResponse struct {
-	ID             string `json:"ID"`
-	URI            string `json:"URI"`
+	commonDTO.PromiseResponse
 	ServerID       string `json:"ServerID"`
 	ServerURI      string `json:"ServerURI"`
 	ServerGroupID  string `json:"ServerGroupID"`
@@ -16,11 +18,16 @@ type GetServerServerGroupResponse struct {
 }
 
 // Load the data from model.
-func (dto *GetServerServerGroupResponse) Load(m *model.ServerServerGroup) {
-	dto.ID = m.ID
-	dto.URI = constValue.ToServerServerGroupURI(m.ID)
+func (dto *GetServerServerGroupResponse) Load(data interface{}) error {
+	m, ok := data.(*model.ServerServerGroup)
+	if !ok {
+		log.Warn("GetServerServerGroupResponse load data from model failed.")
+		return constError.ErrorDataConvert
+	}
+	dto.PromiseResponse.Load(&m.PromiseModel)
 	dto.ServerID = m.ServerID
 	dto.ServerURI = constValue.ToServerURI(m.ServerID)
 	dto.ServerGroupID = m.ServerGroupID
 	dto.ServerGroupURI = constValue.ToServerGroupURI(m.ServerGroupID)
+	return nil
 }
