@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import styles from './Server.css';
-// import * as Action from '.ServerAction';
+import * as ServerAction from './ServerAction';
 
 class ServerListElement extends React.Component {
   constructor(props) {
@@ -14,8 +14,11 @@ class ServerListElement extends React.Component {
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.state.selected !== nextState.selected;
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   return this.state.selected !== nextState.selected;
+  // }
+  componentDidMount() {
+    this.props.dispatch(ServerAction.getServer(this.props.serverUri));
   }
 
   onSelect(event) {
@@ -24,22 +27,25 @@ class ServerListElement extends React.Component {
   }
 
   render() {
+    const server = this.props.serverApp.serverList.get(this.props.serverUri);
+
     return (
-      <div styleName="ServerListElement" onClick={this.onSelect}>{this.props.children}</div>
+      <div styleName="ServerListElement" onClick={this.onSelect}>{server.Name}</div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { server } = state;
-  return { server };
+  const { serverApp } = state;
+  return { serverApp };
 }
 
 ServerListElement.propTypes = {
+  serverApp: PropTypes.object,
   serverUri: PropTypes.string,
   children: PropTypes.string,
   dispatch: PropTypes.func
 };
 
-export default connect(mapStateToProps)(CSSModules(ServerListElement, styles));
+export default connect(mapStateToProps)(CSSModules(ServerListElement, styles, {allowMultiple: true}));
 

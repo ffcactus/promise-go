@@ -1,15 +1,4 @@
-// function onServerMessage(message)
-// {
-//   switch(message.Type) {
-//     case 'Create':
-//       return {
-//         type: ''
-//       }
-//   }
-//   return {
-//     type: 'xxxx'
-//   };
-// }
+import { Map } from 'immutable';
 
 const handlerMap = new Map();
 

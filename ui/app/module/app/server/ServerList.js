@@ -14,12 +14,13 @@ class ServerList extends React.Component {
     return (
       <div styleName="ServerList">
         {
-          this.props.server.serverList.length === 0 && <p>Empty</p>
+          this.props.serverApp.serverList.size === 0 && <p>Empty</p>
         }
         {
-          (this.props.server.serverList.length !== 0) && this.props.server.serverList.map((each) => {
-            return (<ServerListElement key={each.URI} serverUri={each.URI}>{each.Name}</ServerListElement>);
-          })
+          (this.props.serverApp.serverList.size !== 0) && this.props.serverApp.serverList.map((value, key) => {
+            // we only have URI at this moment.
+            return (<ServerListElement key={key} serverUri={key} />);
+          }).toArray()
         }
       </div>
     );
@@ -27,12 +28,12 @@ class ServerList extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { server, routing } = state;
-  return { server, routing };
+  const { serverApp } = state;
+  return { serverApp };
 }
 
 ServerList.propTypes = {
-  server: PropTypes.object,
+  serverApp: PropTypes.object,
   dispatch: PropTypes.func,
 };
 

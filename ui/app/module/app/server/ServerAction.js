@@ -1,6 +1,5 @@
 import * as Client from './Client';
 import { ActionType } from './ConstValue';
-import * as WsAction from '../../promise/ws/WsAction';
 
 export function getServerListStart() {
   return {
@@ -55,21 +54,6 @@ export function onServerMessage(message) {
   }
 }
 
-function onServerGroupMessage(message) {
-  switch(message.Type) {
-    case 'Create':
-      return onServerGroupCreate(message.Data);
-    case 'Update':
-      return onServerGroupUpdate(message.Data);
-    case 'Delete':
-      return onServerGroupDelete(message.ResourceID);
-    case 'DeleteCollection':
-      return onServerGroupDeleteCollection();
-    default:
-      return {};
-  }
-}
-
 export function openAddServerDialog() {
   return {
     type: ActionType.OPEN_ADD_SERVER_DIALOG
@@ -101,10 +85,10 @@ function getServerFailure() {
   };
 }
 
-export function getServer(hostname, uri) {
-  return (dispatch) => {
+export function getServer(uri) {
+  return (dispatch, getState) => {
     dispatch(getServerStart());
-    Client.getServer(hostname, uri).then((resp) => {
+    Client.getServer(getState().session.hostname, uri).then((resp) => {
       if (resp.status === 200) {
         dispatch(getServerSuccess(resp.response));
         return;

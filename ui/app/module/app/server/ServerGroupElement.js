@@ -11,30 +11,36 @@ class ServerGroupElement extends React.Component {
     this.onClick = this.onClick.bind(this);
   }
 
+  componentDidMount() {
+    if (this.props.serverApp.currentServerGroup.ID === this.props.servergroup.ID) {
+      this.props.dispatch(ServerGroupAction.onServerGroupSelected(this.props.servergroup));
+    }
+  }
+
   onClick(event) {
     event.preventDefault();
-    this.props.dispatch(ServerGroupAction.onServerGroupSelected(this.props.name));
+    this.props.dispatch(ServerGroupAction.onServerGroupSelected(this.props.servergroup));
   }
 
   render() {
-    const currentStyle = this.props.server.currentServerGroup === this.props.name ? 'ServerGroupElementSelected' : 'ServerGroupElement';
+    const currentStyle = 'ServerGroupElement ' + (this.props.serverApp.currentServerGroup.ID === this.props.servergroup.ID ? 'Selected' : 'NotSelected');
     return (
       <div styleName={currentStyle} onClick={this.onClick}>
-        <p styleName="ServerGroupElementText">{this.props.name}</p>
+        <p styleName="ServerGroupElementText">{this.props.servergroup.Name}</p>
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { server } = state;
-  return { server };
+  const { serverApp } = state;
+  return { serverApp };
 }
 
 ServerGroupElement.propTypes = {
-  name: PropTypes.string,
+  servergroup: PropTypes.object,
   dispatch: PropTypes.func,
-  server: PropTypes.object,
+  serverApp: PropTypes.object,
 };
 
-export default connect(mapStateToProps)(CSSModules(ServerGroupElement, styles));
+export default connect(mapStateToProps)(CSSModules(ServerGroupElement, styles, {allowMultiple: true}));

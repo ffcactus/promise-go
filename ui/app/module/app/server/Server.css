@@ -1,3 +1,11 @@
+.Selected {
+    background-color: rgb(181, 214, 245);
+}
+
+.NotSelected {
+    background-color: #DFEEFC;
+}
+
 .ServerGroupArea {
     top: 0px;
     bottom: 0px;
@@ -64,7 +72,6 @@
     border-bottom: 1px solid rgb(11, 188, 233);
     float: none;
     flex: 0 1 auto;    
-    background-color: #DFEEFC;
     position: relative;
 }
 
@@ -76,7 +83,6 @@
     border-bottom: 1px solid rgb(11, 188, 233);
     float: none;
     flex: 0 1 auto;
-    background-color: rgb(181, 214, 245);
     position: relative;
 }
 
@@ -141,19 +147,21 @@
 .ServerListElement {
     height: 2em;
     margin: 0px;
-    padding: 0px;
-    border: 1px solid rgb(11, 188, 233);
+    padding: 0px;    
+    border: 0px;
+    border-bottom: 1px solid rgb(11, 188, 233);
     float: none;
-    flex: 1 1 auto;
-    background-color: white;
+    flex: 0 1 auto;    
+    position: relative;
 }
 
 .ServerListElementSelected {
     height: 2em;
     margin: 0px;
-    padding: 0px;
-    border: 1px solid rgb(11, 188, 233);
+    padding: 0px;    
+    border: 0px;
+    border-bottom: 1px solid rgb(11, 188, 233);
     float: none;
-    flex: 1 1 auto;
-    background-color: rgb(11, 188, 233);
+    flex: 0 1 auto;
+    position: relative;
 }

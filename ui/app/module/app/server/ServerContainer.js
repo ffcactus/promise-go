@@ -10,17 +10,14 @@ import * as ServerAppAction from './ServerAppAction';
 class ServerContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      hostname: window.location.hostname
-    };
   }
 
   componentWillMount() {
-    this.props.dispatch(ServerAppAction.appInit(this.state.hostname));
+    this.props.dispatch(ServerAppAction.appInit());
   }
 
   render() {
-    switch (this.props.server.state) {
+    switch (this.props.serverApp.state) {
       case ServerAppState.APP_INIT_START:
         return <CenterDiv><LoadingIcon /></CenterDiv>;
       case ServerAppState.APP_INIT_SUCCESS:
@@ -34,13 +31,12 @@ class ServerContainer extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { server } = state;
-  return { server };
+  const { serverApp } = state;
+  return { serverApp };
 }
 
 ServerContainer.propTypes = {
-  hostname: PropTypes.string,
-  server: PropTypes.object,
+  serverApp: PropTypes.object,
   dispatch: PropTypes.func
 };
 

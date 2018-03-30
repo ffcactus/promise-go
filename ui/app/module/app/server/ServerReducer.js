@@ -1,23 +1,23 @@
 import { ActionType, ServerAppState } from './ConstValue';
+import { Map } from 'immutable';
 
 const defaultState = {
   state: ServerAppState.UNKNOWN,
+  // We need record the default servergroup because of it's special role.
   defaultServerGroup: {},
-  currentServerGroup: 'all',
+  currentServerGroup: {},
   serverGroupList: [],
-  serverList: [],
+  serverList: new Map(),
   openCreateServerGroupDialog: false,
   openAddServerDialog: false,
 };
 
-const server = (state = defaultState, action) => {
+const serverApp = (state = defaultState, action) => {
   let tempDefaultServerGroup;
   switch (action.type) {
     case ActionType.APP_INIT_START:
       return Object.assign({}, state, {
         state: ServerAppState.APP_INIT_START,
-        serverGroupList: [],
-        serverList: [],
       });
     case ActionType.APP_INIT_SUCCESS:
       return Object.assign({}, state, {
@@ -27,26 +27,38 @@ const server = (state = defaultState, action) => {
       return Object.assign({}, state, {
         state: ServerAppState.APP_INIT_FAILURE,
         serverGroupList: [],
-        serverList: [],
+        serverList: new Map(),
       });
-    // server REST.
+    case ActionType.APP_EXIT:
+      return defaultState;
+    // Get server list.
     case ActionType.GET_SERVER_LIST_START:
       return state;
     case ActionType.GET_SERVER_LIST_SUCCESS:
-      return Object.assign({}, state, {
-        serverList: action.info.Members.map((each) => {
-          return {
-            URI: each.URI,
-            Name: each.Name,
-            State: each.State,
-            Health: each.Health
-          };
-        })
-      });
+      return {
+        ...state,
+        serverList: new Map(action.info.Members.map((each) => {
+          return [
+            each.ServerURI,
+            {}
+          ];
+        }))
+      };
     case ActionType.GET_SERVER_LIST_FAILURE:
-      return Object.assign({}, state, {
-        serverList: [],
-      });
+      return {
+        ...state,
+        serverList: new Map(),
+      };
+    // Get server.
+    case ActionType.GET_SERVER_START:
+      return state;
+    case ActionType.GET_SERVER_SUCCESS:
+      return {
+        ...state,
+        serverList: state.serverList.set(action.info.URI, action.info),
+      };
+    case ActionType.GET_SERVER_FAILURE:
+      return state;
     // servergroup REST.
     case ActionType.GET_SERVERGROUP_LIST_START:
       return state;
@@ -58,13 +70,9 @@ const server = (state = defaultState, action) => {
       }
       return {
         ...state,
-        serverGroupList: action.info.Members.map((each) => {
-          return {
-            URI: each.URI,
-            Name: each.Name,
-          };
-        }),
-        defaultServerGroup: tempDefaultServerGroup
+        serverGroupList: action.info.Members,
+        defaultServerGroup: tempDefaultServerGroup,
+        currentServerGroup: tempDefaultServerGroup
       };
     case ActionType.GET_SERVERGROUP_LIST_FAILURE:
       return Object.assign({}, state, {
@@ -75,6 +83,22 @@ const server = (state = defaultState, action) => {
     case ActionType.CREATE_SERVERGROUP_SUCCESS:
       return state;
     case ActionType.CREATE_SERVERGROUP_FAILURE:
+      return state;
+    // server event.
+    case ActionType.ON_SERVER_CREATE:
+    {
+      const has = state.serverList.has(action.info.URI);
+      if (has) {
+        return {
+          ...state,
+          serverList: state.serverList.set(action.info.URI, action.info)
+        };
+      }
+      return state;
+    }
+    case ActionType.ON_SERVER_UPDATE:
+      return state;
+    case ActionType.ON_SERVER_DELETE:
       return state;
     // servergroup event.
     case ActionType.ON_SERVERGROUP_CREATE:
@@ -136,4 +160,4 @@ const server = (state = defaultState, action) => {
   }
 };
 
-export default server;
+export default serverApp;

@@ -9,6 +9,10 @@ import (
 type ServerServerGroupMember struct {
 	URI string `json:"URI"`
 	ID  string `json:"ID"`
+	ServerID string `json:"ServerID"`
+	ServerURI string `json:"ServerURI"`
+	ServerGroupID string `'json"ServerGroupID"`
+	ServerGroupURI string `'json"ServerGroupURI"`
 }
 
 // GetServerServerGroupCollectionResponse is the DTO.
@@ -31,6 +35,10 @@ func (dto *GetServerServerGroupCollectionResponse) Load(m *model.ServerServerGro
 		dto.Members = append(dto.Members, ServerServerGroupMember{
 			URI: constValue.ToServerServerGroupURI(m.Members[i].ID),
 			ID:  m.Members[i].ID,
+			ServerID: m.Members[i].ServerID,
+			ServerURI: constValue.ToServerURI(m.Members[i].ServerID),
+			ServerGroupID: m.Members[i].ServerGroupID,
+			ServerGroupURI: constValue.ToServerGroupURI(m.Members[i].ServerGroupID),
 		})
 	}
 	if m.NextPageURI != "" {

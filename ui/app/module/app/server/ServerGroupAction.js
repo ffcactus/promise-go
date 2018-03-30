@@ -1,6 +1,5 @@
 import * as Client from './Client';
 import { ActionType } from './ConstValue';
-import * as WsAction from '../../promise/ws/WsAction';
 
 export function getServerGroupListStart() {
   return {
@@ -97,8 +96,7 @@ function createServerGroupFailure(messages) {
 
 export function createServerGroup(servergroup) {
   return (dispatch, getState) => {
-    const state = getState();
-    const hostname = state.session.hostname;
+    const hostname = getState().session.hostname;
     dispatch(createServerGroupStart());
     Client.postServerGroup(hostname, servergroup).then((resp) => {
       if (resp.status === 201) {
@@ -113,9 +111,41 @@ export function createServerGroup(servergroup) {
   };
 }
 
-export function onServerGroupSelected(name) {
-  return {
-    type: ActionType.ON_SERVERGROUP_SELECTED,
-    info: name
+/**
+ * This action will be called when user clicks on a servergroup.
+ * @param {string} id The ID of the group been selected.
+ */
+export function onServerGroupSelected(servergroup) {
+  return (dispatch, getState) => {
+    const hostname = getState().session.hostname;
+
+    dispatch({
+      type: ActionType.ON_SERVERGROUP_SELECTED,
+      info: servergroup
+    });
+    dispatch({
+      type: ActionType.GET_SERVER_LIST_START
+    });
+    // Get server list start.
+    Client.getServerListByGroup(hostname, servergroup.ID).then((resp) => {
+      if (resp.status === 200) {
+        // Get server list success.
+        dispatch({
+          type: ActionType.GET_SERVER_LIST_SUCCESS,
+          info: resp.response
+        });
+        return;
+      }
+      // Get server list failure.
+      dispatch({
+        type: ActionType.GET_SERVER_LIST_FAILURE,
+        info: resp.response
+      });
+    }).catch(() => {
+      // Get server list failure.
+      createServerGroupFailure({
+        type: ActionType.GET_SERVER_LIST_FAILURE,
+      });
+    });
   };
 }

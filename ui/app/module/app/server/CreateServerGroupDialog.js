@@ -49,7 +49,7 @@ class CreateServerGroupDialog extends React.Component {
   // Why do we pass action here?
   // Because I don't know how to get form content here if pass a function.
   render() {
-    if (this.props.server.openCreateServerGroupDialog) {
+    if (this.props.serverApp.openCreateServerGroupDialog) {
       return (
         <DialogFrame>
           <DialogTitle value="Create Server Group" />
@@ -73,13 +73,13 @@ class CreateServerGroupDialog extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { server } = state;
-  return { server };
+  const { serverApp } = state;
+  return { serverApp };
 }
 
 CreateServerGroupDialog.propTypes = {
   dispatch: PropTypes.func,
-  server: PropTypes.object,
+  serverApp: PropTypes.object,
   onOK: PropTypes.func,
 };
 

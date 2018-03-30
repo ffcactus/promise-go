@@ -16,7 +16,7 @@ class ServerGroupControlCreate extends React.Component {
 
   onClick(event) {
     event.preventDefault();
-    if (! this.props.server.openCreateServerGroupDialog) {
+    if (! this.props.serverApp.openCreateServerGroupDialog) {
       this.props.dispatch(ServerGroupAction.openCreateServerGroupDialog());
     }
   }
@@ -33,13 +33,13 @@ class ServerGroupControlCreate extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { server } = state;
-  return { server };
+  const { serverApp } = state;
+  return { serverApp };
 }
 
 ServerGroupControlCreate.propTypes = {
   dispatch: PropTypes.func,
-  server: PropTypes.object,
+  serverApp: PropTypes.object,
 };
 
 export default connect(mapStateToProps)(CSSModules(ServerGroupControlCreate, styles));

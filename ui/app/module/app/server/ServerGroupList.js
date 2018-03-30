@@ -13,8 +13,8 @@ class ServerGroupList extends React.Component {
   render() {
     return (
       <div styleName="ServerGroupList">
-        {this.props.server.serverGroupList.map((each) => {
-          return <ServerGroupElement key={each.Name} name={each.Name} />;
+        {this.props.serverApp.serverGroupList.map((each) => {
+          return <ServerGroupElement key={each.ID} servergroup={each} />;
         })}
       </div>
     );
@@ -22,12 +22,12 @@ class ServerGroupList extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { server } = state;
-  return { server };
+  const { serverApp } = state;
+  return { serverApp };
 }
 
 ServerGroupList.propTypes = {
-  server: PropTypes.object,
+  serverApp: PropTypes.object,
 };
 
 export default connect(mapStateToProps)(CSSModules(ServerGroupList, styles));
