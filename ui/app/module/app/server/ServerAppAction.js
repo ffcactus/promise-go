@@ -3,6 +3,7 @@ import { ActionType } from './ConstValue';
 import * as WsAction from '../../promise/ws/WsAction';
 import * as ServerAction from './ServerAction';
 import * as ServerGroupAction from './ServerGroupAction';
+import * as ServerServerGroupAction from './ServerServerGroupAction';
 
 function appInitStart() {
   return {
@@ -25,6 +26,7 @@ function appInitFailure() {
 export function appInit() {
   WsAction.registerMessageAction('Server', ServerAction.onServerMessage);
   WsAction.registerMessageAction('ServerGroup', ServerGroupAction.onServerGroupMessage);
+  WsAction.registerMessageAction('ServerServerGroup', ServerServerGroupAction.onServerServerGroupMessage);
   return (dispatch, getState) => {
     const hostname = getState().session.hostname;
     dispatch(appInitStart());

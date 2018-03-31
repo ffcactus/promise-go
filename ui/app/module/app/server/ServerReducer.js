@@ -86,16 +86,7 @@ const serverApp = (state = defaultState, action) => {
       return state;
     // server event.
     case ActionType.ON_SERVER_CREATE:
-    {
-      const has = state.serverList.has(action.info.URI);
-      if (has) {
-        return {
-          ...state,
-          serverList: state.serverList.set(action.info.URI, action.info)
-        };
-      }
       return state;
-    }
     case ActionType.ON_SERVER_UPDATE:
       return state;
     case ActionType.ON_SERVER_DELETE:
@@ -106,7 +97,7 @@ const serverApp = (state = defaultState, action) => {
         ...state,
         serverGroupList: state.serverGroupList.concat(action.info)
       };
-    case ActionType.ON_SERVER_SERVERGROUP_UPDATE:
+    case ActionType.ON_SERVERGROUP_UPDATE:
       return {
         ...state,
         serverGroupList: state.serverGroupList.map((each) => {
@@ -131,6 +122,26 @@ const serverApp = (state = defaultState, action) => {
         ...state,
         currentServerGroup: action.info,
       };
+    // Server-servergroup event.
+    // We need check if the server belongs to the group selected.
+    case ActionType.ON_SERVER_SERVERGROUP_CREATE:
+      if (action.info.ServerGroupID === state.currentServerGroup.ID) {
+        return {
+          ...state,
+          serverList: state.serverList.set(action.info.ServerURI, {})
+        };
+      }
+      return state;
+    case ActionType.ON_SERVER_SERVERGROUP_UPDATE:
+      return state;
+    case ActionType.ON_SERVER_SERVERGROUP_DELETE:
+      if (action.info.ServerGroupID === state.currentServerGroup.ID) {
+        return {
+          ...state,
+          serverList: state.serverList.delete(action.info.ServerURI)
+        };
+      }
+      return state;
     // create server group dialog.
     case ActionType.OPEN_CREATE_SERVERGROUP_DIALOG:
       return {

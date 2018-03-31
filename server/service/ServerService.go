@@ -92,12 +92,17 @@ func FindServerStateAdded() {
 func DeleteServer(id string) []commonMessage.Message {
 	// TODO right now, we just remove server from DB.
 	dbImpl := db.GetDBInstance()
-	exist, err := dbImpl.DeleteServer(id)
-	if err != nil {
-		return []commonMessage.Message{commonMessage.NewInternalError()}
-	}
+	exist, server, ssg, commited, err := dbImpl.DeleteServer(id)
 	if !exist {
 		return []commonMessage.Message{commonMessage.NewResourceNotExist()}
+	}
+	if err != nil || !commited {
+		return []commonMessage.Message{commonMessage.NewTransactionError()}
+	}
+	var eventStrategy strategy.ServerEventStrategy
+	eventStrategy.DispatchServerDelete(nil, server.ID)
+	for _, each := range ssg {
+		eventStrategy.DispatchServerServerGroupDelete(nil, each.ID)
 	}
 	return nil
 }

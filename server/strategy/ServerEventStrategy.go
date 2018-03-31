@@ -116,3 +116,22 @@ func (s *ServerEventStrategy) DispatchServerServerGroupCreate(c *context.ServerC
 			Warn("Dispatch server-servergroup create event failed, event dispatching failed.")
 	}
 }
+
+// DispatchServerServerGroupDelete will send server-servergroup create event.
+// Generally we don't care much about the error while sending event.
+// If the server created, but event failed to dispatch, the error won't return to user.
+func (s *ServerEventStrategy) DispatchServerServerGroupDelete(c *context.ServerContext, id string) {
+	messages, err := wsSDK.DispatchResourceDelete(category.ServerServerGroup, id)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"id":    id,
+			"error": err}).
+			Warn("Dispatch server-servergroup delete event failed, event dispatching failed.")
+	}
+	if messages != nil {
+		log.WithFields(log.Fields{
+			"id":      id,
+			"message": messages[0].ID}).
+			Warn("Dispatch server-servergroup delete event failed, event dispatching failed.")
+	}
+}

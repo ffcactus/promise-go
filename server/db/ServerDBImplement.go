@@ -168,8 +168,14 @@ func (i *ServerDBImplement) FindServerStateAdded() string {
 
 // DeleteServer will delete server by ID.
 // Since we also need to delete the server-servergroup association, we need transaction here.
-func (i *ServerDBImplement) DeleteServer(id string) (bool, error) {
-	var s = new(entity.Server)
+// This function will return the if the server exist, deleted server, the slice of deleted server-servergroup, whether operation commited and error if any.
+func (i *ServerDBImplement) DeleteServer(id string) (bool, *model.Server, []model.ServerServerGroup, bool, error) {
+	var (
+		s = new(entity.Server)
+		deletedServer = new(model.Server)
+		deletedSSG = make([]model.ServerServerGroup, 0)
+		deletedSSGEntity = make([]entity.ServerServerGroup, 0)
+	)
 
 	c := commonDB.GetConnection()
 	tx := c.Begin()
@@ -177,14 +183,15 @@ func (i *ServerDBImplement) DeleteServer(id string) (bool, error) {
 		log.WithFields(log.Fields{
 			"error": err}).
 			Warn("Delete server in DB failed, start transaction failed.")
-		return false, err
+		// Assume server exist.
+		return true, nil, nil, false, err
 	}
 	// Check if the server exist.
 	if tx.Where("\"ID\" = ?", id).First(s).RecordNotFound() {
 		tx.Rollback()
 		log.WithFields(log.Fields{"id": id}).
 			Debug("Delete server from DB failed, server does not exist, transaction rollback.")
-		return false, fmt.Errorf("server does not exist")
+		return false, nil, nil, false, fmt.Errorf("server does not exist")
 	}
 	// Load full server info so we can delete them all together.
 	if err := tx.Where("\"ID\" = ?", id).
@@ -219,8 +226,9 @@ func (i *ServerDBImplement) DeleteServer(id string) (bool, error) {
 		tx.Rollback()
 		log.WithFields(log.Fields{"id": id}).
 			Debug("Delete server in DB failed, can not load full server info, transaction rollback.")
-		return true, err
+		return true, nil, nil, false, err
 	}
+	deletedServer = s.ToModel()
 	// Delete all.
 	i.deleteProcessors(tx, s)
 	i.deleteMemory(tx, s)
@@ -237,23 +245,34 @@ func (i *ServerDBImplement) DeleteServer(id string) (bool, error) {
 		tx.Rollback()
 		log.WithFields(log.Fields{"id": id}).
 			Debug("Delete server in DB failed, delete resource failed, transaction rollback.")
-		return true, err
+		return true, nil, nil, false, err
 	}
+	
+
 	// Delete the server-servergroup association.
+	// But we need record them first.
+	if err := tx.Where("\"ServerID\" = ?", id).Find(&deletedSSGEntity).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{"id": id}).
+			Warn("Delete server in DB failed, record server-servergroup association failed, transaction rollback.")
+	}
+	for _, each := range deletedSSGEntity {
+		deletedSSG = append(deletedSSG, *each.ToModel())
+	}
 	if err := tx.Where("\"ServerID\" = ?", id).Delete(entity.ServerServerGroup{}).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{"id": id}).
-			Debug("Delete server in DB failed, delete server-servergroup association failed, transaction rollback.")
-		return true, err
+			Warn("Delete server in DB failed, delete server-servergroup association failed, transaction rollback.")
+		return true, nil, nil, false, err
 	}
 	// Commit.
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"error": err}).
 			Warn("Delete server in DB failed, commit failed.")
-		return true, err
+		return true, nil, nil, false, err
 	}
-	return true, nil
+	return true, deletedServer, deletedSSG, true, nil
 }
 
 // DeleteServerCollection will delete all the server from DB.
