@@ -44,6 +44,7 @@ func (i *PoolDBImplement) PostIPv4Pool(m *model.IPv4Pool) (bool, *model.IPv4Pool
 	if !tx.Where("\"Name\" = ?", m.Name).First(&record).RecordNotFound() {
 		tx.Rollback()
 		log.WithFields(log.Fields{
+			"id": record.ID,
 			"name": m.Name}).
 			Warn("Post IPv4 pool in DB failed, duplicated resource, transaction rollback.")
 		return true, nil, false, commonConstError.ErrorResourceNotExist
