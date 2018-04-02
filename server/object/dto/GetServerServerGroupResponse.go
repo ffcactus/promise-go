@@ -2,8 +2,8 @@ package dto
 
 import (
 	log "github.com/sirupsen/logrus"
-	"promise/common/object/constError"
-	"promise/common/object/constValue"
+	"promise/common/object/consterror"
+	"promise/common/object/constvalue"
 	commonDTO "promise/common/object/dto"
 	"promise/server/object/model"
 )
@@ -22,12 +22,12 @@ func (dto *GetServerServerGroupResponse) Load(data interface{}) error {
 	m, ok := data.(*model.ServerServerGroup)
 	if !ok {
 		log.Warn("GetServerServerGroupResponse load data from model failed.")
-		return constError.ErrorDataConvert
+		return consterror.ErrorDataConvert
 	}
 	dto.PromiseResponse.Load(&m.PromiseModel)
 	dto.ServerID = m.ServerID
-	dto.ServerURI = constValue.ToServerURI(m.ServerID)
+	dto.ServerURI = constvalue.ToServerURI(m.ServerID)
 	dto.ServerGroupID = m.ServerGroupID
-	dto.ServerGroupURI = constValue.ToServerGroupURI(m.ServerGroupID)
+	dto.ServerGroupURI = constvalue.ToServerGroupURI(m.ServerGroupID)
 	return nil
 }

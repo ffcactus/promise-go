@@ -1,5 +1,5 @@
-import * as ActionConst from '../constValue/action/Desktop';
-import * as StateConst from '../constValue/state/Desktop';
+import * as ActionConst from '../constvalue/action/Desktop';
+import * as StateConst from '../constvalue/state/Desktop';
 
 const defaultState = {
   hostname: null,

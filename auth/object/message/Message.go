@@ -3,7 +3,7 @@ package message
 import (
 	"net/http"
 	"promise/common/category"
-	"promise/common/object/constValue"
+	"promise/common/object/constvalue"
 	"promise/common/object/message"
 )
 
@@ -25,7 +25,7 @@ func NewMessageAuthInternalError() message.Message {
 	ret := message.NewMessage(category.AA)
 	ret.ID = MessageAuthInternalError
 	ret.StatusCode = http.StatusInternalServerError
-	ret.Severity = constValue.SeverityCritical
+	ret.Severity = constvalue.SeverityCritical
 	ret.Description = "Internal error."
 	ret.Supports = []message.Support{
 		NewSupportAuthInternalError(),
@@ -38,7 +38,7 @@ func NewMessageAuthBadRequest() message.Message {
 	m := message.NewMessage(category.AA)
 	m.ID = MessageAuthBadRequest
 	m.StatusCode = http.StatusBadRequest
-	m.Severity = constValue.SeverityNormal
+	m.Severity = constvalue.SeverityNormal
 	m.Description = "Bad request."
 	m.Supports = []message.Support{
 		NewSupportAuthBadRequest(),
@@ -51,7 +51,7 @@ func NewMessageAuthIncorrectCredential() message.Message {
 	m := message.NewMessage(category.AA)
 	m.ID = MessageAuthIncorrectCredential
 	m.StatusCode = http.StatusBadRequest
-	m.Severity = constValue.SeverityNormal
+	m.Severity = constvalue.SeverityNormal
 	m.Description = "Incorrect credential."
 	m.Supports = []message.Support{
 		NewSupportAuthIncorrectCredential(),
@@ -64,7 +64,7 @@ func NewMessageAuthNotFoundSession() message.Message {
 	m := message.NewMessage(category.AA)
 	m.ID = MessageAuthNotFoundSession
 	m.StatusCode = http.StatusBadRequest
-	m.Severity = constValue.SeverityNormal
+	m.Severity = constvalue.SeverityNormal
 	m.Description = "Session not found."
 	m.Supports = []message.Support{
 		NewSupportAuthNotFoundSession(),

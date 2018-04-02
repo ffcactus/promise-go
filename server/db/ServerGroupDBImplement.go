@@ -4,8 +4,8 @@ import (
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	commonDB "promise/common/db"
-	commonConstError "promise/common/object/constError"
-	"promise/server/object/constError"
+	commonConstError "promise/common/object/consterror"
+	"promise/server/object/consterror"
 	"promise/server/object/entity"
 	"promise/server/object/model"
 	"strings"
@@ -143,7 +143,7 @@ func (i *ServerGroupDBImplement) DeleteServerGroup(id string) (*model.ServerGrou
 	var sg, previous entity.ServerGroup
 
 	if id == DefaultServerGroupID {
-		return nil, constError.ErrorDeleteDefaultServerGroup
+		return nil, consterror.ErrorDeleteDefaultServerGroup
 	}
 
 	if id == "" {

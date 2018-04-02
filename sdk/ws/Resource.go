@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"promise/common/app"
 	"promise/common/app/rest"
-	commonConstError "promise/common/object/constError"
-	commonConstValue "promise/common/object/constValue"
+	commonConstError "promise/common/object/consterror"
+	commonConstValue "promise/common/object/constvalue"
 	commonDTO "promise/common/object/dto"
-	"promise/ws/object/constValue"
+	"promise/ws/object/constvalue"
 	wsDTO "promise/ws/object/dto"
 	"time"
 )
@@ -65,17 +65,17 @@ func DispatchResourceEvent(eventType string, dto commonDTO.PromiseResponseInterf
 
 // DispatchResourceCreateEvent can dispatch resource create event.
 func DispatchResourceCreateEvent(dto commonDTO.PromiseResponseInterface) ([]commonDTO.Message, error) {
-	return DispatchResourceEvent(constValue.CreateEvent, dto)
+	return DispatchResourceEvent(constvalue.CreateEvent, dto)
 }
 
 // DispatchResourceUpdateEvent can dispatch resource udpate event.
 func DispatchResourceUpdateEvent(dto commonDTO.PromiseResponseInterface) ([]commonDTO.Message, error) {
-	return DispatchResourceEvent(constValue.UpdateEvent, dto)
+	return DispatchResourceEvent(constvalue.UpdateEvent, dto)
 }
 
 // DispatchResourceDeleteEvent can dispatch resource delete event.
 func DispatchResourceDeleteEvent(dto commonDTO.PromiseResponseInterface) ([]commonDTO.Message, error) {
-	return DispatchResourceEvent(constValue.DeleteEvent, dto)
+	return DispatchResourceEvent(constvalue.DeleteEvent, dto)
 }
 
 // DispatchResourceCollectionDeleteEvent dispatch an event about resource collection deleted.
@@ -85,6 +85,6 @@ func DispatchResourceCollectionDeleteEvent(category string) ([]commonDTO.Message
 	)
 	event.CreatedAt = time.Now()
 	event.Category = category
-	event.Type = constValue.DeleteCollectionEvent
+	event.Type = constvalue.DeleteCollectionEvent
 	return dispatch(&event)
 }

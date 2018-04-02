@@ -3,7 +3,7 @@ package strategy
 import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
-	"promise/common/object/constValue"
+	"promise/common/object/constvalue"
 	commonDTO "promise/common/object/dto"
 	taskSDK "promise/sdk/task"
 	"promise/server/context"
@@ -178,7 +178,7 @@ func createRefreshTaskRequest(server *model.Server) *taskDTO.PostTaskRequest {
 	request.CreatedByName = "CreatedByName???"
 	request.CreatedByURI = "CreatedByURI???"
 	request.TargetName = server.Name
-	request.TargetURI = constValue.ToServerURI(server.ID)
+	request.TargetURI = constvalue.ToServerURI(server.ID)
 	request.TaskSteps = ServerTaskRefreshStepLIST
 	return &request
 }

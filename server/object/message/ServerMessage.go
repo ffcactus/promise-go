@@ -3,7 +3,7 @@ package message
 import (
 	"net/http"
 	"promise/common/category"
-	"promise/common/object/constValue"
+	"promise/common/object/constvalue"
 	commonMessage "promise/common/object/message"
 	"promise/server/object/model"
 )
@@ -23,14 +23,14 @@ const (
 
 // NewArgumentServerID Get argument by server.
 func NewArgumentServerID(s *model.Server) commonMessage.Argument {
-	return commonMessage.Argument{Type: "URI", Name: s.Name, Value: constValue.ToServerURI(s.ID)}
+	return commonMessage.Argument{Type: "URI", Name: s.Name, Value: constvalue.ToServerURI(s.ID)}
 }
 
 // NewServerPostFailed create new message.
 func NewServerPostFailed() commonMessage.Message {
 	ret := commonMessage.NewMessage(category.Server)
 	ret.ID = MessageServerPostFailed
-	ret.Severity = constValue.SeverityWarning
+	ret.Severity = constvalue.SeverityWarning
 	ret.Description = "Post server failed."
 	ret.Supports = []commonMessage.Support{
 		NewSupportServerUnableConnect(),
@@ -44,7 +44,7 @@ func NewServerLockFailed(s *model.Server) commonMessage.Message {
 	ret := commonMessage.NewMessage(category.Server)
 	ret.ID = MessageServerLockFailed
 	ret.StatusCode = http.StatusConflict
-	ret.Severity = constValue.SeverityNormal
+	ret.Severity = constvalue.SeverityNormal
 	ret.Description = "Server {0} failed to lock, server state = {1}."
 	ret.Arguments = []commonMessage.Argument{
 		NewArgumentServerID(s),
@@ -61,7 +61,7 @@ func NewServerLockFailed(s *model.Server) commonMessage.Message {
 func NewServerAccountExist(s *model.Server) commonMessage.Message {
 	ret := commonMessage.NewMessage(category.Server)
 	ret.ID = MessageServerAccountExist
-	ret.Severity = constValue.SeverityNormal
+	ret.Severity = constvalue.SeverityNormal
 	ret.Description = "Server {0} failed to create management account."
 	ret.Arguments = []commonMessage.Argument{
 		{Type: "String", Name: s.Name, Value: s.Name},
@@ -77,7 +77,7 @@ func NewServerAccountExist(s *model.Server) commonMessage.Message {
 func NewServerRefreshTaskFailed() commonMessage.Message {
 	ret := commonMessage.NewMessage(category.Server)
 	ret.ID = MessageServerRefreshTaskFailed
-	ret.Severity = constValue.SeverityNormal
+	ret.Severity = constvalue.SeverityNormal
 	ret.Description = "Failed to create refresh task"
 	ret.Supports = []commonMessage.Support{
 		commonMessage.NewSupportInternalError(),

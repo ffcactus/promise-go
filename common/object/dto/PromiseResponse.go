@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"promise/common/object/constValue"
+	"promise/common/object/constvalue"
 	"promise/common/object/model"
 	"time"
 )
@@ -53,7 +53,7 @@ func (dto *PromiseResponse) GetUpdatedAt() time.Time {
 // Load data from model.
 func (dto *PromiseResponse) Load(m *model.PromiseModel) {
 	dto.ID = m.ID
-	dto.URI = constValue.CategoryToURI(m.Category, m.ID)
+	dto.URI = constvalue.CategoryToURI(m.Category, m.ID)
 	dto.Category = m.Category
 	dto.CreatedAt = m.CreatedAt
 	dto.UpdatedAt = m.UpdatedAt

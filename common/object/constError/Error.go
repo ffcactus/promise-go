@@ -1,4 +1,4 @@
-package constError
+package consterror
 
 import (
 	"fmt"

@@ -4,7 +4,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 	"promise/common/app"
-	"promise/common/object/constValue"
+	"promise/common/object/constvalue"
 	"promise/ws/controller"
 	"promise/ws/service"
 )
@@ -16,14 +16,14 @@ func main() {
 
 	// ws namesapce.
 	wsNS := beego.NewNamespace(
-		app.RootURL+constValue.WSBaseURI,
+		app.RootURL+constvalue.WSBaseURI,
 		beego.NSRouter("/", &controller.RootController{}),
 	)
 	beego.AddNamespace(wsNS)
 
 	// ws-sender namespace.
 	wsSenderNS := beego.NewNamespace(
-		app.RootURL+constValue.WSSenderBaseURI,
+		app.RootURL+constvalue.WSSenderBaseURI,
 		beego.NSRouter("/", &controller.WsSenderRootController{}),
 	)
 	beego.AddNamespace(wsSenderNS)

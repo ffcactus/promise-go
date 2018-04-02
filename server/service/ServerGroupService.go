@@ -6,7 +6,7 @@ import (
 	commonMessage "promise/common/object/message"
 	wsSDK "promise/sdk/ws"
 	"promise/server/db"
-	"promise/server/object/constError"
+	"promise/server/object/consterror"
 	"promise/server/object/dto"
 	"promise/server/object/message"
 	"promise/server/object/model"
@@ -75,7 +75,7 @@ func GetServerGroupCollection(start int, count int, filter string) (*model.Serve
 func DeleteServerGroup(id string) []commonMessage.Message {
 	dbImpl := db.GetServerGroupDB()
 	previous, err := dbImpl.DeleteServerGroup(id)
-	if err != nil && err.Error() == constError.ErrorDeleteDefaultServerGroup.Error() {
+	if err != nil && err.Error() == consterror.ErrorDeleteDefaultServerGroup.Error() {
 		return []commonMessage.Message{message.NewDeleteDefaultServerGroup()}
 	}
 	if previous == nil {

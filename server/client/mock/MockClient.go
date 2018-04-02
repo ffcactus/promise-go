@@ -9,7 +9,7 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/google/uuid"
-	"promise/server/object/constValue"
+	"promise/server/object/constvalue"
 )
 
 var (
@@ -35,7 +35,7 @@ func mockDelay() {
 
 // Support return if the server support this client.
 func (c *MockClient) Support() bool {
-	if strings.HasPrefix(c.Hostname, constValue.MockType) {
+	if strings.HasPrefix(c.Hostname, constvalue.MockType) {
 		return true
 	}
 	return false
@@ -44,7 +44,7 @@ func (c *MockClient) Support() bool {
 
 // GetProtocol will the the protocol
 func (c *MockClient) GetProtocol() string {
-	return constValue.MockProtocol
+	return constvalue.MockProtocol
 }
 
 // GetBasicInfo return the basic info.
@@ -55,8 +55,8 @@ func (c *MockClient) GetBasicInfo() (*model.ServerBasicInfo, error) {
 	ret.PhysicalUUID = uuid.New().String()
 	ret.Name = c.Hostname
 	ret.Description = *randString()
-	ret.Type = constValue.MockType
-	ret.Protocol = constValue.MockProtocol
+	ret.Type = constvalue.MockType
+	ret.Protocol = constvalue.MockProtocol
 	return &ret, nil
 }
 

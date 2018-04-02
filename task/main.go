@@ -6,7 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"promise/common/app"
 	commonDB "promise/common/db"
-	"promise/common/object/constValue"
+	"promise/common/object/constvalue"
 	"promise/task/controller"
 	"promise/task/object/entity"
 )
@@ -33,7 +33,7 @@ func main() {
 	app.Init("TaskApp")
 	initDB()
 	ns := beego.NewNamespace(
-		app.RootURL+constValue.TaskBaseURI,
+		app.RootURL+constvalue.TaskBaseURI,
 		beego.NSRouter("/", &controller.RootController{}),
 		beego.NSRouter("/:id", &controller.TaskController{}),
 		beego.NSRouter("/:id/action/:action", &controller.TaskActionController{}),

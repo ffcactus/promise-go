@@ -1,4 +1,4 @@
-import * as ActionConst from '../constValue/action/Desktop';
+import * as ActionConst from '../constvalue/action/Desktop';
 import * as client from '../client/global';
 
 function initStart() {

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import * as DesktopState from '../../constValue/state/Desktop';
+import * as DesktopState from '../../constvalue/state/Desktop';
 import * as DesktopAction from '../../actions/DesktopAction';
 import Desktop from '../../components/Desktop/Desktop';
 import Login from '../../module/promise/login/Login';

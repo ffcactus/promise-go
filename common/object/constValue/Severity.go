@@ -1,4 +1,4 @@
-package constValue
+package constvalue
 
 const (
 	// SeverityNormal is the message severity level.

@@ -3,7 +3,7 @@ package message
 import (
 	"net/http"
 	"promise/common/category"
-	"promise/common/object/constValue"
+	"promise/common/object/constvalue"
 	"promise/common/object/message"
 )
 
@@ -27,7 +27,7 @@ func NewMessageTaskInternalError() message.Message {
 	ret := message.NewMessage(category.Task)
 	ret.ID = MessageInternalError
 	ret.StatusCode = http.StatusInternalServerError
-	ret.Severity = constValue.SeverityCritical
+	ret.Severity = constvalue.SeverityCritical
 	ret.Description = "Internal error."
 	ret.Supports = []message.Support{
 		NewSupportTaskInternalError(),
@@ -40,7 +40,7 @@ func NewMessageTaskBadRequest() message.Message {
 	m := message.NewMessage(category.Task)
 	m.ID = MessageTaskBadRequest
 	m.StatusCode = http.StatusBadRequest
-	m.Severity = constValue.SeverityNormal
+	m.Severity = constvalue.SeverityNormal
 	m.Description = "Bad request."
 	m.Supports = []message.Support{
 		NewSupportTaskBadRequest(),
@@ -53,7 +53,7 @@ func NewMessageTaskSaveFailure() message.Message {
 	m := message.NewMessage(category.Task)
 	m.ID = MessageTaskNotExist
 	m.StatusCode = http.StatusInternalServerError
-	m.Severity = constValue.SeverityCritical
+	m.Severity = constvalue.SeverityCritical
 	m.Description = "Failed to save task."
 	m.Supports = []message.Support{
 		NewSupportTaskSaveFailure(),
@@ -66,7 +66,7 @@ func NewMessageTaskNotExist() message.Message {
 	m := message.NewMessage(category.Task)
 	m.ID = MessageTaskSaveFailure
 	m.StatusCode = http.StatusNotFound
-	m.Severity = constValue.SeverityNormal
+	m.Severity = constvalue.SeverityNormal
 	m.Description = "Task not exist."
 	m.Supports = []message.Support{
 		NewSupportTaskNotExist(),
@@ -79,7 +79,7 @@ func NewMessageTaskMissingProperty() message.Message {
 	m := message.NewMessage(category.Task)
 	m.ID = MessageTaskMissingProperty
 	m.StatusCode = http.StatusNotFound
-	m.Severity = constValue.SeverityNormal
+	m.Severity = constvalue.SeverityNormal
 	m.Description = "Missing prooperty in the request"
 	m.Supports = []message.Support{
 		NewSupportTaskNotExist(),

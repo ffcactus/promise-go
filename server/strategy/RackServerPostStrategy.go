@@ -4,7 +4,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	commonMessage "promise/common/object/message"
 	"promise/server/context"
-	"promise/server/object/constValue"
+	"promise/server/object/constvalue"
 	"promise/server/object/message"
 	"promise/server/object/model"
 )
@@ -51,8 +51,8 @@ func (s *RackServerPostStrategy) Execute(c *context.PostServerContext, tempServe
 		return nil, err
 	}
 	// Set the servers init state and health.
-	tempServer.State = constValue.ServerStateAdded
-	tempServer.Health = constValue.ServerHealthOK
+	tempServer.State = constvalue.ServerStateAdded
+	tempServer.Health = constvalue.ServerHealthOK
 	server, ssg, err := c.DB.PostServer(tempServer)
 	if err != nil {
 		c.AppendMessage(commonMessage.NewTransactionError())

@@ -1,4 +1,4 @@
-package constValue
+package constvalue
 
 const (
 	// CreateEvent is a event type.

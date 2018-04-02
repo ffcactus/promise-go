@@ -80,3 +80,25 @@ func DeleteIPv4PoolCollection() []commonMessage.Message {
 	wsSDK.DispatchResourceCollectionDeleteEvent(category.PoolIPv4)
 	return nil
 }
+
+// AllocateIPv4Address will allocate an IP from pool.
+func AllocateIPv4Address(id string, request dto.AllocateIPv4Request) (*model.IPv4Pool, []commonMessage.Message) {
+	dbImpl := db.GetPoolDB()
+
+	ipv4Pool := dbImpl.GetIPv4Pool(id)
+	if ipv4Pool == nil {
+		return nil, []commonMessage.Message{commonMessage.NewResourceNotExist()}
+	}
+	return ipv4Pool, nil
+}
+
+// FreeIPv4Address will free an IP from pool.
+func FreeIPv4Address(id string, request dto.FreeIPv4Request) (*model.IPv4Pool, []commonMessage.Message) {
+	dbImpl := db.GetPoolDB()
+
+	ipv4Pool := dbImpl.GetIPv4Pool(id)
+	if ipv4Pool == nil {
+		return nil, []commonMessage.Message{commonMessage.NewResourceNotExist()}
+	}
+	return ipv4Pool, nil
+}

@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"promise/common/object/constValue"
+	"promise/common/object/constvalue"
 	"promise/pool/object/model"
 )
 
@@ -30,7 +30,7 @@ func (dto *GetIPv4PoolCollectionResponse) Load(m *model.IPv4PoolCollection) {
 	dto.Members = make([]IPv4PoolMember, 0)
 	for i := range m.Members {
 		dto.Members = append(dto.Members, IPv4PoolMember{
-			URI:  constValue.ToIDPoolIPv4URI(m.Members[i].ID),
+			URI:  constvalue.ToIDPoolIPv4URI(m.Members[i].ID),
 			ID:   m.Members[i].ID,
 			Name: m.Members[i].Name,
 		})

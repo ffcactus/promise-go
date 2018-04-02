@@ -2,7 +2,7 @@ package message
 
 import (
 	"promise/common/category"
-	"promise/common/object/constValue"
+	"promise/common/object/constvalue"
 	commonMessage "promise/common/object/message"
 )
 
@@ -15,7 +15,7 @@ const (
 func NewDeleteDefaultServerServerGroup() commonMessage.Message {
 	ret := commonMessage.NewMessage(category.ServerServerGroup)
 	ret.ID = MessageServerServerGroupDeleteDefault
-	ret.Severity = constValue.SeverityWarning
+	ret.Severity = constvalue.SeverityWarning
 	ret.Description = "Delete default server-servergroup is not allowed."
 	return ret
 }

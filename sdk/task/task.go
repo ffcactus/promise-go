@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"promise/common/app"
 	"promise/common/app/rest"
-	"promise/common/object/constValue"
+	"promise/common/object/constvalue"
 	commonDto "promise/common/object/dto"
 	"promise/task/object/dto"
 	"promise/task/object/model"
@@ -12,7 +12,7 @@ import (
 
 var (
 	// TaskServerRoot The root of the service.
-	TaskServerRoot = app.ProtocolScheme + app.Host + app.RootURL + constValue.TaskBaseURI
+	TaskServerRoot = app.ProtocolScheme + app.Host + app.RootURL + constvalue.TaskBaseURI
 )
 
 // CreateTask Create the task.

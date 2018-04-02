@@ -2,7 +2,7 @@ package dto
 
 import (
 	log "github.com/sirupsen/logrus"
-	"promise/common/object/constError"
+	"promise/common/object/consterror"
 	commonDTO "promise/common/object/dto"
 	"promise/pool/object/model"
 )
@@ -18,7 +18,7 @@ func (dto *GetIPv4PoolResponse) Load(data interface{}) error {
 	m, ok := data.(*model.IPv4Pool)
 	if !ok {
 		log.Warn("GetIPv4PoolResponse load data from model failed.")
-		return constError.ErrorDataConvert
+		return consterror.ErrorDataConvert
 	}
 	dto.PromiseResponse.Load(&m.PromiseModel)
 	dto.Name = m.Name

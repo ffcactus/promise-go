@@ -4,7 +4,7 @@ import (
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	commonDB "promise/common/db"
-	commonConstError "promise/common/object/constError"
+	commonConstError "promise/common/object/consterror"
 	"promise/pool/object/entity"
 	"promise/pool/object/model"
 	"strings"

@@ -4,8 +4,8 @@ import (
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	commonDB "promise/common/db"
-	commonConstError "promise/common/object/constError"
-	"promise/server/object/constError"
+	commonConstError "promise/common/object/consterror"
+	"promise/server/object/consterror"
 	"promise/server/object/entity"
 	"promise/server/object/model"
 	"strings"
@@ -182,7 +182,7 @@ func (i *ServerServerGroupImplement) DeleteServerServerGroup(id string) (*model.
 		log.WithFields(log.Fields{
 			"id": id}).
 			Warn("Delete server-servergroup in DB failed, delete default server-servergroup, transaction rollback.")
-		return nil, constError.ErrorDeleteDefaultServerServerGroup
+		return nil, consterror.ErrorDeleteDefaultServerServerGroup
 	}
 	ssg.ID = id
 	if err := tx.Delete(&ssg).Error; err != nil {

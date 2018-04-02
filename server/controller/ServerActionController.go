@@ -6,7 +6,7 @@ import (
 	"net/http"
 	commonDto "promise/common/object/dto"
 	commonMessage "promise/common/object/message"
-	"promise/server/object/constValue"
+	"promise/server/object/constvalue"
 	"promise/server/service"
 	"strings"
 )
@@ -22,7 +22,7 @@ func (c *ServerActionController) Post() {
 	id := c.Ctx.Input.Param(":id")
 	log.WithFields(log.Fields{"action": action, "id": id}).Info("Cast action on server.")
 	switch strings.ToLower(action) {
-	case constValue.ServerActionRefresh:
+	case constvalue.ServerActionRefresh:
 		if resp, messages := service.RefreshServer(id); messages != nil {
 			c.Data["json"] = commonDto.MessagesToDto(messages)
 			c.Ctx.Output.SetStatus(messages[0].StatusCode)

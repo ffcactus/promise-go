@@ -3,7 +3,7 @@ package message
 import (
 	"net/http"
 	"promise/common/category"
-	"promise/common/object/constValue"
+	"promise/common/object/constvalue"
 	"time"
 )
 
@@ -58,7 +58,7 @@ func NewMessage(category string) Message {
 func NewResourceNotExist() Message {
 	ret := NewMessage(category.Promise)
 	ret.ID = MessageResourceNotExist
-	ret.Severity = constValue.SeverityNormal
+	ret.Severity = constvalue.SeverityNormal
 	ret.Description = "Resource does not exist."
 	ret.Supports = []Support{
 		NewSupportResourceNotExist(),
@@ -70,7 +70,7 @@ func NewResourceNotExist() Message {
 func NewResourceDuplicate() Message {
 	ret := NewMessage(category.Promise)
 	ret.ID = MessageResourceDuplicate
-	ret.Severity = constValue.SeverityNormal
+	ret.Severity = constvalue.SeverityNormal
 	ret.Description = "Resource duplicated."
 	ret.Supports = []Support{
 		NewSupportResourceDuplicate(),
@@ -82,7 +82,7 @@ func NewResourceDuplicate() Message {
 func NewInvalidRequest() Message {
 	ret := NewMessage(category.Promise)
 	ret.ID = MessageInvalidRequest
-	ret.Severity = constValue.SeverityNormal
+	ret.Severity = constvalue.SeverityNormal
 	ret.Description = "The request is invalid."
 	ret.Supports = []Support{
 		NewSupportInvalidRequest(),
@@ -94,7 +94,7 @@ func NewInvalidRequest() Message {
 func NewInternalError() Message {
 	ret := NewMessage(category.Promise)
 	ret.ID = MessageInternalError
-	ret.Severity = constValue.SeverityNormal
+	ret.Severity = constvalue.SeverityNormal
 	ret.Description = "Internal error happened while process the request."
 	ret.Supports = []Support{
 		NewSupportInternalError(),
@@ -106,7 +106,7 @@ func NewInternalError() Message {
 func NewTimeout() Message {
 	ret := NewMessage(category.Promise)
 	ret.ID = MessageTimeout
-	ret.Severity = constValue.SeverityNormal
+	ret.Severity = constvalue.SeverityNormal
 	ret.Description = "I/O operation timeout."
 	ret.Supports = []Support{
 		NewSupportTimeout(),
@@ -118,7 +118,7 @@ func NewTimeout() Message {
 func NewTransactionError() Message {
 	ret := NewMessage(category.Promise)
 	ret.ID = MessageTransactionError
-	ret.Severity = constValue.SeverityNormal
+	ret.Severity = constvalue.SeverityNormal
 	ret.Description = "Transaction error."
 	ret.Supports = []Support{
 		NewSupportTransactionError(),

@@ -3,7 +3,7 @@ package strategy
 import (
 	log "github.com/sirupsen/logrus"
 	"promise/server/context"
-	"promise/server/object/constValue"
+	"promise/server/object/constvalue"
 	"promise/server/object/model"
 )
 
@@ -74,8 +74,8 @@ func (s *RackServerRefreshStrategy) Execute(c *context.RefreshServerContext, ser
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameStorages, c, server, s.RefreshStorages); err != nil {
 		return err
 	}
-	s.SetServerHealth(&c.ServerContext, server, constValue.ServerHealthOK)
-	s.SetServerState(&c.ServerContext, server, constValue.ServerStateReady)
+	s.SetServerHealth(&c.ServerContext, server, constvalue.ServerHealthOK)
+	s.SetServerState(&c.ServerContext, server, constvalue.ServerStateReady)
 	log.WithFields(log.Fields{"id": server.ID}).Info("Refresh server done.")
 	return nil
 }

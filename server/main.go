@@ -3,7 +3,7 @@ package main
 import (
 	"promise/common/app"
 	commonDB "promise/common/db"
-	"promise/common/object/constValue"
+	"promise/common/object/constvalue"
 	"promise/server/controller"
 	"promise/server/object/entity"
 	"promise/server/service"
@@ -20,7 +20,7 @@ func main() {
 	// go service.FindServerStateAdded()
 
 	serverNS := beego.NewNamespace(
-		app.RootURL+constValue.ServerBaseURI,
+		app.RootURL+constvalue.ServerBaseURI,
 		beego.NSRouter("/", &controller.ServerRootController{}),
 		beego.NSRouter("/:id", &controller.ServerController{}),
 		beego.NSRouter("/:id/action/:action", &controller.ServerActionController{}),
@@ -28,14 +28,14 @@ func main() {
 	beego.AddNamespace(serverNS)
 
 	serverGroupNS := beego.NewNamespace(
-		app.RootURL+constValue.ServerGroupBaseURI,
+		app.RootURL+constvalue.ServerGroupBaseURI,
 		beego.NSRouter("/", &controller.ServerGroupRootController{}),
 		beego.NSRouter("/:id", &controller.ServerGroupController{}),
 	)
 	beego.AddNamespace(serverGroupNS)
 
 	serverServerGroupNS := beego.NewNamespace(
-		app.RootURL+constValue.ServerServerGroupBaseURI,
+		app.RootURL+constvalue.ServerServerGroupBaseURI,
 		beego.NSRouter("/", &controller.ServerServerGroupRootController{}),
 		beego.NSRouter("/:id", &controller.ServerServerGroupController{}),
 	)

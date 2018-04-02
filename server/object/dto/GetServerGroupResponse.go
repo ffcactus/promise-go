@@ -2,7 +2,7 @@ package dto
 
 import (
 	log "github.com/sirupsen/logrus"
-	"promise/common/object/constError"
+	"promise/common/object/consterror"
 	commonDTO "promise/common/object/dto"
 	"promise/server/object/model"
 )
@@ -19,7 +19,7 @@ func (dto *GetServerGroupResponse) Load(data interface{}) error {
 	m, ok := data.(*model.ServerGroup)
 	if !ok {
 		log.Warn("GetServerGroupResponse load data from model failed.")
-		return constError.ErrorDataConvert
+		return consterror.ErrorDataConvert
 	}
 	dto.PromiseResponse.Load(&m.PromiseModel)
 	dto.Name = m.Name

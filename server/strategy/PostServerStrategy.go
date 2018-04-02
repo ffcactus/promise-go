@@ -3,7 +3,7 @@ package strategy
 import (
 	log "github.com/sirupsen/logrus"
 	"promise/server/context"
-	"promise/server/object/constValue"
+	"promise/server/object/constvalue"
 	"promise/server/object/model"
 )
 
@@ -17,9 +17,9 @@ type PostServerStrategy interface {
 // CreatePostServerStrategy will create the post server strategy based on the server type.
 func CreatePostServerStrategy(server *model.Server) PostServerStrategy {
 	switch server.Type {
-	case constValue.RackType:
+	case constvalue.RackType:
 		return new(RackServerPostStrategy)
-	case constValue.MockType:
+	case constvalue.MockType:
 		return new(MockServerPostStrategy)
 	default:
 		log.WithFields(log.Fields{"hostname": server.Hostname, "type": server.Type}).Warn("Can not find post server strategy.")

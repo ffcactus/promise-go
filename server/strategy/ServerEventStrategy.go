@@ -6,7 +6,7 @@ import (
 	"promise/server/context"
 	"promise/server/object/dto"
 	"promise/server/object/model"
-	wsConstValue "promise/ws/object/constValue"
+	wsConstValue "promise/ws/object/constvalue"
 )
 
 /**

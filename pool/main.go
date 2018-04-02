@@ -6,7 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"promise/common/app"
 	commonDB "promise/common/db"
-	"promise/common/object/constValue"
+	"promise/common/object/constvalue"
 	"promise/pool/controller"
 	"promise/pool/object/entity"
 )
@@ -33,9 +33,10 @@ func main() {
 	app.Init("IDPoolApp")
 	initDB()
 	ipNS := beego.NewNamespace(
-		app.RootURL+constValue.IDPoolBaseURI,
+		app.RootURL+constvalue.IDPoolBaseURI,
 		beego.NSRouter("/ipv4", &controller.IPv4RootController{}),
 		beego.NSRouter("/ipv4/:id", &controller.IPv4Controller{}),
+		beego.NSRouter("/ipv4/:id/action/:action", &controller.IPv4ActionController{}),
 	)
 	beego.AddNamespace(ipNS)
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{

@@ -3,7 +3,7 @@ package service
 import (
 	commonMessage "promise/common/object/message"
 	"promise/server/db"
-	"promise/server/object/constError"
+	"promise/server/object/consterror"
 	"promise/server/object/dto"
 	"promise/server/object/message"
 	"promise/server/object/model"
@@ -48,7 +48,7 @@ func GetServerServerGroupCollection(start int, count int, filter string) (*model
 func DeleteServerServerGroup(id string) []commonMessage.Message {
 	dbImpl := db.GetServerServerGroupInstance()
 	previous, err := dbImpl.DeleteServerServerGroup(id)
-	if err != nil && err.Error() == constError.ErrorDeleteDefaultServerServerGroup.Error() {
+	if err != nil && err.Error() == consterror.ErrorDeleteDefaultServerServerGroup.Error() {
 		return []commonMessage.Message{message.NewDeleteDefaultServerServerGroup()}
 	}
 	if previous == nil {
