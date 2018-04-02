@@ -33,7 +33,7 @@ func main() {
 	app.Init("IDPoolApp")
 	initDB()
 	ipNS := beego.NewNamespace(
-		app.RootURL+constValue.TaskBaseURI,
+		app.RootURL+constValue.IDPoolBaseURI,
 		beego.NSRouter("/ipv4", &controller.IPv4RootController{}),
 		beego.NSRouter("/ipv4/:id", &controller.IPv4Controller{}),
 	)
