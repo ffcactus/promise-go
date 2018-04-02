@@ -60,7 +60,6 @@ func (s *RackServerPostStrategy) Execute(c *context.PostServerContext, tempServe
 	}
 	tempServer = server
 	// Dispatch event.
-	log.Info("---------- ", server.Category, "   ", ssg.Category)
 	s.DispatchServerCreate(&c.ServerContext, server)
 	s.DispatchServerServerGroupCreate(&c.ServerContext, ssg)
 

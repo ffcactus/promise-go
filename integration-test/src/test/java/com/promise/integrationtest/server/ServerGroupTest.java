@@ -72,13 +72,13 @@ public class ServerGroupTest extends PromiseIntegrationTest
 
         // Get it.
         final GetServerGroupResponse response2 = PromiseAssertUtil.assertGetResponse(
-                getRootURL() + "/promise/v1/servergroup/" + response1.getId(),
+                getRootURL() + response1.getUri(),
                 GetServerGroupResponse.class);
         Assert.assertEquals(name, response2.getName());
         Assert.assertEquals(description, response2.getDescription());
 
         // Delete it.
-        PromiseAssertUtil.assertDeleteResource(getRootURL() + "/promise/v1/servergroup/" + response1.getId());
+        PromiseAssertUtil.assertDeleteResource(getRootURL() + response1.getUri());
     }
 
     /**

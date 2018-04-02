@@ -55,7 +55,7 @@ func (i *ServerServerGroupImplement) PostServerServerGroup(m *model.ServerServer
 			Warn("Post server-servergroup in DB failed, start transaction failed.")
 	}
 	// Check if server ID exist.
-	if tx.Where("\"id\" = ?", s.ID).First(s).RecordNotFound() {
+	if tx.Where("\"ID\" = ?", s.ID).First(s).RecordNotFound() {
 		tx.Rollback()
 		log.WithFields(log.Fields{"serverID": s.ID}).
 			Warn("Post server-servergroup in DB failed, server ID does not exist, transaction rollback.")

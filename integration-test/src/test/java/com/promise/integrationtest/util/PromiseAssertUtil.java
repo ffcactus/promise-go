@@ -27,7 +27,7 @@ public class PromiseAssertUtil
         Assert.assertNotNull(resp.getUri());
         Assert.assertTrue(resp.getUri().contains(resp.getId()));
     }
-    
+
     /**
      * Assert the resource response is a standard Promise resource.
      * 
@@ -38,7 +38,7 @@ public class PromiseAssertUtil
         Assert.assertNotNull(resp.getId());
         Assert.assertNotNull(resp.getUri());
         Assert.assertTrue(resp.getUri().contains(resp.getId()));
-    }    
+    }
 
     /**
      * Assert the resource should be posted.
@@ -171,9 +171,22 @@ public class PromiseAssertUtil
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         final ResourceCollectionResponse<T> body = response.getBody();
         Assert.assertEquals(expectedTotal, body.getTotal());
-        for (T each : body.getMember()) {
+        for (T each : body.getMember())
+        {
             PromiseAssertUtil.isMemberResponse(each);
         }
         return body.getMember();
     }
+
+    public static void assertSameElements(List<?> firstList, List<?> secondList)
+    {
+      Assert.assertEquals(firstList.size(), secondList.size());
+   
+      // Iterate over the elements of the first list.
+      for (int index = 0; index < firstList.size(); index++)
+      {
+        Assert.assertTrue(secondList.contains(firstList.get(index)));
+      }
+    }
+
 }

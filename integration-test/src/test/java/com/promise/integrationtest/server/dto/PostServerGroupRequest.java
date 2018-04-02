@@ -9,7 +9,7 @@ public class PostServerGroupRequest
 {
     @JsonProperty(value = "Name", required = true)
     private String name;
-    @JsonProperty("Description")
+    @JsonProperty(value = "Description", required = false)
     private String description;
 
     public PostServerGroupRequest()
