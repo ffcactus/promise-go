@@ -27,7 +27,7 @@ func CreateDefaultServerGroup() {
 	} else {
 		var sgDTO dto.GetServerGroupResponse
 		sgDTO.Load(sg)
-		wsSDK.DispatchResourceCreate(&sgDTO)
+		wsSDK.DispatchResourceCreateEvent(&sgDTO)
 		log.Info("Default servergroup created.")
 	}
 	db.DefaultServerGroupID = sg.ID
@@ -46,7 +46,7 @@ func PostServerGroup(request *dto.PostServerGroupRequest) (*model.ServerGroup, [
 	}
 	var sgDTO dto.GetServerGroupResponse
 	sgDTO.Load(posted)
-	wsSDK.DispatchResourceCreate(&sgDTO)
+	wsSDK.DispatchResourceCreateEvent(&sgDTO)
 	return posted, nil
 }
 
@@ -84,7 +84,9 @@ func DeleteServerGroup(id string) []commonMessage.Message {
 	if err != nil {
 		return []commonMessage.Message{commonMessage.NewInternalError()}
 	}
-	wsSDK.DispatchResourceDelete(category.ServerGroup, previous.ID)
+	var sgDTO dto.GetServerGroupResponse
+	sgDTO.Load(previous)
+	wsSDK.DispatchResourceDeleteEvent(&sgDTO)
 	return nil
 }
 
@@ -95,6 +97,6 @@ func DeleteServerGroupCollection() []commonMessage.Message {
 	if err != nil {
 		return []commonMessage.Message{commonMessage.NewInternalError()}
 	}
-	wsSDK.DispatchResourceCollectionDelete(category.ServerGroup)
+	wsSDK.DispatchResourceCollectionDeleteEvent(category.ServerGroup)
 	return nil
 }

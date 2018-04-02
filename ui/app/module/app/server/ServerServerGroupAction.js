@@ -14,10 +14,10 @@ function onServerServerGroupUpdate(ssg) {
   };
 }
 
-function onServerServerGroupDelete(id) {
+function onServerServerGroupDelete(ssg) {
   return {
     type: ActionType.ON_SERVER_SERVERGROUP_DELETE,
-    info: id
+    info: ssg
   };
 }
 
@@ -28,7 +28,7 @@ export function onServerServerGroupMessage(message) {
     case 'Update':
       return onServerServerGroupUpdate(message.Data);
     case 'Delete':
-      return onServerServerGroupDelete(message.ResourceID);
+      return onServerServerGroupDelete(message.Data);
     default:
       return {};
   }

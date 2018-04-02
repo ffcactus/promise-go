@@ -34,10 +34,10 @@ function onServerUpdate(server) {
   };
 }
 
-function onServerDelete(id) {
+function onServerDelete(server) {
   return {
     type: ActionType.ON_SERVER_DELETE,
-    info: id
+    info: server
   };
 }
 
@@ -48,7 +48,7 @@ export function onServerMessage(message) {
     case 'Update':
       return onServerUpdate(message.Data);
     case 'Delete':
-      return onServerDelete(message.ResourceID);
+      return onServerDelete(message.Data);
     default:
       return {};
   }

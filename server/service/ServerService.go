@@ -100,9 +100,9 @@ func DeleteServer(id string) []commonMessage.Message {
 		return []commonMessage.Message{commonMessage.NewTransactionError()}
 	}
 	var eventStrategy strategy.ServerEventStrategy
-	eventStrategy.DispatchServerDelete(nil, server.ID)
+	eventStrategy.DispatchServerDelete(nil, server)
 	for _, each := range ssg {
-		eventStrategy.DispatchServerServerGroupDelete(nil, each.ID)
+		eventStrategy.DispatchServerServerGroupDelete(nil, &each)
 	}
 	return nil
 }

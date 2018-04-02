@@ -2,11 +2,11 @@ package strategy
 
 import (
 	log "github.com/sirupsen/logrus"
-	"promise/common/category"
 	wsSDK "promise/sdk/ws"
 	"promise/server/context"
 	"promise/server/object/dto"
 	"promise/server/object/model"
+	wsConstValue "promise/ws/object/constValue"
 )
 
 /**
@@ -18,70 +18,82 @@ import (
 type ServerEventStrategy struct {
 }
 
-// DispatchServerCreate will send server create event.
-// Generally we don't care much about the error while sending event.
-// If the server created, but event failed to dispatch, the error won't return to user.
-func (s *ServerEventStrategy) DispatchServerCreate(c *context.ServerContext, server *model.Server) {
+func (s *ServerEventStrategy) dispatchServerEvent(c *context.ServerContext, eventType string, server *model.Server) {
 	var serverDTO = new(dto.GetServerResponse)
 	if err := serverDTO.Load(server); err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "error": err}).Warn("Dispatch server create event failed, create event failed.")
+		log.WithFields(log.Fields{
+			"id": server.ID,
+			"type": eventType,
+			"error": err}).Warn("Dispatch server event failed, create event failed.")
 		return
 	}
-	messages, err := wsSDK.DispatchResourceCreate(serverDTO)
+	messages, err := wsSDK.DispatchResourceEvent(eventType, serverDTO)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"id":    server.ID,
+			"type": eventType,
 			"error": err}).
-			Warn("Dispatch server create event failed, event dispatching failed.")
+			Warn("Dispatch server event failed, event dispatching failed.")
 	}
 	if messages != nil {
 		log.WithFields(log.Fields{
 			"id":      server.ID,
+			"type": eventType,
 			"message": messages[0].ID}).
-			Warn("Dispatch server create event failed, event dispatching failed.")
+			Warn("Dispatch server create event failed, message returned, event dispatching failed.")
 	}
+}
+
+// DispatchServerCreate will send server create event.
+// Generally we don't care much about the error while sending event.
+// If the server created, but event failed to dispatch, the error won't return to user.
+func (s *ServerEventStrategy) DispatchServerCreate(c *context.ServerContext, server *model.Server) {
+	s.dispatchServerEvent(c, wsConstValue.CreateEvent, server)
 }
 
 // DispatchServerUpdate will send server update event.
 // Generally we don't care much about the error while sending event.
 // If the server created, but event failed to dispatch, the error won't return to user.
 func (s *ServerEventStrategy) DispatchServerUpdate(c *context.ServerContext, server *model.Server) {
-	var serverDTO = new(dto.GetServerResponse)
-	if err := serverDTO.Load(server); err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "error": err}).Warn("Dispatch server update event failed, create event failed.")
-		return
-	}
-	messages, err := wsSDK.DispatchResourceUpdate(serverDTO)
-	if err != nil {
-		log.WithFields(log.Fields{
-			"id":    server.ID,
-			"error": err}).
-			Warn("Dispatch server update event failed, event dispatching failed.")
-	}
-	if messages != nil {
-		log.WithFields(log.Fields{
-			"id":      server.ID,
-			"message": messages[0].ID}).
-			Warn("Dispatch server update event failed, event dispatching failed.")
-	}
+	s.dispatchServerEvent(c, wsConstValue.UpdateEvent, server)
 }
 
 // DispatchServerDelete will send server delete event.
 // Generally we don't care much about the error while sending event.
 // If the server created, but event failed to dispatch, the error won't return to user.
-func (s *ServerEventStrategy) DispatchServerDelete(c *context.ServerContext, id string) {
-	messages, err := wsSDK.DispatchResourceDelete(category.Server, id)
+func (s *ServerEventStrategy) DispatchServerDelete(c *context.ServerContext, server *model.Server) {
+	s.dispatchServerEvent(c, wsConstValue.DeleteEvent, server)
+}
+
+func (s *ServerEventStrategy) dispatchServerServerGroupEvent(c *context.ServerContext, eventType string, ssg *model.ServerServerGroup) {
+	var ssgDTO = new(dto.GetServerServerGroupResponse)
+	if err := ssgDTO.Load(ssg); err != nil {
+		log.WithFields(log.Fields{
+			"id":          ssg.ID,
+			"type":	eventType,
+			"server":      ssg.ServerID,
+			"servergroup": ssg.ServerGroupID,
+			"error":       err}).Warn("Dispatch server-servergroup event failed, create event failed.")
+		return
+	}
+	messages, err := wsSDK.DispatchResourceEvent(eventType, ssgDTO)
 	if err != nil {
 		log.WithFields(log.Fields{
-			"id":    id,
-			"error": err}).
-			Warn("Dispatch server delete event failed, event dispatching failed.")
+			"id":          ssg.ID,
+			"type":	eventType,
+			"server":      ssg.ServerID,
+			"servergroup": ssg.ServerGroupID,
+			"error":       err}).
+			Warn("Dispatch server-servergroup event failed, event dispatching failed.")
 	}
 	if messages != nil {
 		log.WithFields(log.Fields{
-			"id":      id,
-			"message": messages[0].ID}).
-			Warn("Dispatch server delete event failed, event dispatching failed.")
+			"id":          ssg.ID,
+			"type":	eventType,
+			"server":      ssg.ServerID,
+			"servergroup": ssg.ServerGroupID,
+			"message":     messages[0].ID}).
+			Warn("Dispatch server-servergroup create event failed, message returned, event dispatching failed.")
 	}
 }
 
@@ -89,49 +101,12 @@ func (s *ServerEventStrategy) DispatchServerDelete(c *context.ServerContext, id 
 // Generally we don't care much about the error while sending event.
 // If the server created, but event failed to dispatch, the error won't return to user.
 func (s *ServerEventStrategy) DispatchServerServerGroupCreate(c *context.ServerContext, ssg *model.ServerServerGroup) {
-	var ssgDTO = new(dto.GetServerServerGroupResponse)
-	if err := ssgDTO.Load(ssg); err != nil {
-		log.WithFields(log.Fields{
-			"id":          ssg.ID,
-			"server":      ssg.ServerID,
-			"servergroup": ssg.ServerGroupID,
-			"error":       err}).Warn("Dispatch server-servergroup create event failed, create event failed.")
-		return
-	}
-	messages, err := wsSDK.DispatchResourceCreate(ssgDTO)
-	if err != nil {
-		log.WithFields(log.Fields{
-			"id":          ssg.ID,
-			"server":      ssg.ServerID,
-			"servergroup": ssg.ServerGroupID,
-			"error":       err}).
-			Warn("Dispatch server-servergroup create event failed, event dispatching failed.")
-	}
-	if messages != nil {
-		log.WithFields(log.Fields{
-			"id":          ssg.ID,
-			"server":      ssg.ServerID,
-			"servergroup": ssg.ServerGroupID,
-			"message":     messages[0].ID}).
-			Warn("Dispatch server-servergroup create event failed, event dispatching failed.")
-	}
+	s.dispatchServerServerGroupEvent(c, wsConstValue.CreateEvent, ssg)
 }
 
 // DispatchServerServerGroupDelete will send server-servergroup create event.
 // Generally we don't care much about the error while sending event.
 // If the server created, but event failed to dispatch, the error won't return to user.
-func (s *ServerEventStrategy) DispatchServerServerGroupDelete(c *context.ServerContext, id string) {
-	messages, err := wsSDK.DispatchResourceDelete(category.ServerServerGroup, id)
-	if err != nil {
-		log.WithFields(log.Fields{
-			"id":    id,
-			"error": err}).
-			Warn("Dispatch server-servergroup delete event failed, event dispatching failed.")
-	}
-	if messages != nil {
-		log.WithFields(log.Fields{
-			"id":      id,
-			"message": messages[0].ID}).
-			Warn("Dispatch server-servergroup delete event failed, event dispatching failed.")
-	}
+func (s *ServerEventStrategy) DispatchServerServerGroupDelete(c *context.ServerContext, ssg *model.ServerServerGroup) {
+	s.dispatchServerServerGroupEvent(c, wsConstValue.DeleteEvent, ssg)
 }

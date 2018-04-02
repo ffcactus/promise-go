@@ -20,24 +20,24 @@ export function getServerGroupListFailure() {
   };
 }
 
-function onServerGroupCreate(server) {
+function onServerGroupCreate(sg) {
   return {
     type: ActionType.ON_SERVERGROUP_CREATE,
-    info: server
+    info: sg
   };
 }
 
-function onServerGroupUpdate(server) {
+function onServerGroupUpdate(sg) {
   return {
     type: ActionType.ON_SERVERGROUP_UPDATE,
-    info: server
+    info: sg
   };
 }
 
-function onServerGroupDelete(id) {
+function onServerGroupDelete(sg) {
   return {
     type: ActionType.ON_SERVERGROUP_DELETE,
-    info: id
+    info: sg
   };
 }
 
@@ -54,7 +54,7 @@ export function onServerGroupMessage(message) {
     case 'Update':
       return onServerGroupUpdate(message.Data);
     case 'Delete':
-      return onServerGroupDelete(message.ResourceID);
+      return onServerGroupDelete(message.Data);
     case 'DeleteCollection':
       return onServerGroupDeleteCollection();
     default:

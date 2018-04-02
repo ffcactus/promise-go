@@ -41,7 +41,8 @@ func dispatch(event *wsDTO.PostEventRequest) ([]commonDTO.Message, error) {
 	return messages, err
 }
 
-func dispatchResourceCreateOrUpdate(eventType string, dto commonDTO.PromiseResponseInterface) ([]commonDTO.Message, error) {
+// DispatchResourceEvent can dispatch event, you have specify the event type and the DTO of GET resource response.
+func DispatchResourceEvent(eventType string, dto commonDTO.PromiseResponseInterface) ([]commonDTO.Message, error) {
 	var (
 		event wsDTO.PostEventRequest
 	)
@@ -62,30 +63,23 @@ func dispatchResourceCreateOrUpdate(eventType string, dto commonDTO.PromiseRespo
 	return dispatch(&event)
 }
 
-// DispatchResourceCreate dispatch an event about resource created.
-func DispatchResourceCreate(dto commonDTO.PromiseResponseInterface) ([]commonDTO.Message, error) {
-	return dispatchResourceCreateOrUpdate(constValue.CreateEvent, dto)
+// DispatchResourceCreateEvent can dispatch resource create event.
+func DispatchResourceCreateEvent(dto commonDTO.PromiseResponseInterface) ([]commonDTO.Message, error) {
+	return DispatchResourceEvent(constValue.CreateEvent, dto)
 }
 
-// DispatchResourceUpdate dispatch an event about resource updated.
-func DispatchResourceUpdate(dto commonDTO.PromiseResponseInterface) ([]commonDTO.Message, error) {
-	return dispatchResourceCreateOrUpdate(constValue.UpdateEvent, dto)
+// DispatchResourceUpdateEvent can dispatch resource udpate event.
+func DispatchResourceUpdateEvent(dto commonDTO.PromiseResponseInterface) ([]commonDTO.Message, error) {
+	return DispatchResourceEvent(constValue.UpdateEvent, dto)
 }
 
-// DispatchResourceDelete dispatch an event about resource deleted.
-func DispatchResourceDelete(category string, id string) ([]commonDTO.Message, error) {
-	var (
-		event wsDTO.PostEventRequest
-	)
-	event.CreatedAt = time.Now()
-	event.Category = category
-	event.Type = constValue.DeleteEvent
-	event.ResourceID = id
-	return dispatch(&event)
+// DispatchResourceDeleteEvent can dispatch resource delete event.
+func DispatchResourceDeleteEvent(dto commonDTO.PromiseResponseInterface) ([]commonDTO.Message, error) {
+	return DispatchResourceEvent(constValue.DeleteEvent, dto)
 }
 
-// DispatchResourceCollectionDelete dispatch an event about resource collection deleted.
-func DispatchResourceCollectionDelete(category string) ([]commonDTO.Message, error) {
+// DispatchResourceCollectionDeleteEvent dispatch an event about resource collection deleted.
+func DispatchResourceCollectionDeleteEvent(category string) ([]commonDTO.Message, error) {
 	var (
 		event wsDTO.PostEventRequest
 	)

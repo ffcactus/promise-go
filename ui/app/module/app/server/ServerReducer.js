@@ -110,7 +110,7 @@ const serverApp = (state = defaultState, action) => {
     case ActionType.ON_SERVERGROUP_DELETE:
       return {
         ...state,
-        serverGroupList: state.serverGroupList.filter(each => each.ID !== action.info)
+        serverGroupList: state.serverGroupList.filter(each => each.ID !== action.info.ID)
       };
     case ActionType.ON_SERVERGROUP_DELETE_COLLECTION:
       return {
