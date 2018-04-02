@@ -1,10 +1,10 @@
 package dto
 
 import (
-    log "github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"promise/common/object/constError"
-	"promise/pool/object/model"
 	commonDTO "promise/common/object/dto"
+	"promise/pool/object/model"
 )
 
 // GetIPv4PoolResponse is the response DTO.

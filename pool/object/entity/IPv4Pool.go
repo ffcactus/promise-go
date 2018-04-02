@@ -1,21 +1,21 @@
 package entity
 
 import (
-	commonUtil "promise/common/util"
 	"promise/common/object/entity"
+	commonUtil "promise/common/util"
 	"promise/pool/object/model"
 )
 
 // IPv4Pool is the entity.
 type IPv4Pool struct {
 	entity.PromiseEntity
-	Name string `gorm:"column:Name"`
-	Description string `gorm:"column:Description"`
-	Ranges string `gorm:"column:Ranges"`
-	SubnetMask string `gorm:"column:SubnetMask"`
-	Gateway string `gorm:"column:Gateway"`
-	Domain string `gorm:"column:Domain"`
-	DNSServers string `gorm:"column:DNSServers"`
+	Name        string  `gorm:"column:Name"`
+	Description *string `gorm:"column:Description"`
+	Ranges      string  `gorm:"column:Ranges"`
+	SubnetMask  string  `gorm:"column:SubnetMask"`
+	Gateway     string  `gorm:"column:Gateway"`
+	Domain      string  `gorm:"column:Domain"`
+	DNSServers  string  `gorm:"column:DNSServers"`
 }
 
 // TableName will set the table name.
@@ -38,7 +38,7 @@ func (e *IPv4Pool) ToModel() *model.IPv4Pool {
 	dns := make([]string, 0)
 	commonUtil.StringToStruct(e.DNSServers, &dns)
 	if dns == nil {
-		dns := make([]string, 0)
+		dns = make([]string, 0)
 	}
 	m.DNSServers = dns
 

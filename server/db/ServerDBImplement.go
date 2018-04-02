@@ -172,9 +172,9 @@ func (i *ServerDBImplement) FindServerStateAdded() string {
 // This function will return the if the server exist, deleted server, the slice of deleted server-servergroup, whether operation commited and error if any.
 func (i *ServerDBImplement) DeleteServer(id string) (bool, *model.Server, []model.ServerServerGroup, bool, error) {
 	var (
-		s = new(entity.Server)
-		deletedServer = new(model.Server)
-		deletedSSG = make([]model.ServerServerGroup, 0)
+		s                = new(entity.Server)
+		deletedServer    = new(model.Server)
+		deletedSSG       = make([]model.ServerServerGroup, 0)
 		deletedSSGEntity = make([]entity.ServerServerGroup, 0)
 	)
 
@@ -248,7 +248,6 @@ func (i *ServerDBImplement) DeleteServer(id string) (bool, *model.Server, []mode
 			Debug("Delete server in DB failed, delete resource failed, transaction rollback.")
 		return true, nil, nil, false, err
 	}
-	
 
 	// Delete the server-servergroup association.
 	// But we need record them first.

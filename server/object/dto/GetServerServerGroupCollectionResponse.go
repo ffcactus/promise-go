@@ -7,11 +7,11 @@ import (
 
 // ServerServerGroupMember is the Members property in DTO.
 type ServerServerGroupMember struct {
-	URI string `json:"URI"`
-	ID  string `json:"ID"`
-	ServerID string `json:"ServerID"`
-	ServerURI string `json:"ServerURI"`
-	ServerGroupID string `'json"ServerGroupID"`
+	URI            string `json:"URI"`
+	ID             string `json:"ID"`
+	ServerID       string `json:"ServerID"`
+	ServerURI      string `json:"ServerURI"`
+	ServerGroupID  string `'json"ServerGroupID"`
 	ServerGroupURI string `'json"ServerGroupURI"`
 }
 
@@ -33,11 +33,11 @@ func (dto *GetServerServerGroupCollectionResponse) Load(m *model.ServerServerGro
 	dto.Members = make([]ServerServerGroupMember, 0)
 	for i := range m.Members {
 		dto.Members = append(dto.Members, ServerServerGroupMember{
-			URI: constValue.ToServerServerGroupURI(m.Members[i].ID),
-			ID:  m.Members[i].ID,
-			ServerID: m.Members[i].ServerID,
-			ServerURI: constValue.ToServerURI(m.Members[i].ServerID),
-			ServerGroupID: m.Members[i].ServerGroupID,
+			URI:            constValue.ToServerServerGroupURI(m.Members[i].ID),
+			ID:             m.Members[i].ID,
+			ServerID:       m.Members[i].ServerID,
+			ServerURI:      constValue.ToServerURI(m.Members[i].ServerID),
+			ServerGroupID:  m.Members[i].ServerGroupID,
 			ServerGroupURI: constValue.ToServerGroupURI(m.Members[i].ServerGroupID),
 		})
 	}

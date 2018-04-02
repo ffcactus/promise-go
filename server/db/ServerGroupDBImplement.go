@@ -13,7 +13,7 @@ import (
 
 // DefaultServerGroupID records the ID of default servergroup. We don't have to retrieve it each time.
 var (
-	DefaultServerGroupID string
+	DefaultServerGroupID  string
 	serverGroupDBInstance ServerGroupDBImplement
 )
 

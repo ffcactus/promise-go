@@ -1,5 +1,6 @@
 package com.promise.integrationtest.idpool.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -17,10 +18,20 @@ public class PostIPv4PoolRequest
     @JsonProperty(value = "Gateway", required = true)
     private String gateway;
     @JsonProperty(value = "Domain", required = true)
-    private String Domain;
+    private String domain;
     @JsonProperty(value = "DNSServers", required = true)
     private List<String> dnsServers;
-    
+
+    public PostIPv4PoolRequest()
+    {
+        name = "";
+        subnetMask = "";
+        gateway = "";
+        domain = "";
+        ranges = new ArrayList<>();
+        dnsServers = new ArrayList<>();
+    }
+
     public String getName()
     {
         return name;
@@ -73,12 +84,12 @@ public class PostIPv4PoolRequest
 
     public String getDomain()
     {
-        return Domain;
+        return this.domain;
     }
 
     public void setDomain(String domain)
     {
-        Domain = domain;
+        this.domain = domain;
     }
 
     public List<String> getDnsServers()

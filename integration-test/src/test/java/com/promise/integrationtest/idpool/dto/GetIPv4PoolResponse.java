@@ -1,5 +1,6 @@
 package com.promise.integrationtest.idpool.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,7 +22,13 @@ public class GetIPv4PoolResponse extends ResourceResponse
     private String Domain;
     @JsonProperty(value = "DNSServers", required = true)
     private List<String> dnsServers;
-    
+
+    public GetIPv4PoolResponse()
+    {
+        ranges = new ArrayList<>();
+        dnsServers = new ArrayList<>();
+    }
+
     public String getName()
     {
         return name;

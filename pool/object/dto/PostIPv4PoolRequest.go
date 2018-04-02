@@ -1,9 +1,9 @@
 package dto
 
 import (
+	"promise/common/category"
 	commonModel "promise/common/object/model"
 	"promise/pool/object/model"
-	"promise/common/category"
 )
 
 // PostIPv4PoolRequest is the request DTO.

@@ -2,14 +2,14 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	commonDto "promise/common/object/dto"
+	commonMessage "promise/common/object/message"
 	dto "promise/pool/object/dto"
 	"promise/pool/service"
 	"strconv"
-	"github.com/astaxie/beego"
-	log "github.com/sirupsen/logrus"
-	commonMessage "promise/common/object/message"
 )
 
 // IPv4RootController is the ipv4 pool controller.

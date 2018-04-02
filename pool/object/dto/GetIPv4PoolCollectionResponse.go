@@ -14,12 +14,12 @@ type IPv4PoolMember struct {
 
 // GetIPv4PoolCollectionResponse is the DTO.
 type GetIPv4PoolCollectionResponse struct {
-	Start       int                 `json:"Start"`
-	Count       int                 `json:"Count"`
-	Total       int                 `json:"Total"`
+	Start       int              `json:"Start"`
+	Count       int              `json:"Count"`
+	Total       int              `json:"Total"`
 	Members     []IPv4PoolMember `json:"Members"`
-	NextPageURI *string             `json:"NextPageURI,omitempty"`
-	PrevPageURI *string             `json:"PrevPageURI,omitempty"`
+	NextPageURI *string          `json:"NextPageURI,omitempty"`
+	PrevPageURI *string          `json:"PrevPageURI,omitempty"`
 }
 
 // Load will load from model.

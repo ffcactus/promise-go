@@ -22,8 +22,8 @@ func (s *ServerEventStrategy) dispatchServerEvent(c *context.ServerContext, even
 	var serverDTO = new(dto.GetServerResponse)
 	if err := serverDTO.Load(server); err != nil {
 		log.WithFields(log.Fields{
-			"id": server.ID,
-			"type": eventType,
+			"id":    server.ID,
+			"type":  eventType,
 			"error": err}).Warn("Dispatch server event failed, create event failed.")
 		return
 	}
@@ -31,14 +31,14 @@ func (s *ServerEventStrategy) dispatchServerEvent(c *context.ServerContext, even
 	if err != nil {
 		log.WithFields(log.Fields{
 			"id":    server.ID,
-			"type": eventType,
+			"type":  eventType,
 			"error": err}).
 			Warn("Dispatch server event failed, event dispatching failed.")
 	}
 	if messages != nil {
 		log.WithFields(log.Fields{
 			"id":      server.ID,
-			"type": eventType,
+			"type":    eventType,
 			"message": messages[0].ID}).
 			Warn("Dispatch server create event failed, message returned, event dispatching failed.")
 	}
@@ -70,7 +70,7 @@ func (s *ServerEventStrategy) dispatchServerServerGroupEvent(c *context.ServerCo
 	if err := ssgDTO.Load(ssg); err != nil {
 		log.WithFields(log.Fields{
 			"id":          ssg.ID,
-			"type":	eventType,
+			"type":        eventType,
 			"server":      ssg.ServerID,
 			"servergroup": ssg.ServerGroupID,
 			"error":       err}).Warn("Dispatch server-servergroup event failed, create event failed.")
@@ -80,7 +80,7 @@ func (s *ServerEventStrategy) dispatchServerServerGroupEvent(c *context.ServerCo
 	if err != nil {
 		log.WithFields(log.Fields{
 			"id":          ssg.ID,
-			"type":	eventType,
+			"type":        eventType,
 			"server":      ssg.ServerID,
 			"servergroup": ssg.ServerGroupID,
 			"error":       err}).
@@ -89,7 +89,7 @@ func (s *ServerEventStrategy) dispatchServerServerGroupEvent(c *context.ServerCo
 	if messages != nil {
 		log.WithFields(log.Fields{
 			"id":          ssg.ID,
-			"type":	eventType,
+			"type":        eventType,
 			"server":      ssg.ServerID,
 			"servergroup": ssg.ServerGroupID,
 			"message":     messages[0].ID}).

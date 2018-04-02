@@ -3,12 +3,11 @@ package service
 import (
 	"promise/common/category"
 	commonMessage "promise/common/object/message"
-	wsSDK "promise/sdk/ws"
 	"promise/pool/db"
 	"promise/pool/object/dto"
 	"promise/pool/object/model"
+	wsSDK "promise/sdk/ws"
 )
-
 
 // PostIPv4Pool post a IPv4 pool.
 func PostIPv4Pool(request *dto.PostIPv4PoolRequest) (*model.IPv4Pool, []commonMessage.Message) {
@@ -51,7 +50,7 @@ func GetIPv4PoolCollection(start int, count int, filter string) (*model.IPv4Pool
 // DeleteIPv4Pool will delete IPv4 pool by ID.
 func DeleteIPv4Pool(id string) []commonMessage.Message {
 	dbImpl := db.GetPoolDB()
-	
+
 	exist, previous, commited, err := dbImpl.DeleteIPv4Pool(id)
 
 	if !exist {

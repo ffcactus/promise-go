@@ -5,8 +5,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	commonDB "promise/common/db"
 	commonConstError "promise/common/object/constError"
-	"promise/pool/object/model"
 	"promise/pool/object/entity"
+	"promise/pool/object/model"
 	"strings"
 )
 
@@ -16,7 +16,6 @@ var (
 
 // PoolDBImplement is the implementation.
 type PoolDBImplement struct {
-
 }
 
 // GetPoolDB return the singleton.
@@ -44,7 +43,7 @@ func (i *PoolDBImplement) PostIPv4Pool(m *model.IPv4Pool) (bool, *model.IPv4Pool
 	if !tx.Where("\"Name\" = ?", m.Name).First(&record).RecordNotFound() {
 		tx.Rollback()
 		log.WithFields(log.Fields{
-			"id": record.ID,
+			"id":   record.ID,
 			"name": m.Name}).
 			Warn("Post IPv4 pool in DB failed, duplicated resource, transaction rollback.")
 		return true, nil, false, commonConstError.ErrorResourceNotExist
@@ -79,7 +78,6 @@ func (i *PoolDBImplement) GetIPv4Pool(id string) *model.IPv4Pool {
 	return record.ToModel()
 }
 
-
 func (i *PoolDBImplement) convertFilter(filter string) (string, error) {
 	if filter == "" {
 		return "", nil
@@ -99,9 +97,9 @@ func (i *PoolDBImplement) convertFilter(filter string) (string, error) {
 // GetIPv4PoolCollection Get IPv4 pool collection by start and count.
 func (i *PoolDBImplement) GetIPv4PoolCollection(start int, count int, filter string) (*model.IPv4PoolCollection, error) {
 	var (
-		total        int
+		total      int
 		collection []entity.IPv4Pool
-		ret          = new(model.IPv4PoolCollection)
+		ret        = new(model.IPv4PoolCollection)
 	)
 
 	c := commonDB.GetConnection()
@@ -201,7 +199,7 @@ func (i *PoolDBImplement) DeleteIPv4PoolCollection() ([]model.IPv4Pool, bool, er
 		log.WithFields(log.Fields{
 			"error": err}).
 			Warn("Delete IPv4 pool collection in DB failed, delete collection failed, transaction rollback.")
-		return nil, false, err		
+		return nil, false, err
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
