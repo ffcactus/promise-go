@@ -2,30 +2,30 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/astaxie/beego"
-	log "github.com/sirupsen/logrus"
 	"net/http"
 	commonDto "promise/common/object/dto"
-	commonMessage "promise/common/object/message"
-	"promise/server/object/dto"
-	"promise/server/service"
+	dto "promise/pool/object/dto"
+	"promise/pool/service"
 	"strconv"
+	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
+	commonMessage "promise/common/object/message"
 )
 
-// ServerServerGroupRootController The root controller
-type ServerServerGroupRootController struct {
+// IPv4RootController is the ipv4 pool controller.
+type IPv4RootController struct {
 	beego.Controller
 }
 
-// Post a new server-servergroup.
-func (c *ServerServerGroupRootController) Post() {
+// Post a new IPv4 range.
+func (c *IPv4RootController) Post() {
 	var (
-		request  dto.PostServerServerGroupRequest
-		response dto.GetServerServerGroupResponse
+		request  dto.PostIPv4PoolRequest
+		response dto.GetIPv4PoolResponse
 	)
 
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &request); err != nil {
-		log.WithFields(log.Fields{"err": err}).Warn("Post server-servergroup failed, unable to unmarshal request.")
+		log.WithFields(log.Fields{"err": err}).Warn("Post IPv4 pool failed, unable to unmarshal request.")
 		messages := []commonMessage.Message{}
 		messages = append(messages, commonMessage.NewInvalidRequest())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
@@ -33,30 +33,30 @@ func (c *ServerServerGroupRootController) Post() {
 		c.ServeJSON()
 		return
 	}
-	log.WithFields(log.Fields{"serverID": request.ServerID, "serverGroupID": request.ServerGroupID}).Info("Post server-servergroup.")
+	log.WithFields(log.Fields{"name": request.Name}).Info("Post IPv4 pool.")
 
-	serverServerGroup, messages := service.PostServerServerGroup(&request)
+	ipv4Pool, messages := service.PostIPv4Pool(&request)
 	if messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Post server-servergroup failed.")
+		log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Post IPv4 pool failed.")
 	} else {
-		response.Load(serverServerGroup)
+		response.Load(ipv4Pool)
 		c.Data["json"] = &response
 		c.Ctx.Output.SetStatus(http.StatusCreated)
-		log.WithFields(log.Fields{"ID": response.ID}).Info("Post server-servergroup done.")
+		log.WithFields(log.Fields{"name": response.Name, "ID": response.ID}).Info("Post IPv4 pool done.")
 	}
 	c.ServeJSON()
 }
 
-// Get will return server-servergroup collection.
-func (c *ServerServerGroupRootController) Get() {
+// Get will return IPv4 pool collection.
+func (c *IPv4RootController) Get() {
 	var (
 		start, count, filter string = c.GetString("start"), c.GetString("count"), c.GetString("$filter")
 		startInt, countInt   int    = 0, -1
 		parameterError       bool
 	)
-	log.WithFields(log.Fields{"start": start, "count": count}).Debug("Get server-servergroup collection.")
+	log.WithFields(log.Fields{"start": start, "count": count}).Debug("Get IPv4 pool collection.")
 	if start != "" {
 		_startInt, err := strconv.Atoi(start)
 		if err != nil || _startInt < 0 {
@@ -84,14 +84,14 @@ func (c *ServerServerGroupRootController) Get() {
 		messages = append(messages, commonMessage.NewInvalidRequest())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		log.Warn("Get server-servergroup collection failed, parameter error.")
+		log.Warn("Get IPv4 pool collection failed, parameter error.")
 	} else {
-		if collection, messages := service.GetServerServerGroupCollection(startInt, countInt, filter); messages != nil {
+		if collection, messages := service.GetIPv4PoolCollection(startInt, countInt, filter); messages != nil {
 			c.Data["json"] = commonDto.MessagesToDto(messages)
 			c.Ctx.Output.SetStatus(messages[0].StatusCode)
-			log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Get server-servergroup collection failed.")
+			log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Get IPv4 pool collection failed.")
 		} else {
-			resp := new(dto.GetServerServerGroupCollectionResponse)
+			resp := new(dto.GetIPv4PoolCollectionResponse)
 			resp.Load(collection)
 			c.Data["json"] = resp
 			c.Ctx.Output.SetStatus(http.StatusOK)
@@ -100,20 +100,20 @@ func (c *ServerServerGroupRootController) Get() {
 	c.ServeJSON()
 }
 
-// Delete will delete all the server-servergroup.
-func (c *ServerServerGroupRootController) Delete() {
-	messages := service.DeleteServerServerGroupCollection()
+// Delete will delete all the IPv4 pool.
+func (c *IPv4RootController) Delete() {
+	messages := service.DeleteIPv4PoolCollection()
 	if messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Delete server-servergroup collection failed.")
+		log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Delete IPv4 pool collection failed.")
 	} else {
 		c.Ctx.Output.SetStatus(http.StatusAccepted)
-		log.Info("DELETE all server-servergroups.")
+		log.Info("DELETE all IPv4 pool.")
 	}
 	c.ServeJSON()
 }
 
-func (c *ServerServerGroupRootController) isValidFilter(filter string) bool {
+func (c *IPv4RootController) isValidFilter(filter string) bool {
 	return true
 }

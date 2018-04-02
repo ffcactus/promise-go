@@ -42,7 +42,7 @@ func PostServerGroup(request *dto.PostServerGroupRequest) (*model.ServerGroup, [
 		return nil, []commonMessage.Message{commonMessage.NewResourceDuplicate()}
 	}
 	if err != nil {
-		return nil, []commonMessage.Message{commonMessage.NewInternalError()}
+		return nil, []commonMessage.Message{commonMessage.NewTransactionError()}
 	}
 	var sgDTO dto.GetServerGroupResponse
 	sgDTO.Load(posted)
@@ -61,12 +61,12 @@ func GetServerGroup(id string) (*model.ServerGroup, []commonMessage.Message) {
 	return sg, nil
 }
 
-// GetServerGroupCollection will get server collection.
+// GetServerGroupCollection will get server group collection.
 func GetServerGroupCollection(start int, count int, filter string) (*model.ServerGroupCollection, []commonMessage.Message) {
 	dbImpl := db.GetServerGroupDB()
 	ret, err := dbImpl.GetServerGroupCollection(start, count, filter)
 	if err != nil {
-		return nil, []commonMessage.Message{commonMessage.NewInternalError()}
+		return nil, []commonMessage.Message{commonMessage.NewTransactionError()}
 	}
 	return ret, nil
 }
@@ -82,7 +82,7 @@ func DeleteServerGroup(id string) []commonMessage.Message {
 		return []commonMessage.Message{commonMessage.NewResourceNotExist()}
 	}
 	if err != nil {
-		return []commonMessage.Message{commonMessage.NewInternalError()}
+		return []commonMessage.Message{commonMessage.NewTransactionError()}
 	}
 	var sgDTO dto.GetServerGroupResponse
 	sgDTO.Load(previous)
@@ -95,7 +95,7 @@ func DeleteServerGroupCollection() []commonMessage.Message {
 	dbImpl := db.GetServerGroupDB()
 	err := dbImpl.DeleteServerGroupCollection()
 	if err != nil {
-		return []commonMessage.Message{commonMessage.NewInternalError()}
+		return []commonMessage.Message{commonMessage.NewTransactionError()}
 	}
 	wsSDK.DispatchResourceCollectionDeleteEvent(category.ServerGroup)
 	return nil

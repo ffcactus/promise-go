@@ -52,7 +52,7 @@ func GetServerCollection(start int, count int) (*model.ServerCollection, []commo
 	dbImpl := db.GetDBInstance()
 	ret, err := dbImpl.GetServerCollection(start, count)
 	if err != nil {
-		return nil, []commonMessage.Message{commonMessage.NewInternalError()}
+		return nil, []commonMessage.Message{commonMessage.NewTransactionError()}
 	}
 	return ret, nil
 }
@@ -113,7 +113,7 @@ func DeleteServerCollection() []commonMessage.Message {
 	dbImpl := db.GetDBInstance()
 	err := dbImpl.DeleteServerCollection()
 	if err != nil {
-		return []commonMessage.Message{commonMessage.NewInternalError()}
+		return []commonMessage.Message{commonMessage.NewTransactionError()}
 	}
 	return nil
 }

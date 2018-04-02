@@ -12,25 +12,28 @@ import (
 )
 
 // DefaultServerGroupID records the ID of default servergroup. We don't have to retrieve it each time.
-var DefaultServerGroupID string
+var (
+	DefaultServerGroupID string
+	serverGroupDBInstance ServerGroupDBImplement
+)
 
 // ServerGroupDBImplement is the implement of ServerGroupDBInterface.
 type ServerGroupDBImplement struct {
 }
 
-// GetServerGroupDB return an implement.
+// GetServerGroupDB return the singleton.
 func GetServerGroupDB() ServerGroupDBInterface {
-	return new(ServerGroupDBImplement)
+	return &serverGroupDBInstance
 }
 
 // GetServerGroup will get the group by id.
 func (i *ServerGroupDBImplement) GetServerGroup(id string) *model.ServerGroup {
-	var sg entity.ServerGroup
+	var record entity.ServerGroup
 	c := commonDB.GetConnection()
-	if c.Where("\"ID\" = ?", id).First(&sg).RecordNotFound() {
+	if c.Where("\"ID\" = ?", id).First(&record).RecordNotFound() {
 		return nil
 	}
-	return sg.ToModel()
+	return record.ToModel()
 }
 
 // GetServerGroupByName will get the group by name.
@@ -81,7 +84,6 @@ func (i *ServerGroupDBImplement) PostServerGroup(m *model.ServerGroup) (*model.S
 		return nil, false, err
 	}
 	return e.ToModel(), false, nil
-
 }
 
 func (i *ServerGroupDBImplement) convertFilter(filter string) (string, error) {
@@ -168,6 +170,9 @@ func (i *ServerGroupDBImplement) DeleteServerGroup(id string) (*model.ServerGrou
 
 	sg.ID = id
 	if err := tx.Delete(&sg).Error; err != nil {
+		log.WithFields(log.Fields{
+			"id": id}).
+			Warn("Delete servergroup in DB failed, delete resource failed, transaction rollback.")
 		return nil, err
 	}
 	if err := tx.Commit().Error; err != nil {

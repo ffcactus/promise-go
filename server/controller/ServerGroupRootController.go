@@ -21,7 +21,7 @@ type ServerGroupRootController struct {
 func (c *ServerGroupRootController) Post() {
 	var (
 		request  dto.PostServerGroupRequest
-		response dto.PostServerGroupResponse
+		response dto.GetServerGroupResponse
 	)
 
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &request); err != nil {

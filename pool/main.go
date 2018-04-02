@@ -7,8 +7,8 @@ import (
 	"promise/common/app"
 	commonDB "promise/common/db"
 	"promise/common/object/constValue"
-	"promise/task/controller"
-	"promise/task/object/entity"
+	"promise/pool/controller"
+	"promise/pool/object/entity"
 )
 
 func initDB() {
@@ -30,15 +30,14 @@ func initDB() {
 }
 
 func main() {
-	app.Init("TaskApp")
+	app.Init("IDPoolApp")
 	initDB()
-	ns := beego.NewNamespace(
+	ipNS := beego.NewNamespace(
 		app.RootURL+constValue.TaskBaseURI,
-		beego.NSRouter("/", &controller.RootController{}),
-		beego.NSRouter("/:id", &controller.TaskController{}),
-		beego.NSRouter("/:id/action/:action", &controller.TaskActionController{}),
+		beego.NSRouter("/ipv4", &controller.IPv4RootController{}),
+		beego.NSRouter("/ipv4/:id", &controller.IPv4Controller{}),
 	)
-	beego.AddNamespace(ns)
+	beego.AddNamespace(ipNS)
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins:  true,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},

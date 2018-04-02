@@ -18,7 +18,7 @@ func PostServerServerGroup(request *dto.PostServerServerGroupRequest) (*model.Se
 		return nil, []commonMessage.Message{commonMessage.NewResourceDuplicate()}
 	}
 	if err != nil {
-		return nil, []commonMessage.Message{commonMessage.NewInternalError()}
+		return nil, []commonMessage.Message{commonMessage.NewTransactionError()}
 	}
 	return posted, nil
 }
@@ -39,7 +39,7 @@ func GetServerServerGroupCollection(start int, count int, filter string) (*model
 	dbImpl := db.GetServerServerGroupInstance()
 	ret, err := dbImpl.GetServerServerGroupCollection(start, count, filter)
 	if err != nil {
-		return nil, []commonMessage.Message{commonMessage.NewInternalError()}
+		return nil, []commonMessage.Message{commonMessage.NewTransactionError()}
 	}
 	return ret, nil
 }
@@ -55,7 +55,7 @@ func DeleteServerServerGroup(id string) []commonMessage.Message {
 		return []commonMessage.Message{commonMessage.NewResourceNotExist()}
 	}
 	if err != nil {
-		return []commonMessage.Message{commonMessage.NewInternalError()}
+		return []commonMessage.Message{commonMessage.NewTransactionError()}
 	}
 
 	return nil
@@ -66,7 +66,7 @@ func DeleteServerServerGroupCollection() []commonMessage.Message {
 	dbImpl := db.GetServerServerGroupInstance()
 	err := dbImpl.DeleteServerServerGroupCollection()
 	if err != nil {
-		return []commonMessage.Message{commonMessage.NewInternalError()}
+		return []commonMessage.Message{commonMessage.NewTransactionError()}
 	}
 	return nil
 }

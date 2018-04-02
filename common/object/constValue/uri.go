@@ -20,6 +20,8 @@ const (
 	WSSenderBaseURI = "/ws-sender"
 	// TaskBaseURI is task base URI.
 	TaskBaseURI = "/task"
+	// PoolIPv4BaseURI is IPv4 pool base URI.
+	PoolIPv4BaseURI = "/pool/ipv4"
 )
 
 // CategoryToURI turns ID to to URI depends on category.
@@ -35,6 +37,8 @@ func CategoryToURI(c string, id string) string {
 		return app.RootURL + ServerGroupBaseURI + "/" + id
 	case category.ServerServerGroup:
 		return app.RootURL + ServerServerGroupBaseURI + "/" + id
+	case category.PoolIPv4:
+		return app.RootURL + PoolIPv4BaseURI + "/" + id
 	default:
 		return ""
 	}
@@ -53,4 +57,9 @@ func ToServerGroupURI(id string) string {
 // ToServerServerGroupURI convert id to URI
 func ToServerServerGroupURI(id string) string {
 	return app.RootURL + ServerServerGroupBaseURI + "/" + id
+}
+
+// ToPoolIPv4URI convert id to URI
+func ToPoolIPv4URI(id string) string {
+	return app.RootURL + PoolIPv4BaseURI + "/" + id
 }

@@ -8,6 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"promise/common/category"
 	commonDB "promise/common/db"
+	commonConstError "promise/common/object/constError"
 	commonUtil "promise/common/util"
 	"promise/server/object/constValue"
 	"promise/server/object/entity"
@@ -191,7 +192,7 @@ func (i *ServerDBImplement) DeleteServer(id string) (bool, *model.Server, []mode
 		tx.Rollback()
 		log.WithFields(log.Fields{"id": id}).
 			Debug("Delete server from DB failed, server does not exist, transaction rollback.")
-		return false, nil, nil, false, fmt.Errorf("server does not exist")
+		return false, nil, nil, false, commonConstError.ErrorResourceNotExist
 	}
 	// Load full server info so we can delete them all together.
 	if err := tx.Where("\"ID\" = ?", id).

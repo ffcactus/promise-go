@@ -36,7 +36,6 @@ type Server struct {
 func (e *Server) ToModel() *model.Server {
 	m := new(model.Server)
 	m.PromiseModel = e.PromiseEntity.ToModel()
-	m.ID = e.ID
 	m.OriginURIs.Chassis = e.OriginURIsChassis
 	m.OriginURIs.System = e.OriginURIsSystem
 	m.PhysicalUUID = e.PhysicalUUID
