@@ -62,7 +62,7 @@ func Do(method string, uri string, requestDto interface{}, responseDtoP interfac
 		resp, err = rest(method, uri, nil)
 	}
 	if err != nil {
-		log.WithFields(log.Fields{"method": method, "uri": uri, "err": err}).Warn("rest() call failed.")
+		log.WithFields(log.Fields{"method": method, "uri": uri, "error": err}).Warn("rest() call failed.")
 		return nil, err
 	}
 	// Only when err == nil should the resp can be dereferenced.

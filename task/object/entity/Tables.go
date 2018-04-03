@@ -7,6 +7,6 @@ import (
 var (
 	// Tables The tables used by this project.
 	Tables = []commonDB.TableInfo{
-		{"Task", new(Task)},
+		{Name: "Task", Info: new(Task)},
 	}
 )

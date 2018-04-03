@@ -105,11 +105,11 @@ func (s *RackServerRefreshStrategy) RefreshProcessors(c *context.RefreshServerCo
 	var component = "Processor"
 	processors, err := c.ServerClient.GetProcessors(*server.OriginURIs.System)
 	if err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Get server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.DB.UpdateProcessors(server.ID, processors); err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Update server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 		return err
 	}
 	s.DispatchServerUpdate(&c.ServerContext, server)
@@ -122,11 +122,11 @@ func (s *RackServerRefreshStrategy) RefreshMemory(c *context.RefreshServerContex
 	var component = "Memory"
 	memory, err := c.ServerClient.GetMemory(*server.OriginURIs.System)
 	if err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Get server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.DB.UpdateMemory(server.ID, memory); err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Update server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
 	s.DispatchServerUpdate(&c.ServerContext, server)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
@@ -138,11 +138,11 @@ func (s *RackServerRefreshStrategy) RefreshEthernetInterfaces(c *context.Refresh
 	var component = "EthernetInterfaces"
 	ethernet, err := c.ServerClient.GetEthernetInterfaces(*server.OriginURIs.System)
 	if err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Get server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.DB.UpdateEthernetInterfaces(server.ID, ethernet); err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Update server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
 	s.DispatchServerUpdate(&c.ServerContext, server)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
@@ -154,11 +154,11 @@ func (s *RackServerRefreshStrategy) RefreshNetworkInterfaces(c *context.RefreshS
 	var component = "NetworkInterfaces"
 	networks, err := c.ServerClient.GetNetworkInterfaces(*server.OriginURIs.System)
 	if err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Get server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.DB.UpdateNetworkInterfaces(server.ID, networks); err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Update server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
 	s.DispatchServerUpdate(&c.ServerContext, server)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
@@ -170,11 +170,11 @@ func (s *RackServerRefreshStrategy) RefreshStorages(c *context.RefreshServerCont
 	var component = "Storages"
 	storages, err := c.ServerClient.GetStorages(*server.OriginURIs.System)
 	if err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Get server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.DB.UpdateStorages(server.ID, storages); err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Update server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
 	s.DispatchServerUpdate(&c.ServerContext, server)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
@@ -186,11 +186,11 @@ func (s *RackServerRefreshStrategy) RefreshPower(c *context.RefreshServerContext
 	var component = "Power"
 	power, err := c.ServerClient.GetPower(*server.OriginURIs.Chassis)
 	if err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Get server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.DB.UpdatePower(server.ID, power); err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Update server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
 	s.DispatchServerUpdate(&c.ServerContext, server)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
@@ -202,11 +202,11 @@ func (s *RackServerRefreshStrategy) RefreshThermal(c *context.RefreshServerConte
 	var component = "Thermal"
 	thermal, err := c.ServerClient.GetThermal(*server.OriginURIs.Chassis)
 	if err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Get server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.DB.UpdateThermal(server.ID, thermal); err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Update server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
 	s.DispatchServerUpdate(&c.ServerContext, server)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
@@ -218,11 +218,11 @@ func (s *RackServerRefreshStrategy) RefreshOemHuaweiBoards(c *context.RefreshSer
 	var component = "OemHuaweiBoards"
 	boards, err := c.ServerClient.GetOemHuaweiBoards(*server.OriginURIs.Chassis)
 	if err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Get server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.DB.UpdateOemHuaweiBoards(server.ID, boards); err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Update server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
 	s.DispatchServerUpdate(&c.ServerContext, server)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
@@ -234,11 +234,11 @@ func (s *RackServerRefreshStrategy) RefreshNetworkAdapters(c *context.RefreshSer
 	var component = "NetworkAdapters"
 	networkAdapters, err := c.ServerClient.GetNetworkAdapters(*server.OriginURIs.Chassis)
 	if err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Get server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.DB.UpdateNetworkAdapters(server.ID, networkAdapters); err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Update server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
 	s.DispatchServerUpdate(&c.ServerContext, server)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
@@ -250,11 +250,11 @@ func (s *RackServerRefreshStrategy) RefreshDrives(c *context.RefreshServerContex
 	var component = "Drives"
 	drives, err := c.ServerClient.GetDrives(*server.OriginURIs.Chassis)
 	if err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Get server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.DB.UpdateDrives(server.ID, drives); err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Update server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
 	s.DispatchServerUpdate(&c.ServerContext, server)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
@@ -266,11 +266,11 @@ func (s *RackServerRefreshStrategy) RefreshPCIeDevices(c *context.RefreshServerC
 	var component = "PCIeDevices"
 	pcieDevice, err := c.ServerClient.GetPCIeDevices(*server.OriginURIs.Chassis)
 	if err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Get server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
 	if err := c.DB.UpdatePCIeDevices(server.ID, pcieDevice); err != nil {
-		log.WithFields(log.Fields{"id": server.ID, "component": component, "err": err}).Warn("Update server component failed.")
+		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
 	s.DispatchServerUpdate(&c.ServerContext, server)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")

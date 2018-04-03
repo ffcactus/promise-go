@@ -25,9 +25,24 @@ func (c *IPv4RootController) Post() {
 	)
 
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &request); err != nil {
-		log.WithFields(log.Fields{"err": err}).Warn("Post IPv4 pool failed, unable to unmarshal request.")
 		messages := []commonMessage.Message{}
 		messages = append(messages, commonMessage.NewInvalidRequest())
+		log.WithFields(log.Fields{
+			"error":   err,
+			"message": messages[0].ID}).
+			Warn("Post IPv4 pool failed, unable to unmarshal request.")
+
+		c.Data["json"] = commonDto.MessagesToDto(messages)
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.ServeJSON()
+		return
+	}
+	if !request.IsValid() {
+		messages := []commonMessage.Message{}
+		messages = append(messages, commonMessage.NewInvalidRequest())
+		log.WithFields(log.Fields{
+			"message": messages[0].ID}).
+			Warn("Post IPv4 pool failed, invalid request.")
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()

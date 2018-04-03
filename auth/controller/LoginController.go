@@ -19,7 +19,7 @@ func (c *LoginController) Post() {
 	log.Debug("POST Login request.")
 	request := new(dto.PostLoginRequest)
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
-		log.WithFields(log.Fields{"err": err}).Warn("Login failed, unable to unmarshal request.")
+		log.WithFields(log.Fields{"error": err}).Warn("Login failed, unable to unmarshal request.")
 	}
 
 	if session, messages := service.Login(request); messages != nil {

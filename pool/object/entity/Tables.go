@@ -7,8 +7,8 @@ import (
 var (
 	// Tables The tables used by this project.
 	Tables = []commonDB.TableInfo{
-		{"IPv4Address", new(IPv4Address)},
-		{"IPv4Range", new(IPv4Range)},
-		{"IPv4Pool", new(IPv4Pool)},
+		{Name: "IPv4Address", Info: new(IPv4Address)},
+		{Name: "IPv4Range", Info: new(IPv4Range)},
+		{Name: "IPv4Pool", Info: new(IPv4Pool)},
 	}
 )

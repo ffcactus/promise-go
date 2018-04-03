@@ -12,24 +12,28 @@ import (
 type PostIPv4PoolRequest struct {
 	commonDTO.PromiseRequest
 	IPv4PoolResource
+	Ranges []IPv4RangeRequest `json:"Ranges"`
 }
 
 // IsValid check if the request is valid.
 func (dto *PostIPv4PoolRequest) IsValid() bool {
-	if net.ParseIP(dto.SubnetMask) == nil {
+	if dto.SubnetMask != nil && net.ParseIP(*dto.SubnetMask) == nil {
 		return false
 	}
-	if net.ParseIP(dto.Gateway) == nil {
+	if dto.Gateway != nil && net.ParseIP(*dto.Gateway) == nil {
 		return false
 	}
-	if net.ParseIP(dto.SubnetMask) == nil {
+	if dto.SubnetMask != nil && net.ParseIP(*dto.SubnetMask) == nil {
 		return false
 	}
-	for _, v := range dto.DNSServers {
-		if net.ParseIP(v) == nil {
-			return false
+	if dto.DNSServers != nil {
+		for _, v := range *dto.DNSServers {
+			if net.ParseIP(v) == nil {
+				return false
+			}
 		}
 	}
+
 	for _, v := range dto.Ranges {
 		start := net.ParseIP(v.Start)
 		end := net.ParseIP(v.End)
@@ -42,8 +46,11 @@ func (dto *PostIPv4PoolRequest) IsValid() bool {
 		if util.IPtoInt(start) > util.IPtoInt(end) {
 			return false
 		}
+		if util.IPtoInt(end)-util.IPtoInt(start)+1 > 256 {
+			return false
+		}
 	}
-	return true;
+	return true
 }
 
 // ToModel will convert the DTO to model.

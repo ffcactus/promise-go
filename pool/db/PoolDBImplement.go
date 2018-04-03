@@ -2,10 +2,11 @@ package db
 
 import (
 	"github.com/google/uuid"
+	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 	commonDB "promise/common/db"
-	commonUtil "promise/common/util"
 	commonConstError "promise/common/object/consterror"
+	commonUtil "promise/common/util"
 	"promise/pool/object/entity"
 	"promise/pool/object/model"
 	"strings"
@@ -58,7 +59,7 @@ func (i *PoolDBImplement) PostIPv4Pool(m *model.IPv4Pool) (bool, *model.IPv4Pool
 			"error": err}).
 			Warn("Post IPv4 pool in DB failed, create resource failed, transaction rollback.")
 		return false, nil, false, err
-	}	
+	}
 	if err := c.Save(&record).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
@@ -78,14 +79,18 @@ func (i *PoolDBImplement) PostIPv4Pool(m *model.IPv4Pool) (bool, *model.IPv4Pool
 	return false, record.ToModel(), true, nil
 }
 
+func (i *PoolDBImplement) getIPv4Pool(c *gorm.DB, id string, record *entity.IPv4Pool) *gorm.DB {
+	return c.Where("\"ID\" = ?", id).
+		Preload("Ranges").
+		Preload("Ranges.Addresses").
+		First(record)
+}
+
 // GetIPv4Pool get the IPv4 pool by ID.
 func (i *PoolDBImplement) GetIPv4Pool(id string) *model.IPv4Pool {
 	var record entity.IPv4Pool
 	c := commonDB.GetConnection()
-	if c.Where("\"ID\" = ?", id).
-		Preload("\"IPv4Range\"").
-		Preload("\"IPv4Range\".\"IPv4Address\"").
-		First(&record).RecordNotFound() {
+	if i.getIPv4Pool(c, id, &record).RecordNotFound() {
 		return nil
 	}
 	return record.ToModel()
@@ -168,7 +173,29 @@ func (i *PoolDBImplement) DeleteIPv4Pool(id string) (bool, *model.IPv4Pool, bool
 		return false, nil, false, commonConstError.ErrorResourceNotExist
 	}
 
-	record.ID = id
+	if err := i.getIPv4Pool(tx, id, &record).Error; err != nil {
+		log.WithFields(log.Fields{
+			"id": id}).
+			Warn("Delete IPv4 pool in DB failed, get resource failed, transaction rollback.")
+		return true, nil, false, err
+	}
+	commonUtil.PrintJson(record)
+	for _, i := range record.Ranges {
+		for _, j := range i.Addresses {
+			if err := tx.Delete(&j).Error; err != nil {
+				tx.Rollback()
+				log.WithFields(log.Fields{
+					"id": id}).
+					Warn("Delete IPv4 pool in DB failed, delete Addresses failed, transaction rollback.")
+			}
+		}
+		if err := tx.Delete(&i).Error; err != nil {
+			tx.Rollback()
+			log.WithFields(log.Fields{
+				"id": id}).
+				Warn("Delete IPv4 pool in DB failed, delete Ranges failed, transaction rollback.")
+		}
+	}
 	if err := tx.Delete(&record).Error; err != nil {
 		log.WithFields(log.Fields{
 			"id": id}).

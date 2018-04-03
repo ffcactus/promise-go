@@ -25,7 +25,7 @@ func (c *ServerGroupRootController) Post() {
 	)
 
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &request); err != nil {
-		log.WithFields(log.Fields{"err": err}).Warn("Post servergroup failed, unable to unmarshal request.")
+		log.WithFields(log.Fields{"error": err}).Warn("Post servergroup failed, unable to unmarshal request.")
 		messages := []commonMessage.Message{}
 		messages = append(messages, commonMessage.NewInvalidRequest())
 		c.Data["json"] = commonDto.MessagesToDto(messages)

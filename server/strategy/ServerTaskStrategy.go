@@ -190,7 +190,7 @@ func (s *ServerTaskStrategy) createTask(request *taskDTO.PostTaskRequest, server
 		log.WithFields(log.Fields{
 			"server": server.ID,
 			"name":   request.Name,
-			"err":    err}).
+			"error":  err}).
 			Warn("Create server task failed.")
 		return "", err
 	}

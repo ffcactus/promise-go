@@ -7,7 +7,7 @@ import (
 var (
 	// Tables The tables used by this project.
 	Tables = []commonDB.TableInfo{
-		{"Account", new(Account)},
-		{"Session", new(Session)},
+		{Name: "Account", Info: new(Account)},
+		{Name: "Session", Info: new(Session)},
 	}
 )

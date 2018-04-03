@@ -2,18 +2,18 @@ package entity
 
 import (
 	"promise/common/object/entity"
-	commonUtil "promise/common/util"
 	commonEntity "promise/common/object/entity"
+	commonUtil "promise/common/util"
 	"promise/pool/object/model"
 )
 
 // IPv4Address is the entity to represents an IPv4 address.
 type IPv4Address struct {
-	commonEntity.ArrayElement
-	IPv4RangeRef string `gorm:"column:IPv4RangeRef"`
-	Key *string `gorm:"column:Name"`
-	Address string `gorm:"column:Address"`
-	Allocated bool `gorm:"column:Allocated"`
+	commonEntity.Element
+	IPv4RangeRef commonEntity.ElementRefType `gorm:"column:IPv4RangeRef"`
+	Key          *string                     `gorm:"column:Name"`
+	Address      string                      `gorm:"column:Address"`
+	Allocated    bool                        `gorm:"column:Allocated"`
 }
 
 // TableName will set the table name.
@@ -23,18 +23,18 @@ func (IPv4Address) TableName() string {
 
 // IPv4Range is the IPv4 range.
 type IPv4Range struct {
-	commonEntity.ArrayElement
+	commonEntity.Element
 	IPv4PoolRef string `gorm:"column:IPv4PoolRef"`
-	Start string `gorm:"column:Start"`
-	End string `gorm:"column:End"`
+	Start       string `gorm:"column:Start"`
+	End         string `gorm:"column:End"`
 	// The next IPv4 address in this range that is not allocated.
 	NextAllocatable string `gorm:"column:NextAllocatable"`
 	// The next IPv4 address in this range that is not allocated and not used before.
-	NextFree string `gorm:"column:NextFree"`
-	Total		uint32 `gorm:"column:Total"`
-	Free		uint32 `gorm:"column:Free"`
-	Allocatable uint32 `gorm:"column:Allocatable"`
-	Addresses []IPv4Address `gorm:"column:Addresses;ForeignKey:IPv4RangeRef"`
+	NextFree    string        `gorm:"column:NextFree"`
+	Total       uint32        `gorm:"column:Total"`
+	Free        uint32        `gorm:"column:Free"`
+	Allocatable uint32        `gorm:"column:Allocatable"`
+	Addresses   []IPv4Address `gorm:"column:Addresses;ForeignKey:IPv4RangeRef"`
 }
 
 // TableName will set the table name.
@@ -45,13 +45,13 @@ func (IPv4Range) TableName() string {
 // IPv4Pool is the entity.
 type IPv4Pool struct {
 	entity.PromiseEntity
-	Name        string  `gorm:"column:Name"`
-	Description *string `gorm:"column:Description"`
-	SubnetMask  string  `gorm:"column:SubnetMask"`
-	Gateway     string  `gorm:"column:Gateway"`
-	Domain      string  `gorm:"column:Domain"`
-	DNSServers  string  `gorm:"column:DNSServers"`
-	Ranges      []IPv4Range  `gorm:"column:Ranges;ForeignKey:IPv4PoolRef"`
+	Name        string      `gorm:"column:Name"`
+	Description *string     `gorm:"column:Description"`
+	SubnetMask  *string     `gorm:"column:SubnetMask"`
+	Gateway     *string     `gorm:"column:Gateway"`
+	Domain      *string     `gorm:"column:Domain"`
+	DNSServers  *string     `gorm:"column:DNSServers"`
+	Ranges      []IPv4Range `gorm:"column:Ranges;ForeignKey:IPv4PoolRef"`
 }
 
 // TableName will set the table name.
@@ -90,13 +90,18 @@ func (e *IPv4Pool) ToModel() *model.IPv4Pool {
 		vv.Addresses = addresses
 		ranges = append(ranges, vv)
 	}
+	m.Ranges = ranges
 
-	dns := make([]string, 0)
-	commonUtil.StringToStruct(e.DNSServers, &dns)
-	if dns == nil {
-		dns = make([]string, 0)
+	if e.DNSServers == nil {
+		m.DNSServers = nil
+	} else {
+		dns := make([]string, 0)
+		commonUtil.StringToStruct(*e.DNSServers, &dns)
+		if dns == nil {
+			dns = make([]string, 0)
+		}
+		m.DNSServers = &dns
 	}
-	m.DNSServers = dns
 
 	return m
 }
@@ -109,7 +114,12 @@ func (e *IPv4Pool) Load(m *model.IPv4Pool) {
 	e.SubnetMask = m.SubnetMask
 	e.Gateway = m.Gateway
 	e.Domain = m.Domain
-	e.DNSServers = commonUtil.StructToString(m.DNSServers)
+	if m.DNSServers == nil {
+		e.DNSServers = nil
+	} else {
+		s := commonUtil.StructToString(*m.DNSServers)
+		e.DNSServers = &s
+	}
 
 	e.Ranges = make([]IPv4Range, 0)
 	for _, v := range m.Ranges {
@@ -129,5 +139,5 @@ func (e *IPv4Pool) Load(m *model.IPv4Pool) {
 		}
 		vv.Addresses = addresses
 		e.Ranges = append(e.Ranges, vv)
-	}	
+	}
 }

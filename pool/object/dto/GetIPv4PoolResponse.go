@@ -11,6 +11,7 @@ import (
 type GetIPv4PoolResponse struct {
 	commonDTO.PromiseResponse
 	IPv4PoolResource
+	Ranges []IPv4RangeResponse `json:"Ranges"`
 }
 
 // Load the data from model.
@@ -23,9 +24,17 @@ func (dto *GetIPv4PoolResponse) Load(data interface{}) error {
 	dto.PromiseResponse.Load(&m.PromiseModel)
 	dto.Name = m.Name
 	dto.Description = m.Description
-	dto.Ranges = make([]IPv4Range, 0)
+	dto.Ranges = make([]IPv4RangeResponse, 0)
 	for _, v := range m.Ranges {
-		dto.Ranges = append(dto.Ranges, IPv4Range{Start: v.Start, End: v.End})
+		vv := IPv4RangeResponse{}
+		vv.Start = v.Start
+		dto.Ranges = append(dto.Ranges, IPv4RangeResponse{
+			Start:       v.Start,
+			End:         v.End,
+			Total:       v.Total,
+			Allocatable: v.Allocatable,
+			Free:        v.Free,
+		})
 	}
 	dto.SubnetMask = m.SubnetMask
 	dto.Gateway = m.Gateway

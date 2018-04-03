@@ -5,6 +5,9 @@ import (
 	"time"
 )
 
+// PromiseEntityRefType is the ID type of PromieEntity.
+type PromiseEntityRefType string
+
 // PromiseEntity is the common entity used in Promise.
 type PromiseEntity struct {
 	ID        string    `gorm:"column:ID;primary_key"`
