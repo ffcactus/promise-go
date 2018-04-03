@@ -4,6 +4,7 @@ import (
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	commonDB "promise/common/db"
+	commonUtil "promise/common/util"
 	commonConstError "promise/common/object/consterror"
 	"promise/pool/object/entity"
 	"promise/pool/object/model"
@@ -57,6 +58,14 @@ func (i *PoolDBImplement) PostIPv4Pool(m *model.IPv4Pool) (bool, *model.IPv4Pool
 			"error": err}).
 			Warn("Post IPv4 pool in DB failed, create resource failed, transaction rollback.")
 		return false, nil, false, err
+	}	
+	if err := c.Save(&record).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"name":  m.Name,
+			"error": err}).
+			Warn("Post IPv4 pool in DB failed, save resource failed, transaction rollback.")
+		return false, nil, false, err
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
@@ -65,6 +74,7 @@ func (i *PoolDBImplement) PostIPv4Pool(m *model.IPv4Pool) (bool, *model.IPv4Pool
 			Warn("Post IPv4 pool in DB failed, commit failed.")
 		return false, nil, false, err
 	}
+	commonUtil.PrintJson(record.ToModel())
 	return false, record.ToModel(), true, nil
 }
 
@@ -72,7 +82,10 @@ func (i *PoolDBImplement) PostIPv4Pool(m *model.IPv4Pool) (bool, *model.IPv4Pool
 func (i *PoolDBImplement) GetIPv4Pool(id string) *model.IPv4Pool {
 	var record entity.IPv4Pool
 	c := commonDB.GetConnection()
-	if c.Where("\"ID\" = ?", id).First(&record).RecordNotFound() {
+	if c.Where("\"ID\" = ?", id).
+		Preload("\"IPv4Range\"").
+		Preload("\"IPv4Range\".\"IPv4Address\"").
+		First(&record).RecordNotFound() {
 		return nil
 	}
 	return record.ToModel()

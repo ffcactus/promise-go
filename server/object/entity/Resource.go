@@ -39,7 +39,7 @@ type Resource struct {
 // They has the resources properties since they are resource object from BMC perspective, when they are
 // embedded in Resource in DB, they are retrieved by uint ID.
 type EmbeddedResource struct {
-	ID uint `gorm:"primary_key"`
+	ID uint64 `gorm:"primary_key"`
 	Status
 	URI         *string
 	OriginID    *string
@@ -49,12 +49,12 @@ type EmbeddedResource struct {
 
 // EmbeddedObject The EmbeddedObject is sub structure in Resource or EmbeddedResource.
 type EmbeddedObject struct {
-	ID uint `gorm:"primary_key"`
+	ID uint64 `gorm:"primary_key"`
 }
 
 // Member Member is a object in a collection. Each member should have a member ID.
 type Member struct {
-	ID uint `gorm:"primary_key"`
+	ID uint64 `gorm:"primary_key"`
 	Status
 	URI            *string
 	OriginMemberID *string
@@ -92,7 +92,7 @@ type Threshold struct {
 
 // Placement The placement within the addressed location.
 type Placement struct {
-	LocationRef uint
+	LocationRef uint64
 	EmbeddedObject
 	Row             *string // Name of row.
 	Rack            *string // Name of a rack location within a row.
@@ -102,7 +102,7 @@ type Placement struct {
 
 // PostalAddress The PostalAddress for a resource.
 type PostalAddress struct {
-	LocationRef uint
+	LocationRef uint64
 	EmbeddedObject
 	Country                *string // Country.
 	Territory              *string // A top-level subdivision within a country.

@@ -41,7 +41,7 @@ func (c *IPv4ActionController) Post() {
 		log.WithFields(log.Fields{
 			"action":  action,
 			"id":      id,
-			"message": request.Message}).
+			"key": request.Key}).
 			Info("Allocate IP from pool.")
 		if resp, messages := service.AllocateIPv4Address(id, request); messages != nil {
 			c.Data["json"] = commonDto.MessagesToDto(messages)
