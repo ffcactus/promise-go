@@ -30,7 +30,7 @@ func GetPoolDB() PoolDBInterface {
 // It will return the newly created one if commited, or nil.
 // It will return if the transaction commited.
 // It will return error if any.
-func (i *PoolDBImplement) PostIPv4Pool(m *model.IPv4Pool) (bool, *model.IPv4Pool, bool, error) {
+func (impl *PoolDBImplement) PostIPv4Pool(m *model.IPv4Pool) (bool, *model.IPv4Pool, bool, error) {
 	var record entity.IPv4Pool
 
 	c := commonDB.GetConnection()
@@ -60,7 +60,7 @@ func (i *PoolDBImplement) PostIPv4Pool(m *model.IPv4Pool) (bool, *model.IPv4Pool
 			Warn("Post IPv4 pool in DB failed, create resource failed, transaction rollback.")
 		return false, nil, false, err
 	}
-	if err := c.Save(&record).Error; err != nil {
+	if err := tx.Save(&record).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"name":  m.Name,
@@ -79,24 +79,50 @@ func (i *PoolDBImplement) PostIPv4Pool(m *model.IPv4Pool) (bool, *model.IPv4Pool
 	return false, record.ToModel(), true, nil
 }
 
-func (i *PoolDBImplement) getIPv4Pool(c *gorm.DB, id string, record *entity.IPv4Pool) *gorm.DB {
-	return c.Where("\"ID\" = ?", id).
-		Preload("Ranges").
-		Preload("Ranges.Addresses").
-		First(record)
+// getOrRollback will try to get the IPv4 pool by ID, if not exist rollback.
+// It will return if the resource been found.
+// It will return error if any.
+func (impl *PoolDBImplement) getIPv4Pool(tx *gorm.DB, id string, record *entity.IPv4Pool) (bool, error) {
+	if tx.Where("\"ID\" = ?", id).First(record).RecordNotFound() {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id": id}).
+			Warn("Get IPv4 Pool failed, resource does not exist, transaction rollback.")
+		return false, nil
+	}
+
+	if err := tx.Where("\"ID\" = ?", id).Preload("Ranges").Preload("Ranges.Addresses").First(record).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id": id,
+			"error": err}).
+			Warn("Get IPv4 Pool failed, get resource failed, transaction rollback.")
+		return true, err
+	}
+	return true, nil
 }
 
 // GetIPv4Pool get the IPv4 pool by ID.
-func (i *PoolDBImplement) GetIPv4Pool(id string) *model.IPv4Pool {
+func (impl *PoolDBImplement) GetIPv4Pool(id string) *model.IPv4Pool {
 	var record entity.IPv4Pool
 	c := commonDB.GetConnection()
-	if i.getIPv4Pool(c, id, &record).RecordNotFound() {
+
+	tx := c.Begin()
+	if err := tx.Error; err != nil {
+		log.WithFields(log.Fields{
+			"id":  id,
+			"error": err}).
+			Warn("Post IPv4 pool in DB failed, start transaction failed.")
 		return nil
 	}
-	return record.ToModel()
+
+	if exist, err := impl.getIPv4Pool(tx, id, &record); exist && err == nil {
+		return record.ToModel()
+	}
+	return nil
 }
 
-func (i *PoolDBImplement) convertFilter(filter string) (string, error) {
+func (impl *PoolDBImplement) convertFilter(filter string) (string, error) {
 	if filter == "" {
 		return "", nil
 	}
@@ -113,7 +139,7 @@ func (i *PoolDBImplement) convertFilter(filter string) (string, error) {
 }
 
 // GetIPv4PoolCollection Get IPv4 pool collection by start and count.
-func (i *PoolDBImplement) GetIPv4PoolCollection(start int, count int, filter string) (*model.IPv4PoolCollection, error) {
+func (impl *PoolDBImplement) GetIPv4PoolCollection(start int, count int, filter string) (*model.IPv4PoolCollection, error) {
 	var (
 		total      int
 		collection []entity.IPv4Pool
@@ -122,7 +148,7 @@ func (i *PoolDBImplement) GetIPv4PoolCollection(start int, count int, filter str
 
 	c := commonDB.GetConnection()
 	c.Table("IPv4Pool").Count(&total)
-	if where, err := i.convertFilter(filter); err != nil {
+	if where, err := impl.convertFilter(filter); err != nil {
 		log.WithFields(log.Fields{
 			"filter": filter,
 			"error":  err}).
@@ -149,7 +175,7 @@ func (i *PoolDBImplement) GetIPv4PoolCollection(start int, count int, filter str
 // It will return the deleted one if commited.
 // It will return wether the operation commited.
 // It will return error if any.
-func (i *PoolDBImplement) DeleteIPv4Pool(id string) (bool, *model.IPv4Pool, bool, error) {
+func (impl *PoolDBImplement) DeleteIPv4Pool(id string) (bool, *model.IPv4Pool, bool, error) {
 	var record, previous entity.IPv4Pool
 
 	if id == "" {
@@ -165,21 +191,11 @@ func (i *PoolDBImplement) DeleteIPv4Pool(id string) (bool, *model.IPv4Pool, bool
 			Warn("Delete IPv4 pool in DB failed, start transaction failed.")
 		return true, nil, false, err
 	}
-	if tx.Where("\"ID\" = ?", id).First(&previous).RecordNotFound() {
-		tx.Rollback()
-		log.WithFields(log.Fields{
-			"id": id}).
-			Warn("Delete IPv4 pool in DB failed, resource does not exist, transaction rollback.")
-		return false, nil, false, commonConstError.ErrorResourceNotExist
+
+	if exist, err := impl.getIPv4Pool(tx, id, &record); err != nil || !exist {
+		return exist, nil, false, err
 	}
 
-	if err := i.getIPv4Pool(tx, id, &record).Error; err != nil {
-		log.WithFields(log.Fields{
-			"id": id}).
-			Warn("Delete IPv4 pool in DB failed, get resource failed, transaction rollback.")
-		return true, nil, false, err
-	}
-	commonUtil.PrintJson(record)
 	for _, i := range record.Ranges {
 		for _, j := range i.Addresses {
 			if err := tx.Delete(&j).Error; err != nil {
@@ -216,7 +232,7 @@ func (i *PoolDBImplement) DeleteIPv4Pool(id string) (bool, *model.IPv4Pool, bool
 // It will return the deleted resources.
 // It will return wether the commit success.
 // It will return error if any.
-func (i *PoolDBImplement) DeleteIPv4PoolCollection() ([]model.IPv4Pool, bool, error) {
+func (impl *PoolDBImplement) DeleteIPv4PoolCollection() ([]model.IPv4Pool, bool, error) {
 	var records []entity.IPv4Pool
 	c := commonDB.GetConnection()
 
@@ -252,4 +268,134 @@ func (i *PoolDBImplement) DeleteIPv4PoolCollection() ([]model.IPv4Pool, bool, er
 		deleted = append(deleted, *v.ToModel())
 	}
 	return deleted, true, nil
+}
+
+// saveAndCommit will save the record and do commit.
+func (impl *PoolDBImplement) saveAndCommit(tx *gorm.DB, record *entity.IPv4Pool) (bool, error) {
+	if err := tx.Save(record).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id":  record.ID,
+			"error": err}).
+			Warn("Save and commit operation failed, save failed, transaction rollback.")
+		return false,err
+	}
+	if err := tx.Commit().Error; err != nil {
+		log.WithFields(log.Fields{
+			"id":  record.ID,
+			"error": err}).
+			Warn("Save and commit operation failed, commit failed.")
+		return false, err
+	}
+	return true, nil
+}
+
+// AllocateIPv4Address will allocate IPv4 address from IP pool.
+// It will return if the pool exist.
+// It will return the address if operation commited, or nil
+// It will return the pool after the allocation if operation commited, or nil
+// It will return if the operation commited.
+// It will return error if any, or nil.
+func (impl *PoolDBImplement) AllocateIPv4Address(id string, key string) (bool, string, *model.IPv4Pool, bool, error) {
+	var record entity.IPv4Pool
+	if id == "" {
+		return false, "", nil, false, commonConstError.ErrorIDFormat
+	}
+	c := commonDB.GetConnection()
+
+	tx := c.Begin()
+	if err := tx.Error; err != nil {
+		log.WithFields(log.Fields{
+			"id":    id,
+			"key": key,
+			"error": err}).
+			Warn("Allocate IPv4 failed, start transaction failed.")
+		return true, "", nil, false, err
+	}
+	exist, err := impl.getIPv4Pool(tx, id, &record)
+	if !exist {
+		return false, "", nil, false, commonConstError.ErrorResourceNotExist
+	}
+	if err != nil {
+		return true, "", nil, false, err
+	}
+
+	foundKey := false
+	// If try to find the address with the same key.
+	if key != "" {		
+		for i := range record.Ranges {
+			for j := range record.Ranges[i].Addresses {
+				if record.Ranges[i].Addresses[j].Key == key {
+					foundKey = true
+					if record.Ranges[i].Addresses[j].Allocated == true {
+						log.WithFields(log.Fields{
+							"id":  record.ID,
+							"key": key,
+							"address":record.Ranges[i].Addresses[j].Address}).
+							Info("Allocate IPv4, found address with key but already allocated.")					
+					} else {
+						record.Ranges[i].Addresses[j].Allocated = true
+						record.Ranges[i].Free--
+						record.Ranges[i].Allocatable--
+						if commited, err := impl.saveAndCommit(tx, &record); commited && err == nil {
+							return true, record.Ranges[i].Addresses[j].Address, record.ToModel(), true, nil
+						}
+						return true, "", nil, false, err							
+					}
+					// found the address with the key, but in already allocated.
+					break;
+				}
+			}
+			if foundKey {
+				break;
+			}
+		}
+	}
+
+	// if the key == nil, we don't have to find the address with the key.
+	for i := range record.Ranges {
+		if record.Ranges[i].Free > 0 {
+			for j := range record.Ranges[i].Addresses {
+				if record.Ranges[i].Addresses[j].Key != "" || record.Ranges[i].Addresses[j].Allocated == true {
+					continue
+				}
+				record.Ranges[i].Addresses[j].Allocated = true
+				record.Ranges[i].Addresses[j].Key = key
+				record.Ranges[i].Free--
+				record.Ranges[i].Allocatable--
+				commited, err := impl.saveAndCommit(tx, &record)
+				if commited && err == nil {
+					return true, record.Ranges[i].Addresses[j].Address, record.ToModel(), true, nil	
+				}
+				return true, "", nil, commited, err										
+			}
+		}
+	}
+	// So no free address, try to use the allocatable address.
+	for i := range record.Ranges {
+		if record.Ranges[i].Allocatable > 0 {
+			for j := range record.Ranges[i].Addresses {
+				if record.Ranges[i].Addresses[j].Allocated == true {
+					continue
+				}
+				record.Ranges[i].Addresses[j].Allocated = true
+				record.Ranges[i].Addresses[j].Key = key
+				record.Ranges[i].Free--
+				record.Ranges[i].Allocatable--
+				commited, err := impl.saveAndCommit(tx, &record)
+				if commited && err == nil {
+					return true, record.Ranges[i].Addresses[j].Address, record.ToModel(), true, nil	
+				}
+				return true, "", nil, commited, err				
+			}
+		}
+	}
+	// So no address can allocate.
+	tx.Rollback()
+	log.WithFields(log.Fields{
+		"id":  id,
+		"key": key}).
+		Info("Allocate IPv4 failed, no allocatable address.")					
+
+	return true, "", nil, false, nil
 }

@@ -6,7 +6,7 @@ import (
 
 // IPv4Address shows the usage of an IPv4 address.
 type IPv4Address struct {
-	Key       *string
+	Key       string
 	Address   string
 	Allocated bool
 }
@@ -16,8 +16,6 @@ type IPv4Range struct {
 	Start           string
 	End             string
 	Addresses       []IPv4Address
-	NextAllocatable string
-	NextFree        string
 	Total           uint32
 	Free            uint32
 	Allocatable     uint32

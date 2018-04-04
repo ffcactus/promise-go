@@ -4,18 +4,18 @@ package dto
 type IPv4RangeRequest struct {
 	Start       string  `json:"Start"`
 	End         string  `json:"End"`
-	Total       *uint32 `json:"Total,omitempty"`
-	Free        *uint32 `json:"Free,omitempty"`
-	Allocatable *uint32 `json:"Allocatable,omitempty"`
+	Total       *uint32 `json:"Total"`
+	Free        *uint32 `json:"Free"`
+	Allocatable *uint32 `json:"Allocatable"`
 }
 
 // IPv4RangeResponse is a IPv4 range in response.
 type IPv4RangeResponse struct {
 	Start       string `json:"Start"`
 	End         string `json:"End"`
-	Total       uint32 `json:"Total,omitempty"`
-	Free        uint32 `json:"Free,omitempty"`
-	Allocatable uint32 `json:"Allocatable,omitempty"`
+	Total       uint32 `json:"Total"`
+	Free        uint32 `json:"Free"`
+	Allocatable uint32 `json:"Allocatable"`
 }
 
 // IPv4PoolResource is the resource DTO.

@@ -11,4 +11,6 @@ type PoolDBInterface interface {
 	GetIPv4PoolCollection(start int, count int, filter string) (*model.IPv4PoolCollection, error)
 	DeleteIPv4Pool(id string) (bool, *model.IPv4Pool, bool, error)
 	DeleteIPv4PoolCollection() ([]model.IPv4Pool, bool, error)
+	AllocateIPv4Address(id string, key string) (exist bool, address string, pool *model.IPv4Pool, commited bool, err error)
+	// FreeIPv4Address(id string, address string) (exist bool, address string, pool *model.IPv4Pool, commited bool, err error)
 }

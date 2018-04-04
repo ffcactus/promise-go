@@ -38,12 +38,17 @@ func (c *IPv4ActionController) Post() {
 			c.ServeJSON()
 			return
 		}
+		key := ""
+		if request.Key != nil {
+			key = *request.Key
+		}
 		log.WithFields(log.Fields{
 			"action":  action,
 			"id":      id,
-			"key": request.Key}).
-			Info("Allocate IP from pool.")
-		if resp, messages := service.AllocateIPv4Address(id, request); messages != nil {
+			"key": key}).
+			Info("Allocate IP from pool.")			
+		
+		if address, pool, messages := service.AllocateIPv4Address(id, key); messages != nil {
 			c.Data["json"] = commonDto.MessagesToDto(messages)
 			c.Ctx.Output.SetStatus(messages[0].StatusCode)
 			log.WithFields(log.Fields{
@@ -52,6 +57,22 @@ func (c *IPv4ActionController) Post() {
 				"message": messages[0].ID}).
 				Warn("Allocate IPv4 failed.")
 		} else {
+			resp := dto.AllocateIPv4Response{}
+			resp.Address = address;
+			if err := resp.Pool.Load(pool); err != nil {
+				messages := []commonMessage.Message{}
+				messages = append(messages, commonMessage.NewInternalError())
+				log.WithFields(log.Fields{
+					"action":  action,
+					"id":      id,
+					"address": address,
+					"message": messages[0].ID}).
+					Warn("Allocate IPv4 failed, failed to encode response, address is allocated.")				
+				c.Data["json"] = commonDto.MessagesToDto(messages)
+				c.Ctx.Output.SetStatus(messages[0].StatusCode)
+				c.ServeJSON()
+				return
+			}
 			c.Data["json"] = &resp
 			c.Ctx.Output.SetStatus(http.StatusAccepted)
 		}

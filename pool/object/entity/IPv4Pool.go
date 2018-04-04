@@ -11,7 +11,7 @@ import (
 type IPv4Address struct {
 	commonEntity.Element
 	IPv4RangeRef commonEntity.ElementRefType `gorm:"column:IPv4RangeRef"`
-	Key          *string                     `gorm:"column:Name"`
+	Key          string                     `gorm:"column:Key"`
 	Address      string                      `gorm:"column:Address"`
 	Allocated    bool                        `gorm:"column:Allocated"`
 }
@@ -27,10 +27,6 @@ type IPv4Range struct {
 	IPv4PoolRef string `gorm:"column:IPv4PoolRef"`
 	Start       string `gorm:"column:Start"`
 	End         string `gorm:"column:End"`
-	// The next IPv4 address in this range that is not allocated.
-	NextAllocatable string `gorm:"column:NextAllocatable"`
-	// The next IPv4 address in this range that is not allocated and not used before.
-	NextFree    string        `gorm:"column:NextFree"`
 	Total       uint32        `gorm:"column:Total"`
 	Free        uint32        `gorm:"column:Free"`
 	Allocatable uint32        `gorm:"column:Allocatable"`
@@ -74,8 +70,6 @@ func (e *IPv4Pool) ToModel() *model.IPv4Pool {
 		vv := model.IPv4Range{}
 		vv.Start = v.Start
 		vv.End = v.End
-		vv.NextAllocatable = v.NextAllocatable
-		vv.NextFree = v.NextFree
 		vv.Total = v.Total
 		vv.Free = v.Free
 		vv.Allocatable = v.Allocatable

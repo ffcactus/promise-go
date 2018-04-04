@@ -3,6 +3,7 @@ package service
 import (
 	"promise/common/category"
 	commonMessage "promise/common/object/message"
+	"promise/pool/object/message"
 	"promise/pool/db"
 	"promise/pool/object/dto"
 	"promise/pool/object/model"
@@ -82,14 +83,20 @@ func DeleteIPv4PoolCollection() []commonMessage.Message {
 }
 
 // AllocateIPv4Address will allocate an IP from pool.
-func AllocateIPv4Address(id string, request dto.AllocateIPv4Request) (*model.IPv4Pool, []commonMessage.Message) {
+func AllocateIPv4Address(id string, key string) (string, *model.IPv4Pool, []commonMessage.Message) {
 	dbImpl := db.GetPoolDB()
 
-	ipv4Pool := dbImpl.GetIPv4Pool(id)
-	if ipv4Pool == nil {
-		return nil, []commonMessage.Message{commonMessage.NewResourceNotExist()}
+	exist, address, pool, commited, err := dbImpl.AllocateIPv4Address(id, key)
+	if !exist {
+		return "", nil, []commonMessage.Message{commonMessage.NewResourceNotExist()}
 	}
-	return ipv4Pool, nil
+	if exist && address == "" && !commited && err == nil {
+		return "", nil, []commonMessage.Message{message.NewIPv4PoolEmpty()}
+	}
+	if !commited || err != nil {
+		return "", nil, []commonMessage.Message{commonMessage.NewTransactionError()}
+	}
+	return address, pool, nil
 }
 
 // FreeIPv4Address will free an IP from pool.

@@ -6,5 +6,5 @@ import (
 // AllocateIPv4Request is the DTO to allocate an IP.
 type AllocateIPv4Request struct {
 	commonDTO.PromiseRequest
-	Key string `json:"Key"`
+	Key *string `json:"Key"`
 }
