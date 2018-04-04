@@ -11,13 +11,17 @@ import (
 	"strings"
 )
 
+var (
+	instance ServerServerGroupImplement
+)
+
 // ServerServerGroupImplement is the SQL implement.
 type ServerServerGroupImplement struct {
 }
 
 // GetServerServerGroupInstance will return the server-servergroup DB impl.
 func GetServerServerGroupInstance() ServerServerGroupInterface {
-	return new(ServerServerGroupImplement)
+	return &instance
 }
 
 // GetServerServerGroup will get the resource by ID.

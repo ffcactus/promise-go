@@ -15,13 +15,18 @@ import (
 	"promise/server/object/model"
 )
 
+var (
+	instance ServerDBImplement
+)
+
+
 // ServerDBImplement The DB implementation.
 type ServerDBImplement struct {
 }
 
 // GetDBInstance Get a DB implementation instance.
 func GetDBInstance() ServerDBInterface {
-	return new(ServerDBImplement)
+	return &instance
 }
 
 // IsServerExist Check the existance of the server, if found, return it.

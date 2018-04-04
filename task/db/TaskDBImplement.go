@@ -9,13 +9,17 @@ import (
 	"github.com/google/uuid"
 )
 
+var (
+	instance TaskDBImplement
+)
+
 // TaskDBImplement Task DB implement.
 type TaskDBImplement struct {
 }
 
 // GetDBInstance Get DB instance.
 func GetDBInstance() TaskDBInterface {
-	return &TaskDBImplement{}
+	return &instance
 }
 
 // PostTask Post Task.

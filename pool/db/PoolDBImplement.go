@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	poolDBInstance PoolDBImplement
+	instance PoolDBImplement
 )
 
 // PoolDBImplement is the implementation.
@@ -22,7 +22,7 @@ type PoolDBImplement struct {
 
 // GetPoolDB return the singleton.
 func GetPoolDB() PoolDBInterface {
-	return &poolDBInstance
+	return &instance
 }
 
 // PostIPv4Pool will save the IPv4 pool if no one with the same name.
