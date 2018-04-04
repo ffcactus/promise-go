@@ -7,8 +7,10 @@ import (
 	commonDB "promise/common/db"
 	commonConstError "promise/common/object/consterror"
 	commonUtil "promise/common/util"
+	"promise/pool/object/consterror"
 	"promise/pool/object/entity"
 	"promise/pool/object/model"
+	"promise/pool/util"
 	"strings"
 )
 
@@ -94,7 +96,7 @@ func (impl *PoolDBImplement) getIPv4Pool(tx *gorm.DB, id string, record *entity.
 	if err := tx.Where("\"ID\" = ?", id).Preload("Ranges").Preload("Ranges.Addresses").First(record).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
-			"id": id,
+			"id":    id,
 			"error": err}).
 			Warn("Get IPv4 Pool failed, get resource failed, transaction rollback.")
 		return true, err
@@ -110,7 +112,7 @@ func (impl *PoolDBImplement) GetIPv4Pool(id string) *model.IPv4Pool {
 	tx := c.Begin()
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
-			"id":  id,
+			"id":    id,
 			"error": err}).
 			Warn("Post IPv4 pool in DB failed, start transaction failed.")
 		return nil
@@ -275,14 +277,14 @@ func (impl *PoolDBImplement) saveAndCommit(tx *gorm.DB, record *entity.IPv4Pool)
 	if err := tx.Save(record).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
-			"id":  record.ID,
+			"id":    record.ID,
 			"error": err}).
 			Warn("Save and commit operation failed, save failed, transaction rollback.")
-		return false,err
+		return false, err
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
-			"id":  record.ID,
+			"id":    record.ID,
 			"error": err}).
 			Warn("Save and commit operation failed, commit failed.")
 		return false, err
@@ -307,7 +309,7 @@ func (impl *PoolDBImplement) AllocateIPv4Address(id string, key string) (bool, s
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
 			"id":    id,
-			"key": key,
+			"key":   key,
 			"error": err}).
 			Warn("Allocate IPv4 failed, start transaction failed.")
 		return true, "", nil, false, err
@@ -322,17 +324,17 @@ func (impl *PoolDBImplement) AllocateIPv4Address(id string, key string) (bool, s
 
 	foundKey := false
 	// If try to find the address with the same key.
-	if key != "" {		
+	if key != "" {
 		for i := range record.Ranges {
 			for j := range record.Ranges[i].Addresses {
 				if record.Ranges[i].Addresses[j].Key == key {
 					foundKey = true
 					if record.Ranges[i].Addresses[j].Allocated == true {
 						log.WithFields(log.Fields{
-							"id":  record.ID,
-							"key": key,
-							"address":record.Ranges[i].Addresses[j].Address}).
-							Info("Allocate IPv4, found address with key but already allocated.")					
+							"id":      record.ID,
+							"key":     key,
+							"address": record.Ranges[i].Addresses[j].Address}).
+							Info("Allocate IPv4, found address with key but already allocated.")
 					} else {
 						record.Ranges[i].Addresses[j].Allocated = true
 						record.Ranges[i].Free--
@@ -340,14 +342,14 @@ func (impl *PoolDBImplement) AllocateIPv4Address(id string, key string) (bool, s
 						if commited, err := impl.saveAndCommit(tx, &record); commited && err == nil {
 							return true, record.Ranges[i].Addresses[j].Address, record.ToModel(), true, nil
 						}
-						return true, "", nil, false, err							
+						return true, "", nil, false, err
 					}
 					// found the address with the key, but in already allocated.
-					break;
+					break
 				}
 			}
 			if foundKey {
-				break;
+				break
 			}
 		}
 	}
@@ -365,9 +367,9 @@ func (impl *PoolDBImplement) AllocateIPv4Address(id string, key string) (bool, s
 				record.Ranges[i].Allocatable--
 				commited, err := impl.saveAndCommit(tx, &record)
 				if commited && err == nil {
-					return true, record.Ranges[i].Addresses[j].Address, record.ToModel(), true, nil	
+					return true, record.Ranges[i].Addresses[j].Address, record.ToModel(), true, nil
 				}
-				return true, "", nil, commited, err										
+				return true, "", nil, commited, err
 			}
 		}
 	}
@@ -384,9 +386,9 @@ func (impl *PoolDBImplement) AllocateIPv4Address(id string, key string) (bool, s
 				record.Ranges[i].Allocatable--
 				commited, err := impl.saveAndCommit(tx, &record)
 				if commited && err == nil {
-					return true, record.Ranges[i].Addresses[j].Address, record.ToModel(), true, nil	
+					return true, record.Ranges[i].Addresses[j].Address, record.ToModel(), true, nil
 				}
-				return true, "", nil, commited, err				
+				return true, "", nil, commited, err
 			}
 		}
 	}
@@ -395,7 +397,67 @@ func (impl *PoolDBImplement) AllocateIPv4Address(id string, key string) (bool, s
 	log.WithFields(log.Fields{
 		"id":  id,
 		"key": key}).
-		Info("Allocate IPv4 failed, no allocatable address.")					
+		Info("Allocate IPv4 failed, no allocatable address.")
 
 	return true, "", nil, false, nil
+}
+
+// FreeIPv4Address will free the address to pool.
+// It will return if the pool exist.
+// It will return if the transaction commited.
+// It will return error if any.
+func (impl *PoolDBImplement) FreeIPv4Address(id string, address string) (bool, *model.IPv4Pool, bool, error) {
+	var record entity.IPv4Pool
+	if id == "" {
+		return false, nil, false, commonConstError.ErrorIDFormat
+	}
+	c := commonDB.GetConnection()
+
+	tx := c.Begin()
+	if err := tx.Error; err != nil {
+		log.WithFields(log.Fields{
+			"id":      id,
+			"address": address,
+			"error":   err}).
+			Warn("Free IPv4 failed, start transaction failed.")
+		return true, nil, false, err
+	}
+	exist, err := impl.getIPv4Pool(tx, id, &record)
+	if !exist {
+		return false, nil, false, commonConstError.ErrorResourceNotExist
+	}
+	if err != nil {
+		return true, nil, false, err
+	}
+	for i := range record.Ranges {
+		if !util.IPStringBetween(record.Ranges[i].Start, record.Ranges[i].End, address) {
+			continue
+		}
+		for j := range record.Ranges[i].Addresses {
+			if record.Ranges[i].Addresses[j].Address == address {
+				if !record.Ranges[i].Addresses[j].Allocated {
+					return true, nil, false, consterror.ErrorAlreadyFree
+				}
+				record.Ranges[i].Addresses[j].Allocated = false
+				record.Ranges[i].Allocatable++
+				if record.Ranges[i].Addresses[j].Key == "" {
+					record.Ranges[i].Free++
+				}
+				commited, err := impl.saveAndCommit(tx, &record)
+				if commited && err == nil {
+					return true, record.ToModel(), true, nil
+				}
+				return true, nil, commited, err
+			}
+		}
+		break
+	}
+	// Can't find the address in pool.
+	tx.Rollback()
+	log.WithFields(log.Fields{
+		"id":      id,
+		"address": address}).
+		Info("Free IPv4 failed, address not in pool.")
+
+	return true, nil, false, consterror.ErrorNotInPool
 }

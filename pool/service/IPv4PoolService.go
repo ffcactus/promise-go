@@ -3,9 +3,9 @@ package service
 import (
 	"promise/common/category"
 	commonMessage "promise/common/object/message"
-	"promise/pool/object/message"
 	"promise/pool/db"
 	"promise/pool/object/dto"
+	"promise/pool/object/message"
 	"promise/pool/object/model"
 	wsSDK "promise/sdk/ws"
 )
@@ -100,12 +100,15 @@ func AllocateIPv4Address(id string, key string) (string, *model.IPv4Pool, []comm
 }
 
 // FreeIPv4Address will free an IP from pool.
-func FreeIPv4Address(id string, request dto.FreeIPv4Request) (*model.IPv4Pool, []commonMessage.Message) {
+func FreeIPv4Address(id string, key string) (*model.IPv4Pool, []commonMessage.Message) {
 	dbImpl := db.GetPoolDB()
 
-	ipv4Pool := dbImpl.GetIPv4Pool(id)
-	if ipv4Pool == nil {
+	exist, pool, commited, err := dbImpl.FreeIPv4Address(id, key)
+	if !exist {
 		return nil, []commonMessage.Message{commonMessage.NewResourceNotExist()}
 	}
-	return ipv4Pool, nil
+	if commited && err == nil {
+		return pool, nil
+	}
+	return nil, []commonMessage.Message{commonMessage.NewTransactionError()}
 }

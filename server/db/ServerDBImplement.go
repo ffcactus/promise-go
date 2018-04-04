@@ -19,7 +19,6 @@ var (
 	instance ServerDBImplement
 )
 
-
 // ServerDBImplement The DB implementation.
 type ServerDBImplement struct {
 }

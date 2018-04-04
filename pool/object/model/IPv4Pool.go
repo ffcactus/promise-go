@@ -13,12 +13,12 @@ type IPv4Address struct {
 
 // IPv4Range is a IPv4 range.
 type IPv4Range struct {
-	Start           string
-	End             string
-	Addresses       []IPv4Address
-	Total           uint32
-	Free            uint32
-	Allocatable     uint32
+	Start       string
+	End         string
+	Addresses   []IPv4Address
+	Total       uint32
+	Free        uint32
+	Allocatable uint32
 }
 
 // IPv4Pool is the model.

@@ -2,7 +2,6 @@ package dto
 
 // PromiseRequest represents the common request DTO used in Promise project.
 type PromiseRequest struct {
-
 }
 
 // PromiseRequestInterface is the interface.

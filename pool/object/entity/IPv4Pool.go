@@ -11,7 +11,7 @@ import (
 type IPv4Address struct {
 	commonEntity.Element
 	IPv4RangeRef commonEntity.ElementRefType `gorm:"column:IPv4RangeRef"`
-	Key          string                     `gorm:"column:Key"`
+	Key          string                      `gorm:"column:Key"`
 	Address      string                      `gorm:"column:Address"`
 	Allocated    bool                        `gorm:"column:Allocated"`
 }
@@ -24,9 +24,9 @@ func (IPv4Address) TableName() string {
 // IPv4Range is the IPv4 range.
 type IPv4Range struct {
 	commonEntity.Element
-	IPv4PoolRef string `gorm:"column:IPv4PoolRef"`
-	Start       string `gorm:"column:Start"`
-	End         string `gorm:"column:End"`
+	IPv4PoolRef string        `gorm:"column:IPv4PoolRef"`
+	Start       string        `gorm:"column:Start"`
+	End         string        `gorm:"column:End"`
 	Total       uint32        `gorm:"column:Total"`
 	Free        uint32        `gorm:"column:Free"`
 	Allocatable uint32        `gorm:"column:Allocatable"`
