@@ -36,6 +36,11 @@ public class ServerGroupTest extends PromiseIntegrationTest
     public static void tearDownAfterClass()
             throws Exception
     {
+        // Remove all the server group.
+        final ResponseEntity<DeleteResourceResponse> response = RestClient.delete(
+                getRootURL() + "/promise/v1/servergroup",
+                DeleteResourceResponse.class);
+        Assert.assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
     }
 
     @Before
@@ -131,20 +136,22 @@ public class ServerGroupTest extends PromiseIntegrationTest
 
     /**
      * You can get collection.
-     * @throws UnsupportedEncodingException 
+     * 
+     * @throws UnsupportedEncodingException
      */
     @Test
-    public void testGetCollection() throws UnsupportedEncodingException
+    public void testGetCollection()
+            throws UnsupportedEncodingException
     {
         GetServerGroupResponse r1 = ServerGroupAssertUtil.assertServerGroupPosted("group1", "description1");
         GetServerGroupResponse r2 = ServerGroupAssertUtil.assertServerGroupPosted("group2", "description2");
         GetServerGroupResponse r3 = ServerGroupAssertUtil.assertGetServerGroupByName("all");
-        
-        List<ServerGroupMemberResponse> members = PromiseAssertUtil.assertGetCollection(getRootURL() + "/promise/v1/servergroup", 3, ServerGroupMemberResponse.class);
+
+        List<ServerGroupMemberResponse> members = PromiseAssertUtil
+                .assertGetCollection(getRootURL() + "/promise/v1/servergroup", 3, ServerGroupMemberResponse.class);
         Assert.assertTrue(members.contains(r1));
         Assert.assertTrue(members.contains(r2));
         Assert.assertTrue(members.contains(r3));
-        
-        
+
     }
 }

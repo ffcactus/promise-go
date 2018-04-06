@@ -4,8 +4,10 @@ import (
 	"net"
 	"promise/common/category"
 	commonDTO "promise/common/object/dto"
+	commonConstError "promise/common/object/consterror"
 	"promise/pool/object/model"
 	"promise/pool/util"
+	"promise/pool/object/consterror"
 )
 
 // PostIPv4PoolRequest is the request DTO.
@@ -15,42 +17,45 @@ type PostIPv4PoolRequest struct {
 	Ranges []IPv4RangeRequest `json:"Ranges"`
 }
 
-// IsValid check if the request is valid.
-func (dto *PostIPv4PoolRequest) IsValid() bool {
+// Validate the request.
+func (dto *PostIPv4PoolRequest) Validate() error {
 	if dto.SubnetMask != nil && net.ParseIP(*dto.SubnetMask) == nil {
-		return false
+		return commonConstError.ErrorDataConvert
 	}
 	if dto.Gateway != nil && net.ParseIP(*dto.Gateway) == nil {
-		return false
+		return commonConstError.ErrorDataConvert
 	}
 	if dto.SubnetMask != nil && net.ParseIP(*dto.SubnetMask) == nil {
-		return false
+		return commonConstError.ErrorDataConvert
 	}
 	if dto.DNSServers != nil {
 		for _, v := range *dto.DNSServers {
 			if net.ParseIP(v) == nil {
-				return false
+				return commonConstError.ErrorDataConvert
 			}
 		}
 	}
 
+	if len(dto.Ranges) == 0 {
+		return consterror.ErrorRangeCount;
+	}
 	for _, v := range dto.Ranges {
 		start := net.ParseIP(v.Start)
 		end := net.ParseIP(v.End)
 		if start == nil {
-			return false
+			return commonConstError.ErrorDataConvert
 		}
 		if end == nil {
-			return false
+			return commonConstError.ErrorDataConvert
 		}
 		if util.IPtoInt(start) > util.IPtoInt(end) {
-			return false
+			return consterror.ErrorRangeEndAddress
 		}
 		if util.IPtoInt(end)-util.IPtoInt(start)+1 > 256 {
-			return false
+			return consterror.ErrorRangeSize
 		}
 	}
-	return true
+	return nil
 }
 
 // ToModel will convert the DTO to model.

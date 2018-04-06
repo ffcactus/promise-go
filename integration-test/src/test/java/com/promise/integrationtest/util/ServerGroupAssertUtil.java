@@ -21,12 +21,12 @@ public class ServerGroupAssertUtil
      */
     public static GetServerGroupResponse assertServerGroupPosted(String name, String description)
     {
-        
+
         final PostServerGroupRequest request = new PostServerGroupRequest(name, description);
         // Create a servergroup.
         GetServerGroupResponse response = PromiseAssertUtil.assertPostResponse(
-                PromiseIntegrationTest.getRootURL() + "/promise/v1/servergroup", 
-                request, 
+                PromiseIntegrationTest.getRootURL() + "/promise/v1/servergroup",
+                request,
                 GetServerGroupResponse.class);
         Assert.assertEquals(name, response.getName());
         Assert.assertEquals(description, response.getDescription());

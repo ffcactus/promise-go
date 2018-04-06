@@ -12,6 +12,9 @@ type GetIPv4PoolResponse struct {
 	commonDTO.PromiseResponse
 	IPv4PoolResource
 	Ranges []IPv4RangeResponse `json:"Ranges"`
+	Total uint32 `json:"Total"`
+	Free uint32 `json:"Free"`
+	Allocatable uint32 `json:"Allocatable"`
 }
 
 // Load the data from model.
@@ -28,6 +31,9 @@ func (dto *GetIPv4PoolResponse) Load(data interface{}) error {
 	for _, v := range m.Ranges {
 		vv := IPv4RangeResponse{}
 		vv.Start = v.Start
+		dto.Total += v.Total
+		dto.Free += v.Free
+		dto.Allocatable += v.Allocatable
 		dto.Ranges = append(dto.Ranges, IPv4RangeResponse{
 			Start:       v.Start,
 			End:         v.End,

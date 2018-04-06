@@ -6,10 +6,10 @@ type PromiseRequest struct {
 
 // PromiseRequestInterface is the interface.
 type PromiseRequestInterface interface {
-	IsValid() bool
+	Validate() error
 }
 
-// IsValid check if the request is valid.
-func (dto *PromiseRequest) IsValid() bool {
-	return true
+// Validate the request.
+func (dto *PromiseRequest) Validate() error {
+	return nil
 }

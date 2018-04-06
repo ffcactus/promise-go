@@ -3,19 +3,25 @@ package com.promise.integrationtest.idpool.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.promise.integrationtest.base.ResourceResponse;
 
-public class IPv4Range
+public class IPv4RangeResponse
 {
     @JsonProperty(value = "Start", required = true)
     private String start;
     @JsonProperty(value = "End", required = true)
     private String end;
+    @JsonProperty(value = "Total", required = true)
+    private String total;
+    @JsonProperty(value = "Free", required = true)
+    private String free;
+    @JsonProperty(value = "Allocatable", required = true)
+    private String allocatable;
 
-    public IPv4Range()
+    public IPv4RangeResponse()
     {
 
     }
 
-    public IPv4Range(String start, String end)
+    public IPv4RangeResponse(String start, String end)
     {
         this.start = start;
         this.end = end;
@@ -40,7 +46,37 @@ public class IPv4Range
     {
         this.end = end;
     }
-    
+
+    public String getTotal()
+    {
+        return total;
+    }
+
+    public void setTotal(String total)
+    {
+        this.total = total;
+    }
+
+    public String getFree()
+    {
+        return free;
+    }
+
+    public void setFree(String free)
+    {
+        this.free = free;
+    }
+
+    public String getAllocatable()
+    {
+        return allocatable;
+    }
+
+    public void setAllocatable(String allocatable)
+    {
+        this.allocatable = allocatable;
+    }
+
     @Override
     public boolean equals(Object obj)
     {
@@ -48,9 +84,9 @@ public class IPv4Range
             return false;
         if (obj == this)
             return true;
-        if (!(obj instanceof IPv4Range))
+        if (!(obj instanceof IPv4RangeResponse))
             return false;
-        IPv4Range other = (IPv4Range) obj;
+        IPv4RangeResponse other = (IPv4RangeResponse) obj;
         if (!other.getStart().equals(this.start))
             return false;
         if (!other.getEnd().equals(this.end))

@@ -3,8 +3,10 @@ package com.promise.integrationtest.idpool.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostIPv4PoolRequest
 {
     @JsonProperty(value = "Name", required = true)
@@ -12,22 +14,18 @@ public class PostIPv4PoolRequest
     @JsonProperty(value = "Description", required = false)
     private String description;
     @JsonProperty(value = "Ranges", required = true)
-    private List<IPv4Range> ranges;
+    private List<IPv4RangeRequest> ranges;
     @JsonProperty(value = "SubnetMask", required = true)
     private String subnetMask;
     @JsonProperty(value = "Gateway", required = true)
     private String gateway;
-    @JsonProperty(value = "Domain", required = true)
+    @JsonProperty(value = "Domain", required = false)
     private String domain;
-    @JsonProperty(value = "DNSServers", required = true)
+    @JsonProperty(value = "DNSServers", required = false)
     private List<String> dnsServers;
 
     public PostIPv4PoolRequest()
     {
-        name = "";
-        subnetMask = "";
-        gateway = "";
-        domain = "";
         ranges = new ArrayList<>();
         dnsServers = new ArrayList<>();
     }
@@ -52,12 +50,12 @@ public class PostIPv4PoolRequest
         this.description = description;
     }
 
-    public List<IPv4Range> getRanges()
+    public List<IPv4RangeRequest> getRanges()
     {
         return ranges;
     }
 
-    public void setRanges(List<IPv4Range> ranges)
+    public void setRanges(List<IPv4RangeRequest> ranges)
     {
         this.ranges = ranges;
     }

@@ -13,7 +13,7 @@ public class GetIPv4PoolResponse extends ResourceResponse
     @JsonProperty(value = "Description", required = false)
     private String description;
     @JsonProperty(value = "Ranges", required = true)
-    private List<IPv4Range> ranges;
+    private List<IPv4RangeResponse> ranges;
     @JsonProperty(value = "SubnetMask", required = true)
     private String subnetMask;
     @JsonProperty(value = "Gateway", required = true)
@@ -22,6 +22,12 @@ public class GetIPv4PoolResponse extends ResourceResponse
     private String Domain;
     @JsonProperty(value = "DNSServers", required = true)
     private List<String> dnsServers;
+    @JsonProperty(value = "Total", required = true)
+    private int total;
+    @JsonProperty(value = "Free", required = true)
+    private int free;
+    @JsonProperty(value = "Allocatable", required = true)
+    private int allocatable;
 
     public GetIPv4PoolResponse()
     {
@@ -49,12 +55,12 @@ public class GetIPv4PoolResponse extends ResourceResponse
         this.description = description;
     }
 
-    public List<IPv4Range> getRanges()
+    public List<IPv4RangeResponse> getRanges()
     {
         return ranges;
     }
 
-    public void setRanges(List<IPv4Range> ranges)
+    public void setRanges(List<IPv4RangeResponse> ranges)
     {
         this.ranges = ranges;
     }
@@ -97,5 +103,35 @@ public class GetIPv4PoolResponse extends ResourceResponse
     public void setDnsServers(List<String> dnsServers)
     {
         this.dnsServers = dnsServers;
+    }
+
+    public int getTotal()
+    {
+        return total;
+    }
+
+    public void setTotal(int total)
+    {
+        this.total = total;
+    }
+
+    public int getFree()
+    {
+        return free;
+    }
+
+    public void setFree(int free)
+    {
+        this.free = free;
+    }
+
+    public int getAllocatable()
+    {
+        return allocatable;
+    }
+
+    public void setAllocatable(int allocatable)
+    {
+        this.allocatable = allocatable;
     }
 }

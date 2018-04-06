@@ -7,7 +7,10 @@ import (
 	"net/http"
 	commonDto "promise/common/object/dto"
 	commonMessage "promise/common/object/message"
-	dto "promise/pool/object/dto"
+	commonConstError "promise/common/object/consterror"
+	"promise/pool/object/consterror"
+	"promise/pool/object/message"
+	"promise/pool/object/dto"
 	"promise/pool/service"
 	"strconv"
 )
@@ -37,9 +40,24 @@ func (c *IPv4RootController) Post() {
 		c.ServeJSON()
 		return
 	}
-	if !request.IsValid() {
+	if err := request.Validate(); err != nil {
 		messages := []commonMessage.Message{}
-		messages = append(messages, commonMessage.NewInvalidRequest())
+		switch err.Error() {
+		case commonConstError.ErrorDataConvert.Error():
+			messages = append(messages, message.NewIPv4FormatError())
+			break;
+		case consterror.ErrorRangeEndAddress.Error():
+			messages = append(messages, message.NewIPv4RangeEndAddressError())
+			break;
+		case consterror.ErrorRangeSize.Error():
+			messages = append(messages, message.NewIPv4RangeSizeError())
+			break;
+		case consterror.ErrorRangeCount.Error():
+			messages = append(messages, message.NewIPv4RangeCountError())
+		default:
+			messages = append(messages, commonMessage.NewInvalidRequest())
+			break;
+		}
 		log.WithFields(log.Fields{
 			"message": messages[0].ID}).
 			Warn("Post IPv4 pool failed, invalid request.")

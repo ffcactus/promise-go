@@ -6,6 +6,7 @@ import (
 	"promise/pool/db"
 	"promise/pool/object/dto"
 	"promise/pool/object/message"
+	"promise/pool/object/consterror"
 	"promise/pool/object/model"
 	wsSDK "promise/sdk/ws"
 )
@@ -106,6 +107,12 @@ func FreeIPv4Address(id string, key string) (*model.IPv4Pool, []commonMessage.Me
 	exist, pool, commited, err := dbImpl.FreeIPv4Address(id, key)
 	if !exist {
 		return nil, []commonMessage.Message{commonMessage.NewResourceNotExist()}
+	}
+	if err != nil && err.Error() == consterror.ErrorNotInPool.Error() {
+		return nil, []commonMessage.Message{message.NewIPv4AddressNotExist()}
+	}
+	if err != nil && err.Error() == consterror.ErrorNotAllocated.Error() {
+		return nil, []commonMessage.Message{message.NewIPv4NotAllocatedError()}
 	}
 	if commited && err == nil {
 		return pool, nil

@@ -6,7 +6,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	commonDB "promise/common/db"
 	commonConstError "promise/common/object/consterror"
-	commonUtil "promise/common/util"
 	"promise/pool/object/consterror"
 	"promise/pool/object/entity"
 	"promise/pool/object/model"
@@ -77,7 +76,6 @@ func (impl *PoolDBImplement) PostIPv4Pool(m *model.IPv4Pool) (bool, *model.IPv4P
 			Warn("Post IPv4 pool in DB failed, commit failed.")
 		return false, nil, false, err
 	}
-	commonUtil.PrintJson(record.ToModel())
 	return false, record.ToModel(), true, nil
 }
 
@@ -252,6 +250,20 @@ func (impl *PoolDBImplement) DeleteIPv4PoolCollection() ([]model.IPv4Pool, bool,
 			Warn("Delete IPv4 pool collection in DB failed, get the collection failed, transaction rollback.")
 		return nil, false, err
 	}
+	if err := tx.Delete(entity.IPv4Address{}).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"error": err}).
+			Warn("Delete IPv4 pool collection in DB failed, delete IPv4Address failed, transaction rollback.")
+		return nil, false, err
+	}
+	if err := tx.Delete(entity.IPv4Range{}).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"error": err}).
+			Warn("Delete IPv4 pool collection in DB failed, delete IPv4Range failed, transaction rollback.")
+		return nil, false, err
+	}
 	if err := tx.Delete(entity.IPv4Pool{}).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
@@ -337,7 +349,9 @@ func (impl *PoolDBImplement) AllocateIPv4Address(id string, key string) (bool, s
 							Info("Allocate IPv4, found address with key but already allocated.")
 					} else {
 						record.Ranges[i].Addresses[j].Allocated = true
-						record.Ranges[i].Free--
+						if record.Ranges[i].Free > 0 {
+							record.Ranges[i].Free--
+						}
 						record.Ranges[i].Allocatable--
 						if commited, err := impl.saveAndCommit(tx, &record); commited && err == nil {
 							return true, record.Ranges[i].Addresses[j].Address, record.ToModel(), true, nil
@@ -363,7 +377,9 @@ func (impl *PoolDBImplement) AllocateIPv4Address(id string, key string) (bool, s
 				}
 				record.Ranges[i].Addresses[j].Allocated = true
 				record.Ranges[i].Addresses[j].Key = key
-				record.Ranges[i].Free--
+				if record.Ranges[i].Free > 0 {
+					record.Ranges[i].Free--
+				}
 				record.Ranges[i].Allocatable--
 				commited, err := impl.saveAndCommit(tx, &record)
 				if commited && err == nil {
@@ -382,7 +398,9 @@ func (impl *PoolDBImplement) AllocateIPv4Address(id string, key string) (bool, s
 				}
 				record.Ranges[i].Addresses[j].Allocated = true
 				record.Ranges[i].Addresses[j].Key = key
-				record.Ranges[i].Free--
+				if record.Ranges[i].Free > 0 {
+					record.Ranges[i].Free--
+				}
 				record.Ranges[i].Allocatable--
 				commited, err := impl.saveAndCommit(tx, &record)
 				if commited && err == nil {
@@ -436,7 +454,7 @@ func (impl *PoolDBImplement) FreeIPv4Address(id string, address string) (bool, *
 		for j := range record.Ranges[i].Addresses {
 			if record.Ranges[i].Addresses[j].Address == address {
 				if !record.Ranges[i].Addresses[j].Allocated {
-					return true, nil, false, consterror.ErrorAlreadyFree
+					return true, nil, false, consterror.ErrorNotAllocated
 				}
 				record.Ranges[i].Addresses[j].Allocated = false
 				record.Ranges[i].Allocatable++
@@ -454,10 +472,5 @@ func (impl *PoolDBImplement) FreeIPv4Address(id string, address string) (bool, *
 	}
 	// Can't find the address in pool.
 	tx.Rollback()
-	log.WithFields(log.Fields{
-		"id":      id,
-		"address": address}).
-		Info("Free IPv4 failed, address not in pool.")
-
 	return true, nil, false, consterror.ErrorNotInPool
 }

@@ -34,6 +34,11 @@ public class WsTest extends PromiseIntegrationTest
     public static void tearDownAfterClass()
             throws Exception
     {
+        // Remove all the server group.
+        final ResponseEntity<DeleteResourceResponse> response = RestClient.delete(
+                getRootURL() + "/promise/v1/servergroup",
+                DeleteResourceResponse.class);
+        Assert.assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
     }
 
     @Before
@@ -44,7 +49,7 @@ public class WsTest extends PromiseIntegrationTest
         final ResponseEntity<DeleteResourceResponse> response = RestClient.delete(
                 getRootURL() + "/promise/v1/servergroup",
                 DeleteResourceResponse.class);
-        Assert.assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());        
+        Assert.assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
     }
 
     @After
@@ -90,7 +95,7 @@ public class WsTest extends PromiseIntegrationTest
                 request2,
                 EmptyResponse.class);
         Assert.assertEquals(HttpStatus.CREATED, response3.getStatusCode());
-        
+
         // Test update event.
         request2.setType(EventType.Update.getId());
         final ResponseEntity<EmptyResponse> response4 = RestClient.post(
@@ -98,7 +103,7 @@ public class WsTest extends PromiseIntegrationTest
                 request2,
                 EmptyResponse.class);
         Assert.assertEquals(HttpStatus.CREATED, response4.getStatusCode());
-        
+
         // Test delete event.
         request2.setData(null);
         request2.setType(EventType.Delete.getId());
@@ -108,5 +113,5 @@ public class WsTest extends PromiseIntegrationTest
                 EmptyResponse.class);
         Assert.assertEquals(HttpStatus.CREATED, response5.getStatusCode());
     }
-    
+
 }

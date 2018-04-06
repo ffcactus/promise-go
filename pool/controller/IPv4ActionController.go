@@ -7,6 +7,8 @@ import (
 	"net/http"
 	commonDto "promise/common/object/dto"
 	commonMessage "promise/common/object/message"
+	commonConstError "promise/common/object/consterror"
+	"promise/pool/object/message"	
 	"promise/pool/object/constvalue"
 	"promise/pool/object/dto"
 	"promise/pool/service"
@@ -91,9 +93,16 @@ func (c *IPv4ActionController) Post() {
 			c.ServeJSON()
 			return
 		}
-		if !request.IsValid() {
+		if err := request.Validate(); err != nil  {
 			messages := []commonMessage.Message{}
-			messages = append(messages, commonMessage.NewInvalidRequest())
+			switch err.Error() {
+			case commonConstError.ErrorDataConvert.Error():
+				messages = append(messages, message.NewIPv4FormatError())
+				break;	
+			default:
+				messages = append(messages, commonMessage.NewInvalidRequest())
+				break;
+			}						
 			log.WithFields(log.Fields{
 				"message": messages[0].ID}).
 				Warn("Free IPv4 failed, invalid request.")

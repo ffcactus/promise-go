@@ -59,6 +59,25 @@ public class PromiseAssertUtil
         PromiseAssertUtil.isResourceResponse(ret);
         return ret;
     }
+    
+    /**
+     * Assert the action should be accepted.
+     * 
+     * @param url The URL for the POST.
+     * @param request The request DTO.
+     * @param responseClass The response DTO class.
+     * @return The DTO if success.
+     */
+    public static <R, T> T assertActionResponse(String url, R request, Class<T> responseClass)
+    {
+        final ResponseEntity<T> response = RestClient.post(
+                url,
+                request,
+                responseClass);
+        Assert.assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
+        T ret = response.getBody();
+        return ret;
+    }
 
     /**
      * Assert the POST should fail.
@@ -180,13 +199,13 @@ public class PromiseAssertUtil
 
     public static void assertSameElements(List<?> firstList, List<?> secondList)
     {
-      Assert.assertEquals(firstList.size(), secondList.size());
-   
-      // Iterate over the elements of the first list.
-      for (int index = 0; index < firstList.size(); index++)
-      {
-        Assert.assertTrue(secondList.contains(firstList.get(index)));
-      }
+        Assert.assertEquals(firstList.size(), secondList.size());
+
+        // Iterate over the elements of the first list.
+        for (int index = 0; index < firstList.size(); index++)
+        {
+            Assert.assertTrue(secondList.contains(firstList.get(index)));
+        }
     }
 
 }

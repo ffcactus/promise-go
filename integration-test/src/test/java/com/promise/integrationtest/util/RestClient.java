@@ -187,6 +187,7 @@ public class RestClient
             {
                 case HttpURLConnection.HTTP_OK:
                 case HttpURLConnection.HTTP_CREATED:
+                case HttpURLConnection.HTTP_ACCEPTED:
                     br = new BufferedReader(new InputStreamReader(c.getInputStream()));
                     break;
                 case HttpURLConnection.HTTP_BAD_REQUEST:

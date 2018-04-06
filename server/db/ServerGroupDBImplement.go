@@ -14,7 +14,7 @@ import (
 // DefaultServerGroupID records the ID of default servergroup. We don't have to retrieve it each time.
 var (
 	DefaultServerGroupID  string
-	serverGroupDBInstance ServerGroupDBImplement
+	sgInstance ServerGroupDBImplement
 )
 
 // ServerGroupDBImplement is the implement of ServerGroupDBInterface.
@@ -23,7 +23,7 @@ type ServerGroupDBImplement struct {
 
 // GetServerGroupDB return the singleton.
 func GetServerGroupDB() ServerGroupDBInterface {
-	return &serverGroupDBInstance
+	return &sgInstance
 }
 
 // GetServerGroup will get the group by id.

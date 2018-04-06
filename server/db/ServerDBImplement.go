@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	instance ServerDBImplement
+	sInstance ServerDBImplement
 )
 
 // ServerDBImplement The DB implementation.
@@ -25,7 +25,7 @@ type ServerDBImplement struct {
 
 // GetDBInstance Get a DB implementation instance.
 func GetDBInstance() ServerDBInterface {
-	return &instance
+	return &sInstance
 }
 
 // IsServerExist Check the existance of the server, if found, return it.
