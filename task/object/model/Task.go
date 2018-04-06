@@ -45,8 +45,8 @@ type ExecutionResult struct {
 type TaskStep struct {
 	MessageID           *string
 	Name                string
-	Description         string
-	ExpectedExecutionMs int
+	Description         *string
+	ExpectedExecutionMs uint64
 	ExecutionState      ExecutionState
 	ExecutionResult     ExecutionResult
 }
@@ -58,13 +58,13 @@ type Task struct {
 	MessageID           *string
 	Name                string
 	ParentTask          *string
-	Description         string
+	Description         *string
 	ExecutionState      ExecutionState
 	CreatedByName       string
 	CreatedByURI        string
 	TargetName          string
 	TargetURI           string
-	ExpectedExecutionMs int
+	ExpectedExecutionMs uint64
 	Percentage          int
 	CreatedAt           time.Time
 	UpdatedAt           time.Time

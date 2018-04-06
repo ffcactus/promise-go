@@ -11,13 +11,13 @@ type PostTaskResponse struct {
 	URI                 string                 `json:"URI"`
 	Name                string                 `json:"Name"`
 	ParentTask          *string                `json:"ParentTask"`
-	Description         string                 `json:"Description"`
+	Description         *string                `json:"Description,omitempty"`
 	ExecutionState      model.ExecutionState   `json:"ExecutionState"`
 	CreatedByName       string                 `json:"CreatedByName"`
 	CreatedByURI        string                 `json:"CreatedByURI"`
 	TargetName          string                 `json:"TargetName"`
 	TargetURI           string                 `json:"TargetURI"`
-	ExpectedExecutionMs int                    `json:"ExpectedExecutionMs"`
+	ExpectedExecutionMs uint64                 `json:"ExpectedExecutionMs"`
 	Percentage          int                    `json:"Percentage"`
 	CreatedAt           time.Time              `json:"CreatedAt"`
 	UpdatedAt           time.Time              `json:"UpdatedAt"`

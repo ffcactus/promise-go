@@ -1,10 +1,9 @@
 package controller
 
 import (
-	"encoding/json"
-	"github.com/astaxie/beego"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	commonController "promise/common/controller"
 	commonDto "promise/common/object/dto"
 	commonMessage "promise/common/object/message"
 	"promise/server/object/dto"
@@ -14,7 +13,7 @@ import (
 
 // ServerGroupRootController The root controller
 type ServerGroupRootController struct {
-	beego.Controller
+	commonController.PromiseRootController
 }
 
 // Post a new servergroup.
@@ -22,17 +21,21 @@ func (c *ServerGroupRootController) Post() {
 	var (
 		request  dto.PostServerGroupRequest
 		response dto.GetServerGroupResponse
+		messages []commonMessage.Message
 	)
 
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &request); err != nil {
-		log.WithFields(log.Fields{"error": err}).Warn("Post servergroup failed, unable to unmarshal request.")
-		messages := []commonMessage.Message{}
-		messages = append(messages, commonMessage.NewInvalidRequest())
+	if message, err := c.PromiseRootController.Post(&request); message != nil {
+		messages = append(messages, *message)
+		log.WithFields(log.Fields{
+			"error":   err,
+			"message": messages[0].ID}).
+			Warn("Post servergroup failed, bad request.")
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
 		return
 	}
+
 	log.WithFields(log.Fields{"name": request.Name}).Info("Post servergroup.")
 
 	serverGroup, messages := service.PostServerGroup(&request)

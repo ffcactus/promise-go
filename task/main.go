@@ -34,7 +34,7 @@ func main() {
 	initDB()
 	ns := beego.NewNamespace(
 		app.RootURL+constvalue.TaskBaseURI,
-		beego.NSRouter("/", &controller.RootController{}),
+		beego.NSRouter("/", &controller.TaskRootController{}),
 		beego.NSRouter("/:id", &controller.TaskController{}),
 		beego.NSRouter("/:id/action/:action", &controller.TaskActionController{}),
 	)

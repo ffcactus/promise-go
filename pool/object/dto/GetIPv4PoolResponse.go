@@ -11,10 +11,10 @@ import (
 type GetIPv4PoolResponse struct {
 	commonDTO.PromiseResponse
 	IPv4PoolResource
-	Ranges []IPv4RangeResponse `json:"Ranges"`
-	Total uint32 `json:"Total"`
-	Free uint32 `json:"Free"`
-	Allocatable uint32 `json:"Allocatable"`
+	Ranges      []IPv4RangeResponse `json:"Ranges"`
+	Total       uint32              `json:"Total"`
+	Free        uint32              `json:"Free"`
+	Allocatable uint32              `json:"Allocatable"`
 }
 
 // Load the data from model.

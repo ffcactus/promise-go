@@ -13,32 +13,54 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// RootController is the root controller for task.
-type RootController struct {
+// TaskRootController is the root controller for task.
+type TaskRootController struct {
 	beego.Controller
 }
 
 // Post Post a new task.
-func (c *RootController) Post() {
-	log.Debug("Post task.")
-	request := new(dto.PostTaskRequest)
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
-		log.Warn("Unmarshal() failed, error = ", err)
+func (c *TaskRootController) Post() {
+	var (
+		request  dto.PostTaskRequest
+		response dto.PostTaskResponse
+		messages []commonMessage.Message
+	)
+
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &request); err != nil {
+		messages = append(messages, commonMessage.NewInvalidRequest())
+		log.WithFields(log.Fields{
+			"error":   err,
+			"message": messages[0].ID}).
+			Warn("Post task failed, unable to unmarshal request.")
+		c.Data["json"] = commonDto.MessagesToDto(messages)
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.ServeJSON()
+		return
 	}
+	if message := request.Validate(); message != nil {
+		messages = append(messages, *message)
+		log.WithFields(log.Fields{
+			"message": messages[0].ID}).
+			Warn("Post task failed, invalid request.")
+		c.Data["json"] = commonDto.MessagesToDto(messages)
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.ServeJSON()
+		return
+	}
+
 	// Create the context for this operation.
-	if task, messages := service.PostTask(request); messages != nil {
+	if task, messages := service.PostTask(&request); messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 	} else {
-		resp := new(dto.PostTaskResponse)
-		resp.Load(task)
-		c.Data["json"] = resp
+		response.Load(task)
+		c.Data["json"] = &response
 	}
 	c.ServeJSON()
 }
 
 // Get Get task collection.
-func (c *RootController) Get() {
+func (c *TaskRootController) Get() {
 	var (
 		start, count       string = c.GetString("start"), c.GetString("count")
 		startInt, countInt int    = 0, -1

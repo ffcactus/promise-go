@@ -1,15 +1,11 @@
 package controller
 
 import (
-	"encoding/json"
-	"github.com/astaxie/beego"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	commonController "promise/common/controller"
 	commonDto "promise/common/object/dto"
 	commonMessage "promise/common/object/message"
-	commonConstError "promise/common/object/consterror"
-	"promise/pool/object/consterror"
-	"promise/pool/object/message"
 	"promise/pool/object/dto"
 	"promise/pool/service"
 	"strconv"
@@ -17,7 +13,7 @@ import (
 
 // IPv4RootController is the ipv4 pool controller.
 type IPv4RootController struct {
-	beego.Controller
+	commonController.PromiseRootController
 }
 
 // Post a new IPv4 range.
@@ -25,47 +21,21 @@ func (c *IPv4RootController) Post() {
 	var (
 		request  dto.PostIPv4PoolRequest
 		response dto.GetIPv4PoolResponse
+		messages []commonMessage.Message
 	)
 
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &request); err != nil {
-		messages := []commonMessage.Message{}
-		messages = append(messages, commonMessage.NewInvalidRequest())
+	if message, err := c.PromiseRootController.Post(&request); message != nil {
+		messages = append(messages, *message)
 		log.WithFields(log.Fields{
 			"error":   err,
 			"message": messages[0].ID}).
-			Warn("Post IPv4 pool failed, unable to unmarshal request.")
+			Warn("Post IPv4 pool failed, bad request.")
+		c.Data["json"] = commonDto.MessagesToDto(messages)
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.ServeJSON()
+		return
+	}
 
-		c.Data["json"] = commonDto.MessagesToDto(messages)
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		c.ServeJSON()
-		return
-	}
-	if err := request.Validate(); err != nil {
-		messages := []commonMessage.Message{}
-		switch err.Error() {
-		case commonConstError.ErrorDataConvert.Error():
-			messages = append(messages, message.NewIPv4FormatError())
-			break;
-		case consterror.ErrorRangeEndAddress.Error():
-			messages = append(messages, message.NewIPv4RangeEndAddressError())
-			break;
-		case consterror.ErrorRangeSize.Error():
-			messages = append(messages, message.NewIPv4RangeSizeError())
-			break;
-		case consterror.ErrorRangeCount.Error():
-			messages = append(messages, message.NewIPv4RangeCountError())
-		default:
-			messages = append(messages, commonMessage.NewInvalidRequest())
-			break;
-		}
-		log.WithFields(log.Fields{
-			"message": messages[0].ID}).
-			Warn("Post IPv4 pool failed, invalid request.")
-		c.Data["json"] = commonDto.MessagesToDto(messages)
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		c.ServeJSON()
-		return
-	}
 	log.WithFields(log.Fields{"name": request.Name}).Info("Post IPv4 pool.")
 
 	ipv4Pool, messages := service.PostIPv4Pool(&request)
@@ -85,6 +55,7 @@ func (c *IPv4RootController) Post() {
 // Get will return IPv4 pool collection.
 func (c *IPv4RootController) Get() {
 	var (
+		messages             []commonMessage.Message
 		start, count, filter string = c.GetString("start"), c.GetString("count"), c.GetString("$filter")
 		startInt, countInt   int    = 0, -1
 		parameterError       bool
@@ -113,7 +84,6 @@ func (c *IPv4RootController) Get() {
 	}
 
 	if parameterError {
-		messages := []commonMessage.Message{}
 		messages = append(messages, commonMessage.NewInvalidRequest())
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)

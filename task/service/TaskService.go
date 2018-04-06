@@ -72,7 +72,7 @@ func UpdateTaskStep(id string, request *dto.UpdateTaskStepRequest) (*model.Task,
 		log.Debug("UpdateTaskStep() failed, GetTask() failed, task = nil, task ID =", id)
 		return nil, []commonMessage.Message{message.NewMessageTaskNotExist()}
 	}
-	currentTime := 0
+	currentTime := uint64(0)
 	for i := range task.TaskSteps {
 		step := task.TaskSteps[i]
 		currentTime += step.ExpectedExecutionMs

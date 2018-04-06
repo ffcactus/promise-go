@@ -7,8 +7,6 @@ import (
 	"net/http"
 	commonDto "promise/common/object/dto"
 	commonMessage "promise/common/object/message"
-	commonConstError "promise/common/object/consterror"
-	"promise/pool/object/message"	
 	"promise/pool/object/constvalue"
 	"promise/pool/object/dto"
 	"promise/pool/service"
@@ -22,6 +20,9 @@ type IPv4ActionController struct {
 
 // Post will do the action.
 func (c *IPv4ActionController) Post() {
+	var (
+		messages []commonMessage.Message
+	)
 	action := c.Ctx.Input.Param(":action")
 	id := c.Ctx.Input.Param(":id")
 	switch strings.ToLower(action) {
@@ -33,7 +34,6 @@ func (c *IPv4ActionController) Post() {
 				"id":     id,
 				"error":  err}).
 				Warn("Allocate from IPv4 pool failed, unable to unmarshal request.")
-			messages := []commonMessage.Message{}
 			messages = append(messages, commonMessage.NewInvalidRequest())
 			c.Data["json"] = commonDto.MessagesToDto(messages)
 			c.Ctx.Output.SetStatus(messages[0].StatusCode)
@@ -62,7 +62,6 @@ func (c *IPv4ActionController) Post() {
 			resp := dto.AllocateIPv4Response{}
 			resp.Address = address
 			if err := resp.Pool.Load(pool); err != nil {
-				messages := []commonMessage.Message{}
 				messages = append(messages, commonMessage.NewInternalError())
 				log.WithFields(log.Fields{
 					"action":  action,
@@ -86,23 +85,14 @@ func (c *IPv4ActionController) Post() {
 				"id":     id,
 				"error":  err}).
 				Warn("Free IPv4 failed, unable to unmarshal request.")
-			messages := []commonMessage.Message{}
 			messages = append(messages, commonMessage.NewInvalidRequest())
 			c.Data["json"] = commonDto.MessagesToDto(messages)
 			c.Ctx.Output.SetStatus(messages[0].StatusCode)
 			c.ServeJSON()
 			return
 		}
-		if err := request.Validate(); err != nil  {
-			messages := []commonMessage.Message{}
-			switch err.Error() {
-			case commonConstError.ErrorDataConvert.Error():
-				messages = append(messages, message.NewIPv4FormatError())
-				break;	
-			default:
-				messages = append(messages, commonMessage.NewInvalidRequest())
-				break;
-			}						
+		if message := request.Validate(); message != nil {
+			messages = append(messages, *message)
 			log.WithFields(log.Fields{
 				"message": messages[0].ID}).
 				Warn("Free IPv4 failed, invalid request.")
@@ -127,7 +117,6 @@ func (c *IPv4ActionController) Post() {
 		} else {
 			resp := dto.GetIPv4PoolResponse{}
 			if err := resp.Load(pool); err != nil {
-				messages := []commonMessage.Message{}
 				messages = append(messages, commonMessage.NewInternalError())
 				log.WithFields(log.Fields{
 					"action":  action,
@@ -144,7 +133,6 @@ func (c *IPv4ActionController) Post() {
 			c.Ctx.Output.SetStatus(http.StatusAccepted)
 		}
 	default:
-		messages := []commonMessage.Message{}
 		messages = append(messages, commonMessage.NewInvalidRequest())
 		log.WithFields(log.Fields{
 			"action":  action,

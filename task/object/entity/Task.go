@@ -11,13 +11,13 @@ type Task struct {
 	ParentTask          *string
 	MessageID           *string
 	Name                string
-	Description         string
+	Description         *string
 	ExecutionState      model.ExecutionState
 	CreatedByName       string
 	CreatedByURI        string
 	TargetName          string
 	TargetURI           string
-	ExpectedExecutionMs int
+	ExpectedExecutionMs uint64
 	Percentage          int
 	CreatedAt           time.Time
 	UpdatedAt           time.Time

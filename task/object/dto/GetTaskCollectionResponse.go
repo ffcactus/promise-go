@@ -9,7 +9,7 @@ import (
 type TaskMember struct {
 	URI              string               `json:"URI"`
 	Name             string               `json:"Name"`
-	Description      string               `json:"Description"`
+	Description      *string              `json:"Description,omitempty"`
 	CreatedAt        time.Time            `json:"CreatedAt"`
 	UpdatedAt        time.Time            `json:"UpdatedAt"`
 	CreatedByName    string               `json:"CreatedByName"`

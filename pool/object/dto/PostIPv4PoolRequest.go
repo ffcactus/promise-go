@@ -4,10 +4,10 @@ import (
 	"net"
 	"promise/common/category"
 	commonDTO "promise/common/object/dto"
-	commonConstError "promise/common/object/consterror"
+	commonMessage "promise/common/object/message"
+	"promise/pool/object/message"
 	"promise/pool/object/model"
 	"promise/pool/util"
-	"promise/pool/object/consterror"
 )
 
 // PostIPv4PoolRequest is the request DTO.
@@ -18,41 +18,50 @@ type PostIPv4PoolRequest struct {
 }
 
 // Validate the request.
-func (dto *PostIPv4PoolRequest) Validate() error {
+func (dto *PostIPv4PoolRequest) Validate() *commonMessage.Message {
 	if dto.SubnetMask != nil && net.ParseIP(*dto.SubnetMask) == nil {
-		return commonConstError.ErrorDataConvert
+		m := message.NewIPv4FormatError()
+		return &m
 	}
 	if dto.Gateway != nil && net.ParseIP(*dto.Gateway) == nil {
-		return commonConstError.ErrorDataConvert
+		m := message.NewIPv4FormatError()
+		return &m
 	}
 	if dto.SubnetMask != nil && net.ParseIP(*dto.SubnetMask) == nil {
-		return commonConstError.ErrorDataConvert
+		m := message.NewIPv4FormatError()
+		return &m
 	}
 	if dto.DNSServers != nil {
 		for _, v := range *dto.DNSServers {
 			if net.ParseIP(v) == nil {
-				return commonConstError.ErrorDataConvert
+				m := message.NewIPv4FormatError()
+				return &m
 			}
 		}
 	}
 
 	if len(dto.Ranges) == 0 {
-		return consterror.ErrorRangeCount;
+		m := message.NewIPv4RangeCountError()
+		return &m
 	}
 	for _, v := range dto.Ranges {
 		start := net.ParseIP(v.Start)
 		end := net.ParseIP(v.End)
 		if start == nil {
-			return commonConstError.ErrorDataConvert
+			m := message.NewIPv4FormatError()
+			return &m
 		}
 		if end == nil {
-			return commonConstError.ErrorDataConvert
+			m := message.NewIPv4FormatError()
+			return &m
 		}
 		if util.IPtoInt(start) > util.IPtoInt(end) {
-			return consterror.ErrorRangeEndAddress
+			m := message.NewIPv4RangeEndAddressError()
+			return &m
 		}
 		if util.IPtoInt(end)-util.IPtoInt(start)+1 > 256 {
-			return consterror.ErrorRangeSize
+			m := message.NewIPv4RangeSizeError()
+			return &m
 		}
 	}
 	return nil

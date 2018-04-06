@@ -10,28 +10,28 @@ import (
 type UpdateTaskRequest struct {
 	Description         *string               `json:"Description"`
 	ExecutionState      *model.ExecutionState `json:"ExecutionState"`
-	ExpectedExecutionMs *int                  `json:"ExpectedExecutionMs"`
+	ExpectedExecutionMs *uint64               `json:"ExpectedExecutionMs"`
 	Percentage          *int                  `json:"Percentage"`
 	ExecutionResult     *ExecutionResult      `json:"ExecutionResult"`
 }
 
 // UpdateModel Update the model.
-func (o *UpdateTaskRequest) UpdateModel(current *model.Task) {
-	if o.Description != nil {
-		current.Description = *o.Description
+func (dto *UpdateTaskRequest) UpdateModel(current *model.Task) {
+	if dto.Description != nil {
+		current.Description = dto.Description
 	}
-	if o.ExecutionState != nil {
-		current.ExecutionState = *o.ExecutionState
+	if dto.ExecutionState != nil {
+		current.ExecutionState = *dto.ExecutionState
 	}
-	if o.ExpectedExecutionMs != nil {
-		current.ExpectedExecutionMs = *o.ExpectedExecutionMs
+	if dto.ExpectedExecutionMs != nil {
+		current.ExpectedExecutionMs = *dto.ExpectedExecutionMs
 	}
-	if o.Percentage != nil {
-		current.Percentage = *o.Percentage
+	if dto.Percentage != nil {
+		current.Percentage = *dto.Percentage
 	}
-	if o.ExecutionResult != nil {
-		current.ExecutionResult.State = (*o.ExecutionResult).State
-		current.ExecutionResult.Message = (*o.ExecutionResult).Message.Model()
+	if dto.ExecutionResult != nil {
+		current.ExecutionResult.State = (*dto.ExecutionResult).State
+		current.ExecutionResult.Message = (*dto.ExecutionResult).Message.Model()
 	}
 	current.UpdatedAt = time.Now()
 }

@@ -1,48 +1,52 @@
 package controller
 
 import (
-	"encoding/json"
+	log "github.com/sirupsen/logrus"
 	"net/http"
+	commonController "promise/common/controller"
 	commonDto "promise/common/object/dto"
 	commonMessage "promise/common/object/message"
 	"promise/server/object/dto"
 	"promise/server/service"
 	"strconv"
-
-	"github.com/astaxie/beego"
-	log "github.com/sirupsen/logrus"
 )
 
 // ServerRootController The root controller
 type ServerRootController struct {
-	beego.Controller
+	commonController.PromiseRootController
 }
 
 // Post Post a new server.
 func (c *ServerRootController) Post() {
-	request := new(dto.PostServerRequest)
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
-		log.WithFields(log.Fields{"error": err}).Warn("Post server failed, unable to unmarshal request.")
-		messages := []commonMessage.Message{}
-		messages = append(messages, commonMessage.NewInvalidRequest())
+	var (
+		request  dto.PostServerRequest
+		response dto.GetServerResponse
+		messages []commonMessage.Message
+	)
+	if message, err := c.PromiseRootController.Post(&request); message != nil {
+		messages = append(messages, *message)
+		log.WithFields(log.Fields{
+			"error":   err,
+			"message": messages[0].ID}).
+			Warn("Post server failed, bad request.")
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
 		return
 	}
+
 	log.WithFields(log.Fields{"hostname": request.Hostname}).Info("Post server start.")
 	// Create the context for this operation.
-	server, messages := service.PostServer(request)
+	server, messages := service.PostServer(&request)
 	if messages != nil {
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Post server failed.")
 	} else {
-		resp := dto.GetServerResponse{}
-		resp.Load(server)
-		c.Data["json"] = &resp
+		response.Load(server)
+		c.Data["json"] = &response
 		c.Ctx.Output.SetStatus(http.StatusCreated)
-		log.WithFields(log.Fields{"name": request.Hostname, "ID": resp.ID}).Info("Post server done.")
+		log.WithFields(log.Fields{"name": request.Hostname, "ID": response.ID}).Info("Post server done.")
 	}
 	c.ServeJSON()
 }

@@ -8,7 +8,7 @@ import (
 type TaskMember struct {
 	URI             string
 	Name            string
-	Description     string
+	Description     *string
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	CreatedByName   string
