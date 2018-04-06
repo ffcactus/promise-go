@@ -97,9 +97,9 @@ func (i *ServerDBImplement) GetServer(ID string) *model.Server {
 }
 
 // GetServerCollection Get server collection by start and count.
-func (i *ServerDBImplement) GetServerCollection(start int, count int) (*model.ServerCollection, error) {
+func (i *ServerDBImplement) GetServerCollection(start int64, count int64, filter string) (*model.ServerCollection, error) {
 	var (
-		total  int
+		total  int64
 		server []entity.Server
 		ret    = new(model.ServerCollection)
 	)
@@ -108,7 +108,7 @@ func (i *ServerDBImplement) GetServerCollection(start int, count int) (*model.Se
 	c.Table("server").Count(&total)
 	c.Order("Name asc").Limit(count).Offset(start).Select([]string{"ID", "Name", "State", "Health"}).Find(&server)
 	ret.Start = start
-	ret.Count = len(server)
+	ret.Count = int64(len(server))
 	ret.Total = total
 	for i := range server {
 		ret.Members = append(ret.Members, model.ServerMember{

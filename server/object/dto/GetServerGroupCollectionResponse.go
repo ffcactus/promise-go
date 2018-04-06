@@ -14,9 +14,9 @@ type ServerGroupMember struct {
 
 // GetServerGroupCollectionResponse is the DTO.
 type GetServerGroupCollectionResponse struct {
-	Start       int                 `json:"Start"`
-	Count       int                 `json:"Count"`
-	Total       int                 `json:"Total"`
+	Start       int64               `json:"Start"`
+	Count       int64               `json:"Count"`
+	Total       int64               `json:"Total"`
 	Members     []ServerGroupMember `json:"Members"`
 	NextPageURI *string             `json:"NextPageURI,omitempty"`
 	PrevPageURI *string             `json:"PrevPageURI,omitempty"`

@@ -35,10 +35,9 @@ func GetTask(id string) (*model.Task, []commonMessage.Message) {
 }
 
 // GetTaskCollection Get task collection.
-func GetTaskCollection(start int, count int) (*model.TaskCollection, []commonMessage.Message) {
-	log.Debug("GetTaskCollection() start, start =", start, "count =", count)
+func GetTaskCollection(start int64, count int64, filter string) (*model.TaskCollection, []commonMessage.Message) {
 	db := db.GetDBInstance()
-	ret, err := db.GetTaskCollection(start, count)
+	ret, err := db.GetTaskCollection(start, count, filter)
 	if err != nil {
 		return nil, []commonMessage.Message{message.NewMessageTaskInternalError()}
 	}

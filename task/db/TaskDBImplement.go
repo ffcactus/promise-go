@@ -45,9 +45,9 @@ func (i *TaskDBImplement) GetTask(ID string) *model.Task {
 }
 
 // GetTaskCollection Get task collection
-func (i *TaskDBImplement) GetTaskCollection(start int, count int) (*model.TaskCollection, error) {
+func (i *TaskDBImplement) GetTaskCollection(start int64, count int64, filter string) (*model.TaskCollection, error) {
 	var (
-		total int
+		total int64
 		task  []entity.Task
 		ret   model.TaskCollection
 	)
@@ -56,7 +56,7 @@ func (i *TaskDBImplement) GetTaskCollection(start int, count int) (*model.TaskCo
 	c.Table("task").Count(&total)
 	c.Order("Created_At asc").Limit(count).Offset(start).Select([]string{"Id", "Name", "Description", "Execution_State", "Percentage", "Execution_Result"}).Find(&task)
 	ret.Start = start
-	ret.Count = len(task)
+	ret.Count = int64(len(task))
 	ret.Total = total
 	for i := range task {
 		m := new(model.TaskMember)

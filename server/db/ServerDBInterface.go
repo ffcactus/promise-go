@@ -9,7 +9,7 @@ type ServerDBInterface interface {
 	IsServerExist(s *model.Server) (bool, *model.Server)
 	PostServer(s *model.Server) (*model.Server, *model.ServerServerGroup, error)
 	GetServer(id string) *model.Server
-	GetServerCollection(start int, count int) (*model.ServerCollection, error)
+	GetServerCollection(start int64, count int64, filter string) (*model.ServerCollection, error)
 	GetServerFull(id string) *model.Server
 	FindServerStateAdded() string
 	DeleteServer(id string) (bool, *model.Server, []model.ServerServerGroup, bool, error)

@@ -11,15 +11,15 @@ type ServerServerGroupMember struct {
 	ID             string `json:"ID"`
 	ServerID       string `json:"ServerID"`
 	ServerURI      string `json:"ServerURI"`
-	ServerGroupID  string `'json"ServerGroupID"`
-	ServerGroupURI string `'json"ServerGroupURI"`
+	ServerGroupID  string `json:"ServerGroupID"`
+	ServerGroupURI string `json:"ServerGroupURI"`
 }
 
 // GetServerServerGroupCollectionResponse is the DTO.
 type GetServerServerGroupCollectionResponse struct {
-	Start       int                       `json:"Start"`
-	Count       int                       `json:"Count"`
-	Total       int                       `json:"Total"`
+	Start       int64                     `json:"Start"`
+	Count       int64                     `json:"Count"`
+	Total       int64                     `json:"Total"`
 	Members     []ServerServerGroupMember `json:"Members"`
 	NextPageURI *string                   `json:"NextPageURI,omitempty"`
 	PrevPageURI *string                   `json:"PrevPageURI,omitempty"`

@@ -48,9 +48,9 @@ func GetServer(id string) (*model.Server, []commonMessage.Message) {
 }
 
 // GetServerCollection will get server collection.
-func GetServerCollection(start int, count int) (*model.ServerCollection, []commonMessage.Message) {
+func GetServerCollection(start int64, count int64, filter string) (*model.ServerCollection, []commonMessage.Message) {
 	dbImpl := db.GetDBInstance()
-	ret, err := dbImpl.GetServerCollection(start, count)
+	ret, err := dbImpl.GetServerCollection(start, count, filter)
 	if err != nil {
 		return nil, []commonMessage.Message{commonMessage.NewTransactionError()}
 	}

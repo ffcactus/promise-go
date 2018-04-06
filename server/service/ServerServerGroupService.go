@@ -35,7 +35,7 @@ func GetServerServerGroup(id string) (*model.ServerServerGroup, []commonMessage.
 }
 
 // GetServerServerGroupCollection will get server collection.
-func GetServerServerGroupCollection(start int, count int, filter string) (*model.ServerServerGroupCollection, []commonMessage.Message) {
+func GetServerServerGroupCollection(start int64, count int64, filter string) (*model.ServerServerGroupCollection, []commonMessage.Message) {
 	dbImpl := db.GetServerServerGroupInstance()
 	ret, err := dbImpl.GetServerServerGroupCollection(start, count, filter)
 	if err != nil {

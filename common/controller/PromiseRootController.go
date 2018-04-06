@@ -31,10 +31,10 @@ func (c *PromiseRootController) Post(requestP dto.PromiseRequestInterface) (*mes
 func (c *PromiseRootController) Get() (int64, int64, string, *message.Message, error) {
 	var (
 		start, count, filter string = c.GetString("start"), c.GetString("count"), c.GetString("$filter")
-		startInt, countInt   int64    = 0, -1
+		startInt, countInt   int64  = 0, -1
 		parameterError       bool
 	)
-	
+
 	if start != "" {
 		_startInt, err := strconv.ParseInt(start, 10, 64)
 		if err != nil || _startInt < 0 {

@@ -9,9 +9,9 @@ type ServerServerGroupMember struct {
 
 // ServerServerGroupCollection is the model of servergroup collection.
 type ServerServerGroupCollection struct {
-	Start       int
-	Count       int
-	Total       int
+	Start       int64
+	Count       int64
+	Total       int64
 	Members     []ServerServerGroupMember
 	NextPageURI string
 	PrevPageURI string

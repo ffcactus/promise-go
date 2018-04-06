@@ -23,9 +23,9 @@ type TaskMember struct {
 
 // TaskCollection Task collection.
 type TaskCollection struct {
-	Start       int
-	Count       int
-	Total       int
+	Start       int64
+	Count       int64
+	Total       int64
 	Members     []TaskMember
 	NextPageURI string
 	PrevPageURI string

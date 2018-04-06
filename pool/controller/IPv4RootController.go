@@ -54,7 +54,8 @@ func (c *IPv4RootController) Post() {
 // Get will return IPv4 pool collection.
 func (c *IPv4RootController) Get() {
 	var (
-		messages             []commonMessage.Message
+		messages []commonMessage.Message
+		response dto.GetIPv4PoolCollectionResponse
 	)
 
 	start, count, filter, message, err := c.PromiseRootController.Get()
@@ -75,9 +76,8 @@ func (c *IPv4RootController) Get() {
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Get IPv4 pool collection failed.")
 	} else {
-		resp := new(dto.GetIPv4PoolCollectionResponse)
-		resp.Load(collection)
-		c.Data["json"] = resp
+		response.Load(collection)
+		c.Data["json"] = &response
 		c.Ctx.Output.SetStatus(http.StatusOK)
 	}
 

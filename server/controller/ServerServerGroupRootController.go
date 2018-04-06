@@ -8,7 +8,6 @@ import (
 	commonMessage "promise/common/object/message"
 	"promise/server/object/dto"
 	"promise/server/service"
-	"strconv"
 )
 
 // ServerServerGroupRootController The root controller
@@ -55,51 +54,33 @@ func (c *ServerServerGroupRootController) Post() {
 // Get will return server-servergroup collection.
 func (c *ServerServerGroupRootController) Get() {
 	var (
-		start, count, filter string = c.GetString("start"), c.GetString("count"), c.GetString("$filter")
-		startInt, countInt   int    = 0, -1
-		parameterError       bool
+		messages []commonMessage.Message
+		response dto.GetServerServerGroupCollectionResponse
 	)
-	log.WithFields(log.Fields{"start": start, "count": count}).Debug("Get server-servergroup collection.")
-	if start != "" {
-		_startInt, err := strconv.Atoi(start)
-		if err != nil || _startInt < 0 {
-			parameterError = true
-		} else {
-			startInt = _startInt
-		}
-	}
-	if count != "" {
-		_countInt, err := strconv.Atoi(count)
-		// -1 means all.
-		if err != nil || _countInt < -1 {
-			parameterError = true
-		} else {
-			countInt = _countInt
-		}
-	}
 
-	if !c.isValidFilter(filter) {
-		parameterError = true
-	}
-
-	if parameterError {
-		messages := []commonMessage.Message{}
-		messages = append(messages, commonMessage.NewInvalidRequest())
+	start, count, filter, message, err := c.PromiseRootController.Get()
+	if message != nil {
+		messages = append(messages, *message)
+		log.WithFields(log.Fields{
+			"error":   err,
+			"message": messages[0].ID}).
+			Warn("Get server-servergroup collection failed, bad request.")
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		log.Warn("Get server-servergroup collection failed, parameter error.")
-	} else {
-		if collection, messages := service.GetServerServerGroupCollection(startInt, countInt, filter); messages != nil {
-			c.Data["json"] = commonDto.MessagesToDto(messages)
-			c.Ctx.Output.SetStatus(messages[0].StatusCode)
-			log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Get server-servergroup collection failed.")
-		} else {
-			resp := new(dto.GetServerServerGroupCollectionResponse)
-			resp.Load(collection)
-			c.Data["json"] = resp
-			c.Ctx.Output.SetStatus(http.StatusOK)
-		}
+		c.ServeJSON()
+		return
 	}
+
+	if collection, messages := service.GetServerServerGroupCollection(start, count, filter); messages != nil {
+		c.Data["json"] = commonDto.MessagesToDto(messages)
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Get server-servergroup collection failed.")
+	} else {
+		response.Load(collection)
+		c.Data["json"] = &response
+		c.Ctx.Output.SetStatus(http.StatusOK)
+	}
+
 	c.ServeJSON()
 }
 

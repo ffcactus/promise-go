@@ -103,9 +103,9 @@ func (i *ServerGroupDBImplement) convertFilter(filter string) (string, error) {
 }
 
 // GetServerGroupCollection Get group collection by start and count.
-func (i *ServerGroupDBImplement) GetServerGroupCollection(start int, count int, filter string) (*model.ServerGroupCollection, error) {
+func (i *ServerGroupDBImplement) GetServerGroupCollection(start int64, count int64, filter string) (*model.ServerGroupCollection, error) {
 	var (
-		total        int
+		total        int64
 		sgCollection []entity.ServerGroup
 		ret          = new(model.ServerGroupCollection)
 	)
@@ -123,7 +123,7 @@ func (i *ServerGroupDBImplement) GetServerGroupCollection(start int, count int, 
 		c.Order("\"Name\" asc").Limit(count).Offset(start).Where(where).Select([]string{"\"ID\"", "\"Name\""}).Find(&sgCollection)
 	}
 	ret.Start = start
-	ret.Count = len(sgCollection)
+	ret.Count = int64(len(sgCollection))
 	ret.Total = total
 	for i := range sgCollection {
 		ret.Members = append(ret.Members, model.ServerGroupMember{
