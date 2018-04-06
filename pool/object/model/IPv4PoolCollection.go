@@ -8,9 +8,9 @@ type IPv4PoolMember struct {
 
 // IPv4PoolCollection is the model of collection.
 type IPv4PoolCollection struct {
-	Start       int
-	Count       int
-	Total       int
+	Start       int64
+	Count       int64
+	Total       int64
 	Members     []IPv4PoolMember
 	NextPageURI string
 	PrevPageURI string

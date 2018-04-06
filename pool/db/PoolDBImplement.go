@@ -139,9 +139,9 @@ func (impl *PoolDBImplement) convertFilter(filter string) (string, error) {
 }
 
 // GetIPv4PoolCollection Get IPv4 pool collection by start and count.
-func (impl *PoolDBImplement) GetIPv4PoolCollection(start int, count int, filter string) (*model.IPv4PoolCollection, error) {
+func (impl *PoolDBImplement) GetIPv4PoolCollection(start int64, count int64, filter string) (*model.IPv4PoolCollection, error) {
 	var (
-		total      int
+		total      int64
 		collection []entity.IPv4Pool
 		ret        = new(model.IPv4PoolCollection)
 	)
@@ -159,7 +159,7 @@ func (impl *PoolDBImplement) GetIPv4PoolCollection(start int, count int, filter 
 		c.Order("\"Name\" asc").Limit(count).Offset(start).Where(where).Select([]string{"\"ID\"", "\"Name\""}).Find(&collection)
 	}
 	ret.Start = start
-	ret.Count = len(collection)
+	ret.Count = int64(len(collection))
 	ret.Total = total
 	for _, v := range collection {
 		ret.Members = append(ret.Members, model.IPv4PoolMember{

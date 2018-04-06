@@ -8,7 +8,6 @@ import (
 	commonMessage "promise/common/object/message"
 	"promise/pool/object/dto"
 	"promise/pool/service"
-	"strconv"
 )
 
 // IPv4RootController is the ipv4 pool controller.
@@ -56,50 +55,32 @@ func (c *IPv4RootController) Post() {
 func (c *IPv4RootController) Get() {
 	var (
 		messages             []commonMessage.Message
-		start, count, filter string = c.GetString("start"), c.GetString("count"), c.GetString("$filter")
-		startInt, countInt   int    = 0, -1
-		parameterError       bool
 	)
-	log.WithFields(log.Fields{"start": start, "count": count}).Debug("Get IPv4 pool collection.")
-	if start != "" {
-		_startInt, err := strconv.Atoi(start)
-		if err != nil || _startInt < 0 {
-			parameterError = true
-		} else {
-			startInt = _startInt
-		}
-	}
-	if count != "" {
-		_countInt, err := strconv.Atoi(count)
-		// -1 means all.
-		if err != nil || _countInt < -1 {
-			parameterError = true
-		} else {
-			countInt = _countInt
-		}
-	}
 
-	if !c.isValidFilter(filter) {
-		parameterError = true
-	}
-
-	if parameterError {
-		messages = append(messages, commonMessage.NewInvalidRequest())
+	start, count, filter, message, err := c.PromiseRootController.Get()
+	if message != nil {
+		messages = append(messages, *message)
+		log.WithFields(log.Fields{
+			"error":   err,
+			"message": messages[0].ID}).
+			Warn("Get IPv4 pool collection failed, bad request.")
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		log.Warn("Get IPv4 pool collection failed, parameter error.")
-	} else {
-		if collection, messages := service.GetIPv4PoolCollection(startInt, countInt, filter); messages != nil {
-			c.Data["json"] = commonDto.MessagesToDto(messages)
-			c.Ctx.Output.SetStatus(messages[0].StatusCode)
-			log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Get IPv4 pool collection failed.")
-		} else {
-			resp := new(dto.GetIPv4PoolCollectionResponse)
-			resp.Load(collection)
-			c.Data["json"] = resp
-			c.Ctx.Output.SetStatus(http.StatusOK)
-		}
+		c.ServeJSON()
+		return
 	}
+
+	if collection, messages := service.GetIPv4PoolCollection(start, count, filter); messages != nil {
+		c.Data["json"] = commonDto.MessagesToDto(messages)
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Get IPv4 pool collection failed.")
+	} else {
+		resp := new(dto.GetIPv4PoolCollectionResponse)
+		resp.Load(collection)
+		c.Data["json"] = resp
+		c.Ctx.Output.SetStatus(http.StatusOK)
+	}
+
 	c.ServeJSON()
 }
 

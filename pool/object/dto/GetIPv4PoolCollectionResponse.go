@@ -14,9 +14,9 @@ type IPv4PoolMember struct {
 
 // GetIPv4PoolCollectionResponse is the DTO.
 type GetIPv4PoolCollectionResponse struct {
-	Start       int              `json:"Start"`
-	Count       int              `json:"Count"`
-	Total       int              `json:"Total"`
+	Start       int64              `json:"Start"`
+	Count       int64              `json:"Count"`
+	Total       int64              `json:"Total"`
 	Members     []IPv4PoolMember `json:"Members"`
 	NextPageURI *string          `json:"NextPageURI,omitempty"`
 	PrevPageURI *string          `json:"PrevPageURI,omitempty"`

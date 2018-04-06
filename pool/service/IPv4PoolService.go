@@ -40,7 +40,7 @@ func GetIPv4Pool(id string) (*model.IPv4Pool, []commonMessage.Message) {
 }
 
 // GetIPv4PoolCollection will get IPv4 pool collection.
-func GetIPv4PoolCollection(start int, count int, filter string) (*model.IPv4PoolCollection, []commonMessage.Message) {
+func GetIPv4PoolCollection(start int64, count int64, filter string) (*model.IPv4PoolCollection, []commonMessage.Message) {
 	dbImpl := db.GetPoolDB()
 	ret, err := dbImpl.GetIPv4PoolCollection(start, count, filter)
 	if err != nil {

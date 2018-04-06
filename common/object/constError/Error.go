@@ -5,6 +5,8 @@ import (
 )
 
 var (
+	// ErrorInvalidURLParameter is an error.
+	ErrorInvalidURLParameter = fmt.Errorf("invalid URL parameter")
 	// ErrorResourceExist is an error.
 	ErrorResourceExist = fmt.Errorf("resource exist")
 	// ErrorResourceNotExist is an error.
@@ -14,5 +16,5 @@ var (
 	// ErrorIDFormat is an error.
 	ErrorIDFormat = fmt.Errorf("ID format error")
 	// ErrorDataConvert is an error.
-	ErrorDataConvert = fmt.Errorf("data convert error.")
+	ErrorDataConvert = fmt.Errorf("data convert error")
 )
