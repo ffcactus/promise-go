@@ -16,8 +16,8 @@ var (
 )
 
 // CreateTask Create the task.
-func CreateTask(task *dto.PostTaskRequest) (*dto.PostTaskResponse, []commonDto.Message, error) {
-	respDto := new(dto.PostTaskResponse)
+func CreateTask(task *dto.PostTaskRequest) (*dto.GetTaskResponse, []commonDto.Message, error) {
+	respDto := new(dto.GetTaskResponse)
 	messages, err := rest.Do(
 		http.MethodPost,
 		TaskServerRoot,
@@ -27,8 +27,8 @@ func CreateTask(task *dto.PostTaskRequest) (*dto.PostTaskResponse, []commonDto.M
 }
 
 // UpdateTask Update the task.
-func UpdateTask(taskID string, task *dto.UpdateTaskRequest) (*dto.PostTaskResponse, []commonDto.Message, error) {
-	respDto := new(dto.PostTaskResponse)
+func UpdateTask(taskID string, task *dto.UpdateTaskRequest) (*dto.GetTaskResponse, []commonDto.Message, error) {
+	respDto := new(dto.GetTaskResponse)
 	messages, err := rest.Do(
 		http.MethodPost,
 		TaskServerRoot+taskID+"/action/update",
@@ -38,8 +38,8 @@ func UpdateTask(taskID string, task *dto.UpdateTaskRequest) (*dto.PostTaskRespon
 }
 
 // UpdateStep The task percentage will be set according to the c steop.
-func UpdateStep(taskID string, step *dto.UpdateTaskStepRequest) (*dto.PostTaskResponse, []commonDto.Message, error) {
-	respDto := new(dto.PostTaskResponse)
+func UpdateStep(taskID string, step *dto.UpdateTaskStepRequest) (*dto.GetTaskResponse, []commonDto.Message, error) {
+	respDto := new(dto.GetTaskResponse)
 	messages, err := rest.Do(
 		http.MethodPost,
 		TaskServerRoot+taskID+"/action/updateTaskStep",
@@ -49,11 +49,11 @@ func UpdateStep(taskID string, step *dto.UpdateTaskStepRequest) (*dto.PostTaskRe
 }
 
 // SetStepExecutionState Set step execution state.
-func SetStepExecutionState(taskID string, name string, state model.ExecutionState) (*dto.PostTaskResponse, []commonDto.Message, error) {
+func SetStepExecutionState(taskID string, name string, state model.ExecutionState) (*dto.GetTaskResponse, []commonDto.Message, error) {
 	request := new(dto.UpdateTaskStepRequest)
 	request.Name = name
 	request.ExecutionState = &state
-	respDto := new(dto.PostTaskResponse)
+	respDto := new(dto.GetTaskResponse)
 	messages, err := rest.Do(
 		http.MethodPost,
 		TaskServerRoot+taskID+"/action/updateTaskStep",
@@ -63,12 +63,12 @@ func SetStepExecutionState(taskID string, name string, state model.ExecutionStat
 }
 
 // SetStepExecutionResultState Set step execution result state.
-func SetStepExecutionResultState(taskID string, name string, state model.ExecutionResultState) (*dto.PostTaskResponse, []commonDto.Message, error) {
+func SetStepExecutionResultState(taskID string, name string, state model.ExecutionResultState) (*dto.GetTaskResponse, []commonDto.Message, error) {
 	request := new(dto.UpdateTaskStepRequest)
 	request.Name = name
 	request.ExecutionResult = new(dto.UpdateExecutionResultRequest)
 	request.ExecutionResult.State = &state
-	respDto := new(dto.PostTaskResponse)
+	respDto := new(dto.GetTaskResponse)
 	messages, err := rest.Do(
 		http.MethodPost,
 		TaskServerRoot+taskID+"/action/updateTaskStep",

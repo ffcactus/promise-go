@@ -27,8 +27,8 @@ func (dto *PostTaskStepRequest) ToModel() *model.TaskStep {
 	return &m
 }
 
-// PostTaskStepResponse Post task step response DTO.
-type PostTaskStepResponse struct {
+// GetTaskStepResponse Post task step response DTO.
+type GetTaskStepResponse struct {
 	MessageID           *string              `json:"MessageID"`
 	Name                string               `json:"Name"`
 	Description         *string              `json:"Description,omitempty"`
@@ -38,7 +38,7 @@ type PostTaskStepResponse struct {
 }
 
 // Load Load from model.
-func (dto *PostTaskStepResponse) Load(m *model.TaskStep) {
+func (dto *GetTaskStepResponse) Load(m *model.TaskStep) {
 	dto.MessageID = m.MessageID
 	dto.Name = m.Name
 	dto.Description = m.Description

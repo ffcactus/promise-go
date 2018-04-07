@@ -26,8 +26,8 @@ func CreateTaskClient() *TaskClient {
 }
 
 // CreateTask Create the task.
-func (c *TaskClient) CreateTask(task *dto.PostTaskRequest) (*dto.PostTaskResponse, []commonDto.Message, error) {
-	respDto := new(dto.PostTaskResponse)
+func (c *TaskClient) CreateTask(task *dto.PostTaskRequest) (*dto.GetTaskResponse, []commonDto.Message, error) {
+	respDto := new(dto.GetTaskResponse)
 	messages, err := c.localClient.Rest(
 		http.MethodPost,
 		TaskServerRoot,
@@ -37,8 +37,8 @@ func (c *TaskClient) CreateTask(task *dto.PostTaskRequest) (*dto.PostTaskRespons
 }
 
 // UpdateTask Update the task.
-func (c *TaskClient) UpdateTask(uri string, task *dto.UpdateTaskRequest) (*dto.PostTaskResponse, []commonDto.Message, error) {
-	respDto := new(dto.PostTaskResponse)
+func (c *TaskClient) UpdateTask(uri string, task *dto.UpdateTaskRequest) (*dto.GetTaskResponse, []commonDto.Message, error) {
+	respDto := new(dto.GetTaskResponse)
 	messages, err := c.localClient.Rest(
 		http.MethodPost,
 		uri+"/action/update",
@@ -48,8 +48,8 @@ func (c *TaskClient) UpdateTask(uri string, task *dto.UpdateTaskRequest) (*dto.P
 }
 
 // UpdateStep The task percentage will be set according to the c steop.
-func (c *TaskClient) UpdateStep(uri string, step *dto.UpdateTaskStepRequest) (*dto.PostTaskResponse, []commonDto.Message, error) {
-	respDto := new(dto.PostTaskResponse)
+func (c *TaskClient) UpdateStep(uri string, step *dto.UpdateTaskStepRequest) (*dto.GetTaskResponse, []commonDto.Message, error) {
+	respDto := new(dto.GetTaskResponse)
 	messages, err := c.localClient.Rest(
 		http.MethodPost,
 		uri+"/action/updateTaskStep",
@@ -59,11 +59,11 @@ func (c *TaskClient) UpdateStep(uri string, step *dto.UpdateTaskStepRequest) (*d
 }
 
 // SetStepExecutionState Set step execution state.
-func (c *TaskClient) SetStepExecutionState(uri string, name string, state model.ExecutionState) (*dto.PostTaskResponse, []commonDto.Message, error) {
+func (c *TaskClient) SetStepExecutionState(uri string, name string, state model.ExecutionState) (*dto.GetTaskResponse, []commonDto.Message, error) {
 	request := new(dto.UpdateTaskStepRequest)
 	request.Name = name
 	request.ExecutionState = &state
-	respDto := new(dto.PostTaskResponse)
+	respDto := new(dto.GetTaskResponse)
 	messages, err := c.localClient.Rest(
 		http.MethodPost,
 		uri+"/action/updateTaskStep",
@@ -73,12 +73,12 @@ func (c *TaskClient) SetStepExecutionState(uri string, name string, state model.
 }
 
 // SetStepExecutionResultState Set step execution result state.
-func (c *TaskClient) SetStepExecutionResultState(uri string, name string, state model.ExecutionResultState) (*dto.PostTaskResponse, []commonDto.Message, error) {
+func (c *TaskClient) SetStepExecutionResultState(uri string, name string, state model.ExecutionResultState) (*dto.GetTaskResponse, []commonDto.Message, error) {
 	request := new(dto.UpdateTaskStepRequest)
 	request.Name = name
 	request.ExecutionResult = new(dto.UpdateExecutionResultRequest)
 	request.ExecutionResult.State = &state
-	respDto := new(dto.PostTaskResponse)
+	respDto := new(dto.GetTaskResponse)
 	messages, err := c.localClient.Rest(
 		http.MethodPost,
 		uri+"/action/updateTaskStep",

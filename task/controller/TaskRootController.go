@@ -19,7 +19,7 @@ type TaskRootController struct {
 func (c *TaskRootController) Post() {
 	var (
 		request  dto.PostTaskRequest
-		response dto.PostTaskResponse
+		response dto.GetTaskResponse
 		messages []commonMessage.Message
 	)
 

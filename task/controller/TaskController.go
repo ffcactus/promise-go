@@ -1,12 +1,12 @@
 package controller
 
 import (
+	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
+	"net/http"
 	commonDto "promise/common/object/dto"
 	"promise/task/object/dto"
 	"promise/task/service"
-
-	"github.com/astaxie/beego"
-	log "github.com/sirupsen/logrus"
 )
 
 // TaskController Task controller
@@ -16,14 +16,20 @@ type TaskController struct {
 
 // Get Get server by ID.
 func (c *TaskController) Get() {
-	log.Debug("Get() start, ID = ", c.Ctx.Input.Param(":id"))
+	var (
+		id       = c.Ctx.Input.Param(":id")
+		response dto.GetTaskResponse
+	)
+	log.WithFields(log.Fields{"id": id}).Debug("Get task.")
 	if task, messages := service.GetTask(c.Ctx.Input.Param(":id")); messages != nil {
+		log.WithFields(log.Fields{"id": id, "message": messages[0].ID}).Warn("Get task failed.")
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
+		c.Ctx.Output.SetStatus(http.StatusOK)
 	} else {
-		resp := new(dto.PostTaskResponse)
-		resp.Load(task)
-		c.Data["json"] = resp
+		response.Load(task)
+		c.Data["json"] = &response
+		c.Ctx.Output.SetStatus(http.StatusOK)
 	}
 	c.ServeJSON()
 }
