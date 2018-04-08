@@ -3,6 +3,7 @@ package service
 import (
 	"promise/common/category"
 	commonMessage "promise/common/object/message"
+	commonModel "promise/common/object/model"
 	"promise/pool/db"
 	"promise/pool/object/consterror"
 	"promise/pool/object/dto"
@@ -14,7 +15,7 @@ import (
 // PostIPv4Pool post a IPv4 pool.
 func PostIPv4Pool(request *dto.PostIPv4PoolRequest) (*model.IPv4Pool, []commonMessage.Message) {
 	var (
-		dbImpl = db.GetPoolDB()
+		dbImpl  = db.GetPoolDB()
 		poolDTO dto.GetIPv4PoolResponse
 	)
 
@@ -42,7 +43,7 @@ func GetIPv4Pool(id string) (*model.IPv4Pool, []commonMessage.Message) {
 }
 
 // GetIPv4PoolCollection will get IPv4 pool collection.
-func GetIPv4PoolCollection(start int64, count int64, filter string) (*model.IPv4PoolCollection, []commonMessage.Message) {
+func GetIPv4PoolCollection(start int64, count int64, filter string) (commonModel.PromiseCollectionInterface, []commonMessage.Message) {
 	dbImpl := db.GetPoolDB()
 	ret, err := dbImpl.GetIPv4PoolCollection(start, count, filter)
 	if err != nil {
