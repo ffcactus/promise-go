@@ -15,4 +15,6 @@ const (
 	ServerServerGroup = "ServerServerGroup"
 	// PoolIPv4 is a category name.
 	PoolIPv4 = "PoolIPv4"
+	// Student is a category name.
+	Student = "Student"
 )

@@ -24,6 +24,8 @@ const (
 	IDPoolBaseURI = "/id-pool"
 	// IDPoolIPv4BaseURI is IPv4 pool base URI.
 	IDPoolIPv4BaseURI = "/id-pool/ipv4"
+	// StudentBaseURI is student base URI.
+	StudentBaseURI = "/student"
 )
 
 // CategoryToURI turns ID to to URI depends on category.
@@ -41,6 +43,8 @@ func CategoryToURI(c string, id string) string {
 		return app.RootURL + ServerServerGroupBaseURI + "/" + id
 	case category.PoolIPv4:
 		return app.RootURL + IDPoolIPv4BaseURI + "/" + id
+	case category.Student:
+		return app.RootURL + StudentBaseURI + "/" + id
 	default:
 		return ""
 	}
@@ -64,4 +68,8 @@ func ToServerServerGroupURI(id string) string {
 // ToIDPoolIPv4URI convert id to URI
 func ToIDPoolIPv4URI(id string) string {
 	return app.RootURL + IDPoolIPv4BaseURI + "/" + id
+}
+
+func ToStudentURI(id string) string {
+	return app.RootURL + StudentBaseURI + "/" + id
 }
