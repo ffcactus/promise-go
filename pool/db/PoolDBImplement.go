@@ -32,7 +32,9 @@ func GetPoolDB() PoolDBInterface {
 // It will return if the transaction commited.
 // It will return error if any.
 func (impl *PoolDBImplement) PostIPv4Pool(m *model.IPv4Pool) (bool, *model.IPv4Pool, bool, error) {
-	var record entity.IPv4Pool
+	var (
+		record entity.IPv4Pool
+	)
 
 	c := commonDB.GetConnection()
 	tx := c.Begin()
@@ -88,7 +90,7 @@ func (impl *PoolDBImplement) getIPv4Pool(tx *gorm.DB, id string, record *entity.
 		log.WithFields(log.Fields{
 			"id": id}).
 			Warn("Get IPv4 Pool failed, resource does not exist, transaction rollback.")
-		return false, nil
+		return false, commonConstError.ErrorResourceNotExist
 	}
 
 	if err := tx.Where("\"ID\" = ?", id).Preload("Ranges").Preload("Ranges.Addresses").First(record).Error; err != nil {
@@ -104,9 +106,11 @@ func (impl *PoolDBImplement) getIPv4Pool(tx *gorm.DB, id string, record *entity.
 
 // GetIPv4Pool get the IPv4 pool by ID.
 func (impl *PoolDBImplement) GetIPv4Pool(id string) *model.IPv4Pool {
-	var record entity.IPv4Pool
-	c := commonDB.GetConnection()
+	var (
+		record entity.IPv4Pool
+	)
 
+	c := commonDB.GetConnection()
 	tx := c.Begin()
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
@@ -143,7 +147,7 @@ func (impl *PoolDBImplement) GetIPv4PoolCollection(start int64, count int64, fil
 	var (
 		total      int64
 		collection []entity.IPv4Pool
-		ret        = new(model.IPv4PoolCollection)
+		ret        model.IPv4PoolCollection
 	)
 
 	c := commonDB.GetConnection()
@@ -152,7 +156,7 @@ func (impl *PoolDBImplement) GetIPv4PoolCollection(start int64, count int64, fil
 		log.WithFields(log.Fields{
 			"filter": filter,
 			"error":  err}).
-			Warn("Get IPv4 pool in DB failed, convert filter failed.")
+			Warn("Get IPv4 pool collection in DB failed, convert filter failed.")
 		c.Order("\"Name\" asc").Limit(count).Offset(start).Select([]string{"\"ID\"", "\"Name\""}).Find(&collection)
 	} else {
 		log.WithFields(log.Fields{"where": where}).Debug("Convert filter success.")
@@ -167,7 +171,7 @@ func (impl *PoolDBImplement) GetIPv4PoolCollection(start int64, count int64, fil
 			Name: v.Name,
 		})
 	}
-	return ret, nil
+	return &ret, nil
 }
 
 // DeleteIPv4Pool delete the IPv4 pool by ID.

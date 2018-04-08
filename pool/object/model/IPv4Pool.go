@@ -1,7 +1,7 @@
 package model
 
 import (
-	"promise/common/object/model"
+	commonModel "promise/common/object/model"
 )
 
 // IPv4Address shows the usage of an IPv4 address.
@@ -23,7 +23,7 @@ type IPv4Range struct {
 
 // IPv4Pool is the model.
 type IPv4Pool struct {
-	model.PromiseModel
+	commonModel.PromiseModel
 	Name        string
 	Description *string
 	Ranges      []IPv4Range

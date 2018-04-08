@@ -1,12 +1,15 @@
 package db
 
 import (
+	log "github.com/sirupsen/logrus"
 	commonDB "promise/common/db"
 	"promise/common/util"
 	"promise/task/object/entity"
 	"promise/task/object/model"
-
+	"promise/task/object/dto"
+	commonConstError "promise/common/object/consterror"
 	"github.com/google/uuid"
+	"strings"
 )
 
 var (
@@ -23,114 +26,182 @@ func GetDBInstance() TaskDBInterface {
 }
 
 // PostTask Post Task.
-func (i *TaskDBImplement) PostTask(task *model.Task) (*model.Task, error) {
-	c := commonDB.GetConnection()
+func (impl *TaskDBImplement) PostTask(m *model.Task) (*model.Task, error) {
+	var (
+		record entity.Task
+	)
 
-	var e = createTaskEntity(task)
+	c := commonDB.GetConnection()
+	record.Load(m)
 	// Generate the UUID.
-	e.ID = uuid.New().String()
-	c.Create(e)
-	return createTaskModel(e), nil
+	record.ID = uuid.New().String()
+	if err := c.Create(&record).Error; err != nil {
+		log.WithFields(log.Fields{
+			"name":  m.Name,
+			"error": err}).
+			Warn("Post task in DB failed, create resource failed.")
+		return nil, err
+	}
+	return record.ToModel(), nil
 }
 
 // GetTask Get Task by ID.
-func (i *TaskDBImplement) GetTask(ID string) *model.Task {
+func (impl *TaskDBImplement) GetTask(id string) *model.Task {
+	var (
+		record entity.Task 
+	)
 	c := commonDB.GetConnection()
-	var task = new(entity.Task)
-	c.Where("ID = ?", ID).First(task)
-	if task.ID != ID {
+
+	if c.Where("\"ID\" = ?", id).First(&record).RecordNotFound() {
+		log.WithFields(log.Fields{
+			"id": id}).
+			Warn("Get task in DB failed, resource does not exist.")
 		return nil
 	}
-	return createTaskModel(task)
+	return record.ToModel()
 }
 
+func (impl *TaskDBImplement) convertFilter(filter string) (string, error) {
+	if filter == "" {
+		return "", nil
+	}
+	cmds := strings.Split(filter, " ")
+	if len(cmds) != 3 {
+		return "", commonConstError.ErrorConvertFilter
+	}
+	switch strings.ToLower(cmds[1]) {
+	case "eq":
+		return "\"" + cmds[0] + "\"" + " = " + cmds[2], nil
+	default:
+		return "", commonConstError.ErrorConvertFilter
+	}
+}
+
+
 // GetTaskCollection Get task collection
-func (i *TaskDBImplement) GetTaskCollection(start int64, count int64, filter string) (*model.TaskCollection, error) {
+func (impl *TaskDBImplement) GetTaskCollection(start int64, count int64, filter string) (*model.TaskCollection, error) {
 	var (
 		total int64
-		task  []entity.Task
+		selection = []string{"\"ID\"", "\"Name\"", "\"Description\"", "\"ExecutionState\"", "\"Percentage\"", "\"ExecutionResult\""}
+		collection  []entity.Task
 		ret   model.TaskCollection
 	)
 
 	c := commonDB.GetConnection()
-	c.Table("task").Count(&total)
-	c.Order("Created_At asc").Limit(count).Offset(start).Select([]string{"Id", "Name", "Description", "Execution_State", "Percentage", "Execution_Result"}).Find(&task)
+	c.Table("Task").Count(&total)
+	if where, err := impl.convertFilter(filter); err != nil {
+		log.WithFields(log.Fields{
+			"filter": filter,
+			"error":  err}).
+			Warn("Get task collection in DB failed, convert filter failed.")
+		c.Order("\"CreatedAt\" asc").Limit(count).Offset(start).Select(selection).Find(&collection)
+	} else {
+		log.WithFields(log.Fields{"where": where}).Debug("Convert filter success.")
+		c.Order("\"CreatedAt\" asc").Limit(count).Offset(start).Where(where).Select(selection).Find(&collection)
+	}
+	
 	ret.Start = start
-	ret.Count = int64(len(task))
+	ret.Count = int64(len(collection))
 	ret.Total = total
-	for i := range task {
-		m := new(model.TaskMember)
-		m.URI = "/promise/v1/task/" + task[i].ID
-		m.Name = task[i].Name
-		m.Description = task[i].Description
-		m.CreatedAt = task[i].CreatedAt
-		m.UpdatedAt = task[i].UpdatedAt
-		m.CreatedByName = task[i].CreatedByName
-		m.CreatedByURI = task[i].CreatedByURI
-		m.TargetName = task[i].TargetName
-		m.TargetURI = task[i].TargetURI
-		m.CurrentStep = task[i].CurrentStep
-		m.ExecutionState = task[i].ExecutionState
-		m.Percentage = task[i].Percentage
-		util.StringToStruct(task[i].ExecutionResult, &m.ExecutionResult)
-
-		ret.Members = append(ret.Members, *m)
+	for _, v := range collection {
+		m := model.TaskMember{}
+		m.ID = v.ID
+		m.Name = v.Name
+		m.Description = v.Description
+		m.CreatedAt = v.CreatedAt
+		m.UpdatedAt = v.UpdatedAt
+		m.CreatedByName = v.CreatedByName
+		m.CreatedByURI = v.CreatedByURI
+		m.TargetName = v.TargetName
+		m.TargetURI = v.TargetURI
+		m.CurrentStep = v.CurrentStep
+		m.ExecutionState = v.ExecutionState
+		m.Percentage = v.Percentage
+		util.StringToStruct(v.ExecutionResult, &m.ExecutionResult)
+		ret.Members = append(ret.Members, m)
 	}
 	return &ret, nil
 }
 
 // UpdateTask Update Task.
-// Note: Assume the task exists already.
-func (i *TaskDBImplement) UpdateTask(id string, task *model.Task) (*model.Task, error) {
+// It will return if the task already exist.
+// It will return the updated task.
+// It will return if it is committed.
+// It will return error if any.
+func (impl *TaskDBImplement) UpdateTask(id string, updateRequest *dto.UpdateTaskRequest) (bool, *model.Task, bool, error) {
+	var (
+		record entity.Task
+	)
+
 	c := commonDB.GetConnection()
-	var e = createTaskEntity(task)
-	e.ID = id
-	c.Save(e)
-	return createTaskModel(e), nil
-}
-
-func createTaskEntity(m *model.Task) *entity.Task {
-	e := new(entity.Task)
-	e.ID = uuid.New().String()
-	e.MessageID = m.MessageID
-	e.Name = m.Name
-	e.Description = m.Description
-	e.ExecutionState = m.ExecutionState
-	e.CreatedByName = m.CreatedByName
-	e.CreatedByURI = m.CreatedByURI
-	e.TargetName = m.TargetName
-	e.TargetURI = m.TargetURI
-	e.ExpectedExecutionMs = m.ExpectedExecutionMs
-	e.Percentage = m.Percentage
-	e.CreatedAt = m.CreatedAt
-	e.UpdatedAt = m.UpdatedAt
-	e.CurrentStep = m.CurrentStep
-	e.TaskSteps = util.StructToString(m.TaskSteps)
-	e.ExecutionResult = util.StructToString(m.ExecutionResult)
-	return e
-}
-
-func createTaskModel(e *entity.Task) *model.Task {
-	m := new(model.Task)
-	m.ID = e.ID
-	m.URI = "/promise/v1/task/" + e.ID
-	m.MessageID = e.MessageID
-	m.Name = e.Name
-	m.Description = e.Description
-	m.ExecutionState = e.ExecutionState
-	m.CreatedByName = e.CreatedByName
-	m.CreatedByURI = e.CreatedByURI
-	m.TargetName = e.TargetName
-	m.TargetURI = e.TargetURI
-	m.ExpectedExecutionMs = e.ExpectedExecutionMs
-	m.Percentage = e.Percentage
-	m.CreatedAt = e.CreatedAt
-	m.UpdatedAt = e.UpdatedAt
-	m.CurrentStep = e.CurrentStep
-	util.StringToStruct(e.ExecutionResult, &m.ExecutionResult)
-	util.StringToStruct(e.TaskSteps, &m.TaskSteps)
-	for i := range e.SubTasks {
-		m.SubTasks = append(m.SubTasks, *createTaskModel(&e.SubTasks[i]))
+	tx := c.Begin()
+	if err := tx.Error; err != nil {
+		log.WithFields(log.Fields{
+			"id":    id,
+			"error": err}).
+			Warn("Update task in DB failed, start transaction failed.")
+		return true, nil, false, err
 	}
-	return m
+	if tx.Where("\"ID\" = ?", id).First(&record).RecordNotFound() {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id": id}).
+			Warn("Update task in DB failed, resource does not exist, transaction rollback.")
+		return false, nil, false, commonConstError.ErrorResourceNotExist
+	}
+	m := record.ToModel()
+	updateRequest.UpdateModel(m)
+	record.Load(m)
+	record.ID = id
+	if err := tx.Save(record).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id": id,
+			"error": err}).
+			Warn("Update task in DB failed, save resource failed, transaction rollback.")
+		return true, nil, false, err		
+	}
+	return true, record.ToModel(), true, nil
 }
+
+// UpdateTaskStep Update Task step.
+// It will return if the task already exist.
+// It will return the updated task.
+// It will return if it is committed.
+// It will return error if any.
+func (impl *TaskDBImplement) UpdateTaskStep(id string, updateRequest *dto.UpdateTaskStepRequest) (bool, *model.Task, bool, error) {
+	var (
+		record entity.Task
+	)
+
+	c := commonDB.GetConnection()
+	tx := c.Begin()
+	if err := tx.Error; err != nil {
+		log.WithFields(log.Fields{
+			"id":    id,
+			"error": err}).
+			Warn("Update task step in DB failed, start transaction failed.")
+		return true, nil, false, err
+	}
+	if tx.Where("\"ID\" = ?", id).First(&record).RecordNotFound() {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id": id}).
+			Warn("Update task step in DB failed, resource does not exist, transaction rollback.")
+		return false, nil, false, commonConstError.ErrorResourceNotExist
+	}
+	m := record.ToModel()
+	updateRequest.UpdateModel(m)
+	record.Load(m)
+	record.ID = id
+	if err := tx.Save(record).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id": id,
+			"error": err}).
+			Warn("Update task step in DB failed, save resource failed, transaction rollback.")
+		return true, nil, false, err		
+	}
+	return true, record.ToModel(), true, nil
+}
+

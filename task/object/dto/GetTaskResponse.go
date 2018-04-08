@@ -1,14 +1,15 @@
 package dto
 
 import (
+	log "github.com/sirupsen/logrus"
 	"promise/task/object/model"
-	"time"
+	commonConstError "promise/common/object/consterror"
+	commonDTO "promise/common/object/dto"
 )
 
 // GetTaskResponse Post task response DTO.
 type GetTaskResponse struct {
-	ID                  string                `json:"ID"`
-	URI                 string                `json:"URI"`
+	commonDTO.PromiseResponse
 	Name                string                `json:"Name"`
 	ParentTask          *string               `json:"ParentTask"`
 	Description         *string               `json:"Description,omitempty"`
@@ -19,8 +20,6 @@ type GetTaskResponse struct {
 	TargetURI           string                `json:"TargetURI"`
 	ExpectedExecutionMs uint64                `json:"ExpectedExecutionMs"`
 	Percentage          int                   `json:"Percentage"`
-	CreatedAt           time.Time             `json:"CreatedAt"`
-	UpdatedAt           time.Time             `json:"UpdatedAt"`
 	CurrentStep         string                `json:"CurrentStep"`
 	TaskSteps           []GetTaskStepResponse `json:"TaskSteps"`
 	ExecutionResult     ExecutionResult       `json:"ExecutionResult"`
@@ -28,33 +27,36 @@ type GetTaskResponse struct {
 }
 
 // Load Load from model.
-func (o *GetTaskResponse) Load(m *model.Task) {
-	o.ID = m.ID
-	o.URI = m.URI
-	o.Name = m.Name
-	o.ParentTask = m.ParentTask
-	o.Description = m.Description
-	o.ExecutionState = m.ExecutionState
-	o.CreatedByName = m.CreatedByName
-	o.CreatedByURI = m.CreatedByURI
-	o.TargetName = m.TargetName
-	o.TargetURI = m.TargetURI
-	o.ExpectedExecutionMs = m.ExpectedExecutionMs
-	o.Percentage = m.Percentage
-	o.CreatedAt = m.CreatedAt
-	o.UpdatedAt = m.UpdatedAt
-	o.CurrentStep = m.CurrentStep
-	o.TaskSteps = make([]GetTaskStepResponse, 0)
+func (dto *GetTaskResponse) Load(data interface{}) error {
+	m, ok := data.(*model.Task)
+	if !ok {
+		log.Warn("GetTaskResponse load data from model failed.")
+		return commonConstError.ErrorDataConvert
+	}
+	dto.PromiseResponse.Load(&m.PromiseModel)
+	dto.Name = m.Name
+	dto.ParentTask = m.ParentTask
+	dto.Description = m.Description
+	dto.ExecutionState = m.ExecutionState
+	dto.CreatedByName = m.CreatedByName
+	dto.CreatedByURI = m.CreatedByURI
+	dto.TargetName = m.TargetName
+	dto.TargetURI = m.TargetURI
+	dto.ExpectedExecutionMs = m.ExpectedExecutionMs
+	dto.Percentage = m.Percentage
+	dto.CurrentStep = m.CurrentStep
+	dto.TaskSteps = make([]GetTaskStepResponse, 0)
 	for i := range m.TaskSteps {
 		step := new(GetTaskStepResponse)
 		step.Load(&m.TaskSteps[i])
-		o.TaskSteps = append(o.TaskSteps, *step)
+		dto.TaskSteps = append(dto.TaskSteps, *step)
 	}
-	o.ExecutionResult.Load(&m.ExecutionResult)
-	o.SubTasks = make([]GetTaskResponse, 0)
+	dto.ExecutionResult.Load(&m.ExecutionResult)
+	dto.SubTasks = make([]GetTaskResponse, 0)
 	for i := range m.SubTasks {
 		sub := new(GetTaskResponse)
 		sub.Load(&m.SubTasks[i])
-		o.SubTasks = append(o.SubTasks, *sub)
+		dto.SubTasks = append(dto.SubTasks, *sub)
 	}
+	return nil
 }

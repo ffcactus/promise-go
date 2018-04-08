@@ -1,13 +1,13 @@
 package entity
 
 import (
-	"promise/common/object/entity"
+	commonEntity "promise/common/object/entity"
 	"promise/server/object/model"
 )
 
 // ServerServerGroup is the entity of servergroup.
 type ServerServerGroup struct {
-	entity.PromiseEntity
+	commonEntity.PromiseEntity
 	ServerID      string `gorm:"column:ServerID"`
 	ServerGroupID string `gorm:"column:ServerGroupID"`
 }

@@ -2,7 +2,7 @@ package model
 
 import (
 	"promise/common/object/message"
-	"time"
+	commonModel "promise/common/object/model"
 )
 
 // ExecutionState The execution state.
@@ -53,8 +53,7 @@ type TaskStep struct {
 
 // Task Task object.
 type Task struct {
-	ID                  string
-	URI                 string
+	commonModel.PromiseModel
 	MessageID           *string
 	Name                string
 	ParentTask          *string
@@ -66,8 +65,6 @@ type Task struct {
 	TargetURI           string
 	ExpectedExecutionMs uint64
 	Percentage          int
-	CreatedAt           time.Time
-	UpdatedAt           time.Time
 	CurrentStep         string
 	TaskSteps           []TaskStep
 	SubTasks            []Task

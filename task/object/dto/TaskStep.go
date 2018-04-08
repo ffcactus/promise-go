@@ -94,7 +94,7 @@ func (dto *UpdateTaskStepRequest) Validate() error {
 }
 
 // UpdateModel Update the model.
-func (dto *UpdateTaskStepRequest) UpdateModel(current *model.Task) {
+func (dto *UpdateTaskStepRequest) _updateModel(current *model.Task) {
 	for i := range current.TaskSteps {
 		if dto.Name == current.TaskSteps[i].Name {
 			if dto.ExecutionState != nil {
@@ -103,6 +103,38 @@ func (dto *UpdateTaskStepRequest) UpdateModel(current *model.Task) {
 			if dto.ExecutionResult != nil {
 				dto.ExecutionResult.UpdateModel(&current.TaskSteps[i].ExecutionResult)
 			}
+		}
+	}
+}
+
+// UpdateModel Update the model.
+func (dto *UpdateTaskStepRequest) UpdateModel(m *model.Task) {
+	currentTime := uint64(0)
+	for i := range m.TaskSteps {
+		currentTime += m.TaskSteps[i].ExpectedExecutionMs
+		if m.TaskSteps[i].Name == dto.Name {
+			// Found the step, and update the current time.
+			switch m.TaskSteps[i].ExecutionState {
+			case model.ExecutionStateTerminated:
+			case model.ExecutionStateRunning:
+			case model.ExecutionStateSuspended:
+				currentTime -= m.TaskSteps[i].ExpectedExecutionMs
+			default:
+			}
+			if dto.ExecutionState != nil {
+				m.TaskSteps[i].ExecutionState = *dto.ExecutionState
+				if *dto.ExecutionState == model.ExecutionStateRunning {
+					m.CurrentStep = m.TaskSteps[i].Name
+				}
+			}
+			if dto.ExecutionResult != nil {
+				dto.ExecutionResult.UpdateModel(&m.TaskSteps[i].ExecutionResult)
+			}
+			percentageF := (float32)(currentTime) / (float32)(m.ExpectedExecutionMs)
+			m.Percentage = (int)((percentageF * 100) + 0.5)		
+			if m.Percentage > 100 {
+				m.Percentage = 100
+			}			
 		}
 	}
 }

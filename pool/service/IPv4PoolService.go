@@ -13,7 +13,10 @@ import (
 
 // PostIPv4Pool post a IPv4 pool.
 func PostIPv4Pool(request *dto.PostIPv4PoolRequest) (*model.IPv4Pool, []commonMessage.Message) {
-	dbImpl := db.GetPoolDB()
+	var (
+		dbImpl = db.GetPoolDB()
+		poolDTO dto.GetIPv4PoolResponse
+	)
 
 	exist, posted, commited, err := dbImpl.PostIPv4Pool(request.ToModel())
 	if exist {
@@ -22,7 +25,6 @@ func PostIPv4Pool(request *dto.PostIPv4PoolRequest) (*model.IPv4Pool, []commonMe
 	if err != nil || !commited {
 		return nil, []commonMessage.Message{commonMessage.NewTransactionError()}
 	}
-	var poolDTO dto.GetIPv4PoolResponse
 	poolDTO.Load(posted)
 	wsSDK.DispatchResourceCreateEvent(&poolDTO)
 	return posted, nil

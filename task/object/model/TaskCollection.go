@@ -6,7 +6,7 @@ import (
 
 // TaskMember Task member object.
 type TaskMember struct {
-	URI             string
+	ID              string
 	Name            string
 	Description     *string
 	CreatedAt       time.Time

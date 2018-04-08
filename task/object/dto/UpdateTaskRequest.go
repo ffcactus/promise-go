@@ -2,7 +2,6 @@ package dto
 
 import (
 	"promise/task/object/model"
-	"time"
 )
 
 // UpdateTaskRequest UpdateTaskRequest that only includes the changable properties.
@@ -33,5 +32,4 @@ func (dto *UpdateTaskRequest) UpdateModel(current *model.Task) {
 		current.ExecutionResult.State = (*dto.ExecutionResult).State
 		current.ExecutionResult.Message = (*dto.ExecutionResult).Message.Model()
 	}
-	current.UpdatedAt = time.Now()
 }

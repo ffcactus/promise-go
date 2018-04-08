@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"promise/common/object/entity"
 	commonEntity "promise/common/object/entity"
 	commonUtil "promise/common/util"
 	"promise/pool/object/model"
@@ -40,7 +39,7 @@ func (IPv4Range) TableName() string {
 
 // IPv4Pool is the entity.
 type IPv4Pool struct {
-	entity.PromiseEntity
+	commonEntity.PromiseEntity
 	Name        string      `gorm:"column:Name"`
 	Description *string     `gorm:"column:Description"`
 	SubnetMask  *string     `gorm:"column:SubnetMask"`

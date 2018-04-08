@@ -39,7 +39,6 @@ func (o *GetTaskCollectionResponse) Load(m *model.TaskCollection) {
 	o.Total = m.Total
 	for i := range m.Members {
 		each := new(TaskMember)
-		each.URI = m.Members[i].URI
 		each.Name = m.Members[i].Name
 		each.Description = m.Members[i].Description
 		each.ExecutionState = m.Members[i].ExecutionState

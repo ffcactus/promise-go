@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"promise/common/category"
 	commonDTO "promise/common/object/dto"
 	commonMessage "promise/common/object/message"
 	"promise/task/object/message"
@@ -32,7 +33,8 @@ func (dto *PostTaskRequest) Validate() *commonMessage.Message {
 
 // ToModel Convert to model.
 func (dto PostTaskRequest) ToModel() *model.Task {
-	m := new(model.Task)
+	m := model.Task{}
+	m.Category = category.Task
 	m.Name = dto.Name
 	m.Description = dto.Description
 	m.ExecutionState = model.ExecutionStateReady
@@ -50,5 +52,5 @@ func (dto PostTaskRequest) ToModel() *model.Task {
 		// The task execution time equals to the sum of every steps'.
 		m.ExpectedExecutionMs += dto.TaskSteps[i].ExpectedExecutionMs
 	}
-	return m
+	return &m
 }

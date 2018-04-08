@@ -1,13 +1,13 @@
 package entity
 
 import (
-	"promise/common/object/entity"
+	commonEntity "promise/common/object/entity"
 	"promise/server/object/model"
 )
 
 // Server Server entity.
 type Server struct {
-	entity.PromiseEntity
+	commonEntity.PromiseEntity
 	State              string
 	Health             string
 	Name               string
