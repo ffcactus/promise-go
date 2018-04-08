@@ -1,6 +1,7 @@
 package dto
 
 import (
+	commonModel "promise/common/object/model"
 	"promise/common/object/constvalue"
 	"promise/pool/object/model"
 )
@@ -18,27 +19,20 @@ type GetIPv4PoolCollectionResponse struct {
 	Count       int64            `json:"Count"`
 	Total       int64            `json:"Total"`
 	Members     []IPv4PoolMember `json:"Members"`
-	NextPageURI *string          `json:"NextPageURI,omitempty"`
-	PrevPageURI *string          `json:"PrevPageURI,omitempty"`
 }
 
 // Load will load from model.
-func (dto *GetIPv4PoolCollectionResponse) Load(m *model.IPv4PoolCollection) {
-	dto.Start = m.Start
-	dto.Count = m.Count
-	dto.Total = m.Total
+func (dto *GetIPv4PoolCollectionResponse) Load(m commonModel.PromiseCollectionInterface) {
+	dto.Start = m.GetStart()
+	dto.Count = m.GetCount()
+	dto.Total = m.GetTotal()
 	dto.Members = make([]IPv4PoolMember, 0)
-	for i := range m.Members {
+	members := m.GetMembers()
+	for i := range members {
 		dto.Members = append(dto.Members, IPv4PoolMember{
-			URI:  constvalue.ToIDPoolIPv4URI(m.Members[i].ID),
-			ID:   m.Members[i].ID,
-			Name: m.Members[i].Name,
+			URI:  constvalue.ToIDPoolIPv4URI(members[i].ID),
+			ID:   members[i].ID,
+			Name: members[i].Name,
 		})
-	}
-	if m.NextPageURI != "" {
-		dto.NextPageURI = &m.NextPageURI
-	}
-	if m.PrevPageURI != "" {
-		dto.PrevPageURI = &m.PrevPageURI
 	}
 }

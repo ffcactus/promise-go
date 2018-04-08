@@ -5,6 +5,13 @@ import (
 	"time"
 )
 
+// PromiseEntityInterface is the interface of a Promise entity.
+type PromiseEntityInterface interface {
+	ToModel() model.PromiseModelInterface
+	ToMember() model.PromiseMemberInterface
+	Load(model.PromiseModelInterface)
+}
+
 // PromiseEntityRefType is the ID type of PromieEntity.
 type PromiseEntityRefType string
 
@@ -24,6 +31,16 @@ func (e *PromiseEntity) ToModel() model.PromiseModel {
 	ret.Category = e.Category
 	ret.CreatedAt = e.CreatedAt
 	ret.UpdatedAt = e.UpdatedAt
+	return ret
+}
+
+// ToMember change the entity to a collection member.
+func (e *PromiseEntity) ToMember() model.PromiseMember {
+	var ret model.PromiseMember
+
+	ret.ID = e.ID
+	ret.Category = e.Category
+	
 	return ret
 }
 

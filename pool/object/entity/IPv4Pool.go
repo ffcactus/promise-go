@@ -1,6 +1,7 @@
 package entity
 
 import (
+	commonModel "promise/common/object/model"
 	commonEntity "promise/common/object/entity"
 	commonUtil "promise/common/util"
 	"promise/pool/object/model"
@@ -97,6 +98,15 @@ func (e *IPv4Pool) ToModel() *model.IPv4Pool {
 	}
 
 	return m
+}
+
+// ToMember change the entity to a collection member.
+func (e *IPv4Pool) ToMember() commonModel.PromiseMemberInterface {
+	m := model.IPv4PoolMember{}
+	m.ID = e.ID
+	m.Category = e.Category
+	m.Name = e.Name
+	return &m
 }
 
 // Load will load data from model. this function is used on POST.

@@ -1,17 +1,22 @@
 package model
 
+import (
+	commonModel "promise/common/object/model"
+)
+
 // IPv4PoolMember is the member in collection.
 type IPv4PoolMember struct {
-	ID   string
+	commonModel.PromiseMember
 	Name string
 }
 
 // IPv4PoolCollection is the model of collection.
 type IPv4PoolCollection struct {
-	Start       int64
-	Count       int64
-	Total       int64
-	Members     []IPv4PoolMember
-	NextPageURI string
-	PrevPageURI string
+	commonModel.PromiseCollection
+	Members     []commonModel.PromiseMemberInterface
 }
+
+// // GetMembers get the members in the collection.
+// func (m *IPv4PoolCollection) GetMembers() []commonModel.PromiseMemberInterface {
+// 	return make([]commonModel.PromiseMemberInterface, len(m.Members))
+// }
