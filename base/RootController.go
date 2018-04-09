@@ -2,17 +2,18 @@ package base
 
 import (
 	"encoding/json"
-	"net/http"
 	"github.com/astaxie/beego"
-	log "github.com/sirupsen/logrus"	
+	log "github.com/sirupsen/logrus"
+	"net/http"
 )
 
 // RootControllerInterface is the interface that a root controller should provide.
 type RootControllerInterface interface {
 	GetResourceName() string
+	GetService() ServiceInterface
 	NewRequest() RequestInterface
 	NewResponse() ResponseInterface
-	PostCallback(request RequestInterface) (ModelInterface, []MessageInterface)
+	// PostCallback(request RequestInterface) (ModelInterface, []MessageInterface)
 }
 
 // RootController is the root controller in Promise.
@@ -32,8 +33,8 @@ func (c *RootController) Post() {
 		messages = append(messages, NewMessageInvalidRequest())
 		log.WithFields(log.Fields{
 			"request": request.GetDebugName(),
-			"error":    err,
-			"message":  messages[0].GetID(),
+			"error":   err,
+			"message": messages[0].GetID(),
 		}).Warn("Post resource failed, bad request.")
 		c.Data["json"] = messages
 		c.Ctx.Output.SetStatus(messages[0].GetStatusCode())
@@ -45,7 +46,7 @@ func (c *RootController) Post() {
 		"request": request.GetDebugName(),
 	}).Info("Post resource.")
 
-	model, messages := c.Interface.PostCallback(request)
+	model, messages := c.Interface.GetService().Post(request)
 	if messages != nil {
 		log.WithFields(log.Fields{
 			"message": messages[0].GetID(),
@@ -56,8 +57,8 @@ func (c *RootController) Post() {
 		return
 	}
 	log.WithFields(log.Fields{
-		"request": request.GetDebugName(), 
-		"ID": response.GetID(),
+		"request": request.GetDebugName(),
+		"ID":      response.GetID(),
 	}).Info("Post resource done.")
 	response.Load(model)
 	c.Data["json"] = response

@@ -6,6 +6,8 @@ import (
 
 // ModelInterface is the interface of Model.
 type ModelInterface interface {
+	GetValueForDuplicationCheck() string
+	GetDebugName() string
 	GetID() string
 	GetCategory() string
 	GetCreatedAt() time.Time

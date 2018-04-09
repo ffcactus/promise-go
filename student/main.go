@@ -1,23 +1,28 @@
 package main
 
 import (
-	"promise/apps"
-	"promise/base"
-	"promise/student/object/entity"
-	"promise/student/controller"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 	log "github.com/sirupsen/logrus"
+	"promise/apps"
+	"promise/base"
+	"promise/student/controller"
+	"promise/student/object/entity"
+	"promise/student/service"
 )
 
 func main() {
 	apps.Init("StudentApp")
 	initDB()
 
+	studentRootController := new(controller.StudentRootController)
+	studentRootController.Service = base.Service{
+		Interface: new(service.StudentService),
+	}
 	student := beego.NewNamespace(
 		apps.RootURL+apps.StudentBaseURI,
 		beego.NSRouter("/", &base.RootController{
-			Interface: new(controller.StudentRootController),
+			Interface: studentRootController,
 		}),
 	)
 	beego.AddNamespace(student)

@@ -1,15 +1,15 @@
 package base
 
 import (
-	"promise/base"
-	wsSDK "promise/sdk/ws"
+// wsSDK "promise/sdk/event"
 )
 
 // ServiceInterface is the interface that a service should have.
 type ServiceInterface interface {
-	Post(RequestInterface) (ModelInterface, error)
-	GetDB() base.DBInterface
-	NewResponse() base.ResposneInterface
+	// Post(RequestInterface) (ModelInterface, []MessageInterface)
+	GetDB() DBInterface
+	NewResponse() ResponseInterface
+	GetEventService() EventServiceInterface
 }
 
 // Service is the service in Promise project.
@@ -18,20 +18,20 @@ type Service struct {
 }
 
 // Post is the default method to do post in service.
-func (s *Service) Post(request RequestInterface) (ModelInterface, error) {
+func (s *Service) Post(request RequestInterface) (ModelInterface, []MessageInterface) {
 	var (
-		db = s.Interface.GetDB()
-		responseDTO = s.Interface.NewResponse()
+		db       = s.Interface.GetDB()
+		response = s.Interface.NewResponse()
 	)
 
 	exist, posted, commited, err := db.Post(request.ToModel())
 	if exist {
-		return nil, []base.Message{base.NewMessageResourceDuplicate()}
+		return nil, []MessageInterface{NewMessageResourceDuplicate()}
 	}
 	if err != nil || !commited {
-		return nil, []base.Message{base.NewMessageTransactionError()}
+		return nil, []MessageInterface{NewMessageTransactionError()}
 	}
-	responseDTO.Load(posted)
-	wsSDK.DispatchResourceCreateEvent(responseDTO)
+	response.Load(posted)
+	s.Interface.GetEventService().DispatchCreateEvent(response)
 	return posted, nil
 }

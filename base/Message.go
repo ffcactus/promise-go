@@ -91,3 +91,13 @@ func (o *Message) GetSupports() []Support {
 func NewMessageInvalidRequest() MessageInterface {
 	return new(Message)
 }
+
+// NewMessageResourceDuplicate return a new message.
+func NewMessageResourceDuplicate() MessageInterface {
+	return new(Message)
+}
+
+// NewMessageTransactionError return a new message.
+func NewMessageTransactionError() MessageInterface {
+	return new(Message)
+}
