@@ -2,7 +2,6 @@ package base
 
 import (
 	log "github.com/sirupsen/logrus"
-	"promise/apps"
 )
 
 // RequestInterface is the interface that a PromiseRequest should have.
