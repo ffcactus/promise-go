@@ -1,4 +1,4 @@
-all: global auth ws task server pool
+all: student global auth ws task server pool
 
 global:
 	$(MAKE) -C global

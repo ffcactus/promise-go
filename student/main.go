@@ -1,45 +1,28 @@
 package main
 
 import (
-	"promise/common/app"
-	commonDB "promise/common/db"
-	"promise/common/object/constvalue"
-	"promise/student/controller"
+	"promise/apps"
+	"promise/base"
 	"promise/student/object/entity"
-	"promise/student/service"
-
+	"promise/student/controller"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 	log "github.com/sirupsen/logrus"
 )
 
 func main() {
-	app.Init("StudentApp")
+	apps.Init("StudentApp")
 	initDB()
 
-	// go service.FindServerStateAdded()
-
-	serverNS := beego.NewNamespace(
-		app.RootURL+constvalue.StudentBaseURI,
-		beego.NSRouter("/", &controller.ServerRootController{}),
-		beego.NSRouter("/:id", &controller.ServerController{}),
-		beego.NSRouter("/:id/action/:action", &controller.ServerActionController{}),
+	student := beego.NewNamespace(
+		apps.RootURL+apps.StudentBaseURI,
+		beego.NSRouter("/", &base.RootController{
+			Interface: new(controller.StudentRootController),
+		}),
 	)
-	beego.AddNamespace(serverNS)
+	beego.AddNamespace(student)
+	// beego.Post("/", controller.Post)
 
-	serverGroupNS := beego.NewNamespace(
-		app.RootURL+constvalue.ServerGroupBaseURI,
-		beego.NSRouter("/", &controller.ServerGroupRootController{}),
-		beego.NSRouter("/:id", &controller.ServerGroupController{}),
-	)
-	beego.AddNamespace(serverGroupNS)
-
-	serverServerGroupNS := beego.NewNamespace(
-		app.RootURL+constvalue.ServerServerGroupBaseURI,
-		beego.NSRouter("/", &controller.ServerServerGroupRootController{}),
-		beego.NSRouter("/:id", &controller.ServerServerGroupController{}),
-	)
-	beego.AddNamespace(serverServerGroupNS)
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins:  true,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
@@ -51,16 +34,16 @@ func main() {
 }
 
 func initDB() {
-	commonDB.InitConnection()
+	apps.InitConnection()
 	if recreateDB, _ := beego.AppConfig.Bool("recreate_db"); recreateDB {
 		// Remove tables.
-		if commonDB.RemoveTables(entity.Tables) {
+		if apps.RemoveTables(entity.Tables) {
 			log.Info("Remove all tables in DB done.")
 		} else {
 			log.Warn("Failed to remove all tables in DB.")
 		}
 		// Create tables.
-		if !commonDB.CreateTables(entity.Tables) {
+		if !apps.CreateTables(entity.Tables) {
 			panic("DB Initialization failed.")
 		} else {
 			log.Info("DB schema created.")
