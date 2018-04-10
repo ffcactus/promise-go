@@ -1,17 +1,20 @@
 package service
 
 import (
-	log "github.com/sirupsen/logrus"
 	"promise/base"
 	"promise/sdk/event"
 	"promise/student/db"
 	"promise/student/object/dto"
 )
 
+var (
+	StudentDB = &base.DB{
+		TemplateImpl: new(db.StudentDB),
+	}
+)
+
 // StudentService is the service for student.
 type StudentService struct {
-	// base.Service
-	DB           db.StudentDB
 	EventService event.Service
 }
 
@@ -22,8 +25,7 @@ func (s *StudentService) NewResponse() base.ResponseInterface {
 
 // GetDB returns the DB implementation.
 func (s *StudentService) GetDB() base.DBInterface {
-	log.Info("--- GetDB() in StudentService.")
-	return &s.DB
+	return StudentDB
 }
 
 // GetEventService returns the event service implementation.

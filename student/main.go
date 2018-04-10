@@ -8,21 +8,16 @@ import (
 	"promise/base"
 	"promise/student/controller"
 	"promise/student/object/entity"
-	"promise/student/service"
 )
 
 func main() {
 	apps.Init("StudentApp")
 	initDB()
 
-	studentRootController := new(controller.StudentRootController)
-	studentRootController.Service = base.Service{
-		Interface: new(service.StudentService),
-	}
 	student := beego.NewNamespace(
 		apps.RootURL+apps.StudentBaseURI,
 		beego.NSRouter("/", &base.RootController{
-			Interface: studentRootController,
+			Interface: new(controller.StudentRootController),
 		}),
 	)
 	beego.AddNamespace(student)

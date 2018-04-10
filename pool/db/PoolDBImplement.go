@@ -174,35 +174,6 @@ func (impl *PoolDBImplement) GetIPv4PoolCollection(start int64, count int64, fil
 	return &collection, nil
 }
 
-// func (impl *PoolDBImplement) GetIPv4PoolCollection(start int64, count int64, filter string) (*model.IPv4PoolCollection, error) {
-// 	var (
-// 		total      int64
-// 		collection []entity.IPv4Pool
-// 		ret        model.IPv4PoolCollection
-// 	)
-
-// 	c := commonDB.GetConnection()
-// 	c.Table("IPv4Pool").Count(&total)
-// 	if where, err := impl.convertFilter(filter); err != nil {
-// 		log.WithFields(log.Fields{
-// 			"filter": filter,
-// 			"error":  err}).
-// 			Warn("Get IPv4 pool collection in DB failed, convert filter failed.")
-// 		c.Order("\"Name\" asc").Limit(count).Offset(start).Select([]string{"\"ID\"", "\"Name\""}).Find(&collection)
-// 	} else {
-// 		log.WithFields(log.Fields{"where": where}).Debug("Convert filter success.")
-// 		c.Order("\"Name\" asc").Limit(count).Offset(start).Where(where).Select([]string{"\"ID\"", "\"Name\""}).Find(&collection)
-// 	}
-// 	ret.Start = start
-// 	ret.Count = int64(len(collection))
-// 	ret.Total = total
-// 	for _, v := range collection {
-// 		member := v.ToMember()
-// 		ret.Members = append(ret.Members, *member)
-// 	}
-// 	return &ret, nil
-// }
-
 // DeleteIPv4Pool delete the IPv4 pool by ID.
 // It will return if the one exist.
 // It will return the deleted one if commited.
@@ -236,6 +207,7 @@ func (impl *PoolDBImplement) DeleteIPv4Pool(id string) (bool, *model.IPv4Pool, b
 				log.WithFields(log.Fields{
 					"id": id}).
 					Warn("Delete IPv4 pool in DB failed, delete Addresses failed, transaction rollback.")
+					return true, nil, false, err
 			}
 		}
 		if err := tx.Delete(&i).Error; err != nil {
@@ -243,6 +215,7 @@ func (impl *PoolDBImplement) DeleteIPv4Pool(id string) (bool, *model.IPv4Pool, b
 			log.WithFields(log.Fields{
 				"id": id}).
 				Warn("Delete IPv4 pool in DB failed, delete Ranges failed, transaction rollback.")
+				return true, nil, false, err
 		}
 	}
 	if err := tx.Delete(&record).Error; err != nil {

@@ -4,10 +4,20 @@ import (
 	"time"
 )
 
+// EntityTemplateInterface is the interface that a concrete entity should have.
+type EntityTemplateInterface interface {
+	GetPropertyNameForDuplicationCheck() string
+	GetDebugName() string
+	GetPreload() []string
+	GetAssociation() []interface{}
+}
+
 // EntityInterface is the interface of a Promise entity should have.
 type EntityInterface interface {
 	GetPropertyNameForDuplicationCheck() string
 	GetDebugName() string
+	GetPreload() []string
+	GetAssociation() []interface{}
 	ToModel() ModelInterface
 	ToMember() MemberInterface
 	Load(ModelInterface) error
@@ -20,21 +30,11 @@ type EntityRefType string
 
 // Entity is the entity used in Promise project.
 type Entity struct {
-	// Interface EntityInterface
+	TemplateImpl EntityInterface
 	ID        string    `gorm:"column:ID;primary_key"`
 	Category  string    `gorm:"column:Category"`
 	CreatedAt time.Time `gorm:"column:CreatedAt"`
 	UpdatedAt time.Time `gorm:"column:UpdatedAt"`
-}
-
-// GetID return the ID.
-func (e *Entity) GetID() string {
-	return e.ID
-}
-
-// SetID set the ID.
-func (e *Entity) SetID(id string) {
-	e.ID = id
 }
 
 // EntityLoad load model to entity.
@@ -56,23 +56,3 @@ func EntityToModel(e *Entity, m *Model) {
 	m.CreatedAt = e.CreatedAt
 	m.UpdatedAt = e.UpdatedAt
 }
-
-// // ToModel change the entity to model.
-// func (e *Entity) ToModel() ModelInterface {
-// 	var m = e.Interface.NewModel()
-
-// 	m.SetID(e.ID)
-// 	m.Category = e.Category
-// 	m.CreatedAt = e.CreatedAt
-// 	m.UpdatedAt = e.UpdatedAt
-// 	return m
-// }
-
-// // ToMember change the entity to a collection member.
-// func (e *Entity) ToMember() MemberInterface {
-// 	var m Member
-
-// 	m.ID = e.ID
-// 	m.Category = e.Category
-// 	return &m
-// }

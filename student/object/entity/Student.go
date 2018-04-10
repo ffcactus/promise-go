@@ -18,6 +18,16 @@ func (Student) TableName() string {
 	return "Student"
 }
 
+// GetID return the ID.
+func (e *Student) GetID() string {
+	return e.ID
+}
+
+// SetID set the ID.
+func (e *Student) SetID(id string) {
+	e.ID = id
+}
+
 // GetDebugName return the debug name of this entity.
 func (e *Student) GetDebugName() string {
 	return e.Name
@@ -26,6 +36,16 @@ func (e *Student) GetDebugName() string {
 // GetPropertyNameForDuplicationCheck return the property name used for duplication check.
 func (e *Student) GetPropertyNameForDuplicationCheck() string {
 	return "Name"
+}
+
+// GetPreload return the property names that need to be preload.
+func (e *Student) GetPreload() []string {
+	return nil
+}
+
+// GetAssociation return all the association address that need to delete.
+func (e *Student) GetAssociation() []interface{} {
+	return nil
 }
 
 // Load will load info from model.

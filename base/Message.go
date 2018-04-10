@@ -101,3 +101,8 @@ func NewMessageResourceDuplicate() MessageInterface {
 func NewMessageTransactionError() MessageInterface {
 	return new(Message)
 }
+
+// NewMessageNotExist return a new message.
+func NewMessageNotExist() MessageInterface {
+	return new(Message)
+}

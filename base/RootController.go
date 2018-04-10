@@ -9,7 +9,6 @@ import (
 
 // RootControllerInterface is the interface that a root controller should provide.
 type RootControllerInterface interface {
-	GetResourceName() string
 	GetService() ServiceInterface
 	NewRequest() RequestInterface
 	NewResponse() ResponseInterface
