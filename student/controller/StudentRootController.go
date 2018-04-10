@@ -19,12 +19,16 @@ type StudentRootController struct {
 
 // NewRequest creates a new request DTO.
 func (c *StudentRootController) NewRequest() base.RequestInterface {
-	return new(dto.PostStudentRequest)
+	request := new(dto.PostStudentRequest)
+	request.TemplateImpl = request
+	return request
 }
 
 // NewResponse creates a new response DTO.
 func (c *StudentRootController) NewResponse() base.ResponseInterface {
-	return new(dto.GetStudentResponse)
+	response := new(dto.GetStudentResponse)
+	response.TemplateImpl = response
+	return response
 }
 
 // GetService returns the service.

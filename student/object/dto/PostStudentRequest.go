@@ -1,8 +1,8 @@
 package dto
 
 import (
-	"promise/base"
 	"promise/apps"
+	"promise/base"
 	"promise/student/object/model"
 )
 
@@ -10,7 +10,7 @@ import (
 type PostStudentRequest struct {
 	base.Request
 	Name string
-	Age int
+	Age  int
 }
 
 // GetDebugName return the name for debug.
@@ -22,5 +22,7 @@ func (dto *PostStudentRequest) GetDebugName() string {
 func (dto *PostStudentRequest) ToModel() base.ModelInterface {
 	var m model.Student
 	m.Category = apps.CategoryStudent
-	return &m	
+	m.Name = dto.Name
+	m.Age = dto.Age
+	return &m
 }

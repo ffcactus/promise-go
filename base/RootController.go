@@ -17,15 +17,15 @@ type RootControllerInterface interface {
 
 // RootController is the root controller in Promise.
 type RootController struct {
-	Interface RootControllerInterface
+	TemplateImpl RootControllerInterface
 	beego.Controller
 }
 
 // Post is the default implementation for POST method.
 func (c *RootController) Post() {
 	var (
-		request  = c.Interface.NewRequest()
-		response = c.Interface.NewResponse()
+		request  = c.TemplateImpl.NewRequest()
+		response = c.TemplateImpl.NewResponse()
 		messages []MessageInterface
 	)
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
@@ -44,8 +44,7 @@ func (c *RootController) Post() {
 	log.WithFields(log.Fields{
 		"request": request.GetDebugName(),
 	}).Info("Post resource.")
-
-	model, messages := c.Interface.GetService().Post(request)
+	model, messages := c.TemplateImpl.GetService().Post(request)
 	if messages != nil {
 		log.WithFields(log.Fields{
 			"message": messages[0].GetID(),
@@ -55,11 +54,11 @@ func (c *RootController) Post() {
 		c.ServeJSON()
 		return
 	}
+	response.Load(model)
 	log.WithFields(log.Fields{
 		"request": request.GetDebugName(),
 		"ID":      response.GetID(),
 	}).Info("Post resource done.")
-	response.Load(model)
 	c.Data["json"] = response
 	c.Ctx.Output.SetStatus(http.StatusCreated)
 	c.ServeJSON()

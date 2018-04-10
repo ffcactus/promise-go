@@ -4,7 +4,13 @@ import (
 // log "github.com/sirupsen/logrus"
 )
 
-// RequestInterface is the interface that a PromiseRequest should have.
+// RequestTemplateInterface is the interface that a concrete Request should have.
+type RequestTemplateInterface interface {
+	GetDebugName() string
+	ToModel() ModelInterface
+}
+
+// RequestInterface is the interface that  Request should have.
 type RequestInterface interface {
 	GetDebugName() string
 	ToModel() ModelInterface
@@ -12,18 +18,15 @@ type RequestInterface interface {
 
 // Request is the request DTO used in Promise project.
 type Request struct {
-	Interface RequestInterface
+	TemplateImpl RequestInterface `json:"-"`
 }
 
-// // GetDebugName return the name for debug.
-// func (dto *Request) GetDebugName() string {
-// 	log.Error("Using default Request.GetDebugName().")
-// 	return "NotProvided"
-// }
+// GetDebugName return the name for debug.
+func (dto *Request) GetDebugName() string {
+	return dto.TemplateImpl.GetDebugName()
+}
 
-// // ToModel convert the DTO to model.
-// func (dto *Request) ToModel() ModelInterface {
-// 	var m Model
-// 	log.Error("Using default Request.ToModel().")
-// 	return &m
-// }
+// ToModel convert the DTO to model.
+func (dto *Request) ToModel() ModelInterface {
+	return dto.TemplateImpl.ToModel()
+}

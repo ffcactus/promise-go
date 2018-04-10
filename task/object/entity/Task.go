@@ -9,23 +9,23 @@ import (
 // Task Task object.
 type Task struct {
 	commonEntity.PromiseEntity
-	ParentTask          *string `gorm:"column:ParentTask"`
-	MessageID           *string `gorm:"column:MessageID"`
-	Name                string `gorm:"column:Name"`
-	Description         *string `gorm:"column:Description"`
+	ParentTask          *string              `gorm:"column:ParentTask"`
+	MessageID           *string              `gorm:"column:MessageID"`
+	Name                string               `gorm:"column:Name"`
+	Description         *string              `gorm:"column:Description"`
 	ExecutionState      model.ExecutionState `gorm:"column:ExecutionState"`
-	CreatedByName       string `gorm:"column:CreatedByName"`
-	CreatedByURI        string `gorm:"column:CreatedByURI"`
-	TargetName          string `gorm:"column:TargetName"`
-	TargetURI           string `gorm:"column:TargetURI"`
-	ExpectedExecutionMs uint64 `gorm:"column:ExpectedExecutionMs"`
-	Percentage          int `gorm:"column:Percentage"`
-	CurrentStep         string `gorm:"column:CurrentStep"`
+	CreatedByName       string               `gorm:"column:CreatedByName"`
+	CreatedByURI        string               `gorm:"column:CreatedByURI"`
+	TargetName          string               `gorm:"column:TargetName"`
+	TargetURI           string               `gorm:"column:TargetURI"`
+	ExpectedExecutionMs uint64               `gorm:"column:ExpectedExecutionMs"`
+	Percentage          int                  `gorm:"column:Percentage"`
+	CurrentStep         string               `gorm:"column:CurrentStep"`
 	// Use string to represent.
-	TaskSteps           string  `gorm:"column:TaskSteps"`
-	SubTasks            []Task `gorm:"ForeignKey:ParentTask;column:SubTasks"`
+	TaskSteps string `gorm:"column:TaskSteps"`
+	SubTasks  []Task `gorm:"ForeignKey:ParentTask;column:SubTasks"`
 	// Use string to represent.
-	ExecutionResult     string  `gorm:"column:ExecutionResult"`
+	ExecutionResult string `gorm:"column:ExecutionResult"`
 }
 
 // TableName will set the table name.

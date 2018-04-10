@@ -1,8 +1,8 @@
 package db
 
 import (
-	"promise/task/object/model"
 	"promise/task/object/dto"
+	"promise/task/object/model"
 )
 
 // TaskDBInterface DB interface.

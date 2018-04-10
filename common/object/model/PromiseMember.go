@@ -8,8 +8,8 @@ type PromiseMemberInterface interface {
 
 // PromiseMember is the member in resource collection.
 type PromiseMember struct {
-	ID        string
-	Category  string
+	ID       string
+	Category string
 }
 
 // GetID return the ID.

@@ -1,15 +1,15 @@
 package dto
 
 import (
-	"promise/common/object/model"
 	"promise/common/object/constvalue"
+	"promise/common/object/model"
 )
 
 // PromiseMember is the Promise collection member in DTO.
 type PromiseMember struct {
-	ID        string    `json:"ID"`
-	URI       string    `json:"URI"`
-	Category  string    `json:"Category"`
+	ID       string `json:"ID"`
+	URI      string `json:"URI"`
+	Category string `json:"Category"`
 }
 
 // Load will load data from model.

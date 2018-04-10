@@ -1,8 +1,8 @@
 package entity
 
 import (
-	commonModel "promise/common/object/model"
 	commonEntity "promise/common/object/entity"
+	commonModel "promise/common/object/model"
 	commonUtil "promise/common/util"
 	"promise/pool/object/model"
 )

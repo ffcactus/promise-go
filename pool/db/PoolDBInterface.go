@@ -1,8 +1,8 @@
 package db
 
 import (
-	"promise/pool/object/model"
 	commonModel "promise/common/object/model"
+	"promise/pool/object/model"
 )
 
 // PoolDBInterface is the DB interface.

@@ -10,9 +10,9 @@ type PromiseCollectionInterface interface {
 
 // PromiseCollection is the resource collection.
 type PromiseCollection struct {
-	Start int64
-	Count int64
-	Total int64
+	Start   int64
+	Count   int64
+	Total   int64
 	Members []PromiseMemberInterface
 }
 
@@ -35,4 +35,3 @@ func (m *PromiseCollection) GetTotal() int64 {
 func (m *PromiseCollection) GetMembers() []PromiseMemberInterface {
 	return m.Members
 }
-

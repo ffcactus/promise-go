@@ -8,10 +8,8 @@ import (
 
 // IDControllerTemplateInterface is the interface that a concrete ID controller should provide.
 type IDControllerTemplateInterface interface {
-	GetResourceName() string
 	GetService() ServiceInterface
 	NewResponse() ResponseInterface
-	// PostCallback(request RequestInterface) (ModelInterface, []MessageInterface)
 }
 
 // IDController is the ID controller in Promise.
@@ -23,7 +21,7 @@ type IDController struct {
 // Get is the default GET method handler.
 func (c *IDController) Get() {
 	var (
-		id = c.Ctx.Input.Param(":id")
+		id       = c.Ctx.Input.Param(":id")
 		response = c.TemplateImpl.NewResponse()
 	)
 	log.WithFields(log.Fields{
@@ -32,7 +30,7 @@ func (c *IDController) Get() {
 	model, messages := c.TemplateImpl.GetService().Get(id)
 	if messages != nil {
 		log.WithFields(log.Fields{
-			"id": id, 
+			"id":      id,
 			"message": messages[0].GetID(),
 		}).Warn("Get resource failed.")
 		c.Data["json"] = messages
@@ -43,9 +41,8 @@ func (c *IDController) Get() {
 	response.Load(model)
 	c.Data["json"] = response
 	c.Ctx.Output.SetStatus(http.StatusOK)
-	c.ServeJSON()	
+	c.ServeJSON()
 }
-
 
 // Delete is the default DELETE method handler.
 func (c *IDController) Delete() {
@@ -54,7 +51,7 @@ func (c *IDController) Delete() {
 	)
 	if messages := c.TemplateImpl.GetService().Delete(id); messages != nil {
 		log.WithFields(log.Fields{
-			"id": id, 
+			"id":      id,
 			"message": messages[0].GetID(),
 		}).Warn("Delete resource failed.")
 		c.Data["json"] = messages
@@ -65,6 +62,6 @@ func (c *IDController) Delete() {
 	log.WithFields(log.Fields{
 		"id": id,
 	}).Info("Delete resource done.")
-	c.Ctx.Output.SetStatus(http.StatusAccepted)	
+	c.Ctx.Output.SetStatus(http.StatusAccepted)
 	c.ServeJSON()
 }

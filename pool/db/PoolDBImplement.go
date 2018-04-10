@@ -148,7 +148,7 @@ func (impl *PoolDBImplement) convertFilter(filter string) (string, error) {
 func (impl *PoolDBImplement) GetIPv4PoolCollection(start int64, count int64, filter string) (commonModel.PromiseCollectionInterface, error) {
 	var (
 		total      int64
-		records []entity.IPv4Pool
+		records    []entity.IPv4Pool
 		collection model.IPv4PoolCollection
 	)
 
@@ -207,7 +207,7 @@ func (impl *PoolDBImplement) DeleteIPv4Pool(id string) (bool, *model.IPv4Pool, b
 				log.WithFields(log.Fields{
 					"id": id}).
 					Warn("Delete IPv4 pool in DB failed, delete Addresses failed, transaction rollback.")
-					return true, nil, false, err
+				return true, nil, false, err
 			}
 		}
 		if err := tx.Delete(&i).Error; err != nil {
@@ -215,7 +215,7 @@ func (impl *PoolDBImplement) DeleteIPv4Pool(id string) (bool, *model.IPv4Pool, b
 			log.WithFields(log.Fields{
 				"id": id}).
 				Warn("Delete IPv4 pool in DB failed, delete Ranges failed, transaction rollback.")
-				return true, nil, false, err
+			return true, nil, false, err
 		}
 	}
 	if err := tx.Delete(&record).Error; err != nil {

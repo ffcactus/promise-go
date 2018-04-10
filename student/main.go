@@ -17,7 +17,10 @@ func main() {
 	student := beego.NewNamespace(
 		apps.RootURL+apps.StudentBaseURI,
 		beego.NSRouter("/", &base.RootController{
-			Interface: new(controller.StudentRootController),
+			TemplateImpl: new(controller.StudentRootController),
+		}),
+		beego.NSRouter("/:id", &base.IDController{
+			TemplateImpl: new(controller.StudentIDController),
 		}),
 	)
 	beego.AddNamespace(student)

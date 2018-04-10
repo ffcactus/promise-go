@@ -8,7 +8,7 @@ type MemberInterface interface {
 
 // Member is the collection member used in Promise project.
 type Member struct {
-	ID string
+	ID       string
 	Category string
 }
 

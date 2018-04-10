@@ -131,10 +131,10 @@ func (dto *UpdateTaskStepRequest) UpdateModel(m *model.Task) {
 				dto.ExecutionResult.UpdateModel(&m.TaskSteps[i].ExecutionResult)
 			}
 			percentageF := (float32)(currentTime) / (float32)(m.ExpectedExecutionMs)
-			m.Percentage = (int)((percentageF * 100) + 0.5)		
+			m.Percentage = (int)((percentageF * 100) + 0.5)
 			if m.Percentage > 100 {
 				m.Percentage = 100
-			}			
+			}
 		}
 	}
 }

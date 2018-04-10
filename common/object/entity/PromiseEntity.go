@@ -40,7 +40,7 @@ func (e *PromiseEntity) ToMember() model.PromiseMember {
 
 	ret.ID = e.ID
 	ret.Category = e.Category
-	
+
 	return ret
 }
 

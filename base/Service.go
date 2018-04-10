@@ -1,8 +1,6 @@
 package base
 
-import (
-// wsSDK "promise/sdk/event"
-)
+import ()
 
 // ServiceInterface is the interface that a service should have.
 type ServiceInterface interface {
@@ -28,9 +26,9 @@ func (s *Service) Post(request RequestInterface) (ModelInterface, []MessageInter
 	var (
 		db       = s.TemplateImpl.GetDB()
 		response = s.TemplateImpl.NewResponse()
+		model    = request.ToModel()
 	)
-
-	exist, posted, commited, err := db.Post(request.ToModel())
+	exist, posted, commited, err := db.Post(model)
 	if exist {
 		return nil, []MessageInterface{NewMessageResourceDuplicate()}
 	}
@@ -45,7 +43,7 @@ func (s *Service) Post(request RequestInterface) (ModelInterface, []MessageInter
 // Get is the default get resource implement in service.
 func (s *Service) Get(id string) (ModelInterface, []MessageInterface) {
 	var (
-		db = s.TemplateImpl.GetDB()		
+		db = s.TemplateImpl.GetDB()
 	)
 	model := db.Get(id)
 	if model == nil {
@@ -57,7 +55,7 @@ func (s *Service) Get(id string) (ModelInterface, []MessageInterface) {
 // Delete is the default delete resource implement in service.
 func (s *Service) Delete(id string) []MessageInterface {
 	var (
-		db = s.TemplateImpl.GetDB()		
+		db       = s.TemplateImpl.GetDB()
 		response = s.TemplateImpl.NewResponse()
 	)
 

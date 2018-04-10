@@ -10,9 +10,9 @@ type CollectionInterface interface {
 
 // Collection is the collection used in Promise project.
 type Collection struct {
-	Start int64
-	Count int64
-	Total int64
+	Start   int64
+	Count   int64
+	Total   int64
 	Members []MemberInterface
 }
 

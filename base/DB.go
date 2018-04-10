@@ -33,9 +33,8 @@ type DB struct {
 func (i *DB) Post(m ModelInterface) (bool, ModelInterface, bool, error) {
 	var (
 		record = i.TemplateImpl.NewEntity()
-		c = i.TemplateImpl.GetConnection()
+		c      = i.TemplateImpl.GetConnection()
 	)
-
 	tx := c.Begin()
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
@@ -58,8 +57,7 @@ func (i *DB) Post(m ModelInterface) (bool, ModelInterface, bool, error) {
 
 	record.Load(m)
 	record.SetID(uuid.New().String())
-	PrintJSON(record)
-	if err := c.Create(&record).Error; err != nil {
+	if err := c.Create(record).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"name":  m.GetDebugName(),
@@ -67,7 +65,7 @@ func (i *DB) Post(m ModelInterface) (bool, ModelInterface, bool, error) {
 		}).Warn("Post resource in DB failed, create resource failed, transaction rollback.")
 		return false, nil, false, err
 	}
-	if err := tx.Save(&record).Error; err != nil {
+	if err := tx.Save(record).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"name":  m.GetDebugName(),
@@ -85,7 +83,7 @@ func (i *DB) Post(m ModelInterface) (bool, ModelInterface, bool, error) {
 	return false, record.ToModel(), true, nil
 }
 
-// get is part of the process to get resource in DB, since many other operation 
+// get is part of the process to get resource in DB, since many other operation
 // need this process, we seperate it out.
 // It will return if the resource been found.
 // It will return error if any.
@@ -119,7 +117,7 @@ func (i *DB) get(tx *gorm.DB, id string, record EntityInterface) (bool, error) {
 func (i *DB) Get(id string) ModelInterface {
 	var (
 		record = i.TemplateImpl.NewEntity()
-		c = i.TemplateImpl.GetConnection()
+		c      = i.TemplateImpl.GetConnection()
 	)
 	tx := c.Begin()
 	if err := tx.Error; err != nil {
@@ -142,9 +140,9 @@ func (i *DB) Get(id string) ModelInterface {
 // It will return error if any.
 func (i *DB) Delete(id string) (bool, ModelInterface, bool, error) {
 	var (
-		record = i.TemplateImpl.NewEntity()
+		record   = i.TemplateImpl.NewEntity()
 		previous = i.TemplateImpl.NewEntity()
-		c = i.TemplateImpl.GetConnection()
+		c        = i.TemplateImpl.GetConnection()
 	)
 
 	if id == "" {
@@ -166,17 +164,26 @@ func (i *DB) Delete(id string) (bool, ModelInterface, bool, error) {
 		if err := tx.Delete(v).Error; err != nil {
 			tx.Rollback()
 			log.WithFields(log.Fields{
-				"id": id,
+				"id":    id,
+				"error": err,
 			}).Warn("Delete resource from DB failed, delete association failed, transaction rollback.")
 			return true, nil, false, err
 		}
+	}
+	if err := tx.Delete(record).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id":    id,
+			"error": err,
+		}).Warn("Delete resource from DB failed, delete resource failed, transaction rollback.")
+		return true, nil, false, err
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"id":    id,
 			"error": err,
 		}).Warn("Delete resource from DB failed, commit failed.")
-		return true, nil, false, err	
+		return true, nil, false, err
 	}
 	return true, previous.ToModel(), true, nil
 }

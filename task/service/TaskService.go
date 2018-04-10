@@ -12,7 +12,7 @@ import (
 // PostTask Post Task.
 func PostTask(request *dto.PostTaskRequest) (*model.Task, []commonMessage.Message) {
 	var (
-		dbImpl = db.GetDBInstance()
+		dbImpl  = db.GetDBInstance()
 		taskDTO dto.GetTaskResponse
 	)
 

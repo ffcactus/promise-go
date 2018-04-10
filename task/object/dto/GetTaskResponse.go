@@ -2,9 +2,9 @@ package dto
 
 import (
 	log "github.com/sirupsen/logrus"
-	"promise/task/object/model"
 	commonConstError "promise/common/object/consterror"
 	commonDTO "promise/common/object/dto"
+	"promise/task/object/model"
 )
 
 // GetTaskResponse Post task response DTO.

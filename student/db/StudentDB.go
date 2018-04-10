@@ -2,22 +2,20 @@ package db
 
 import (
 	"github.com/jinzhu/gorm"
-	"promise/base"
 	"promise/apps"
+	"promise/base"
 	"promise/student/object/entity"
 )
 
 // StudentDB is the DB implementation for student.
 type StudentDB struct {
-
 }
 
 // NewEntity return the a new entity.
 func (impl *StudentDB) NewEntity() base.EntityInterface {
-	// return new(entity.Student)
-	return &base.Entity{
-		TemplateImpl: new(entity.Student),
-	}
+	e := new(entity.Student)
+	e.Entity.TemplateImpl = e
+	return e
 }
 
 // GetConnection return the DB connection.

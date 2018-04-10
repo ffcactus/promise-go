@@ -1,14 +1,14 @@
 package db
 
 import (
+	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	commonDB "promise/common/db"
+	commonConstError "promise/common/object/consterror"
 	"promise/common/util"
+	"promise/task/object/dto"
 	"promise/task/object/entity"
 	"promise/task/object/model"
-	"promise/task/object/dto"
-	commonConstError "promise/common/object/consterror"
-	"github.com/google/uuid"
 	"strings"
 )
 
@@ -48,7 +48,7 @@ func (impl *TaskDBImplement) PostTask(m *model.Task) (*model.Task, error) {
 // GetTask Get Task by ID.
 func (impl *TaskDBImplement) GetTask(id string) *model.Task {
 	var (
-		record entity.Task 
+		record entity.Task
 	)
 	c := commonDB.GetConnection()
 
@@ -77,14 +77,13 @@ func (impl *TaskDBImplement) convertFilter(filter string) (string, error) {
 	}
 }
 
-
 // GetTaskCollection Get task collection
 func (impl *TaskDBImplement) GetTaskCollection(start int64, count int64, filter string) (*model.TaskCollection, error) {
 	var (
-		total int64
-		selection = []string{"\"ID\"", "\"Name\"", "\"Description\"", "\"ExecutionState\"", "\"Percentage\"", "\"ExecutionResult\""}
-		collection  []entity.Task
-		ret   model.TaskCollection
+		total      int64
+		selection  = []string{"\"ID\"", "\"Name\"", "\"Description\"", "\"ExecutionState\"", "\"Percentage\"", "\"ExecutionResult\""}
+		collection []entity.Task
+		ret        model.TaskCollection
 	)
 
 	c := commonDB.GetConnection()
@@ -99,7 +98,7 @@ func (impl *TaskDBImplement) GetTaskCollection(start int64, count int64, filter 
 		log.WithFields(log.Fields{"where": where}).Debug("Convert filter success.")
 		c.Order("\"CreatedAt\" asc").Limit(count).Offset(start).Where(where).Select(selection).Find(&collection)
 	}
-	
+
 	ret.Start = start
 	ret.Count = int64(len(collection))
 	ret.Total = total
@@ -156,10 +155,10 @@ func (impl *TaskDBImplement) UpdateTask(id string, updateRequest *dto.UpdateTask
 	if err := tx.Save(record).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
-			"id": id,
+			"id":    id,
 			"error": err}).
 			Warn("Update task in DB failed, save resource failed, transaction rollback.")
-		return true, nil, false, err		
+		return true, nil, false, err
 	}
 	return true, record.ToModel(), true, nil
 }
@@ -197,11 +196,10 @@ func (impl *TaskDBImplement) UpdateTaskStep(id string, updateRequest *dto.Update
 	if err := tx.Save(record).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
-			"id": id,
+			"id":    id,
 			"error": err}).
 			Warn("Update task step in DB failed, save resource failed, transaction rollback.")
-		return true, nil, false, err		
+		return true, nil, false, err
 	}
 	return true, record.ToModel(), true, nil
 }
-
