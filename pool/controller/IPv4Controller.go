@@ -1,12 +1,13 @@
 package controller
 
 import (
-	"github.com/astaxie/beego"
-	log "github.com/sirupsen/logrus"
 	"net/http"
 	commonDto "promise/common/object/dto"
 	dto "promise/pool/object/dto"
 	"promise/pool/service"
+
+	"github.com/astaxie/beego"
+	log "github.com/sirupsen/logrus"
 )
 
 // IPv4Controller is the IPv4 pool controller.
@@ -16,18 +17,16 @@ type IPv4Controller struct {
 
 // Get will return the IPv4 pool by ID.
 func (c *IPv4Controller) Get() {
-	var (
-		id       = c.Ctx.Input.Param(":id")
-		response dto.GetIPv4PoolResponse
-	)
+	var resp dto.GetIPv4PoolResponse
+	var id = c.Ctx.Input.Param(":id")
 	log.WithFields(log.Fields{"id": id}).Debug("Get IPv4 pool.")
 	if sg, messages := service.GetIPv4Pool(id); messages != nil {
-		log.WithFields(log.Fields{"id": id, "message": messages[0].ID}).Warn("Get IPv4 pool failed.")
 		c.Data["json"] = commonDto.MessagesToDto(messages)
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		log.WithFields(log.Fields{"id": id, "message": messages[0].ID}).Warn("Get IPv4 pool failed.")
 	} else {
-		response.Load(sg)
-		c.Data["json"] = &response
+		resp.Load(sg)
+		c.Data["json"] = &resp
 		c.Ctx.Output.SetStatus(http.StatusOK)
 	}
 	c.ServeJSON()

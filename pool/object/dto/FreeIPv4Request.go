@@ -3,8 +3,7 @@ package dto
 import (
 	"net"
 	commonDTO "promise/common/object/dto"
-	commonMessage "promise/common/object/message"
-	"promise/pool/object/message"
+	commonConstError "promise/common/object/consterror"
 )
 
 // FreeIPv4Request is the DTO to free an IP.
@@ -14,10 +13,9 @@ type FreeIPv4Request struct {
 }
 
 // Validate the request.
-func (dto *FreeIPv4Request) Validate() *commonMessage.Message {
+func (dto *FreeIPv4Request) Validate() error {
 	if net.ParseIP(dto.Address) == nil {
-		m := message.NewIPv4FormatError()
-		return &m
+		return commonConstError.ErrorDataConvert
 	}
 	return nil
 }

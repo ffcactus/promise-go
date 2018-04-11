@@ -1,7 +1,6 @@
 package db
 
 import (
-	commonModel "promise/common/object/model"
 	"promise/pool/object/model"
 )
 
@@ -9,7 +8,7 @@ import (
 type PoolDBInterface interface {
 	PostIPv4Pool(*model.IPv4Pool) (bool, *model.IPv4Pool, bool, error)
 	GetIPv4Pool(id string) *model.IPv4Pool
-	GetIPv4PoolCollection(start int64, count int64, filter string) (commonModel.PromiseCollectionInterface, error)
+	GetIPv4PoolCollection(start int, count int, filter string) (*model.IPv4PoolCollection, error)
 	DeleteIPv4Pool(id string) (bool, *model.IPv4Pool, bool, error)
 	DeleteIPv4PoolCollection() ([]model.IPv4Pool, bool, error)
 	AllocateIPv4Address(id string, key string) (exist bool, address string, pool *model.IPv4Pool, commited bool, err error)

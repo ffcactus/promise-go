@@ -3,21 +3,17 @@ package service
 import (
 	"promise/common/category"
 	commonMessage "promise/common/object/message"
-	commonModel "promise/common/object/model"
 	"promise/pool/db"
-	"promise/pool/object/consterror"
 	"promise/pool/object/dto"
 	"promise/pool/object/message"
+	"promise/pool/object/consterror"
 	"promise/pool/object/model"
 	wsSDK "promise/sdk/ws"
 )
 
 // PostIPv4Pool post a IPv4 pool.
 func PostIPv4Pool(request *dto.PostIPv4PoolRequest) (*model.IPv4Pool, []commonMessage.Message) {
-	var (
-		dbImpl  = db.GetPoolDB()
-		poolDTO dto.GetIPv4PoolResponse
-	)
+	dbImpl := db.GetPoolDB()
 
 	exist, posted, commited, err := dbImpl.PostIPv4Pool(request.ToModel())
 	if exist {
@@ -26,6 +22,7 @@ func PostIPv4Pool(request *dto.PostIPv4PoolRequest) (*model.IPv4Pool, []commonMe
 	if err != nil || !commited {
 		return nil, []commonMessage.Message{commonMessage.NewTransactionError()}
 	}
+	var poolDTO dto.GetIPv4PoolResponse
 	poolDTO.Load(posted)
 	wsSDK.DispatchResourceCreateEvent(&poolDTO)
 	return posted, nil
@@ -43,7 +40,7 @@ func GetIPv4Pool(id string) (*model.IPv4Pool, []commonMessage.Message) {
 }
 
 // GetIPv4PoolCollection will get IPv4 pool collection.
-func GetIPv4PoolCollection(start int64, count int64, filter string) (commonModel.PromiseCollectionInterface, []commonMessage.Message) {
+func GetIPv4PoolCollection(start int, count int, filter string) (*model.IPv4PoolCollection, []commonMessage.Message) {
 	dbImpl := db.GetPoolDB()
 	ret, err := dbImpl.GetIPv4PoolCollection(start, count, filter)
 	if err != nil {

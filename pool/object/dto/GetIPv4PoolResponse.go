@@ -2,7 +2,7 @@ package dto
 
 import (
 	log "github.com/sirupsen/logrus"
-	commonConstError "promise/common/object/consterror"
+	"promise/common/object/consterror"
 	commonDTO "promise/common/object/dto"
 	"promise/pool/object/model"
 )
@@ -11,10 +11,10 @@ import (
 type GetIPv4PoolResponse struct {
 	commonDTO.PromiseResponse
 	IPv4PoolResource
-	Ranges      []IPv4RangeResponse `json:"Ranges"`
-	Total       uint32              `json:"Total"`
-	Free        uint32              `json:"Free"`
-	Allocatable uint32              `json:"Allocatable"`
+	Ranges []IPv4RangeResponse `json:"Ranges"`
+	Total uint32 `json:"Total"`
+	Free uint32 `json:"Free"`
+	Allocatable uint32 `json:"Allocatable"`
 }
 
 // Load the data from model.
@@ -22,7 +22,7 @@ func (dto *GetIPv4PoolResponse) Load(data interface{}) error {
 	m, ok := data.(*model.IPv4Pool)
 	if !ok {
 		log.Warn("GetIPv4PoolResponse load data from model failed.")
-		return commonConstError.ErrorDataConvert
+		return consterror.ErrorDataConvert
 	}
 	dto.PromiseResponse.Load(&m.PromiseModel)
 	dto.Name = m.Name

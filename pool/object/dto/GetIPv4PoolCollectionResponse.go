@@ -1,10 +1,7 @@
 package dto
 
 import (
-	log "github.com/sirupsen/logrus"
-	commonConstError "promise/common/object/consterror"
 	"promise/common/object/constvalue"
-	commonModel "promise/common/object/model"
 	"promise/pool/object/model"
 )
 
@@ -15,39 +12,33 @@ type IPv4PoolMember struct {
 	Name string `json:"Name"`
 }
 
-// Load will load from model.
-func (dto *IPv4PoolMember) Load(i commonModel.PromiseMemberInterface) error {
-	m, ok := i.(*model.IPv4PoolMember)
-	if !ok {
-		log.WithFields(log.Fields{
-			"from": "PromiseMemberInterface",
-			"to":   "IPv4PoolMember",
-		}).Fatal("Data convert error!")
-		return commonConstError.ErrorDataConvert
-	}
-	dto.ID = m.ID
-	dto.URI = constvalue.ToIDPoolIPv4URI(m.ID)
-	dto.Name = m.Name
-	return nil
-}
-
 // GetIPv4PoolCollectionResponse is the DTO.
 type GetIPv4PoolCollectionResponse struct {
-	Start   int64            `json:"Start"`
-	Count   int64            `json:"Count"`
-	Total   int64            `json:"Total"`
-	Members []IPv4PoolMember `json:"Members"`
+	Start       int              `json:"Start"`
+	Count       int              `json:"Count"`
+	Total       int              `json:"Total"`
+	Members     []IPv4PoolMember `json:"Members"`
+	NextPageURI *string          `json:"NextPageURI,omitempty"`
+	PrevPageURI *string          `json:"PrevPageURI,omitempty"`
 }
 
 // Load will load from model.
-func (dto *GetIPv4PoolCollectionResponse) Load(m commonModel.PromiseCollectionInterface) {
-	dto.Start = m.GetStart()
-	dto.Count = m.GetCount()
-	dto.Total = m.GetTotal()
+func (dto *GetIPv4PoolCollectionResponse) Load(m *model.IPv4PoolCollection) {
+	dto.Start = m.Start
+	dto.Count = m.Count
+	dto.Total = m.Total
 	dto.Members = make([]IPv4PoolMember, 0)
-	for _, v := range m.GetMembers() {
-		member := IPv4PoolMember{}
-		member.Load(v)
-		dto.Members = append(dto.Members, member)
+	for i := range m.Members {
+		dto.Members = append(dto.Members, IPv4PoolMember{
+			URI:  constvalue.ToIDPoolIPv4URI(m.Members[i].ID),
+			ID:   m.Members[i].ID,
+			Name: m.Members[i].Name,
+		})
+	}
+	if m.NextPageURI != "" {
+		dto.NextPageURI = &m.NextPageURI
+	}
+	if m.PrevPageURI != "" {
+		dto.PrevPageURI = &m.PrevPageURI
 	}
 }

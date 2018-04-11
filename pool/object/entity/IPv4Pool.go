@@ -1,8 +1,8 @@
 package entity
 
 import (
+	"promise/common/object/entity"
 	commonEntity "promise/common/object/entity"
-	commonModel "promise/common/object/model"
 	commonUtil "promise/common/util"
 	"promise/pool/object/model"
 )
@@ -40,7 +40,7 @@ func (IPv4Range) TableName() string {
 
 // IPv4Pool is the entity.
 type IPv4Pool struct {
-	commonEntity.PromiseEntity
+	entity.PromiseEntity
 	Name        string      `gorm:"column:Name"`
 	Description *string     `gorm:"column:Description"`
 	SubnetMask  *string     `gorm:"column:SubnetMask"`
@@ -98,15 +98,6 @@ func (e *IPv4Pool) ToModel() *model.IPv4Pool {
 	}
 
 	return m
-}
-
-// ToMember change the entity to a collection member.
-func (e *IPv4Pool) ToMember() commonModel.PromiseMemberInterface {
-	m := model.IPv4PoolMember{}
-	m.ID = e.ID
-	m.Category = e.Category
-	m.Name = e.Name
-	return &m
 }
 
 // Load will load data from model. this function is used on POST.

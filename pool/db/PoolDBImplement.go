@@ -6,8 +6,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	commonDB "promise/common/db"
 	commonConstError "promise/common/object/consterror"
-	//commonEntity "promise/common/object/entity"
-	commonModel "promise/common/object/model"
 	"promise/pool/object/consterror"
 	"promise/pool/object/entity"
 	"promise/pool/object/model"
@@ -34,9 +32,7 @@ func GetPoolDB() PoolDBInterface {
 // It will return if the transaction commited.
 // It will return error if any.
 func (impl *PoolDBImplement) PostIPv4Pool(m *model.IPv4Pool) (bool, *model.IPv4Pool, bool, error) {
-	var (
-		record entity.IPv4Pool
-	)
+	var record entity.IPv4Pool
 
 	c := commonDB.GetConnection()
 	tx := c.Begin()
@@ -92,7 +88,7 @@ func (impl *PoolDBImplement) getIPv4Pool(tx *gorm.DB, id string, record *entity.
 		log.WithFields(log.Fields{
 			"id": id}).
 			Warn("Get IPv4 Pool failed, resource does not exist, transaction rollback.")
-		return false, commonConstError.ErrorResourceNotExist
+		return false, nil
 	}
 
 	if err := tx.Where("\"ID\" = ?", id).Preload("Ranges").Preload("Ranges.Addresses").First(record).Error; err != nil {
@@ -108,11 +104,9 @@ func (impl *PoolDBImplement) getIPv4Pool(tx *gorm.DB, id string, record *entity.
 
 // GetIPv4Pool get the IPv4 pool by ID.
 func (impl *PoolDBImplement) GetIPv4Pool(id string) *model.IPv4Pool {
-	var (
-		record entity.IPv4Pool
-	)
-
+	var record entity.IPv4Pool
 	c := commonDB.GetConnection()
+
 	tx := c.Begin()
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
@@ -145,11 +139,11 @@ func (impl *PoolDBImplement) convertFilter(filter string) (string, error) {
 }
 
 // GetIPv4PoolCollection Get IPv4 pool collection by start and count.
-func (impl *PoolDBImplement) GetIPv4PoolCollection(start int64, count int64, filter string) (commonModel.PromiseCollectionInterface, error) {
+func (impl *PoolDBImplement) GetIPv4PoolCollection(start int, count int, filter string) (*model.IPv4PoolCollection, error) {
 	var (
-		total      int64
-		records    []entity.IPv4Pool
-		collection model.IPv4PoolCollection
+		total      int
+		collection []entity.IPv4Pool
+		ret        = new(model.IPv4PoolCollection)
 	)
 
 	c := commonDB.GetConnection()
@@ -158,20 +152,22 @@ func (impl *PoolDBImplement) GetIPv4PoolCollection(start int64, count int64, fil
 		log.WithFields(log.Fields{
 			"filter": filter,
 			"error":  err}).
-			Warn("Get IPv4 pool collection in DB failed, convert filter failed.")
-		c.Order("\"Name\" asc").Limit(count).Offset(start).Select([]string{"\"ID\"", "\"Name\""}).Find(&records)
+			Warn("Get IPv4 pool in DB failed, convert filter failed.")
+		c.Order("\"Name\" asc").Limit(count).Offset(start).Select([]string{"\"ID\"", "\"Category\"", "\"Name\""}).Find(&collection)
 	} else {
 		log.WithFields(log.Fields{"where": where}).Debug("Convert filter success.")
-		c.Order("\"Name\" asc").Limit(count).Offset(start).Where(where).Select([]string{"\"ID\"", "\"Name\""}).Find(&records)
+		c.Order("\"Name\" asc").Limit(count).Offset(start).Where(where).Select([]string{"\"ID\"", "\"Category\"", "\"Name\""}).Find(&collection)
 	}
-	collection.Start = start
-	collection.Count = int64(len(records))
-	collection.Total = total
-	for _, v := range records {
-		member := v.ToMember()
-		collection.Members = append(collection.Members, member)
+	ret.Start = start
+	ret.Count = len(collection)
+	ret.Total = total
+	for _, v := range collection {
+		ret.Members = append(ret.Members, model.IPv4PoolMember{
+			ID:   v.ID,
+			Name: v.Name,
+		})
 	}
-	return &collection, nil
+	return ret, nil
 }
 
 // DeleteIPv4Pool delete the IPv4 pool by ID.
@@ -207,7 +203,6 @@ func (impl *PoolDBImplement) DeleteIPv4Pool(id string) (bool, *model.IPv4Pool, b
 				log.WithFields(log.Fields{
 					"id": id}).
 					Warn("Delete IPv4 pool in DB failed, delete Addresses failed, transaction rollback.")
-				return true, nil, false, err
 			}
 		}
 		if err := tx.Delete(&i).Error; err != nil {
@@ -215,7 +210,6 @@ func (impl *PoolDBImplement) DeleteIPv4Pool(id string) (bool, *model.IPv4Pool, b
 			log.WithFields(log.Fields{
 				"id": id}).
 				Warn("Delete IPv4 pool in DB failed, delete Ranges failed, transaction rollback.")
-			return true, nil, false, err
 		}
 	}
 	if err := tx.Delete(&record).Error; err != nil {

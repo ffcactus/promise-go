@@ -4,10 +4,10 @@ import (
 	"net"
 	"promise/common/category"
 	commonDTO "promise/common/object/dto"
-	commonMessage "promise/common/object/message"
-	"promise/pool/object/message"
+	commonConstError "promise/common/object/consterror"
 	"promise/pool/object/model"
 	"promise/pool/util"
+	"promise/pool/object/consterror"
 )
 
 // PostIPv4PoolRequest is the request DTO.
@@ -18,50 +18,41 @@ type PostIPv4PoolRequest struct {
 }
 
 // Validate the request.
-func (dto *PostIPv4PoolRequest) Validate() *commonMessage.Message {
+func (dto *PostIPv4PoolRequest) Validate() error {
 	if dto.SubnetMask != nil && net.ParseIP(*dto.SubnetMask) == nil {
-		m := message.NewIPv4FormatError()
-		return &m
+		return commonConstError.ErrorDataConvert
 	}
 	if dto.Gateway != nil && net.ParseIP(*dto.Gateway) == nil {
-		m := message.NewIPv4FormatError()
-		return &m
+		return commonConstError.ErrorDataConvert
 	}
 	if dto.SubnetMask != nil && net.ParseIP(*dto.SubnetMask) == nil {
-		m := message.NewIPv4FormatError()
-		return &m
+		return commonConstError.ErrorDataConvert
 	}
 	if dto.DNSServers != nil {
 		for _, v := range *dto.DNSServers {
 			if net.ParseIP(v) == nil {
-				m := message.NewIPv4FormatError()
-				return &m
+				return commonConstError.ErrorDataConvert
 			}
 		}
 	}
 
 	if len(dto.Ranges) == 0 {
-		m := message.NewIPv4RangeCountError()
-		return &m
+		return consterror.ErrorRangeCount;
 	}
 	for _, v := range dto.Ranges {
 		start := net.ParseIP(v.Start)
 		end := net.ParseIP(v.End)
 		if start == nil {
-			m := message.NewIPv4FormatError()
-			return &m
+			return commonConstError.ErrorDataConvert
 		}
 		if end == nil {
-			m := message.NewIPv4FormatError()
-			return &m
+			return commonConstError.ErrorDataConvert
 		}
 		if util.IPtoInt(start) > util.IPtoInt(end) {
-			m := message.NewIPv4RangeEndAddressError()
-			return &m
+			return consterror.ErrorRangeEndAddress
 		}
 		if util.IPtoInt(end)-util.IPtoInt(start)+1 > 256 {
-			m := message.NewIPv4RangeSizeError()
-			return &m
+			return consterror.ErrorRangeSize
 		}
 	}
 	return nil
