@@ -11,6 +11,7 @@ type Student struct {
 	base.Entity
 	Name string `gorm:"column:Name"`
 	Age  int    `gorm:"column:Age"`
+	Phones []Phone `gorm:"column:Phones;ForeignKey:StudentRef"`
 }
 
 // TableName will set the table name.
@@ -40,12 +41,16 @@ func (e *Student) GetPropertyNameForDuplicationCheck() string {
 
 // GetPreload return the property names that need to be preload.
 func (e *Student) GetPreload() []string {
-	return nil
+	return []string{"Phones"}
 }
 
 // GetAssociation return all the association address that need to delete.
 func (e *Student) GetAssociation() []interface{} {
-	return nil
+	association := []interface{}{}
+	for _, v := range e.Phones {
+		association = append(association, &v)
+	}
+	return association
 }
 
 // Load will load info from model.
@@ -58,6 +63,11 @@ func (e *Student) Load(i base.ModelInterface) error {
 	base.EntityLoad(&e.Entity, &m.Model)
 	e.Name = m.Name
 	e.Age = m.Age
+	for _, v := range m.Phones {
+		phone := Phone{}
+		phone.Load(&v)
+		e.Phones = append(e.Phones, phone)
+	}
 	return nil
 }
 
@@ -67,6 +77,10 @@ func (e *Student) ToModel() base.ModelInterface {
 	base.EntityToModel(&e.Entity, &m.Model)
 	m.Name = e.Name
 	m.Age = e.Age
+	for _, v := range e.Phones {
+		phone := v.ToModel()
+		m.Phones = append(m.Phones, *phone)
+	}
 	return m
 }
 

@@ -21,7 +21,7 @@ type EntityInterface interface {
 	GetPreload() []string
 	GetAssociation() []interface{}
 	ToModel() ModelInterface
-	ToMember() MemberInterface
+	ToMember() MemberModelInterface
 	Load(ModelInterface) error
 	GetID() string
 	SetID(string)
@@ -85,7 +85,7 @@ func (e *Entity) ToModel() ModelInterface {
 }
 
 // ToMember convert the entity to member.
-func (e *Entity) ToMember() MemberInterface {
+func (e *Entity) ToMember() MemberModelInterface {
 	return e.TemplateImpl.ToMember()
 }
 
@@ -96,7 +96,7 @@ func EntityLoad(e *Entity, m *Model) {
 }
 
 // EntityToMember convert entity to member.
-func EntityToMember(e *Entity, m *Member) {
+func EntityToMember(e *Entity, m *MemberModel) {
 	m.ID = e.ID
 	m.Category = e.Category
 }
@@ -107,4 +107,35 @@ func EntityToModel(e *Entity, m *Model) {
 	m.Category = e.Category
 	m.CreatedAt = e.CreatedAt
 	m.UpdatedAt = e.UpdatedAt
+}
+
+// ElementEntityRefType is the type to define a ref to ArrayElement.
+type ElementEntityRefType uint64
+
+// ElementEntityInterface is the interface that ElementEntity should have.
+type ElementEntityInterface interface {
+	TableName() string
+	ToModel() interface{}
+	Load(p interface{}) error
+}
+
+// ElementEntity represents an element in an array in entity.
+type ElementEntity struct {
+	TemplateImpl ElementEntityInterface `gorm:"-" json:"-"`
+	ID uint64 `gorm:"column:ID;primary_key"`
+}
+
+// TableName will set the table name.
+func (e *ElementEntity) TableName() string {
+	return e.TemplateImpl.TableName()
+}
+
+// ToModel convert the entity to model.
+func (e *ElementEntity) ToModel() interface{} {
+	return e.TemplateImpl.ToModel()
+}
+
+// Load will load info from model.
+func (e *ElementEntity) Load(p interface{}) error {
+	return e.TemplateImpl.Load(p)
 }

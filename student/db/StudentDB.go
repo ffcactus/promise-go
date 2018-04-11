@@ -18,6 +18,11 @@ func (impl *StudentDB) NewEntity() base.EntityInterface {
 	return e
 }
 
+// NewEntityCollection return a collection of entity.
+func (impl *StudentDB) NewEntityCollection() []base.EntityInterface {
+	return []entity.Student
+}
+
 // GetConnection return the DB connection.
 func (impl *StudentDB) GetConnection() *gorm.DB {
 	return apps.GetConnection()

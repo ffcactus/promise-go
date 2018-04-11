@@ -31,6 +31,13 @@ func (c *StudentRootController) NewResponse() base.ResponseInterface {
 	return response
 }
 
+// NewCollectionResponse creates a new response collection DTO.
+func (c *StudentRootController) NewCollectionResponse() base.CollectionResponseInterface {
+	collection := new(dto.GetStudentCollectionResponse)
+	collection.TemplateImpl = collection
+	return collection
+}
+
 // GetService returns the service.
 func (c *StudentRootController) GetService() base.ServiceInterface {
 	return StudentService

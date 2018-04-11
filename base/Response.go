@@ -80,3 +80,64 @@ func ResponseLoad(dto *Response, m *Model) {
 	dto.CreatedAt = m.CreatedAt
 	dto.UpdatedAt = m.UpdatedAt
 }
+
+// MemberResponseTemplateInterface is the interface that a concrete one should have.
+type MemberResponseTemplateInterface interface {
+	Load(interface{}) error
+}
+
+// MemberResponseInterface is the interface that a member response should have.
+type MemberResponseInterface interface {
+	Load(interface{}) error
+}
+
+// MemberResponse is the a DTO in response.
+type MemberResponse struct {
+	TemplateImpl MemberResponseTemplateInterface `json:"-"`
+	ID           string                    `json:"ID"`
+	URI          string                    `json:"URI"`
+	Category     string                    `json:"Category"`
+}
+
+// Load the data from model.
+func (dto *MemberResponse) Load(i MemberModelInterface) error {
+	return dto.TemplateImpl.Load(i)
+}
+
+// CollectionResponseTemplateInterface is the interface that 
+// a concrete collection response should have.
+type CollectionResponseTemplateInterface interface {
+	Load([]MemberModelInterface) error
+	NewMemberResponse() MemberResponseInterface
+}
+
+// CollectionResponseInterface is the interface that a collection
+// response should have.
+// type CollectionResponseInterface interface {
+// 	Load([]MemberModelInterface) error
+// 	SetStart(int64)
+// 	SetCount(int64)
+// 	SetTotal(int64)
+// }
+
+// CollectionResponse is the collection response DTO in Promise project.
+type CollectionResponse struct {
+	TemplateImpl CollectionResponseTemplateInterface
+	Start       int64              `json:"Start"`
+	Count       int64              `json:"Count"`
+	Total       int64              `json:"Total"`
+	Members		[]MemberResponseInterface `json:"Members"`
+}
+
+// Load data from model.
+func (dto *CollectionResponse) Load(m *CollectionModel) error {
+	dto.Start = m.Start
+	dto.Count = m.Count
+	dto.Total = m.Total
+	for _, v := range m.Members {
+		vv := dto.TemplateImpl.NewMemberResponse()
+		vv.Load(v)
+		dto.Members = append(dto.Members, vv)
+	}
+	return nil
+}
