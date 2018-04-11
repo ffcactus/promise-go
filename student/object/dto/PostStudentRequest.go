@@ -9,8 +9,8 @@ import (
 // PostStudentRequest is the DTO to post a student.
 type PostStudentRequest struct {
 	base.Request
-	Name string `json:"Name"`
-	Age  int `json:"Age"`
+	Name   string  `json:"Name"`
+	Age    int     `json:"Age"`
 	Phones []Phone `json:"Phones"`
 }
 
@@ -27,7 +27,7 @@ func (dto *PostStudentRequest) ToModel() base.ModelInterface {
 	m.Age = dto.Age
 	for _, v := range dto.Phones {
 		phone := v.ToModel()
-		m.Phones = append(m.Phones, *phone) 
+		m.Phones = append(m.Phones, *phone)
 	}
 	return &m
 }

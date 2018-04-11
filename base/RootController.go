@@ -13,7 +13,8 @@ type RootControllerInterface interface {
 	GetService() ServiceInterface
 	NewRequest() RequestInterface
 	NewResponse() ResponseInterface
-	NewCollectionResponse() CollectionResponse
+	// NewCollectionResponse() *CollectionResponse
+	ConvertCollectionModel(*CollectionModel) (interface{}, error)
 	// PostCallback(request RequestInterface) (ModelInterface, []MessageInterface)
 }
 
@@ -69,13 +70,12 @@ func (c *RootController) Post() {
 // Get is the default implementation for GET method.
 func (c *RootController) Get() {
 	var (
-		response = c.TemplateImpl.NewCollectionResponse()
 		start, count, filter string = c.GetString("start"), c.GetString("count"), c.GetString("$filter")
-		startInt, countInt   int64    = 0, -1
+		startInt, countInt   int64  = 0, -1
 		parameterError       bool
 	)
 	log.WithFields(log.Fields{
-		"start": start, 
+		"start": start,
 		"count": count,
 	}).Debug("Get resource collection.")
 	if start != "" {
@@ -109,8 +109,9 @@ func (c *RootController) Get() {
 		c.Ctx.Output.SetStatus(messages[0].GetStatusCode())
 		c.ServeJSON()
 		return
-	} 
-	if collection, messages := c.TemplateImpl.GetService().GetCollection(startInt, countInt, filter); messages != nil {
+	}
+	collection, messages := c.TemplateImpl.GetService().GetCollection(startInt, countInt, filter)
+	if messages != nil {
 		log.WithFields(log.Fields{
 			"message": messages[0].GetID(),
 		}).Warn("Get resource collection failed.")
@@ -119,7 +120,19 @@ func (c *RootController) Get() {
 		c.ServeJSON()
 		return
 	}
-	response.Load(collection)
+	response, err := c.TemplateImpl.ConvertCollectionModel(collection)
+	if err != nil {
+		messages := []MessageInterface{NewMessageTransactionError()}
+		log.WithFields(log.Fields{
+			"message": messages[0].GetID(),
+			"error":   err,
+		}).Warn("Convert resource collection response failed.")
+		c.Data["json"] = messages
+		c.Ctx.Output.SetStatus(messages[0].GetStatusCode())
+		c.ServeJSON()
+		return
+	}
+	log.Info("Get resource collection done.")
 	c.Data["json"] = response
 	c.Ctx.Output.SetStatus(http.StatusOK)
 	c.ServeJSON()

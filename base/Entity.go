@@ -21,7 +21,7 @@ type EntityInterface interface {
 	GetPreload() []string
 	GetAssociation() []interface{}
 	ToModel() ModelInterface
-	ToMember() MemberModelInterface
+	ToCollectionMember() CollectionMemberModelInterface
 	Load(ModelInterface) error
 	GetID() string
 	SetID(string)
@@ -84,9 +84,9 @@ func (e *Entity) ToModel() ModelInterface {
 	return e.TemplateImpl.ToModel()
 }
 
-// ToMember convert the entity to member.
-func (e *Entity) ToMember() MemberModelInterface {
-	return e.TemplateImpl.ToMember()
+// ToCollectionMember convert the entity to member.
+func (e *Entity) ToCollectionMember() CollectionMemberModelInterface {
+	return e.TemplateImpl.ToCollectionMember()
 }
 
 // EntityLoad load model to entity.
@@ -96,7 +96,7 @@ func EntityLoad(e *Entity, m *Model) {
 }
 
 // EntityToMember convert entity to member.
-func EntityToMember(e *Entity, m *MemberModel) {
+func EntityToMember(e *Entity, m *CollectionMemberModel) {
 	m.ID = e.ID
 	m.Category = e.Category
 }
@@ -122,7 +122,7 @@ type ElementEntityInterface interface {
 // ElementEntity represents an element in an array in entity.
 type ElementEntity struct {
 	TemplateImpl ElementEntityInterface `gorm:"-" json:"-"`
-	ID uint64 `gorm:"column:ID;primary_key"`
+	ID           uint64                 `gorm:"column:ID;primary_key"`
 }
 
 // TableName will set the table name.

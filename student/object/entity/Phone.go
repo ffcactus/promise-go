@@ -7,9 +7,9 @@ import (
 
 // Phone is the phone entity.
 type Phone struct {
-	base.EntityElement
+	base.ElementEntity
 	StudentRef base.EntityRefType `gorm:"column:StudentRef"`
-	Number string `gorm:"column:Number"`
+	Number     string             `gorm:"column:Number"`
 }
 
 // TableName will set the table name.

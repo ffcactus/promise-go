@@ -2,8 +2,8 @@ package dto
 
 import (
 	"net"
-	commonDTO "promise/common/object/dto"
 	commonConstError "promise/common/object/consterror"
+	commonDTO "promise/common/object/dto"
 )
 
 // FreeIPv4Request is the DTO to free an IP.

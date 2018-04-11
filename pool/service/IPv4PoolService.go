@@ -4,9 +4,9 @@ import (
 	"promise/common/category"
 	commonMessage "promise/common/object/message"
 	"promise/pool/db"
+	"promise/pool/object/consterror"
 	"promise/pool/object/dto"
 	"promise/pool/object/message"
-	"promise/pool/object/consterror"
 	"promise/pool/object/model"
 	wsSDK "promise/sdk/ws"
 )

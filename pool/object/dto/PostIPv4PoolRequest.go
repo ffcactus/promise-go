@@ -3,11 +3,11 @@ package dto
 import (
 	"net"
 	"promise/common/category"
-	commonDTO "promise/common/object/dto"
 	commonConstError "promise/common/object/consterror"
+	commonDTO "promise/common/object/dto"
+	"promise/pool/object/consterror"
 	"promise/pool/object/model"
 	"promise/pool/util"
-	"promise/pool/object/consterror"
 )
 
 // PostIPv4PoolRequest is the request DTO.
@@ -37,7 +37,7 @@ func (dto *PostIPv4PoolRequest) Validate() error {
 	}
 
 	if len(dto.Ranges) == 0 {
-		return consterror.ErrorRangeCount;
+		return consterror.ErrorRangeCount
 	}
 	for _, v := range dto.Ranges {
 		start := net.ParseIP(v.Start)

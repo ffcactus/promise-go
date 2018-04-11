@@ -7,8 +7,8 @@ import (
 // Student is the model used in student project.
 type Student struct {
 	base.Model
-	Name string
-	Age  int
+	Name   string
+	Age    int
 	Phones []Phone
 }
 
@@ -22,9 +22,9 @@ func (m *Student) GetValueForDuplicationCheck() string {
 	return m.Name
 }
 
-// StudentMember is the member in student collection.
-type StudentMember struct {
-	base.MemberModel
+// StudentCollectionMember is the member in student collection.
+type StudentCollectionMember struct {
+	base.CollectionMemberModel
 	Name string
 }
 
@@ -34,6 +34,6 @@ type StudentCollection struct {
 }
 
 // NewModelMember return a new ModelMember
-type (m *StudentCollection) NewModelMember() interface{} {
-	return new(StudentMember)
+func (m *StudentCollection) NewModelMember() interface{} {
+	return new(StudentCollectionMember)
 }

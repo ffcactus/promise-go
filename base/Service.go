@@ -7,7 +7,7 @@ type ServiceInterface interface {
 	Post(RequestInterface) (ModelInterface, []MessageInterface)
 	Get(id string) (ModelInterface, []MessageInterface)
 	Delete(id string) []MessageInterface
-	GetCollection(start int64, count int64, filter string) (CollectionModel, []MessageInterface)
+	GetCollection(start int64, count int64, filter string) (*CollectionModel, []MessageInterface)
 }
 
 // ServiceTemplateInterface is the interface that a concrete service should have.
@@ -73,9 +73,13 @@ func (s *Service) Delete(id string) []MessageInterface {
 }
 
 // GetCollection is the default get collection implement in service.
-func (s *Service) GetCollection(start int64, count int64, filter string) (CollectionModel, []MessageInterface) {
+func (s *Service) GetCollection(start int64, count int64, filter string) (*CollectionModel, []MessageInterface) {
 	var (
-		db       = s.TemplateImpl.GetDB()
-		response = s.TemplateImpl.NewCollectionResponse()
+		db = s.TemplateImpl.GetDB()
 	)
+	collection, err := db.GetCollection(start, count, filter)
+	if err != nil {
+		return nil, []MessageInterface{NewMessageTransactionError()}
+	}
+	return collection, nil
 }

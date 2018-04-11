@@ -9,8 +9,8 @@ import (
 // Student is the entity of student.
 type Student struct {
 	base.Entity
-	Name string `gorm:"column:Name"`
-	Age  int    `gorm:"column:Age"`
+	Name   string  `gorm:"column:Name"`
+	Age    int     `gorm:"column:Age"`
 	Phones []Phone `gorm:"column:Phones;ForeignKey:StudentRef"`
 }
 
@@ -84,10 +84,10 @@ func (e *Student) ToModel() base.ModelInterface {
 	return m
 }
 
-// ToMember convert the entity to member.
-func (e *Student) ToMember() base.MemberInterface {
-	m := new(model.StudentMember)
-	base.EntityToMember(&e.Entity, &m.Member)
+// ToCollectionMember convert the entity to member.
+func (e *Student) ToCollectionMember() base.CollectionMemberModelInterface {
+	m := new(model.StudentCollectionMember)
+	base.EntityToMember(&e.Entity, &m.CollectionMemberModel)
 	m.Name = e.Name
 	return m
 }

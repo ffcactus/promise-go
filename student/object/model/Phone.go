@@ -6,6 +6,6 @@ import (
 
 // Phone is the phone model.
 type Phone struct {
-	base.ModelMember
+	base.SubModel
 	Number string
 }

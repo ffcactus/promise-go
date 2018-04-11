@@ -9,8 +9,8 @@ import (
 // GetStudentResponse is the DTO of get student response.
 type GetStudentResponse struct {
 	base.Response
-	Name string
-	Age  int
+	Name   string
+	Age    int
 	Phones []PhoneResponse
 }
 

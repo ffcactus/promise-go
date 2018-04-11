@@ -5,12 +5,12 @@ import (
 	"github.com/astaxie/beego"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	commonConstError "promise/common/object/consterror"
 	commonDto "promise/common/object/dto"
 	commonMessage "promise/common/object/message"
-	commonConstError "promise/common/object/consterror"
-	"promise/pool/object/message"	
 	"promise/pool/object/constvalue"
 	"promise/pool/object/dto"
+	"promise/pool/object/message"
 	"promise/pool/service"
 	"strings"
 )
@@ -93,16 +93,16 @@ func (c *IPv4ActionController) Post() {
 			c.ServeJSON()
 			return
 		}
-		if err := request.Validate(); err != nil  {
+		if err := request.Validate(); err != nil {
 			messages := []commonMessage.Message{}
 			switch err.Error() {
 			case commonConstError.ErrorDataConvert.Error():
 				messages = append(messages, message.NewIPv4FormatError())
-				break;	
+				break
 			default:
 				messages = append(messages, commonMessage.NewInvalidRequest())
-				break;
-			}						
+				break
+			}
 			log.WithFields(log.Fields{
 				"message": messages[0].ID}).
 				Warn("Free IPv4 failed, invalid request.")

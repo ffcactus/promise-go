@@ -5,12 +5,12 @@ import (
 	"github.com/astaxie/beego"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	commonConstError "promise/common/object/consterror"
 	commonDto "promise/common/object/dto"
 	commonMessage "promise/common/object/message"
-	commonConstError "promise/common/object/consterror"
 	"promise/pool/object/consterror"
-	"promise/pool/object/message"
 	"promise/pool/object/dto"
+	"promise/pool/object/message"
 	"promise/pool/service"
 	"strconv"
 )
@@ -45,18 +45,18 @@ func (c *IPv4RootController) Post() {
 		switch err.Error() {
 		case commonConstError.ErrorDataConvert.Error():
 			messages = append(messages, message.NewIPv4FormatError())
-			break;
+			break
 		case consterror.ErrorRangeEndAddress.Error():
 			messages = append(messages, message.NewIPv4RangeEndAddressError())
-			break;
+			break
 		case consterror.ErrorRangeSize.Error():
 			messages = append(messages, message.NewIPv4RangeSizeError())
-			break;
+			break
 		case consterror.ErrorRangeCount.Error():
 			messages = append(messages, message.NewIPv4RangeCountError())
 		default:
 			messages = append(messages, commonMessage.NewInvalidRequest())
-			break;
+			break
 		}
 		log.WithFields(log.Fields{
 			"message": messages[0].ID}).

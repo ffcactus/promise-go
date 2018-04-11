@@ -1,11 +1,10 @@
 package base
 
 import (
-	"reflect"
-	"strings"
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
+	"strings"
 )
 
 // DBTemplateInterface is the interface that a concrete DB implement should have.
@@ -13,7 +12,8 @@ type DBTemplateInterface interface {
 	NeedCheckDuplication() bool
 	GetConnection() *gorm.DB
 	NewEntity() EntityInterface
-	// NewEntityCollection() []base.EntityInterface
+	NewEntityCollection() interface{}
+	ConvertFindResult(start int64, total int64, result interface{}) (*CollectionModel, error)
 }
 
 // DBInterface is the interface that DB should have.
@@ -21,6 +21,7 @@ type DBInterface interface {
 	Post(ModelInterface) (bool, ModelInterface, bool, error)
 	Get(id string) ModelInterface
 	Delete(id string) (bool, ModelInterface, bool, error)
+	GetCollection(start int64, count int64, filter string) (*CollectionModel, error)
 }
 
 // DB is the DB implementation in Promise project.
@@ -211,19 +212,17 @@ func (impl *DB) convertFilter(filter string) (string, error) {
 // It returns nil if any error.
 func (impl *DB) GetCollection(start int64, count int64, filter string) (*CollectionModel, error) {
 	var (
-		total int64
-		record = impl.TemplateImpl.NewEntity()
-		// recordCollection = impl.TemplateImpl.NewEntityCollection()
-		recordCollection = reflect.SliceOf(reflect.TypeOf(record))
-		ret = new(CollectionModel)
-		c        = impl.TemplateImpl.GetConnection()
+		total            int64
+		record           = impl.TemplateImpl.NewEntity()
+		recordCollection = impl.TemplateImpl.NewEntityCollection()
+		c                = impl.TemplateImpl.GetConnection()
 	)
 
 	if err := c.Table(record.TableName()).Count(&total).Error; err != nil {
 		log.WithFields(log.Fields{
-			"error":  err,
+			"error": err,
 		}).Warn("Get resource collection in DB failed, get count failed.")
-		return nil, err		
+		return nil, err
 	}
 	where, err := impl.convertFilter(filter)
 	if err != nil {
@@ -236,21 +235,8 @@ func (impl *DB) GetCollection(start int64, count int64, filter string) (*Collect
 	log.WithFields(log.Fields{
 		"where": where,
 	}).Debug("Convert filter success.")
+
 	c.Limit(count).Offset(start).Where(where).Find(recordCollection)
-	
-	ret.Start = start
-	_rc := reflect.ValueOf(recordCollection)
-	_count := _rc.Len()
-	ret.Count = int64(_count)
-	ret.Total = total
-	for i := 0; i < _count; i++ {
-		_interface, ok := _rc.Index(i).Interface().(EntityInterface)
-		if !ok {
-			log.Error("Get resource collection in DB failed, convert data failed.")
-		}
-		ret.Members = append(ret.Members, _interface.ToMember())
-	}
-	log.Info("--- collection DB returned ---")
-	PrintJSON(ret)
-	return ret, nil
+
+	return impl.TemplateImpl.ConvertFindResult(start, total, recordCollection)
 }

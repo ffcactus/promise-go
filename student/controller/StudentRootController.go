@@ -31,14 +31,16 @@ func (c *StudentRootController) NewResponse() base.ResponseInterface {
 	return response
 }
 
-// NewCollectionResponse creates a new response collection DTO.
-func (c *StudentRootController) NewCollectionResponse() base.CollectionResponseInterface {
-	collection := new(dto.GetStudentCollectionResponse)
-	collection.TemplateImpl = collection
-	return collection
-}
-
 // GetService returns the service.
 func (c *StudentRootController) GetService() base.ServiceInterface {
 	return StudentService
+}
+
+// ConvertCollectionModel convert data to concrete DTO.
+func (c *StudentRootController) ConvertCollectionModel(m *base.CollectionModel) (interface{}, error) {
+	ret := new(dto.GetStudentCollectionResponse)
+	if err := ret.Load(m); err != nil {
+		return nil, err
+	}
+	return ret, nil
 }
