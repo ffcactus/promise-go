@@ -4,16 +4,18 @@ import ()
 
 // ServiceInterface is the interface that a service should have.
 type ServiceInterface interface {
-	Post(RequestInterface) (ModelInterface, []MessageInterface)
-	Get(id string) (ModelInterface, []MessageInterface)
-	Delete(id string) []MessageInterface
-	GetCollection(start int64, count int64, filter string) (*CollectionModel, []MessageInterface)
+	Post(RequestInterface) (ModelInterface, []Message)
+	Get(id string) (ModelInterface, []Message)
+	Delete(id string) []Message
+	GetCollection(start int64, count int64, filter string) (*CollectionModel, []Message)
+	DeleteCollection() []Message
 }
 
 // ServiceTemplateInterface is the interface that a concrete service should have.
 type ServiceTemplateInterface interface {
 	GetDB() DBInterface
 	NewResponse() ResponseInterface
+	GetCategory() string
 	GetEventService() EventServiceInterface
 }
 
@@ -23,7 +25,7 @@ type Service struct {
 }
 
 // Post is the default post resource implement in service.
-func (s *Service) Post(request RequestInterface) (ModelInterface, []MessageInterface) {
+func (s *Service) Post(request RequestInterface) (ModelInterface, []Message) {
 	var (
 		db       = s.TemplateImpl.GetDB()
 		response = s.TemplateImpl.NewResponse()
@@ -31,10 +33,10 @@ func (s *Service) Post(request RequestInterface) (ModelInterface, []MessageInter
 	)
 	exist, posted, commited, err := db.Post(model)
 	if exist {
-		return nil, []MessageInterface{NewMessageResourceDuplicate()}
+		return nil, []Message{NewMessageResourceDuplicate()}
 	}
 	if err != nil || !commited {
-		return nil, []MessageInterface{NewMessageTransactionError()}
+		return nil, []Message{NewMessageTransactionError()}
 	}
 	response.Load(posted)
 	s.TemplateImpl.GetEventService().DispatchCreateEvent(response)
@@ -42,19 +44,19 @@ func (s *Service) Post(request RequestInterface) (ModelInterface, []MessageInter
 }
 
 // Get is the default get resource implement in service.
-func (s *Service) Get(id string) (ModelInterface, []MessageInterface) {
+func (s *Service) Get(id string) (ModelInterface, []Message) {
 	var (
 		db = s.TemplateImpl.GetDB()
 	)
 	model := db.Get(id)
 	if model == nil {
-		return nil, []MessageInterface{NewMessageNotExist()}
+		return nil, []Message{NewMessageNotExist()}
 	}
 	return model, nil
 }
 
 // Delete is the default delete resource implement in service.
-func (s *Service) Delete(id string) []MessageInterface {
+func (s *Service) Delete(id string) []Message {
 	var (
 		db       = s.TemplateImpl.GetDB()
 		response = s.TemplateImpl.NewResponse()
@@ -62,10 +64,10 @@ func (s *Service) Delete(id string) []MessageInterface {
 
 	exist, model, commited, err := db.Delete(id)
 	if !exist {
-		return []MessageInterface{NewMessageNotExist()}
+		return []Message{NewMessageNotExist()}
 	}
 	if err != nil || !commited {
-		return []MessageInterface{NewMessageTransactionError()}
+		return []Message{NewMessageTransactionError()}
 	}
 	response.Load(model)
 	s.TemplateImpl.GetEventService().DispatchDeleteEvent(response)
@@ -73,13 +75,31 @@ func (s *Service) Delete(id string) []MessageInterface {
 }
 
 // GetCollection is the default get collection implement in service.
-func (s *Service) GetCollection(start int64, count int64, filter string) (*CollectionModel, []MessageInterface) {
+func (s *Service) GetCollection(start int64, count int64, filter string) (*CollectionModel, []Message) {
 	var (
 		db = s.TemplateImpl.GetDB()
 	)
 	collection, err := db.GetCollection(start, count, filter)
 	if err != nil {
-		return nil, []MessageInterface{NewMessageTransactionError()}
+		return nil, []Message{NewMessageTransactionError()}
 	}
 	return collection, nil
+}
+
+// DeleteCollection is the default delete collection implement in service.
+func (s *Service) DeleteCollection() []Message {
+	var (
+		db =s.TemplateImpl.GetDB()
+	)
+	records, commited, err := db.DeleteCollection()
+	if err != nil || !commited {
+		return []Message{NewMessageTransactionError()}
+	}
+	for _, v := range records {
+		response := s.TemplateImpl.NewResponse()
+		response.Load(v)
+		s.TemplateImpl.GetEventService().DispatchDeleteEvent(response)
+	}
+	s.TemplateImpl.GetEventService().DispatchDeleteCollectionEvent(s.TemplateImpl.GetCategory())
+	return nil
 }

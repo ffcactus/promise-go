@@ -22,7 +22,7 @@ var (
 type Service struct {
 }
 
-func dispatch(event *wsDTO.PostEventRequest) ([]base.MessageInterface, error) {
+func dispatch(event *wsDTO.PostEventRequest) ([]base.Message, error) {
 	messages, err := rest.Do(
 		http.MethodPost,
 		WsSenderServiceURL,
@@ -46,7 +46,7 @@ func dispatch(event *wsDTO.PostEventRequest) ([]base.MessageInterface, error) {
 }
 
 // DispatchResourceEvent can dispatch event, you have specify the event type and the DTO of GET resource response.
-func DispatchResourceEvent(eventType string, dto base.ResponseInterface) ([]base.MessageInterface, error) {
+func DispatchResourceEvent(eventType string, dto base.ResponseInterface) ([]base.Message, error) {
 	var (
 		event wsDTO.PostEventRequest
 	)
@@ -68,22 +68,22 @@ func DispatchResourceEvent(eventType string, dto base.ResponseInterface) ([]base
 }
 
 // DispatchCreateEvent can dispatch resource create event.
-func (s Service) DispatchCreateEvent(dto base.ResponseInterface) ([]base.MessageInterface, error) {
+func (s Service) DispatchCreateEvent(dto base.ResponseInterface) ([]base.Message, error) {
 	return DispatchResourceEvent(constvalue.CreateEvent, dto)
 }
 
 // DispatchUpdateEvent can dispatch resource udpate event.
-func (s Service) DispatchUpdateEvent(dto base.ResponseInterface) ([]base.MessageInterface, error) {
+func (s Service) DispatchUpdateEvent(dto base.ResponseInterface) ([]base.Message, error) {
 	return DispatchResourceEvent(constvalue.UpdateEvent, dto)
 }
 
 // DispatchDeleteEvent can dispatch resource delete event.
-func (s Service) DispatchDeleteEvent(dto base.ResponseInterface) ([]base.MessageInterface, error) {
+func (s Service) DispatchDeleteEvent(dto base.ResponseInterface) ([]base.Message, error) {
 	return DispatchResourceEvent(constvalue.DeleteEvent, dto)
 }
 
-// DispatchResourceCollectionDeleteEvent dispatch an event about resource collection deleted.
-func DispatchResourceCollectionDeleteEvent(category string) ([]base.MessageInterface, error) {
+// DispatchDeleteCollectionEvent dispatch an event about resource collection deleted.
+func (s Service) DispatchDeleteCollectionEvent(category string) ([]base.Message, error) {
 	var (
 		event wsDTO.PostEventRequest
 	)

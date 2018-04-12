@@ -10,15 +10,15 @@ import (
 
 // RootControllerInterface is the interface that a root controller should provide.
 type RootControllerInterface interface {
+	GetResourceName() string
 	GetService() ServiceInterface
 	NewRequest() RequestInterface
 	NewResponse() ResponseInterface
-	// NewCollectionResponse() *CollectionResponse
 	ConvertCollectionModel(*CollectionModel) (interface{}, error)
-	// PostCallback(request RequestInterface) (ModelInterface, []MessageInterface)
 }
 
-// RootController is the root controller in Promise.
+// RootController is the controller that handle request on resource's root URL
+// For example, the request to /rest/v1/student
 type RootController struct {
 	TemplateImpl RootControllerInterface
 	beego.Controller
@@ -29,36 +29,38 @@ func (c *RootController) Post() {
 	var (
 		request  = c.TemplateImpl.NewRequest()
 		response = c.TemplateImpl.NewResponse()
-		messages []MessageInterface
+		messages []Message
 	)
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
 		messages = append(messages, NewMessageInvalidRequest())
 		log.WithFields(log.Fields{
-			"request": request.GetDebugName(),
+			"resource": c.TemplateImpl.GetResourceName(),
 			"error":   err,
-			"message": messages[0].GetID(),
+			"message": messages[0].ID,
 		}).Warn("Post resource failed, bad request.")
-		c.Data["json"] = messages
-		c.Ctx.Output.SetStatus(messages[0].GetStatusCode())
+		c.Data["json"] = &messages
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
 		return
 	}
 
 	log.WithFields(log.Fields{
+		"resource": c.TemplateImpl.GetResourceName(),
 		"request": request.GetDebugName(),
 	}).Info("Post resource.")
 	model, messages := c.TemplateImpl.GetService().Post(request)
 	if messages != nil {
 		log.WithFields(log.Fields{
-			"message": messages[0].GetID(),
+			"message": messages[0].ID,
 		}).Warn("Post resource failed, POST callback return message.")
 		c.Data["json"] = messages
-		c.Ctx.Output.SetStatus(messages[0].GetStatusCode())
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
 		return
 	}
 	response.Load(model)
 	log.WithFields(log.Fields{
+		"resource": c.TemplateImpl.GetResourceName(),
 		"request": request.GetDebugName(),
 		"ID":      response.GetID(),
 	}).Info("Post resource done.")
@@ -75,6 +77,7 @@ func (c *RootController) Get() {
 		parameterError       bool
 	)
 	log.WithFields(log.Fields{
+		"resource": c.TemplateImpl.GetResourceName(),
 		"start": start,
 		"count": count,
 	}).Debug("Get resource collection.")
@@ -101,41 +104,61 @@ func (c *RootController) Get() {
 	}
 
 	if parameterError {
-		messages := []MessageInterface{NewMessageInvalidRequest()}
+		messages := []Message{NewMessageInvalidRequest()}
 		log.WithFields(log.Fields{
-			"message": messages[0].GetID(),
+			"resource": c.TemplateImpl.GetResourceName(),
+			"message": messages[0].ID,
 		}).Warn("Get resource collection failed, parameter error.")
-		c.Data["json"] = messages
-		c.Ctx.Output.SetStatus(messages[0].GetStatusCode())
+		c.Data["json"] = &messages
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
 		return
 	}
 	collection, messages := c.TemplateImpl.GetService().GetCollection(startInt, countInt, filter)
 	if messages != nil {
 		log.WithFields(log.Fields{
-			"message": messages[0].GetID(),
+			"resource": c.TemplateImpl.GetResourceName(),
+			"message": messages[0].ID,
 		}).Warn("Get resource collection failed.")
-		c.Data["json"] = messages
-		c.Ctx.Output.SetStatus(messages[0].GetStatusCode())
+		c.Data["json"] = &messages
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
 		return
 	}
 	response, err := c.TemplateImpl.ConvertCollectionModel(collection)
 	if err != nil {
-		messages := []MessageInterface{NewMessageTransactionError()}
+		messages := []Message{NewMessageTransactionError()}
 		log.WithFields(log.Fields{
-			"message": messages[0].GetID(),
+			"resource": c.TemplateImpl.GetResourceName(),
+			"message": messages[0].ID,
 			"error":   err,
 		}).Warn("Convert resource collection response failed.")
-		c.Data["json"] = messages
-		c.Ctx.Output.SetStatus(messages[0].GetStatusCode())
+		c.Data["json"] = &messages
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
 		return
 	}
-	log.Info("Get resource collection done.")
+	log.WithFields(log.Fields{
+		"resource": c.TemplateImpl.GetResourceName(),
+	}).Info("Get resource collection done.")
 	c.Data["json"] = response
 	c.Ctx.Output.SetStatus(http.StatusOK)
 	c.ServeJSON()
+}
+
+// Delete is the default DELETE method on root controller.
+func (c *RootController) Delete() {
+	messages := c.TemplateImpl.GetService().DeleteCollection()
+	if messages != nil {
+		c.Data["json"] = &messages
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.ServeJSON()
+		return
+	}
+	c.Ctx.Output.SetStatus(http.StatusAccepted)
+	log.WithFields(log.Fields{
+		"resource": c.TemplateImpl.GetResourceName(),
+	}).Info("DELETE resource collection done.")
 }
 
 func (c *RootController) isValidFilter(filter string) bool {

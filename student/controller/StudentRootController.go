@@ -17,6 +17,11 @@ var (
 type StudentRootController struct {
 }
 
+// GetResourceName returns the name this controller handle of.
+func (c *StudentRootController) GetResourceName() string {
+	return "student"
+}
+
 // NewRequest creates a new request DTO.
 func (c *StudentRootController) NewRequest() base.RequestInterface {
 	request := new(dto.PostStudentRequest)

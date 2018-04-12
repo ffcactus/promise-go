@@ -12,6 +12,11 @@ import (
 type StudentDB struct {
 }
 
+// GetResourceName get the resource name.
+func (impl *StudentDB) GetResourceName() string {
+	return "student"
+}
+
 // NewEntity return the a new entity.
 func (impl *StudentDB) NewEntity() base.EntityInterface {
 	e := new(entity.Student)
@@ -34,8 +39,8 @@ func (impl *StudentDB) NeedCheckDuplication() bool {
 	return true
 }
 
-// ConvertFindResult convert the Find() result to model.
-func (impl *StudentDB) ConvertFindResult(start int64, total int64, result interface{}) (*base.CollectionModel, error) {
+// ConvertFindResultToCollection convert the Find() result to collection mode.
+func (impl *StudentDB) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, error) {
 	collection, ok := result.(*[]entity.Student)
 	if !ok {
 		log.Error("StudentDB.ConvertFindResult() failed.")
@@ -49,4 +54,19 @@ func (impl *StudentDB) ConvertFindResult(start int64, total int64, result interf
 		ret.Members = append(ret.Members, v.ToCollectionMember())
 	}
 	return &ret, nil
+}
+
+// ConvertFindResultToModel convert the Find() result to model slice
+func (impl *StudentDB) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, error) {
+	collection, ok := result.(*[]entity.Student)
+	if !ok {
+		log.Error("StudentDB.ConvertFindResult() failed.")
+		return nil, base.ErrorDataConvert
+	}
+	ret := make([]base.ModelInterface, 0)
+	for _, v := range *collection {
+		m := v.ToModel()
+		ret = append(ret, m)
+	}
+	return ret, nil
 }

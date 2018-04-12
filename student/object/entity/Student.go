@@ -44,12 +44,9 @@ func (e *Student) GetPreload() []string {
 	return []string{"Phones"}
 }
 
-// GetAssociation return all the association address that need to delete.
+// GetAssociation return all the assocated tables that need to delete.
 func (e *Student) GetAssociation() []interface{} {
-	association := []interface{}{}
-	for _, v := range e.Phones {
-		association = append(association, &v)
-	}
+	association := []interface{}{Phone{}, Student{}}
 	return association
 }
 

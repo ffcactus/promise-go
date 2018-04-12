@@ -23,18 +23,6 @@ type Support struct {
 	SolutionArguments []Argument
 }
 
-// MessageInterface is the interface that a Promise message should have.
-type MessageInterface interface {
-	GetID() string
-	GetStatusCode() int
-	GetSeverity() string
-	GetCategory() string
-	GetCreatedAt() time.Time
-	GetDescription() string
-	GetArguments() []Argument
-	GetSupports() []Support
-}
-
 // Message is the message used in Promise project.
 type Message struct {
 	ID          string // The unique ID within a micro service.
@@ -47,62 +35,22 @@ type Message struct {
 	Supports    []Support
 }
 
-// GetID return the ID of this message.
-func (o *Message) GetID() string {
-	return o.ID
-}
-
-// GetStatusCode return the StatusCode of this message.
-func (o *Message) GetStatusCode() int {
-	return o.StatusCode
-}
-
-// GetSeverity return the Severity of this message.
-func (o *Message) GetSeverity() string {
-	return o.Severity
-}
-
-// GetCategory return the Category of this message.
-func (o *Message) GetCategory() string {
-	return o.Category
-}
-
-// GetCreatedAt return the CreatedAt of this message.
-func (o *Message) GetCreatedAt() time.Time {
-	return o.CreatedAt
-}
-
-// GetDescription return the Description of this message.
-func (o *Message) GetDescription() string {
-	return o.Description
-}
-
-// GetArguments return the Arguments of this message.
-func (o *Message) GetArguments() []Argument {
-	return o.Arguments
-}
-
-// GetSupports return the Supports of this message.
-func (o *Message) GetSupports() []Support {
-	return o.Supports
-}
-
 // NewMessageInvalidRequest return a new message.
-func NewMessageInvalidRequest() MessageInterface {
-	return new(Message)
+func NewMessageInvalidRequest() Message {
+	return Message{}
 }
 
 // NewMessageResourceDuplicate return a new message.
-func NewMessageResourceDuplicate() MessageInterface {
-	return new(Message)
+func NewMessageResourceDuplicate() Message {
+	return Message{}
 }
 
 // NewMessageTransactionError return a new message.
-func NewMessageTransactionError() MessageInterface {
-	return new(Message)
+func NewMessageTransactionError() Message {
+	return Message{}
 }
 
 // NewMessageNotExist return a new message.
-func NewMessageNotExist() MessageInterface {
-	return new(Message)
+func NewMessageNotExist() Message {
+	return Message{}
 }

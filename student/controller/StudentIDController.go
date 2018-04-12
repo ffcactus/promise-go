@@ -9,6 +9,11 @@ import (
 type StudentIDController struct {
 }
 
+// GetResourceName returns the name this controller handle of.
+func (c *StudentIDController) GetResourceName() string {
+	return "student"
+}
+
 // NewResponse creates a new response DTO.
 func (c *StudentIDController) NewResponse() base.ResponseInterface {
 	response := new(dto.GetStudentResponse)

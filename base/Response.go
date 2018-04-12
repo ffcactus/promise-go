@@ -9,11 +9,6 @@ import (
 type ResponseTemplateInterface interface {
 	GetDebugName() string
 	Load(ModelInterface) error
-	GetID() string
-	GetURI() string
-	GetCategory() string
-	GetCreatedAt() time.Time
-	GetUpdatedAt() time.Time
 }
 
 // ResponseInterface is the inteface that a Request should have.
@@ -21,10 +16,7 @@ type ResponseInterface interface {
 	GetDebugName() string
 	Load(ModelInterface) error
 	GetID() string
-	GetURI() string
 	GetCategory() string
-	GetCreatedAt() time.Time
-	GetUpdatedAt() time.Time
 }
 
 // Response is the response DTO used in Promise project.
@@ -47,24 +39,9 @@ func (dto *Response) GetID() string {
 	return dto.ID
 }
 
-// GetURI returns URI.
-func (dto *Response) GetURI() string {
-	return dto.URI
-}
-
 // GetCategory returns Category.
 func (dto *Response) GetCategory() string {
 	return dto.Category
-}
-
-// GetCreatedAt returns CreatedAt.
-func (dto *Response) GetCreatedAt() time.Time {
-	return dto.CreatedAt
-}
-
-// GetUpdatedAt returns UpdatedAt.
-func (dto *Response) GetUpdatedAt() time.Time {
-	return dto.UpdatedAt
 }
 
 // Load data from model.
