@@ -1,15 +1,14 @@
 package entity
 
 import (
-	commonEntity "promise/common/object/entity"
-	"promise/common/util"
+	log "github.com/sirupsen/logrus"
+	"promise/base"
 	"promise/task/object/model"
 )
 
-// Task Task object.
+// Task is the entity of the task.
 type Task struct {
-	commonEntity.PromiseEntity
-	ParentTask          *string              `gorm:"column:ParentTask"`
+	base.Entity
 	MessageID           *string              `gorm:"column:MessageID"`
 	Name                string               `gorm:"column:Name"`
 	Description         *string              `gorm:"column:Description"`
@@ -23,7 +22,6 @@ type Task struct {
 	CurrentStep         string               `gorm:"column:CurrentStep"`
 	// Use string to represent.
 	TaskSteps string `gorm:"column:TaskSteps"`
-	SubTasks  []Task `gorm:"ForeignKey:ParentTask;column:SubTasks"`
 	// Use string to represent.
 	ExecutionResult string `gorm:"column:ExecutionResult"`
 }
@@ -33,35 +31,44 @@ func (Task) TableName() string {
 	return "Task"
 }
 
-// ToModel will create a new model from entity.
-func (e *Task) ToModel() *model.Task {
-	m := new(model.Task)
-	m.PromiseModel = e.PromiseEntity.ToModel()
-	m.MessageID = e.MessageID
-	m.Name = e.Name
-	m.Description = e.Description
-	m.ExecutionState = e.ExecutionState
-	m.CreatedByName = e.CreatedByName
-	m.CreatedByURI = e.CreatedByURI
-	m.TargetName = e.TargetName
-	m.TargetURI = e.TargetURI
-	m.ExpectedExecutionMs = e.ExpectedExecutionMs
-	m.Percentage = e.Percentage
-	m.CreatedAt = e.CreatedAt
-	m.UpdatedAt = e.UpdatedAt
-	m.CurrentStep = e.CurrentStep
-	util.StringToStruct(e.ExecutionResult, &m.ExecutionResult)
-	util.StringToStruct(e.TaskSteps, &m.TaskSteps)
-	for _, v := range e.SubTasks {
-		vv := v.ToModel()
-		m.SubTasks = append(m.SubTasks, *vv)
-	}
-	return m
+// GetID return the ID.
+func (e *Task) GetID() string {
+	return e.ID
+}
+
+// SetID set the ID.
+func (e *Task) SetID(id string) {
+	e.ID = id
+}
+
+// GetDebugName return the debug name of this entity.
+func (e *Task) GetDebugName() string {
+	return e.Name
+}
+
+// GetPropertyNameForDuplicationCheck return the property name used for duplication check.
+func (e *Task) GetPropertyNameForDuplicationCheck() string {
+	return ""
+}
+
+// GetPreload return the property names that need to be preload.
+func (e *Task) GetPreload() []string {
+	return nil
+}
+
+// GetAssociation return all the assocated tables that need to delete.
+func (e *Task) GetAssociation() []interface{} {
+	return nil
 }
 
 // Load will load data from model.
-func (e *Task) Load(m *model.Task) {
-	e.PromiseEntity.Load(m.PromiseModel)
+func (e *Task) Load(i base.ModelInterface) error {
+	m, ok := i.(*model.Task)
+	if !ok {
+		log.Error("entity.Task.Load() failed, convert interface failed.")
+		return base.ErrorDataConvert
+	}
+	base.EntityLoad(&e.Entity, &m.Model)
 	e.MessageID = m.MessageID
 	e.Name = m.Name
 	e.Description = m.Description
@@ -72,9 +79,41 @@ func (e *Task) Load(m *model.Task) {
 	e.TargetURI = m.TargetURI
 	e.ExpectedExecutionMs = m.ExpectedExecutionMs
 	e.Percentage = m.Percentage
-	e.CreatedAt = m.CreatedAt
-	e.UpdatedAt = m.UpdatedAt
 	e.CurrentStep = m.CurrentStep
-	e.TaskSteps = util.StructToString(m.TaskSteps)
-	e.ExecutionResult = util.StructToString(m.ExecutionResult)
+	e.TaskSteps = base.StructToString(m.TaskSteps)
+	e.ExecutionResult = base.StructToString(m.ExecutionResult)
+	return nil
+}
+
+// ToModel converts the entity to model.
+func (e *Task) ToModel() base.ModelInterface {
+	m := new(model.Task)
+	base.EntityToModel(&e.Entity, &m.Model)
+	m.MessageID = e.MessageID
+	m.Name = e.Name
+	m.Description = e.Description
+	m.ExecutionState = e.ExecutionState
+	m.CreatedByName = e.CreatedByName
+	m.CreatedByURI = e.CreatedByURI
+	m.TargetName = e.TargetName
+	m.TargetURI = e.TargetURI
+	m.ExpectedExecutionMs = e.ExpectedExecutionMs
+	m.Percentage = e.Percentage
+	m.CurrentStep = e.CurrentStep
+	base.StringToStruct(e.ExecutionResult, &m.ExecutionResult)
+	base.StringToStruct(e.TaskSteps, &m.TaskSteps)
+	return m
+}
+
+// ToCollectionMember convert the entity to member.
+func (e *Task) ToCollectionMember() base.CollectionMemberModelInterface {
+	m := new(model.TaskCollectionMember)
+	base.EntityToMember(&e.Entity, &m.CollectionMemberModel)
+	m.Name = e.Name
+	m.Description = e.Description
+	m.CurrentStep = e.CurrentStep
+	m.ExecutionState = e.ExecutionState
+	m.Percentage = e.Percentage
+	base.StringToStruct(e.ExecutionResult, &m.ExecutionResult)
+	return m
 }

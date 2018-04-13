@@ -30,6 +30,6 @@ func (dto *UpdateTaskRequest) UpdateModel(current *model.Task) {
 	}
 	if dto.ExecutionResult != nil {
 		current.ExecutionResult.State = (*dto.ExecutionResult).State
-		current.ExecutionResult.Message = (*dto.ExecutionResult).Message.Model()
+		current.ExecutionResult.Message = (*dto.ExecutionResult).Message
 	}
 }

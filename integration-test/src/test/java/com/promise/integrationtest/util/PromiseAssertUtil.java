@@ -152,7 +152,7 @@ public class PromiseAssertUtil
                 });
         Assert.assertEquals(HttpStatus.BAD_REQUEST, response2.getStatusCode());
         final List<Message> message = response2.getBody();
-        Assert.assertEquals(PromiseMessage.ResourceNotExist.getId(), message.get(0).getId());
+        Assert.assertEquals(PromiseMessage.NotExist.getId(), message.get(0).getId());
     }
 
     /**

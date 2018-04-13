@@ -20,7 +20,6 @@ type Model struct {
 
 // CollectionMemberModelInterface is the interface a Member should have
 type CollectionMemberModelInterface interface {
-
 }
 
 // CollectionMemberModel is the collection member used in Promise project.

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	"promise/apps"
 	"promise/base"
 	"promise/common/app/rest"
 	commonConstError "promise/common/object/consterror"
@@ -15,7 +14,7 @@ import (
 
 var (
 	// WsSenderServiceURL is the service URL.
-	WsSenderServiceURL = apps.ProtocolScheme + apps.Host + apps.RootURL + apps.WSSenderBaseURI
+	WsSenderServiceURL = base.ProtocolScheme + base.Host + base.RootURL + base.WSSenderBaseURI
 )
 
 // Service is the implementation of EventServiceInterface

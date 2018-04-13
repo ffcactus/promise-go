@@ -1,4 +1,4 @@
-package apps
+package base
 
 const (
 	// ProtocolScheme is the protocol scheme used by client.

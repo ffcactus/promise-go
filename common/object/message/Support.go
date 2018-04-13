@@ -1,10 +1,10 @@
 package message
 
 const (
-	// SupportResourceNotExist is Support ID.
-	SupportResourceNotExist = "Promise.Support.ResourceNotExist"
-	// SupportResourceDuplicate is Support ID.
-	SupportResourceDuplicate = "Promise.Support.ResourceDuplicate"
+	// SupportNotExist is Support ID.
+	SupportNotExist = "Promise.Support.NotExist"
+	// SupportDuplicate is Support ID.
+	SupportDuplicate = "Promise.Support.Duplicate"
 	// SupportInvalidRequest is Support ID.
 	SupportInvalidRequest = "Promise.Support.InvalidRequest"
 	// SupportInternalError is Support ID.
@@ -32,19 +32,19 @@ func NewSupport() Support {
 	return ret
 }
 
-// NewSupportResourceNotExist will return a support message.
-func NewSupportResourceNotExist() Support {
+// NewSupportNotExist will return a support message.
+func NewSupportNotExist() Support {
 	ret := NewSupport()
-	ret.ID = SupportResourceNotExist
+	ret.ID = SupportNotExist
 	ret.Reason = "There is no resource match the identifier."
 	ret.Solution = "Verify the identifier and try again."
 	return ret
 }
 
-// NewSupportResourceDuplicate will return a support message.
-func NewSupportResourceDuplicate() Support {
+// NewSupportDuplicate will return a support message.
+func NewSupportDuplicate() Support {
 	ret := NewSupport()
-	ret.ID = SupportResourceDuplicate
+	ret.ID = SupportDuplicate
 	ret.Reason = "The resource duplication happend inside."
 	ret.Solution = "Stop create the duplicated resource."
 	return ret

@@ -17,7 +17,7 @@ func PostIPv4Pool(request *dto.PostIPv4PoolRequest) (*model.IPv4Pool, []commonMe
 
 	exist, posted, commited, err := dbImpl.PostIPv4Pool(request.ToModel())
 	if exist {
-		return nil, []commonMessage.Message{commonMessage.NewResourceDuplicate()}
+		return nil, []commonMessage.Message{commonMessage.NewDuplicate()}
 	}
 	if err != nil || !commited {
 		return nil, []commonMessage.Message{commonMessage.NewTransactionError()}
@@ -34,7 +34,7 @@ func GetIPv4Pool(id string) (*model.IPv4Pool, []commonMessage.Message) {
 
 	ipv4Pool := dbImpl.GetIPv4Pool(id)
 	if ipv4Pool == nil {
-		return nil, []commonMessage.Message{commonMessage.NewResourceNotExist()}
+		return nil, []commonMessage.Message{commonMessage.NewNotExist()}
 	}
 	return ipv4Pool, nil
 }
@@ -56,7 +56,7 @@ func DeleteIPv4Pool(id string) []commonMessage.Message {
 	exist, previous, commited, err := dbImpl.DeleteIPv4Pool(id)
 
 	if !exist {
-		return []commonMessage.Message{commonMessage.NewResourceNotExist()}
+		return []commonMessage.Message{commonMessage.NewNotExist()}
 	}
 	if err != nil || !commited {
 		return []commonMessage.Message{commonMessage.NewTransactionError()}
@@ -89,7 +89,7 @@ func AllocateIPv4Address(id string, key string) (string, *model.IPv4Pool, []comm
 
 	exist, address, pool, commited, err := dbImpl.AllocateIPv4Address(id, key)
 	if !exist {
-		return "", nil, []commonMessage.Message{commonMessage.NewResourceNotExist()}
+		return "", nil, []commonMessage.Message{commonMessage.NewNotExist()}
 	}
 	if exist && address == "" && !commited && err == nil {
 		return "", nil, []commonMessage.Message{message.NewIPv4PoolEmpty()}
@@ -106,7 +106,7 @@ func FreeIPv4Address(id string, key string) (*model.IPv4Pool, []commonMessage.Me
 
 	exist, pool, commited, err := dbImpl.FreeIPv4Address(id, key)
 	if !exist {
-		return nil, []commonMessage.Message{commonMessage.NewResourceNotExist()}
+		return nil, []commonMessage.Message{commonMessage.NewNotExist()}
 	}
 	if err != nil && err.Error() == consterror.ErrorNotInPool.Error() {
 		return nil, []commonMessage.Message{message.NewIPv4AddressNotExist()}

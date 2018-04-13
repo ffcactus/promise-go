@@ -125,7 +125,7 @@ public class IPv4PoolTest extends PromiseIntegrationTest
 
         IPv4PoolAssertUtil.assertIPv4PoolPosted(request1);
         PromiseAssertUtil
-                .assertPostMessage(getRootURL() + "/promise/v1/id-pool/ipv4", PromiseMessage.ResourceDuplicate.getId(), request1);
+                .assertPostMessage(getRootURL() + "/promise/v1/id-pool/ipv4", PromiseMessage.Duplicate.getId(), request1);
     }
 
     /**
@@ -136,20 +136,20 @@ public class IPv4PoolTest extends PromiseIntegrationTest
     {
         PromiseAssertUtil.assertDeleteMessage(
                 getRootURL() + "/promise/v1/id-pool/ipv4/i_am_not_exist",
-                PromiseMessage.ResourceNotExist.getId());
+                PromiseMessage.NotExist.getId());
         PromiseAssertUtil.assertGetMessage(
                 getRootURL() + "/promise/v1/id-pool/ipv4/i_am_not_exist",
-                PromiseMessage.ResourceNotExist.getId());
+                PromiseMessage.NotExist.getId());
         final AllocateIPv4Request request1 = new AllocateIPv4Request();
         PromiseAssertUtil.assertPostMessage(
                 getRootURL() + "/promise/v1/id-pool/ipv4/i_am_not_exist/action/allocate",
-                PromiseMessage.ResourceNotExist.getId(),
+                PromiseMessage.NotExist.getId(),
                 request1);
         final FreeIPv4Request request2 = new FreeIPv4Request();
         request2.setAddress("0.0.0.0");
         PromiseAssertUtil.assertPostMessage(
                 getRootURL() + "/promise/v1/id-pool/ipv4/i_am_not_exist/action/free",
-                PromiseMessage.ResourceNotExist.getId(),
+                PromiseMessage.NotExist.getId(),
                 request2);        
     }
 

@@ -35,8 +35,8 @@ func (c *RootController) Post() {
 		messages = append(messages, NewMessageInvalidRequest())
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.GetResourceName(),
-			"error":   err,
-			"message": messages[0].ID,
+			"error":    err,
+			"message":  messages[0].ID,
 		}).Warn("Post resource failed, bad request.")
 		c.Data["json"] = &messages
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
@@ -46,7 +46,7 @@ func (c *RootController) Post() {
 
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.GetResourceName(),
-		"request": request.GetDebugName(),
+		"request":  request.GetDebugName(),
 	}).Info("Post resource.")
 	model, messages := c.TemplateImpl.GetService().Post(request)
 	if messages != nil {
@@ -61,8 +61,8 @@ func (c *RootController) Post() {
 	response.Load(model)
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.GetResourceName(),
-		"request": request.GetDebugName(),
-		"ID":      response.GetID(),
+		"request":  request.GetDebugName(),
+		"ID":       response.GetID(),
 	}).Info("Post resource done.")
 	c.Data["json"] = response
 	c.Ctx.Output.SetStatus(http.StatusCreated)
@@ -78,8 +78,8 @@ func (c *RootController) Get() {
 	)
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.GetResourceName(),
-		"start": start,
-		"count": count,
+		"start":    start,
+		"count":    count,
 	}).Debug("Get resource collection.")
 	if start != "" {
 		_startInt, err := strconv.ParseInt(start, 10, 64)
@@ -107,7 +107,7 @@ func (c *RootController) Get() {
 		messages := []Message{NewMessageInvalidRequest()}
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.GetResourceName(),
-			"message": messages[0].ID,
+			"message":  messages[0].ID,
 		}).Warn("Get resource collection failed, parameter error.")
 		c.Data["json"] = &messages
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
@@ -118,7 +118,7 @@ func (c *RootController) Get() {
 	if messages != nil {
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.GetResourceName(),
-			"message": messages[0].ID,
+			"message":  messages[0].ID,
 		}).Warn("Get resource collection failed.")
 		c.Data["json"] = &messages
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
@@ -130,8 +130,8 @@ func (c *RootController) Get() {
 		messages := []Message{NewMessageTransactionError()}
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.GetResourceName(),
-			"message": messages[0].ID,
-			"error":   err,
+			"message":  messages[0].ID,
+			"error":    err,
 		}).Warn("Convert resource collection response failed.")
 		c.Data["json"] = &messages
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
@@ -159,6 +159,7 @@ func (c *RootController) Delete() {
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.GetResourceName(),
 	}).Info("DELETE resource collection done.")
+	c.ServeJSON()
 }
 
 func (c *RootController) isValidFilter(filter string) bool {

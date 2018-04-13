@@ -1,4 +1,4 @@
-package apps
+package base
 
 const (
 	// CategoryAA is a category name.

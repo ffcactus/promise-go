@@ -3,7 +3,6 @@ package db
 import (
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
-	"promise/apps"
 	"promise/base"
 	"promise/student/object/entity"
 )
@@ -31,7 +30,7 @@ func (impl *StudentDB) NewEntityCollection() interface{} {
 
 // GetConnection return the DB connection.
 func (impl *StudentDB) GetConnection() *gorm.DB {
-	return apps.GetConnection()
+	return base.GetConnection()
 }
 
 // NeedCheckDuplication return if need check duplication for entity.

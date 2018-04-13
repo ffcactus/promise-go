@@ -2,7 +2,6 @@ package message
 
 import (
 	"net/http"
-	"promise/common/category"
 	"promise/common/object/constvalue"
 	commonMessage "promise/common/object/message"
 	"promise/server/object/model"
@@ -28,7 +27,7 @@ func NewArgumentServerID(s *model.Server) commonMessage.Argument {
 
 // NewServerPostFailed create new message.
 func NewServerPostFailed() commonMessage.Message {
-	ret := commonMessage.NewMessage(category.Server)
+	ret := commonMessage.NewMessage()
 	ret.ID = MessageServerPostFailed
 	ret.Severity = constvalue.SeverityWarning
 	ret.Description = "Post server failed."
@@ -41,7 +40,7 @@ func NewServerPostFailed() commonMessage.Message {
 
 // NewServerLockFailed create new message.
 func NewServerLockFailed(s *model.Server) commonMessage.Message {
-	ret := commonMessage.NewMessage(category.Server)
+	ret := commonMessage.NewMessage()
 	ret.ID = MessageServerLockFailed
 	ret.StatusCode = http.StatusConflict
 	ret.Severity = constvalue.SeverityNormal
@@ -59,7 +58,7 @@ func NewServerLockFailed(s *model.Server) commonMessage.Message {
 
 // NewServerAccountExist create new message.
 func NewServerAccountExist(s *model.Server) commonMessage.Message {
-	ret := commonMessage.NewMessage(category.Server)
+	ret := commonMessage.NewMessage()
 	ret.ID = MessageServerAccountExist
 	ret.Severity = constvalue.SeverityNormal
 	ret.Description = "Server {0} failed to create management account."
@@ -75,7 +74,7 @@ func NewServerAccountExist(s *model.Server) commonMessage.Message {
 
 // NewServerRefreshTaskFailed create new message.
 func NewServerRefreshTaskFailed() commonMessage.Message {
-	ret := commonMessage.NewMessage(category.Server)
+	ret := commonMessage.NewMessage()
 	ret.ID = MessageServerRefreshTaskFailed
 	ret.Severity = constvalue.SeverityNormal
 	ret.Description = "Failed to create refresh task"

@@ -20,7 +20,7 @@ func (s *ServerStrategy) LockServer(c *context.ServerContext, server *model.Serv
 	success, lockedServer := c.DB.GetAndLockServer(server.ID)
 	if lockedServer == nil {
 		log.WithFields(log.Fields{"id": server.ID}).Info("Can not get and lock server, server not exist.")
-		c.AppendMessage(commonMessage.NewResourceNotExist())
+		c.AppendMessage(commonMessage.NewNotExist())
 		return errors.New("failed to lock server, server not exist")
 	}
 	if !success {

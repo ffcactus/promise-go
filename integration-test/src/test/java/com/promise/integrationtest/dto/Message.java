@@ -2,18 +2,18 @@ package com.promise.integrationtest.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Message
 {
     @JsonProperty(value = "ID", required = true)
     private String id;
     @JsonProperty(value = "Severity", required = true)
     private String severity;
-    @JsonProperty(value = "Category", required = true)
-    private String category;
-    @JsonProperty(value = "CreateAt", required = true)
-    private String createAt;
+    @JsonProperty(value = "CreatedAt", required = true)
+    private String createdAt;
     @JsonProperty(value = "Description", required = true)
     private String description;
     @JsonProperty(value = "Arguments", required = false)
@@ -41,24 +41,14 @@ public class Message
         this.severity = severity;
     }
 
-    public String getCategory()
+    public String getCreatedAt()
     {
-        return category;
+        return createdAt;
     }
 
-    public void setCategory(String category)
+    public void setCreatedAt(String createAt)
     {
-        this.category = category;
-    }
-
-    public String getCreateAt()
-    {
-        return createAt;
-    }
-
-    public void setCreateAt(String createAt)
-    {
-        this.createAt = createAt;
+        this.createdAt = createAt;
     }
 
     public String getDescription()

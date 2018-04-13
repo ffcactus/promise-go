@@ -1,7 +1,6 @@
 package message
 
 import (
-	"promise/common/category"
 	"promise/common/object/constvalue"
 	commonMessage "promise/common/object/message"
 )
@@ -13,7 +12,7 @@ const (
 
 // NewDeleteDefaultServerGroup will return a message.
 func NewDeleteDefaultServerGroup() commonMessage.Message {
-	ret := commonMessage.NewMessage(category.ServerGroup)
+	ret := commonMessage.NewMessage()
 	ret.ID = MessageServerGroupDeleteDefault
 	ret.Severity = constvalue.SeverityWarning
 	ret.Description = "Delete default server group is not allowed."

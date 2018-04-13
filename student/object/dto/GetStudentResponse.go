@@ -23,7 +23,7 @@ func (dto *GetStudentResponse) GetDebugName() string {
 func (dto *GetStudentResponse) Load(i base.ModelInterface) error {
 	m, ok := i.(*model.Student)
 	if !ok {
-		log.Error("dto.GetStudentResponse.Load() failed, convert interface failed.")
+		log.Error("GetStudentResponse.Load() failed, convert interface failed.")
 		return base.ErrorDataConvert
 	}
 	base.ResponseLoad(&dto.Response, &m.Model)

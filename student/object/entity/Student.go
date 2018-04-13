@@ -68,7 +68,7 @@ func (e *Student) Load(i base.ModelInterface) error {
 	return nil
 }
 
-// ToModel convert the entity to model.
+// ToModel converts the entity to model.
 func (e *Student) ToModel() base.ModelInterface {
 	m := new(model.Student)
 	base.EntityToModel(&e.Entity, &m.Model)

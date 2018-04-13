@@ -3,8 +3,8 @@ package com.promise.integrationtest.common.object.message;
 public enum PromiseMessage
 {
     InternalError ("Promise.Message.InternalError"),
-    ResourceNotExist ("Promise.Message.ResourceNotExist"),
-    ResourceDuplicate ("Promise.Message.ResourceDuplicate"),
+    NotExist ("Promise.Message.NotExist"),
+    Duplicate ("Promise.Message.Duplicate"),
     InvalidRequest ("Promise.Message.InvalidRequest"),
     Timeout ("Promise.Message.Timeout");
 

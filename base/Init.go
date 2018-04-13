@@ -1,4 +1,4 @@
-package apps
+package base
 
 import (
 	"github.com/astaxie/beego"

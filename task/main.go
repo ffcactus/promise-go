@@ -4,39 +4,23 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 	log "github.com/sirupsen/logrus"
-	"promise/common/app"
-	commonDB "promise/common/db"
-	"promise/common/object/constvalue"
+	"promise/base"
 	"promise/task/controller"
 	"promise/task/object/entity"
 )
 
-func initDB() {
-	commonDB.InitConnection()
-	if recreateDB, _ := beego.AppConfig.Bool("recreate_db"); recreateDB {
-		// Remove tables.
-		if commonDB.RemoveTables(entity.Tables) {
-			log.Info("Remove all tables in DB done.")
-		} else {
-			log.Warn("Failed to remove all tables in DB.")
-		}
-		// Create tables.
-		if !commonDB.CreateTables(entity.Tables) {
-			panic("DB Initialization failed.")
-		} else {
-			log.Info("DB schema created.")
-		}
-	}
-}
-
 func main() {
-	app.Init("TaskApp")
+	base.Init("TaskApp")
 	initDB()
 	ns := beego.NewNamespace(
-		app.RootURL+constvalue.TaskBaseURI,
-		beego.NSRouter("/", &controller.TaskRootController{}),
-		beego.NSRouter("/:id", &controller.TaskController{}),
-		beego.NSRouter("/:id/action/:action", &controller.TaskActionController{}),
+		base.RootURL+base.TaskBaseURI,
+		beego.NSRouter("/", &base.RootController{
+			TemplateImpl: new(controller.TaskRootController),
+		}),
+		beego.NSRouter("/:id", &base.IDController{
+			TemplateImpl: new(controller.TaskIDController),
+		}),
+		// beego.NSRouter("/:id/action/:action", &controller.TaskActionController{}),
 	)
 	beego.AddNamespace(ns)
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
@@ -47,4 +31,22 @@ func main() {
 		AllowCredentials: true,
 	}))
 	beego.Run()
+}
+
+func initDB() {
+	base.InitConnection()
+	if recreateDB, _ := beego.AppConfig.Bool("recreate_db"); recreateDB {
+		// Remove tables.
+		if base.RemoveTables(entity.Tables) {
+			log.Info("Remove all tables in DB done.")
+		} else {
+			log.Warn("Failed to remove all tables in DB.")
+		}
+		// Create tables.
+		if !base.CreateTables(entity.Tables) {
+			panic("DB Initialization failed.")
+		} else {
+			log.Info("DB schema created.")
+		}
+	}
 }

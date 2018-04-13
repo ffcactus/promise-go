@@ -2,16 +2,14 @@ package dto
 
 import (
 	log "github.com/sirupsen/logrus"
-	commonConstError "promise/common/object/consterror"
-	commonDTO "promise/common/object/dto"
+	"promise/base"
 	"promise/task/object/model"
 )
 
 // GetTaskResponse Post task response DTO.
 type GetTaskResponse struct {
-	commonDTO.PromiseResponse
+	base.Response
 	Name                string                `json:"Name"`
-	ParentTask          *string               `json:"ParentTask"`
 	Description         *string               `json:"Description,omitempty"`
 	ExecutionState      model.ExecutionState  `json:"ExecutionState"`
 	CreatedByName       string                `json:"CreatedByName"`
@@ -23,19 +21,22 @@ type GetTaskResponse struct {
 	CurrentStep         string                `json:"CurrentStep"`
 	TaskSteps           []GetTaskStepResponse `json:"TaskSteps"`
 	ExecutionResult     ExecutionResult       `json:"ExecutionResult"`
-	SubTasks            []GetTaskResponse     `json:"SubTasks"`
 }
 
-// Load Load from model.
-func (dto *GetTaskResponse) Load(data interface{}) error {
+// GetDebugName return the name for debug.
+func (dto *GetTaskResponse) GetDebugName() string {
+	return dto.Name
+}
+
+// Load will load info from mode
+func (dto *GetTaskResponse) Load(data base.ModelInterface) error {
 	m, ok := data.(*model.Task)
 	if !ok {
-		log.Warn("GetTaskResponse load data from model failed.")
-		return commonConstError.ErrorDataConvert
+		log.Warn("GetTaskResponse.Load() failed, convert interface failed.")
+		return base.ErrorDataConvert
 	}
-	dto.PromiseResponse.Load(&m.PromiseModel)
+	base.ResponseLoad(&dto.Response, &m.Model)
 	dto.Name = m.Name
-	dto.ParentTask = m.ParentTask
 	dto.Description = m.Description
 	dto.ExecutionState = m.ExecutionState
 	dto.CreatedByName = m.CreatedByName
@@ -52,11 +53,5 @@ func (dto *GetTaskResponse) Load(data interface{}) error {
 		dto.TaskSteps = append(dto.TaskSteps, *step)
 	}
 	dto.ExecutionResult.Load(&m.ExecutionResult)
-	dto.SubTasks = make([]GetTaskResponse, 0)
-	for i := range m.SubTasks {
-		sub := new(GetTaskResponse)
-		sub.Load(&m.SubTasks[i])
-		dto.SubTasks = append(dto.SubTasks, *sub)
-	}
 	return nil
 }

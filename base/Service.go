@@ -33,7 +33,7 @@ func (s *Service) Post(request RequestInterface) (ModelInterface, []Message) {
 	)
 	exist, posted, commited, err := db.Post(model)
 	if exist {
-		return nil, []Message{NewMessageResourceDuplicate()}
+		return nil, []Message{NewMessageDuplicate()}
 	}
 	if err != nil || !commited {
 		return nil, []Message{NewMessageTransactionError()}
@@ -89,7 +89,7 @@ func (s *Service) GetCollection(start int64, count int64, filter string) (*Colle
 // DeleteCollection is the default delete collection implement in service.
 func (s *Service) DeleteCollection() []Message {
 	var (
-		db =s.TemplateImpl.GetDB()
+		db = s.TemplateImpl.GetDB()
 	)
 	records, commited, err := db.DeleteCollection()
 	if err != nil || !commited {

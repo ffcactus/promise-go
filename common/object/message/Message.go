@@ -2,7 +2,6 @@ package message
 
 import (
 	"net/http"
-	"promise/common/category"
 	"promise/common/object/constvalue"
 	"time"
 )
@@ -22,7 +21,6 @@ type Message struct {
 	ID          string // The unique ID within a micro service.
 	StatusCode  int    // The HTTP status code along with this message.
 	Severity    string
-	Category    string // Each micro service should belong one and only one category.
 	CreatedAt   time.Time
 	Description string
 	Arguments   []Argument // The arguments in the description.
@@ -32,10 +30,10 @@ type Message struct {
 const (
 	// MessageInternalError is message ID.
 	MessageInternalError = "Promise.Message.InternalError"
-	// MessageResourceNotExist is message ID.
-	MessageResourceNotExist = "Promise.Message.ResourceNotExist"
-	// MessageResourceDuplicate is message ID.
-	MessageResourceDuplicate = "Promise.Message.ResourceDuplicate"
+	// MessageNotExist is message ID.
+	MessageNotExist = "Promise.Message.NotExist"
+	// MessageDuplicate is message ID.
+	MessageDuplicate = "Promise.Message.Duplicate"
 	// MessageInvalidRequest is message ID.
 	MessageInvalidRequest = "Promise.Message.InvalidRequest"
 	// MessageTimeout is message ID.
@@ -45,42 +43,41 @@ const (
 )
 
 // NewMessage create a message with default value.
-func NewMessage(category string) Message {
+func NewMessage() Message {
 	ret := Message{
-		Category:   category,
 		CreatedAt:  time.Now(),
 		StatusCode: http.StatusBadRequest,
 	}
 	return ret
 }
 
-// NewResourceNotExist return a message that means the resource does not exist.
-func NewResourceNotExist() Message {
-	ret := NewMessage(category.Promise)
-	ret.ID = MessageResourceNotExist
+// NewNotExist return a message that means the resource does not exist.
+func NewNotExist() Message {
+	ret := NewMessage()
+	ret.ID = MessageNotExist
 	ret.Severity = constvalue.SeverityNormal
 	ret.Description = "Resource does not exist."
 	ret.Supports = []Support{
-		NewSupportResourceNotExist(),
+		NewSupportNotExist(),
 	}
 	return ret
 }
 
-// NewResourceDuplicate return a message that means resource duplication happened.
-func NewResourceDuplicate() Message {
-	ret := NewMessage(category.Promise)
-	ret.ID = MessageResourceDuplicate
+// NewDuplicate return a message that means resource duplication happened.
+func NewDuplicate() Message {
+	ret := NewMessage()
+	ret.ID = MessageDuplicate
 	ret.Severity = constvalue.SeverityNormal
 	ret.Description = "Resource duplicated."
 	ret.Supports = []Support{
-		NewSupportResourceDuplicate(),
+		NewSupportDuplicate(),
 	}
 	return ret
 }
 
 // NewInvalidRequest return a message that means the request is Invalid.
 func NewInvalidRequest() Message {
-	ret := NewMessage(category.Promise)
+	ret := NewMessage()
 	ret.ID = MessageInvalidRequest
 	ret.Severity = constvalue.SeverityNormal
 	ret.Description = "The request is invalid."
@@ -92,7 +89,7 @@ func NewInvalidRequest() Message {
 
 // NewInternalError return a message that means there is a internal error happened.
 func NewInternalError() Message {
-	ret := NewMessage(category.Promise)
+	ret := NewMessage()
 	ret.ID = MessageInternalError
 	ret.Severity = constvalue.SeverityNormal
 	ret.Description = "Internal error happened while process the request."
@@ -104,7 +101,7 @@ func NewInternalError() Message {
 
 // NewTimeout return a message that means there is a timeout happend.
 func NewTimeout() Message {
-	ret := NewMessage(category.Promise)
+	ret := NewMessage()
 	ret.ID = MessageTimeout
 	ret.Severity = constvalue.SeverityNormal
 	ret.Description = "I/O operation timeout."
@@ -116,7 +113,7 @@ func NewTimeout() Message {
 
 // NewTransactionError return a message that means transaction error.
 func NewTransactionError() Message {
-	ret := NewMessage(category.Promise)
+	ret := NewMessage()
 	ret.ID = MessageTransactionError
 	ret.Severity = constvalue.SeverityNormal
 	ret.Description = "Transaction error."

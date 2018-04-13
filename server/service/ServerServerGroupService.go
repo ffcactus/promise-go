@@ -15,7 +15,7 @@ func PostServerServerGroup(request *dto.PostServerServerGroupRequest) (*model.Se
 
 	posted, exist, err := dbImpl.PostServerServerGroup(request.ToModel())
 	if exist {
-		return nil, []commonMessage.Message{commonMessage.NewResourceDuplicate()}
+		return nil, []commonMessage.Message{commonMessage.NewDuplicate()}
 	}
 	if err != nil {
 		return nil, []commonMessage.Message{commonMessage.NewTransactionError()}
@@ -29,7 +29,7 @@ func GetServerServerGroup(id string) (*model.ServerServerGroup, []commonMessage.
 
 	ssg := dbImpl.GetServerServerGroup(id)
 	if ssg == nil {
-		return nil, []commonMessage.Message{commonMessage.NewResourceNotExist()}
+		return nil, []commonMessage.Message{commonMessage.NewNotExist()}
 	}
 	return ssg, nil
 }
@@ -52,7 +52,7 @@ func DeleteServerServerGroup(id string) []commonMessage.Message {
 		return []commonMessage.Message{message.NewDeleteDefaultServerServerGroup()}
 	}
 	if previous == nil {
-		return []commonMessage.Message{commonMessage.NewResourceNotExist()}
+		return []commonMessage.Message{commonMessage.NewNotExist()}
 	}
 	if err != nil {
 		return []commonMessage.Message{commonMessage.NewTransactionError()}

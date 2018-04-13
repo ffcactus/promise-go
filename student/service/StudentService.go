@@ -1,7 +1,6 @@
 package service
 
 import (
-	"promise/apps"
 	"promise/base"
 	"promise/sdk/event"
 	"promise/student/db"
@@ -9,11 +8,8 @@ import (
 )
 
 var (
-
 	// TODO should I put it inside the struct?
-	
-	// StudentDB is the DB used in this service.
-	StudentDB = &base.DB{
+	studentDB = &base.DB{
 		TemplateImpl: new(db.StudentDB),
 	}
 )
@@ -25,8 +21,9 @@ type StudentService struct {
 
 // GetCategory returns the category of this service.
 func (s *StudentService) GetCategory() string {
-	return apps.CategoryStudent
+	return base.CategoryStudent
 }
+
 // NewResponse creates a new response DTO.
 func (s *StudentService) NewResponse() base.ResponseInterface {
 	return new(dto.GetStudentResponse)
@@ -34,7 +31,7 @@ func (s *StudentService) NewResponse() base.ResponseInterface {
 
 // GetDB returns the DB implementation.
 func (s *StudentService) GetDB() base.DBInterface {
-	return StudentDB
+	return studentDB
 }
 
 // GetEventService returns the event service implementation.

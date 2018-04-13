@@ -1,7 +1,6 @@
 package base
 
 import (
-	"promise/apps"
 	"time"
 )
 
@@ -52,7 +51,7 @@ func (dto *Response) Load(m ModelInterface) error {
 // ResponseLoad load model to DTO.
 func ResponseLoad(dto *Response, m *Model) {
 	dto.ID = m.ID
-	dto.URI = apps.CategoryToURI(m.Category, m.ID)
+	dto.URI = CategoryToURI(m.Category, m.ID)
 	dto.Category = m.Category
 	dto.CreatedAt = m.CreatedAt
 	dto.UpdatedAt = m.UpdatedAt
@@ -69,7 +68,7 @@ type CollectionMemberResponse struct {
 func (dto *CollectionMemberResponse) Load(m *CollectionMemberModel) {
 	dto.ID = m.ID
 	dto.Category = m.Category
-	dto.URI = apps.CategoryToURI(m.Category, m.ID)
+	dto.URI = CategoryToURI(m.Category, m.ID)
 }
 
 // CollectionResponse is the collection response DTO in Promise project.

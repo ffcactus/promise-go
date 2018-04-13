@@ -3,6 +3,7 @@ package base
 import (
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	log "github.com/sirupsen/logrus"
 	"strings"
 )
@@ -57,8 +58,8 @@ func (impl *DB) Post(m ModelInterface) (bool, ModelInterface, bool, error) {
 			tx.Rollback()
 			log.WithFields(log.Fields{
 				"resource": name,
-				"id":   record.GetID(),
-				"name": record.GetDebugName(),
+				"id":       record.GetID(),
+				"name":     record.GetDebugName(),
 			}).Warn("Post resource in DB failed, duplicated resource, transaction rollback.")
 			return true, nil, false, ErrorResourceNotExist
 		}
@@ -70,8 +71,8 @@ func (impl *DB) Post(m ModelInterface) (bool, ModelInterface, bool, error) {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
-			"name":  m.GetDebugName(),
-			"error": err,
+			"name":     m.GetDebugName(),
+			"error":    err,
 		}).Warn("Post resource in DB failed, create resource failed, transaction rollback.")
 		return false, nil, false, err
 	}
@@ -79,16 +80,16 @@ func (impl *DB) Post(m ModelInterface) (bool, ModelInterface, bool, error) {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
-			"name":  m.GetDebugName(),
-			"error": err,
+			"name":     m.GetDebugName(),
+			"error":    err,
 		}).Warn("Post resource in DB failed, save resource failed, transaction rollback.")
 		return false, nil, false, err
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
-			"name":  m.GetDebugName(),
-			"error": err,
+			"name":     m.GetDebugName(),
+			"error":    err,
 		}).Warn("Post resource in DB failed, commit failed.")
 		return false, nil, false, err
 	}
@@ -109,7 +110,7 @@ func (impl *DB) get(tx *gorm.DB, id string, record EntityInterface) (bool, error
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
-			"id": id,
+			"id":       id,
 		}).Warn("Get resource in DB failed, resource does not exist, transaction rollback.")
 		return false, ErrorResourceNotExist
 	}
@@ -122,8 +123,8 @@ func (impl *DB) get(tx *gorm.DB, id string, record EntityInterface) (bool, error
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
-			"id":    id,
-			"error": err,
+			"id":       id,
+			"error":    err,
 		}).Warn("Get resource in DB failed, fatch failed, transaction rollback.")
 		return true, err
 	}
@@ -142,8 +143,8 @@ func (impl *DB) Get(id string) ModelInterface {
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
-			"id":    id,
-			"error": err,
+			"id":       id,
+			"error":    err,
 		}).Warn("Get resource in DB failed, start transaction failed.")
 		return nil
 	}
@@ -173,8 +174,8 @@ func (impl *DB) Delete(id string) (bool, ModelInterface, bool, error) {
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
-			"id":    id,
-			"error": err,
+			"id":       id,
+			"error":    err,
 		}).Warn("Delete resource from DB failed, start transaction failed.")
 		return true, nil, false, err
 	}
@@ -187,8 +188,8 @@ func (impl *DB) Delete(id string) (bool, ModelInterface, bool, error) {
 			tx.Rollback()
 			log.WithFields(log.Fields{
 				"resource": name,
-				"id":    id,
-				"error": err,
+				"id":       id,
+				"error":    err,
 			}).Warn("Delete resource from DB failed, delete association failed, transaction rollback.")
 			return true, nil, false, err
 		}
@@ -197,16 +198,16 @@ func (impl *DB) Delete(id string) (bool, ModelInterface, bool, error) {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
-			"id":    id,
-			"error": err,
+			"id":       id,
+			"error":    err,
 		}).Warn("Delete resource from DB failed, delete resource failed, transaction rollback.")
 		return true, nil, false, err
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
-			"id":    id,
-			"error": err,
+			"id":       id,
+			"error":    err,
 		}).Warn("Delete resource from DB failed, commit failed.")
 		return true, nil, false, err
 	}
@@ -245,14 +246,14 @@ func (impl *DB) GetCollection(start int64, count int64, filter string) (*Collect
 	if err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
-			"filter": filter,
-			"error":  err}).
+			"filter":   filter,
+			"error":    err}).
 			Warn("Get collection in DB failed, convert filter failed.")
 		return nil, err
 	}
 	log.WithFields(log.Fields{
 		"resource": name,
-		"where": where,
+		"where":    where,
 	}).Debug("Convert filter success.")
 
 	// We need transaction to ensure the total and the query count is consistent.
@@ -260,7 +261,7 @@ func (impl *DB) GetCollection(start int64, count int64, filter string) (*Collect
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
-			"error": err}).
+			"error":    err}).
 			Warn("Get collection in DB failed, start transaction failed.")
 		return nil, err
 	}
@@ -270,7 +271,7 @@ func (impl *DB) GetCollection(start int64, count int64, filter string) (*Collect
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
-			"error": err,
+			"error":    err,
 		}).Warn("Get collection in DB failed, get count failed.")
 		return nil, err
 	}
@@ -280,17 +281,17 @@ func (impl *DB) GetCollection(start int64, count int64, filter string) (*Collect
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
-			"error":  err}).
+			"error":    err}).
 			Warn("Get collection in DB failed, find resource failed.")
 		return nil, err
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
-			"error": err}).
+			"error":    err}).
 			Warn("Get collection in DB failed, commit failed.")
 		return nil, err
-	}	
+	}
 	return impl.TemplateImpl.ConvertFindResultToCollection(start, total, recordCollection)
 }
 
@@ -311,7 +312,7 @@ func (impl *DB) DeleteCollection() ([]ModelInterface, bool, error) {
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
-			"error": err}).
+			"error":    err}).
 			Warn("Get collection in DB failed, start transaction failed.")
 		return nil, false, err
 	}
@@ -319,7 +320,7 @@ func (impl *DB) DeleteCollection() ([]ModelInterface, bool, error) {
 	if err := tx.Find(recordCollection).Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
-			"error":  err}).
+			"error":    err}).
 			Warn("Delete collection in DB failed, find resource failed.")
 		return nil, false, err
 	}
@@ -328,7 +329,7 @@ func (impl *DB) DeleteCollection() ([]ModelInterface, bool, error) {
 			tx.Rollback()
 			log.WithFields(log.Fields{
 				"resource": name,
-				"error": err}).
+				"error":    err}).
 				Warn("Delete collection in DB failed, delete resources failed, transaction rollback.")
 			return nil, false, err
 		}
@@ -338,16 +339,74 @@ func (impl *DB) DeleteCollection() ([]ModelInterface, bool, error) {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
-			"error": err}).
+			"error":    err}).
 			Warn("Delete collection in DB failed, convert find result failed, transaction rollback.")
 		return nil, false, err
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
-			"error": err}).
+			"error":    err}).
 			Warn("Delete collection in DB failed, commit failed.")
 		return nil, false, err
 	}
-	return ret, true, nil	
+	return ret, true, nil
+}
+
+// TableInfo The tables in DB.
+type TableInfo struct {
+	Name string
+	Info interface{}
+}
+
+var connection *gorm.DB
+
+// InitConnection Init the DB connection. Each service have to call the method first.
+func InitConnection() error {
+	if connection == nil {
+		log.Info("Init DB connection.")
+		args := "host=localhost port=5432 user=postgres dbname=promise sslmode=disable password=iforgot"
+		db, err := gorm.Open("postgres", args)
+		if err != nil {
+			log.Info("gorm.Open() failed, error = ", err)
+			return err
+		}
+		db.LogMode(true)
+		db.SingularTable(true)
+		connection = db
+	} else {
+		log.Info("DB connection exist.")
+	}
+	return nil
+}
+
+// GetConnection Get the DB connection.
+func GetConnection() *gorm.DB {
+	return connection
+}
+
+// CreateTables Create all the tables.
+func CreateTables(tables []TableInfo) bool {
+	c := GetConnection()
+	success := true
+	for i := range tables {
+		if err := c.CreateTable(tables[i].Info).Error; err != nil {
+			success = false
+			log.Error("Failed to create table", tables[i].Name, err)
+		}
+	}
+	return success
+}
+
+// RemoveTables Remove all the tables.
+func RemoveTables(tables []TableInfo) bool {
+	c := GetConnection()
+	success := true
+	for i := range tables {
+		if err := c.DropTableIfExists(tables[i].Info).Error; err != nil {
+			success = false
+			log.Error("Failed to remove table", tables[i].Name, err)
+		}
+	}
+	return success
 }

@@ -8,7 +8,6 @@ import (
 
 // PostTaskStepRequest Post task step request DTO.
 type PostTaskStepRequest struct {
-	commonDTO.PromiseRequest
 	MessageID           *string `json:"MessageID"`
 	Name                string  `json:"Name"`
 	Description         *string `json:"Description"`

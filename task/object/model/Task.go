@@ -1,8 +1,7 @@
 package model
 
 import (
-	"promise/common/object/message"
-	commonModel "promise/common/object/model"
+	"promise/base"
 )
 
 // ExecutionState The execution state.
@@ -38,7 +37,7 @@ var (
 // ExecutionResult Used by Task and it's TaskStep
 type ExecutionResult struct {
 	State   ExecutionResultState
-	Message *message.Message
+	Message *base.Message
 }
 
 // TaskStep The TaskStep represents each planned steps in a task.
@@ -53,7 +52,7 @@ type TaskStep struct {
 
 // Task Task object.
 type Task struct {
-	commonModel.PromiseModel
+	base.Model
 	MessageID           *string
 	Name                string
 	ParentTask          *string
@@ -67,6 +66,36 @@ type Task struct {
 	Percentage          int
 	CurrentStep         string
 	TaskSteps           []TaskStep
-	SubTasks            []Task
 	ExecutionResult     ExecutionResult
+}
+
+// GetDebugName return the debug name the model.
+func (m *Task) GetDebugName() string {
+	return m.Name
+}
+
+// GetValueForDuplicationCheck return the value for duplication check.
+func (m *Task) GetValueForDuplicationCheck() string {
+	return m.Name
+}
+
+// TaskCollectionMember is the member in student collection.
+type TaskCollectionMember struct {
+	base.CollectionMemberModel
+	Name            string
+	Description     *string
+	ExecutionState  ExecutionState
+	Percentage      int
+	CurrentStep     string
+	ExecutionResult ExecutionResult
+}
+
+// TaskCollection is the collection of student.
+type TaskCollection struct {
+	base.CollectionModel
+}
+
+// NewModelMember return a new ModelMember
+func (m *TaskCollection) NewModelMember() interface{} {
+	return new(TaskCollectionMember)
 }

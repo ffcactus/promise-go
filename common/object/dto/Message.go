@@ -48,10 +48,9 @@ func (dto *Support) Model() *message.Support {
 
 // Message is the DTO.
 type Message struct {
-	ID          string `json:"ID"`
-	Severity    string `json:"Severity"`
-	Category    string `json:"Category"`
-	CreateAt    time.Time
+	ID          string     `json:"ID"`
+	Severity    string     `json:"Severity"`
+	CreatedAt   time.Time  `json:"CreatedAt"`
 	Description string     `json:"Description"`
 	Arguments   []Argument `json:"Arguments"`
 	Supports    []Support  `json:"Supports"`
@@ -90,9 +89,8 @@ func (dto *Message) Load(m *message.Message) {
 	dto.Supports = make([]Support, 0)
 	dto.ID = m.ID
 	dto.Severity = m.Severity
-	dto.Category = m.Category
 	dto.Description = m.Description
-	dto.CreateAt = m.CreatedAt
+	dto.CreatedAt = m.CreatedAt
 	for i := range m.Arguments {
 		dto.Arguments = append(dto.Arguments, NewArgument(m.Arguments[i]))
 	}
@@ -108,9 +106,8 @@ func (dto *Message) Model() *message.Message {
 	ret.Supports = make([]message.Support, 0)
 	ret.ID = dto.ID
 	ret.Severity = dto.Severity
-	ret.Category = dto.Category
 	ret.Description = dto.Description
-	ret.CreatedAt = dto.CreateAt
+	ret.CreatedAt = dto.CreatedAt
 	for i := range dto.Arguments {
 		ret.Arguments = append(ret.Arguments, *dto.Arguments[i].Model())
 	}

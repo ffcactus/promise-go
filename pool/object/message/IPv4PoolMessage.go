@@ -1,7 +1,6 @@
 package message
 
 import (
-	"promise/common/category"
 	"promise/common/object/constvalue"
 	commonMessage "promise/common/object/message"
 )
@@ -25,7 +24,7 @@ const (
 
 // NewIPv4PoolEmpty will return a message.
 func NewIPv4PoolEmpty() commonMessage.Message {
-	ret := commonMessage.NewMessage(category.PoolIPv4)
+	ret := commonMessage.NewMessage()
 	ret.ID = MessageIPv4PoolEmpty
 	ret.Severity = constvalue.SeverityWarning
 	ret.Description = "No more IPv4 address can be allocated."
@@ -34,7 +33,7 @@ func NewIPv4PoolEmpty() commonMessage.Message {
 
 // NewIPv4AddressNotExist will return a message.
 func NewIPv4AddressNotExist() commonMessage.Message {
-	ret := commonMessage.NewMessage(category.PoolIPv4)
+	ret := commonMessage.NewMessage()
 	ret.ID = MessageIPv4AddressNotExist
 	ret.Severity = constvalue.SeverityWarning
 	ret.Description = "The address does not exist in this pool."
@@ -43,7 +42,7 @@ func NewIPv4AddressNotExist() commonMessage.Message {
 
 // NewIPv4FormatError will return a message.
 func NewIPv4FormatError() commonMessage.Message {
-	ret := commonMessage.NewMessage(category.PoolIPv4)
+	ret := commonMessage.NewMessage()
 	ret.ID = MessageIPv4FormateError
 	ret.Severity = constvalue.SeverityWarning
 	ret.Description = "Unknown IPv4 format."
@@ -52,7 +51,7 @@ func NewIPv4FormatError() commonMessage.Message {
 
 // NewIPv4RangeEndAddressError will return a message.
 func NewIPv4RangeEndAddressError() commonMessage.Message {
-	ret := commonMessage.NewMessage(category.PoolIPv4)
+	ret := commonMessage.NewMessage()
 	ret.ID = MessageIPv4RangeEndAddressError
 	ret.Severity = constvalue.SeverityWarning
 	ret.Description = "The end address in a range should equal or big then start address"
@@ -61,7 +60,7 @@ func NewIPv4RangeEndAddressError() commonMessage.Message {
 
 // NewIPv4RangeSizeError will return a message.
 func NewIPv4RangeSizeError() commonMessage.Message {
-	ret := commonMessage.NewMessage(category.PoolIPv4)
+	ret := commonMessage.NewMessage()
 	ret.ID = MessageIPv4RangeSizeError
 	ret.Severity = constvalue.SeverityWarning
 	ret.Description = "The number of addresses in a range should not more than 256."
@@ -70,7 +69,7 @@ func NewIPv4RangeSizeError() commonMessage.Message {
 
 // NewIPv4RangeCountError will return a message.
 func NewIPv4RangeCountError() commonMessage.Message {
-	ret := commonMessage.NewMessage(category.PoolIPv4)
+	ret := commonMessage.NewMessage()
 	ret.ID = MessageIPv4RangeCountError
 	ret.Severity = constvalue.SeverityWarning
 	ret.Description = "IPv4 pool should contain one range at least."
@@ -79,7 +78,7 @@ func NewIPv4RangeCountError() commonMessage.Message {
 
 // NewIPv4NotAllocatedError will return a message.
 func NewIPv4NotAllocatedError() commonMessage.Message {
-	ret := commonMessage.NewMessage(category.PoolIPv4)
+	ret := commonMessage.NewMessage()
 	ret.ID = MessageIPv4NotAllocatedError
 	ret.Severity = constvalue.SeverityWarning
 	ret.Description = "IP is not allocated before."

@@ -1,12 +1,12 @@
 package entity
 
 import (
-	commonDB "promise/common/db"
+	"promise/base"
 )
 
 var (
 	// Tables The tables used by this project.
-	Tables = []commonDB.TableInfo{
+	Tables = []base.TableInfo{
 		{Name: "Task", Info: new(Task)},
 	}
 )

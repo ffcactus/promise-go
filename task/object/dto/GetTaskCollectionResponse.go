@@ -1,55 +1,54 @@
 package dto
 
 import (
+	"promise/base"
 	"promise/task/object/model"
-	"time"
 )
-
-// TaskMember Task member DTO.
-type TaskMember struct {
-	URI              string               `json:"URI"`
-	Name             string               `json:"Name"`
-	Description      *string              `json:"Description,omitempty"`
-	CreatedAt        time.Time            `json:"CreatedAt"`
-	UpdatedAt        time.Time            `json:"UpdatedAt"`
-	CreatedByName    string               `json:"CreatedByName"`
-	CreatedByPageURI string               `json:"CreatedByPageURI"`
-	TargetName       string               `json:"TargetName"`
-	TargetPageURI    string               `json:"TargetPageURI"`
-	ExecutionState   model.ExecutionState `json:"ExecutionState"`
-	CurrentStep      string               `json:"CurrentStep"`
-	Percentage       int                  `json:"Percentage"`
-	ExecutionResult  ExecutionResult      `json:"ExecutionResult"`
-}
 
 // GetTaskCollectionResponse Get task collection response DTO.
 type GetTaskCollectionResponse struct {
-	Start       int64        `json:"Start"`
-	Count       int64        `json:"Count"`
-	Total       int64        `json:"Total"`
-	Members     []TaskMember `json:"Members"`
-	NextPageURI *string      `json:"NextPageURI,omitempty"`
-	PrevPageURI *string      `json:"PrevPageURI,omitempty"`
+	base.CollectionResponse
 }
 
 // Load Load from model.
-func (o *GetTaskCollectionResponse) Load(m *model.TaskCollection) {
-	o.Start = m.Start
-	o.Count = m.Count
-	o.Total = m.Total
-	for i := range m.Members {
-		each := new(TaskMember)
-		each.Name = m.Members[i].Name
-		each.Description = m.Members[i].Description
-		each.ExecutionState = m.Members[i].ExecutionState
-		each.Percentage = m.Members[i].Percentage
-		each.ExecutionResult.Load(&m.Members[i].ExecutionResult)
-		o.Members = append(o.Members, *each)
+func (dto *GetTaskCollectionResponse) Load(m *base.CollectionModel) error {
+	dto.Start = m.Start
+	dto.Count = m.Count
+	dto.Total = m.Total
+	dto.Members = make([]interface{}, 0)
+	for _, v := range m.Members {
+		member := TaskCollectionMember{}
+		if err := member.Load(v); err != nil {
+			return err
+		}
+		dto.Members = append(dto.Members, member)
 	}
-	if m.NextPageURI != "" {
-		o.NextPageURI = &m.NextPageURI
+	return nil
+}
+
+// TaskCollectionMember is the DTO used in collection response.
+type TaskCollectionMember struct {
+	base.CollectionMemberResponse
+	Name            string               `json:"Name"`
+	Description     *string              `json:"Description,omitempty"`
+	ExecutionState  model.ExecutionState `json:"ExecutionState"`
+	CurrentStep     string               `json:"CurrentStep"`
+	Percentage      int                  `json:"Percentage"`
+	ExecutionResult ExecutionResult      `json:"ExecutionResult"`
+}
+
+// Load will load info from model.
+func (dto *TaskCollectionMember) Load(i interface{}) error {
+	m, ok := i.(*model.TaskCollectionMember)
+	if !ok {
+		return base.ErrorDataConvert
 	}
-	if m.PrevPageURI != "" {
-		o.PrevPageURI = &m.PrevPageURI
-	}
+	dto.CollectionMemberResponse.Load(&m.CollectionMemberModel)
+	dto.Name = m.Name
+	dto.Description = m.Description
+	dto.ExecutionState = m.ExecutionState
+	dto.CurrentStep = m.CurrentStep
+	dto.Percentage = m.Percentage
+	dto.ExecutionResult.Load(&m.ExecutionResult)
+	return nil
 }

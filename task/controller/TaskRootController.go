@@ -1,83 +1,51 @@
 package controller
 
 import (
-	log "github.com/sirupsen/logrus"
-	"net/http"
-	commonController "promise/common/controller"
-	commonDto "promise/common/object/dto"
-	commonMessage "promise/common/object/message"
+	"promise/base"
 	"promise/task/object/dto"
 	"promise/task/service"
 )
 
+var (
+	// StudentService is the service used in Student controller.
+	taskService = &base.Service{
+		TemplateImpl: new(service.TaskService),
+	}
+)
+
 // TaskRootController is the root controller for task.
 type TaskRootController struct {
-	commonController.PromiseRootController
 }
 
-// Post Post a new task.
-func (c *TaskRootController) Post() {
-	var (
-		request  dto.PostTaskRequest
-		response dto.GetTaskResponse
-		messages []commonMessage.Message
-	)
-
-	if message, err := c.PromiseRootController.Post(&request); message != nil {
-		messages = append(messages, *message)
-		log.WithFields(log.Fields{
-			"error":   err,
-			"message": messages[0].ID}).
-			Warn("Post task failed, bad request.")
-		c.Data["json"] = commonDto.MessagesToDto(messages)
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		c.ServeJSON()
-		return
-	}
-
-	log.WithFields(log.Fields{"name": request.Name}).Info("Post IPv4 pool.")
-
-	// Create the context for this operation.
-	if task, messages := service.PostTask(&request); messages != nil {
-		c.Data["json"] = commonDto.MessagesToDto(messages)
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		log.WithFields(log.Fields{"message": messages[0].ID}).Warn("Post task failed.")
-	} else {
-		response.Load(task)
-		c.Data["json"] = &response
-		c.Ctx.Output.SetStatus(http.StatusCreated)
-		log.WithFields(log.Fields{"name": response.Name, "ID": response.ID}).Info("Post IPv4 pool done.")
-	}
-	c.ServeJSON()
+// GetResourceName returns the name this controller handle of.
+func (c *TaskRootController) GetResourceName() string {
+	return "student"
 }
 
-// Get Get task collection.
-func (c *TaskRootController) Get() {
-	var (
-		messages []commonMessage.Message
-		response dto.GetTaskCollectionResponse
-	)
+// NewRequest creates a new request DTO.
+func (c *TaskRootController) NewRequest() base.RequestInterface {
+	request := new(dto.PostTaskRequest)
+	request.TemplateImpl = request
+	return request
+}
 
-	start, count, filter, message, err := c.PromiseRootController.Get()
-	if message != nil {
-		messages = append(messages, *message)
-		log.WithFields(log.Fields{
-			"error":   err,
-			"message": messages[0].ID}).
-			Warn("Get task collection failed, bad request.")
-		c.Data["json"] = commonDto.MessagesToDto(messages)
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		c.ServeJSON()
-		return
+// NewResponse creates a new response DTO.
+func (c *TaskRootController) NewResponse() base.ResponseInterface {
+	response := new(dto.GetTaskResponse)
+	response.TemplateImpl = response
+	return response
+}
+
+// GetService returns the service.
+func (c *TaskRootController) GetService() base.ServiceInterface {
+	return taskService
+}
+
+// ConvertCollectionModel convert data to concrete DTO.
+func (c *TaskRootController) ConvertCollectionModel(m *base.CollectionModel) (interface{}, error) {
+	ret := new(dto.GetTaskCollectionResponse)
+	if err := ret.Load(m); err != nil {
+		return nil, err
 	}
-
-	if collection, messages := service.GetTaskCollection(start, count, filter); messages != nil {
-		c.Data["json"] = commonDto.MessagesToDto(messages)
-		c.Ctx.ResponseWriter.WriteHeader(messages[0].StatusCode)
-	} else {
-		response.Load(collection)
-		c.Data["json"] = &response
-	}
-
-	c.ServeJSON()
+	return ret, nil
 }

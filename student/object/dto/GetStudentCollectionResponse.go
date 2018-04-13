@@ -26,7 +26,7 @@ func (dto *GetStudentCollectionResponse) Load(m *base.CollectionModel) error {
 	return nil
 }
 
-// StudentCollectionMember is the DTO.
+// StudentCollectionMember is the DTO used in collection response.
 type StudentCollectionMember struct {
 	base.CollectionMemberResponse
 	Name string `json:"Name"`

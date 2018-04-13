@@ -23,7 +23,7 @@ func PostServer(request *dto.PostServerRequest) (*model.Server, []commonMessage.
 
 	server := serverBasicInfo.CreateServer()
 	if exist, _ := dbImpl.IsServerExist(server); exist {
-		return nil, []commonMessage.Message{commonMessage.NewResourceDuplicate()}
+		return nil, []commonMessage.Message{commonMessage.NewDuplicate()}
 	}
 
 	// Before save the server to the DB. We need configure the server first.
@@ -42,7 +42,7 @@ func GetServer(id string) (*model.Server, []commonMessage.Message) {
 	server := dbImpl.GetServerFull(id)
 	// util.PrintJson(server)
 	if server == nil {
-		return nil, []commonMessage.Message{commonMessage.NewResourceNotExist()}
+		return nil, []commonMessage.Message{commonMessage.NewNotExist()}
 	}
 	return server, nil
 }
@@ -62,7 +62,7 @@ func RefreshServer(id string) (*dto.RefreshServerResponse, []commonMessage.Messa
 	dbImpl := db.GetDBInstance()
 	server := dbImpl.GetServer(id)
 	if server == nil {
-		return nil, []commonMessage.Message{commonMessage.NewResourceNotExist()}
+		return nil, []commonMessage.Message{commonMessage.NewNotExist()}
 	}
 	ctx := context.CreateRefreshServerContext(server)
 	st := strategy.CreateRefreshServerStrategy(server)
@@ -94,7 +94,7 @@ func DeleteServer(id string) []commonMessage.Message {
 	dbImpl := db.GetDBInstance()
 	exist, server, ssg, commited, err := dbImpl.DeleteServer(id)
 	if !exist {
-		return []commonMessage.Message{commonMessage.NewResourceNotExist()}
+		return []commonMessage.Message{commonMessage.NewNotExist()}
 	}
 	if err != nil || !commited {
 		return []commonMessage.Message{commonMessage.NewTransactionError()}

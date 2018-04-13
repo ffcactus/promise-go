@@ -107,7 +107,7 @@ public class ServerGroupTest extends PromiseIntegrationTest
         // Create the default "all" server group should fail.
         final PostServerGroupRequest request = new PostServerGroupRequest("all", "default server group");
         PromiseAssertUtil
-                .assertPostMessage(getRootURL() + "/promise/v1/servergroup/", PromiseMessage.ResourceDuplicate.getId(), request);
+                .assertPostMessage(getRootURL() + "/promise/v1/servergroup/", PromiseMessage.Duplicate.getId(), request);
     }
 
     /**
@@ -118,7 +118,7 @@ public class ServerGroupTest extends PromiseIntegrationTest
     {
         PromiseAssertUtil.assertDeleteMessage(
                 getRootURL() + "/promise/v1/servergroup/i_am_not_exist",
-                PromiseMessage.ResourceNotExist.getId());
+                PromiseMessage.NotExist.getId());
     }
 
     /**
