@@ -6,21 +6,21 @@ import org.springframework.http.ResponseEntity;
 
 import com.promise.integrationtest.base.PromiseIntegrationTest;
 import com.promise.integrationtest.server.dto.PostServerRequest;
-import com.promise.integrationtest.server.dto.PostServerResponse;
+import com.promise.integrationtest.server.dto.GetServerResponse;
 
 public class ServerAssertUtil
 {
     /*
      * Assert the server has been posted.
      */
-    public static PostServerResponse assertServerPosted(String hostname, String username, String password)
+    public static GetServerResponse assertServerPosted(String hostname, String username, String password)
     {
         final PostServerRequest request = new PostServerRequest(hostname, username, password);
         // Create a server group.
-        final ResponseEntity<PostServerResponse> response = RestClient.post(
+        final ResponseEntity<GetServerResponse> response = RestClient.post(
                 PromiseIntegrationTest.getRootURL() + "/promise/v1/server/",
                 request,
-                PostServerResponse.class);
+                GetServerResponse.class);
         Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
         PromiseAssertUtil.isResourceResponse(response.getBody());
         return response.getBody();

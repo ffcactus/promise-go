@@ -214,7 +214,7 @@ func (impl *DB) Delete(id string) (bool, ModelInterface, bool, error) {
 	return true, previous.ToModel(), true, nil
 }
 
-func (impl *DB) convertFilter(filter string) (string, error) {
+func (impl *DB) convertFilter(filter string, filterNames []string) (string, error) {
 	if filter == "" {
 		return "", nil
 	}
@@ -222,12 +222,18 @@ func (impl *DB) convertFilter(filter string) (string, error) {
 	if len(cmds) != 3 {
 		return "", ErrorConvertFilter
 	}
-	switch strings.ToLower(cmds[1]) {
-	case "eq":
-		return "\"" + cmds[0] + "\"" + " = " + cmds[2], nil
-	default:
-		return "", ErrorConvertFilter
+	for _, v := range filterNames {
+		if cmds[0] == v {
+			switch strings.ToLower(cmds[1]) {
+			case "eq":
+				return "\"" + cmds[0] + "\"" + " = " + cmds[2], nil
+			default:
+				return "", ErrorConvertFilter
+			}
+		}
 	}
+	return "", ErrorUnknownFilterName
+
 }
 
 // GetCollection get the collection in DB.
@@ -242,7 +248,7 @@ func (impl *DB) GetCollection(start int64, count int64, filter string) (*Collect
 	)
 
 	// Check filter first to avoid starting a transaction.
-	where, err := impl.convertFilter(filter)
+	where, err := impl.convertFilter(filter, record.GetFilterNameList())
 	if err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
@@ -304,7 +310,7 @@ func (impl *DB) DeleteCollection() ([]ModelInterface, bool, error) {
 		name             = impl.TemplateImpl.GetResourceName()
 		recordCollection = impl.TemplateImpl.NewEntityCollection()
 		c                = impl.TemplateImpl.GetConnection()
-		association      = impl.TemplateImpl.NewEntity().GetAssociation()
+		tables           = impl.TemplateImpl.NewEntity().GetTables()
 	)
 
 	// We need transaction to ensure the total and the query count is consistent.
@@ -324,7 +330,7 @@ func (impl *DB) DeleteCollection() ([]ModelInterface, bool, error) {
 			Warn("Delete collection in DB failed, find resource failed.")
 		return nil, false, err
 	}
-	for _, v := range association {
+	for _, v := range tables {
 		if err := tx.Delete(v).Error; err != nil {
 			tx.Rollback()
 			log.WithFields(log.Fields{

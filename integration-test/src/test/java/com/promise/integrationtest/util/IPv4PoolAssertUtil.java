@@ -2,13 +2,13 @@ package com.promise.integrationtest.util;
 
 import org.junit.Assert;
 
+import com.promise.integrationtest.base.MessageEnum;
 import com.promise.integrationtest.base.PromiseIntegrationTest;
 import com.promise.integrationtest.idpool.dto.AllocateIPv4Request;
 import com.promise.integrationtest.idpool.dto.AllocateIPv4Response;
 import com.promise.integrationtest.idpool.dto.FreeIPv4Request;
 import com.promise.integrationtest.idpool.dto.GetIPv4PoolResponse;
 import com.promise.integrationtest.idpool.dto.PostIPv4PoolRequest;
-import com.promise.integrationtest.idpool.message.IDPoolMessage;
 
 public class IPv4PoolAssertUtil
 {
@@ -84,7 +84,7 @@ public class IPv4PoolAssertUtil
         final AllocateIPv4Request request = new AllocateIPv4Request();
         PromiseAssertUtil.assertPostMessage(
                 PromiseIntegrationTest.getRootURL() + "/promise/v1/id-pool/ipv4/" + id + "/action/allocate", 
-                IDPoolMessage.IPv4PoolEmpty.getId(), 
+                MessageEnum.IPv4PoolEmpty.getId(), 
                 request);
         
         final GetIPv4PoolResponse response = PromiseAssertUtil.assertGetResponse(
@@ -102,7 +102,7 @@ public class IPv4PoolAssertUtil
         request.setAddress(address);
         PromiseAssertUtil.assertPostMessage(
                 PromiseIntegrationTest.getRootURL() + "/promise/v1/id-pool/ipv4/" + id + "/action/free", 
-                IDPoolMessage.IPv4PoolAddressNotExist.getId(),
+                MessageEnum.IPv4PoolAddressNotExist.getId(),
                 request);
     }
     
@@ -116,7 +116,7 @@ public class IPv4PoolAssertUtil
         request.setAddress(address);
         PromiseAssertUtil.assertPostMessage(
                 PromiseIntegrationTest.getRootURL() + "/promise/v1/id-pool/ipv4/" + id + "/action/free", 
-                IDPoolMessage.IPv4PoolNotAllocatedError.getId(),
+                MessageEnum.IPv4PoolNotAllocatedError.getId(),
                 request);
     }
 }

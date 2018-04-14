@@ -27,6 +27,8 @@ const (
 	MessageTimeout = "Promise.Message.Timeout"
 	// MessageTransactionError is message ID.
 	MessageTransactionError = "Promise.Message.TransactionError"
+	// MessageUnknownFilterName is message ID.
+	MessageUnknownFilterName = "Promise.Message.UnknownFilterName"
 
 	// MessageTaskNoStep is message ID.
 	MessageTaskNoStep = "Task.Message.NoStep"
@@ -158,6 +160,16 @@ func NewMessageTransactionError() Message {
 	return ret
 }
 
+// NewMessageUnknownFilterName returns a new message.
+func NewMessageUnknownFilterName() Message {
+	ret := NewMessage()
+	ret.ID = MessageUnknownFilterName
+	ret.Severity = SeverityNormal
+	ret.Description = "Unknown filter name."
+	ret.Supports = []Support{}
+	return ret
+}
+
 // NewMessageTaskNoStep returns a new message.
 func NewMessageTaskNoStep() Message {
 	ret := NewMessage()
@@ -229,3 +241,5 @@ func NewSupportTransactionError() Support {
 	ret.Solution = "Try again later or contact support."
 	return ret
 }
+
+

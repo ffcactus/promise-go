@@ -80,6 +80,9 @@ func (s *Service) GetCollection(start int64, count int64, filter string) (*Colle
 		db = s.TemplateImpl.GetDB()
 	)
 	collection, err := db.GetCollection(start, count, filter)
+	if err != nil && err.Error() == ErrorUnknownFilterName.Error() {
+		return nil, []Message{NewMessageUnknownFilterName()}
+	}
 	if err != nil {
 		return nil, []Message{NewMessageTransactionError()}
 	}

@@ -19,7 +19,7 @@ type TaskRootController struct {
 
 // GetResourceName returns the name this controller handle of.
 func (c *TaskRootController) GetResourceName() string {
-	return "student"
+	return "task"
 }
 
 // NewRequest creates a new request DTO.

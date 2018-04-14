@@ -1,19 +1,23 @@
-package com.promise.integrationtest.base;
+package com.promise.integrationtest.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The common get resource response DTO.
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class ResourceResponse
 {
     @JsonProperty(value = "ID", required = true)
     private String id;
     @JsonProperty(value = "URI", required = true)
     private String uri;
-
+    @JsonProperty(value = "Category", required = true)
+    private String category;
+    @JsonProperty(value = "CreatedAt", required = true)
+    private String createdAt;
+    @JsonProperty(value = "UpdatedAt", required = true)
+    private String updatedAt;
+    
     public String getId()
     {
         return id;
@@ -32,6 +36,16 @@ public class ResourceResponse
     public void setUri(String uri)
     {
         this.uri = uri;
+    }
+
+    public String getCategory()
+    {
+        return category;
+    }
+
+    public void setCategory(String category)
+    {
+        this.category = category;
     }
 
     @Override

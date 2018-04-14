@@ -1,7 +1,7 @@
 package com.promise.integrationtest.server.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.promise.integrationtest.base.MemberResponse;
+import com.promise.integrationtest.dto.MemberResponse;
 
 public class ServerGroupMemberResponse extends MemberResponse
 {

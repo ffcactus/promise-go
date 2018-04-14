@@ -6,12 +6,14 @@ import (
 
 // RequestTemplateInterface is the interface that a concrete Request should have.
 type RequestTemplateInterface interface {
+	IsValid() *Message
 	GetDebugName() string
 	ToModel() ModelInterface
 }
 
 // RequestInterface is the interface that  Request should have.
 type RequestInterface interface {
+	IsValid() *Message
 	GetDebugName() string
 	ToModel() ModelInterface
 }

@@ -1,7 +1,7 @@
 package com.promise.integrationtest.server.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.promise.integrationtest.base.ResourceResponse;
+import com.promise.integrationtest.dto.ResourceResponse;
 
 public class PostServerServerGroupResponse extends ResourceResponse
 {

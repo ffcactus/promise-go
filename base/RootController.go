@@ -44,6 +44,17 @@ func (c *RootController) Post() {
 		return
 	}
 
+	if message := request.IsValid(); message != nil {
+		messages = append(messages, *message)
+		log.WithFields(log.Fields{
+			"resource": c.TemplateImpl.GetResourceName(),
+			"message":  messages[0].ID,
+		}).Warn("Post resource failed, request validation failed.")
+		c.Data["json"] = &messages
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.ServeJSON()
+		return
+	}
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.GetResourceName(),
 		"request":  request.GetDebugName(),
@@ -80,7 +91,7 @@ func (c *RootController) Get() {
 		"resource": c.TemplateImpl.GetResourceName(),
 		"start":    start,
 		"count":    count,
-	}).Debug("Get resource collection.")
+	}).Info("Get resource collection.")
 	if start != "" {
 		_startInt, err := strconv.ParseInt(start, 10, 64)
 		if err != nil || _startInt < 0 {
@@ -139,6 +150,9 @@ func (c *RootController) Get() {
 		return
 	}
 	log.WithFields(log.Fields{
+		"start": startInt,
+		"count": countInt,
+		"filter": filter,
 		"resource": c.TemplateImpl.GetResourceName(),
 	}).Info("Get resource collection done.")
 	c.Data["json"] = response

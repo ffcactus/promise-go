@@ -13,17 +13,15 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.promise.integrationtest.base.DeleteResourceResponse;
+import com.promise.integrationtest.base.MessageEnum;
 import com.promise.integrationtest.base.PromiseIntegrationTest;
-import com.promise.integrationtest.common.object.message.PromiseMessage;
+import com.promise.integrationtest.dto.DeleteResourceResponse;
 import com.promise.integrationtest.idpool.dto.AllocateIPv4Request;
 import com.promise.integrationtest.idpool.dto.FreeIPv4Request;
 import com.promise.integrationtest.idpool.dto.GetIPv4PoolResponse;
-import com.promise.integrationtest.idpool.dto.IPv4PoolMemberResponse;
+import com.promise.integrationtest.idpool.dto.IPv4PoolCollectionMemberResponse;
 import com.promise.integrationtest.idpool.dto.IPv4RangeRequest;
 import com.promise.integrationtest.idpool.dto.PostIPv4PoolRequest;
-import com.promise.integrationtest.idpool.message.IDPoolMessage;
-import com.promise.integrationtest.server.dto.GetServerGroupResponse;
 import com.promise.integrationtest.util.IPv4PoolAssertUtil;
 import com.promise.integrationtest.util.PromiseAssertUtil;
 import com.promise.integrationtest.util.RestClient;
@@ -87,9 +85,9 @@ public class IPv4PoolTest extends PromiseIntegrationTest
 
         final GetIPv4PoolResponse response1 = IPv4PoolAssertUtil.assertIPv4PoolPosted(request1);
 
-        final GetServerGroupResponse response2 = PromiseAssertUtil.assertGetResponse(
+        final GetIPv4PoolResponse response2 = PromiseAssertUtil.assertGetResponse(
                 getRootURL() + response1.getUri(),
-                GetServerGroupResponse.class);
+                GetIPv4PoolResponse.class);
         Assert.assertEquals("pool1", response2.getName());
 
         PromiseAssertUtil.assertDeleteResource(getRootURL() + response1.getUri());
@@ -125,7 +123,7 @@ public class IPv4PoolTest extends PromiseIntegrationTest
 
         IPv4PoolAssertUtil.assertIPv4PoolPosted(request1);
         PromiseAssertUtil
-                .assertPostMessage(getRootURL() + "/promise/v1/id-pool/ipv4", PromiseMessage.Duplicate.getId(), request1);
+                .assertPostMessage(getRootURL() + "/promise/v1/id-pool/ipv4", MessageEnum.Duplicate.getId(), request1);
     }
 
     /**
@@ -136,20 +134,20 @@ public class IPv4PoolTest extends PromiseIntegrationTest
     {
         PromiseAssertUtil.assertDeleteMessage(
                 getRootURL() + "/promise/v1/id-pool/ipv4/i_am_not_exist",
-                PromiseMessage.NotExist.getId());
+                MessageEnum.NotExist.getId());
         PromiseAssertUtil.assertGetMessage(
                 getRootURL() + "/promise/v1/id-pool/ipv4/i_am_not_exist",
-                PromiseMessage.NotExist.getId());
+                MessageEnum.NotExist.getId());
         final AllocateIPv4Request request1 = new AllocateIPv4Request();
         PromiseAssertUtil.assertPostMessage(
                 getRootURL() + "/promise/v1/id-pool/ipv4/i_am_not_exist/action/allocate",
-                PromiseMessage.NotExist.getId(),
+                MessageEnum.NotExist.getId(),
                 request1);
         final FreeIPv4Request request2 = new FreeIPv4Request();
         request2.setAddress("0.0.0.0");
         PromiseAssertUtil.assertPostMessage(
                 getRootURL() + "/promise/v1/id-pool/ipv4/i_am_not_exist/action/free",
-                PromiseMessage.NotExist.getId(),
+                MessageEnum.NotExist.getId(),
                 request2);        
     }
 
@@ -180,17 +178,20 @@ public class IPv4PoolTest extends PromiseIntegrationTest
         final GetIPv4PoolResponse response2 = IPv4PoolAssertUtil.assertIPv4PoolPosted(request2);
         final GetIPv4PoolResponse response3 = IPv4PoolAssertUtil.assertIPv4PoolPosted(request3);
 
-        final List<IPv4PoolMemberResponse> members1 = PromiseAssertUtil
-                .assertGetCollection(getRootURL() + "/promise/v1/id-pool/ipv4", 3, IPv4PoolMemberResponse.class);
+        final List<IPv4PoolCollectionMemberResponse> members1 = PromiseAssertUtil
+                .assertGetCollection(getRootURL() + "/promise/v1/id-pool/ipv4", 3, 3, IPv4PoolCollectionMemberResponse.class);
         Assert.assertTrue(members1.contains(response1));
         Assert.assertTrue(members1.contains(response2));
         Assert.assertTrue(members1.contains(response3));
 
         PromiseAssertUtil.assertDeleteResource(getRootURL() + response1.getUri());
-        final List<IPv4PoolMemberResponse> members2 = PromiseAssertUtil
-                .assertGetCollection(getRootURL() + "/promise/v1/id-pool/ipv4", 2, IPv4PoolMemberResponse.class);
+        final List<IPv4PoolCollectionMemberResponse> members2 = PromiseAssertUtil
+                .assertGetCollection(getRootURL() + "/promise/v1/id-pool/ipv4", 2, 2, IPv4PoolCollectionMemberResponse.class);
         Assert.assertTrue(members2.contains(response2));
         Assert.assertTrue(members2.contains(response3));
+        
+        // Test start and count parameters.
+        PromiseAssertUtil.assertGetColletcionWithStartCount(getRootURL() + "/promise/v1/id-pool/ipv4", 2);
     }
 
     /**
@@ -275,23 +276,23 @@ public class IPv4PoolTest extends PromiseIntegrationTest
         request.setName("pool1");      
         PromiseAssertUtil.assertPostMessage(
                 getRootURL() + "/promise/v1/id-pool/ipv4", 
-                IDPoolMessage.IPv4PoolRangeCountError.getId(), 
+                MessageEnum.IPv4PoolRangeCountError.getId(), 
                 request);
         
         request.setRanges(ranges1);
         PromiseAssertUtil.assertPostMessage(
                 getRootURL() + "/promise/v1/id-pool/ipv4", 
-                IDPoolMessage.IPv4PoolFormatError.getId(), 
+                MessageEnum.IPv4PoolFormatError.getId(), 
                 request);
         request.setRanges(ranges2);
         PromiseAssertUtil.assertPostMessage(
                 getRootURL() + "/promise/v1/id-pool/ipv4", 
-                IDPoolMessage.IPv4PoolRangeEndAddressError.getId(), 
+                MessageEnum.IPv4PoolRangeEndAddressError.getId(), 
                 request);
         request.setRanges(ranges3);
         PromiseAssertUtil.assertPostMessage(
                 getRootURL() + "/promise/v1/id-pool/ipv4", 
-                IDPoolMessage.IPv4PoolRangeSizeError.getId(),
+                MessageEnum.IPv4PoolRangeSizeError.getId(),
                 request);     
     }
     
@@ -305,7 +306,7 @@ public class IPv4PoolTest extends PromiseIntegrationTest
         request.setAddress("a.a.a.a");
         PromiseAssertUtil.assertPostMessage(
                 getRootURL() + "/promise/v1/id-pool/ipv4/any" + "/action/free", 
-                IDPoolMessage.IPv4PoolFormatError.getId(),
+                MessageEnum.IPv4PoolFormatError.getId(),
                 request);    
     }
 }

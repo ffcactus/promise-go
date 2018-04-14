@@ -18,8 +18,8 @@ type PostTaskRequest struct {
 	TaskSteps     []PostTaskStepRequest `json:"TaskSteps"`
 }
 
-// Validate the request.
-func (dto *PostTaskRequest) Validate() *base.Message {
+// IsValid return if the request is valid. 
+func (dto *PostTaskRequest) IsValid() *base.Message {
 	if len(dto.TaskSteps) == 0 {
 		message := base.NewMessageTaskNoStep()
 		return &message

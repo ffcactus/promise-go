@@ -1,13 +1,16 @@
 package com.promise.integrationtest.server.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.promise.integrationtest.base.ResourceResponse;
+import com.promise.integrationtest.dto.ResourceResponse;
 
 /**
  * DTO of post server response.
  *
  */
-public class PostServerResponse extends ResourceResponse
+// TODO this class should not have this annotation.
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class GetServerResponse extends ResourceResponse
 {
     @JsonProperty(value = "Hostname", required = true)
     private String hostname;

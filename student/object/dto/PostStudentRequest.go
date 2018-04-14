@@ -13,6 +13,11 @@ type PostStudentRequest struct {
 	Phones []Phone `json:"Phones"`
 }
 
+// IsValid return if the request is valid. 
+func (dto *PostStudentRequest) IsValid() *base.Message {
+	return nil
+}
+
 // GetDebugName return the name for debug.
 func (dto *PostStudentRequest) GetDebugName() string {
 	return dto.Name

@@ -11,10 +11,10 @@ import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.promise.integrationtest.base.Category;
-import com.promise.integrationtest.base.DeleteResourceResponse;
 import com.promise.integrationtest.base.EmptyResponse;
 import com.promise.integrationtest.base.EventType;
 import com.promise.integrationtest.base.PromiseIntegrationTest;
+import com.promise.integrationtest.dto.DeleteResourceResponse;
 import com.promise.integrationtest.server.dto.GetServerGroupResponse;
 import com.promise.integrationtest.server.dto.PostServerGroupRequest;
 import com.promise.integrationtest.util.PromiseAssertUtil;

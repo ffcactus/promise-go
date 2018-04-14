@@ -17,4 +17,6 @@ var (
 	ErrorIDFormat = fmt.Errorf("ID format error")
 	// ErrorDataConvert is an error.
 	ErrorDataConvert = fmt.Errorf("data convert error")
+	// ErrorUnknownFilterName is an error.
+	ErrorUnknownFilterName = fmt.Errorf("unknown filter name")
 )

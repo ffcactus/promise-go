@@ -1,7 +1,6 @@
 package com.promise.integrationtest.idpool.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.promise.integrationtest.base.ResourceResponse;
 
 public class IPv4RangeResponse
 {

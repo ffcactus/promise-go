@@ -11,6 +11,7 @@ type EntityTemplateInterface interface {
 	GetDebugName() string
 	GetPreload() []string
 	GetAssociation() []interface{}
+	GetFilterNameList() []string
 }
 
 // EntityInterface is the interface of a Promise entity should have.
@@ -20,6 +21,8 @@ type EntityInterface interface {
 	GetDebugName() string
 	GetPreload() []string
 	GetAssociation() []interface{}
+	GetTables() []interface{}
+	GetFilterNameList() []string
 	ToModel() ModelInterface
 	ToCollectionMember() CollectionMemberModelInterface
 	Load(ModelInterface) error
@@ -69,9 +72,19 @@ func (e *Entity) GetPreload() []string {
 	return e.TemplateImpl.GetPreload()
 }
 
-// GetAssociation return all the association address that need to delete.
+// GetAssociation return all the assocations that need to delete when deleting a resource.
 func (e *Entity) GetAssociation() []interface{} {
 	return e.TemplateImpl.GetAssociation()
+}
+
+// GetTables returns the tables to delete when you want delete all the resources.
+func (e *Entity) GetTables() []interface{} {
+	return e.TemplateImpl.GetTables()
+}
+
+// GetFilterNameList return all the property name that can be used in filter.
+func (e *Entity) GetFilterNameList() []string {
+	return e.TemplateImpl.GetFilterNameList()
 }
 
 // Load will load info from model.

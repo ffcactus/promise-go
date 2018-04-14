@@ -56,9 +56,19 @@ func (e *Task) GetPreload() []string {
 	return nil
 }
 
-// GetAssociation return all the assocated tables that need to delete.
+// GetAssociation return all the assocations that need to delete when deleting a resource.
 func (e *Task) GetAssociation() []interface{} {
-	return nil
+	return []interface{}{}
+}
+
+// GetTables returns the tables to delete when you want delete all the resources.
+func (e *Task) GetTables() []interface{} {
+	return []interface{}{Task{}}
+}
+
+// GetFilterNameList return all the property name that can be used in filter.
+func (e *Task) GetFilterNameList() []string {
+	return []string{"Name", "ExecutionState", "TargetName", "TargetURI", "CreatedByName", "CreatedByURI", "Percentage", "CurrentStep", "ExecutionResult"}
 }
 
 // Load will load data from model.

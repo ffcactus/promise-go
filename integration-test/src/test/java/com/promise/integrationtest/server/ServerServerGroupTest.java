@@ -12,10 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.promise.integrationtest.base.DeleteResourceResponse;
-import com.promise.integrationtest.base.MemberResponse;
 import com.promise.integrationtest.base.PromiseIntegrationTest;
-import com.promise.integrationtest.base.ResourceCollectionResponse;
+import com.promise.integrationtest.dto.DeleteResourceResponse;
+import com.promise.integrationtest.dto.MemberResponse;
+import com.promise.integrationtest.dto.ResourceCollectionResponse;
 import com.promise.integrationtest.server.dto.PostServerServerGroupRequest;
 import com.promise.integrationtest.server.dto.PostServerServerGroupResponse;
 import com.promise.integrationtest.server.message.ServerServerGroupMessage;

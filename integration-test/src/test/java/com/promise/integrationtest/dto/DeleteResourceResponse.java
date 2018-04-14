@@ -1,4 +1,4 @@
-package com.promise.integrationtest.base;
+package com.promise.integrationtest.dto;
 
 /**
  * The DTO of delete resource response.

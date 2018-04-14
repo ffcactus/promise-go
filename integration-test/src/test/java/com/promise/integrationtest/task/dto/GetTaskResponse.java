@@ -3,7 +3,7 @@ package com.promise.integrationtest.task.dto;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.promise.integrationtest.base.ResourceResponse;
+import com.promise.integrationtest.dto.ResourceResponse;
 
 public class GetTaskResponse extends ResourceResponse
 {
@@ -13,8 +13,8 @@ public class GetTaskResponse extends ResourceResponse
     private String name;
     @JsonProperty(value = "Description", required = false)
     private String description;
-    @JsonProperty(value = "ExpectedExecutionMs", required = true)
-    private long expectedExecutionMs;
+    @JsonProperty(value = "ExecutionState", required = false)
+    private String executionState;
     @JsonProperty(value = "CreatedByName", required = true)
     private String createdByName;
     @JsonProperty(value = "CreatedByURI", required = true)
@@ -23,10 +23,12 @@ public class GetTaskResponse extends ResourceResponse
     private String targetName;
     @JsonProperty(value = "TargetURI", required = true)
     private String targetURI;
+    @JsonProperty(value = "ExpectedExecutionMs", required = true)
+    private long expectedExecutionMs;
     @JsonProperty(value = "Percentage", required = true)
     private int percentage;
     @JsonProperty(value = "CurrentStep", required = true)
-    private String CurrentStep;
+    private String currentStep;
     @JsonProperty(value = "TaskSteps", required = true)
     private List<GetTaskStepResponse> taskSteps;
     @JsonProperty(value = "ExecutionResult", required = true)
@@ -60,6 +62,16 @@ public class GetTaskResponse extends ResourceResponse
     public void setDescription(String description)
     {
         this.description = description;
+    }
+
+    public String getExecutionState()
+    {
+        return executionState;
+    }
+
+    public void setExecutionState(String executionState)
+    {
+        this.executionState = executionState;
     }
 
     public long getExpectedExecutionMs()
@@ -124,12 +136,12 @@ public class GetTaskResponse extends ResourceResponse
 
     public String getCurrentStep()
     {
-        return CurrentStep;
+        return currentStep;
     }
 
     public void setCurrentStep(String currentStep)
     {
-        CurrentStep = currentStep;
+        this.currentStep = currentStep;
     }
 
     public List<GetTaskStepResponse> getTaskSteps()

@@ -44,10 +44,24 @@ func (e *Student) GetPreload() []string {
 	return []string{"Phones"}
 }
 
-// GetAssociation return all the assocated tables that need to delete.
+// GetFilterNameList return all the property name that can be used in filter.
+func (e *Student) GetFilterNameList() []string {
+	return []string{"Name", "Age"}
+}
+
+// GetAssociation return all the assocations that need to delete when deleting a resource.
 func (e *Student) GetAssociation() []interface{} {
-	association := []interface{}{Phone{}, Student{}}
-	return association
+	ret := []interface{}{}
+	for _, v := range e.Phones {
+		ret = append(ret, v) 
+	}
+	ret = append(ret, e)
+	return ret
+}
+
+// GetTables returns the tables to delete when you want delete all the resources.
+func (e *Student) GetTables() []interface{} {
+	return []interface{}{Phone{}, Student{}}
 }
 
 // Load will load info from model.
