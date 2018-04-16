@@ -256,6 +256,7 @@ public class RestClient
             BufferedReader br;
             switch (status)
             {
+                case HttpURLConnection.HTTP_ACCEPTED:
                 case HttpURLConnection.HTTP_OK:
                 case HttpURLConnection.HTTP_CREATED:
                     br = new BufferedReader(new InputStreamReader(c.getInputStream()));

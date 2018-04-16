@@ -61,7 +61,7 @@ public class PromiseAssertUtil
         PromiseAssertUtil.isResourceResponse(ret);
         return ret;
     }
-    
+
     /**
      * Assert the action should be accepted.
      * 
@@ -79,6 +79,26 @@ public class PromiseAssertUtil
         Assert.assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
         T ret = response.getBody();
         return ret;
+    }
+    
+    /**
+     * Assert the POST action should fail.
+     * 
+     * @param url The URL to post.
+     * @param expectedMessageID The expected message's ID.
+     * @param request The request DTO.
+     */
+    public static <R> void assertActionMessage(String url, String expectedMessageID, R request)
+    {
+        final ResponseEntity<List<Message>> response = RestClient.post(
+                url,
+                request,
+                new TypeReference<List<Message>>()
+                {
+                });
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        final List<Message> message = response.getBody();
+        Assert.assertEquals(expectedMessageID, message.get(0).getId());
     }
 
     /**
@@ -182,7 +202,11 @@ public class PromiseAssertUtil
      * @param expectedTotal The expected total members.
      * @param memberClass The DTO of the member.
      */
-    public static <T extends MemberResponse> List<T> assertGetCollection(String url, int expectedTotal, int execptedCount, Class<T> memberClass)
+    public static <T extends MemberResponse> List<T> assertGetCollection(
+            String url,
+            int expectedTotal,
+            int execptedCount,
+            Class<T> memberClass)
     {
         final ResponseEntity<ResourceCollectionResponse<T>> response = RestClient.get(
                 url,
@@ -199,16 +223,20 @@ public class PromiseAssertUtil
         }
         return body.getMember();
     }
-    
+
     /**
      * Assert the common get collection operation.
      * When start, count, filter is omitted, the count and total should match.
-     * If the total greater than 0, you can use start and skip to get the first element and the last element.
+     * If the total greater than 0, you can use start and skip to get the first
+     * element and the last element.
      * If you can't get more then total elements.
+     * 
      * @param url
-     * @throws UnsupportedEncodingException 
+     * @throws UnsupportedEncodingException
      */
-    public static void assertGetColletcionWithStartCount(String url, int expectedTotal) throws UnsupportedEncodingException {
+    public static void assertGetColletcionWithStartCount(String url, int expectedTotal)
+            throws UnsupportedEncodingException
+    {
         final ResponseEntity<ResourceCollectionResponse<MemberResponse>> response1 = RestClient.get(
                 url,
                 new TypeReference<ResourceCollectionResponse<MemberResponse>>()
@@ -218,12 +246,13 @@ public class PromiseAssertUtil
         final ResourceCollectionResponse<MemberResponse> body1 = response1.getBody();
         Assert.assertEquals(expectedTotal, body1.getTotal());
         Assert.assertEquals(expectedTotal, body1.getCount());
-        if (expectedTotal == 0) {
+        if (expectedTotal == 0)
+        {
             return;
         }
-        
+
         final ResponseEntity<ResourceCollectionResponse<MemberResponse>> response2 = RestClient.get(
-                url+"?start=0&&count=1",
+                url + "?start=0&&count=1",
                 new TypeReference<ResourceCollectionResponse<MemberResponse>>()
                 {
                 });
@@ -231,7 +260,7 @@ public class PromiseAssertUtil
         Assert.assertEquals(expectedTotal, body2.getTotal());
         Assert.assertEquals(0, body2.getStart());
         Assert.assertEquals(1, body2.getCount());
-        
+
         final ResponseEntity<ResourceCollectionResponse<MemberResponse>> response3 = RestClient.get(
                 url + "?start=" + (expectedTotal - 1) + "&&count=1",
                 new TypeReference<ResourceCollectionResponse<MemberResponse>>()
@@ -241,25 +270,27 @@ public class PromiseAssertUtil
         Assert.assertEquals(expectedTotal, body3.getTotal());
         Assert.assertEquals(expectedTotal - 1, body3.getStart());
         Assert.assertEquals(1, body3.getCount());
-        
 
         final ResponseEntity<ResourceCollectionResponse<MemberResponse>> response4 = RestClient.get(
-                url + "?start=0&&count=" + (expectedTotal+ 1),
+                url + "?start=0&&count=" + (expectedTotal + 1),
                 new TypeReference<ResourceCollectionResponse<MemberResponse>>()
                 {
                 });
         final ResourceCollectionResponse<MemberResponse> body4 = response4.getBody();
         Assert.assertEquals(expectedTotal, body4.getTotal());
         Assert.assertEquals(0, body4.getStart());
-        Assert.assertEquals(expectedTotal, body4.getCount()); 
+        Assert.assertEquals(expectedTotal, body4.getCount());
     }
-    
+
     /**
      * Assert the filter name is unknown
+     * 
      * @param url
-     * @throws UnsupportedEncodingException 
+     * @throws UnsupportedEncodingException
      */
-    public static void assertUnknownFilter(String url, String name, String value) throws UnsupportedEncodingException {
+    public static void assertUnknownFilter(String url, String name, String value)
+            throws UnsupportedEncodingException
+    {
         String filter1 = URLEncoder.encode(name + " eq '" + value + "'", "UTF-8");
         PromiseAssertUtil.assertGetMessage(url + "?$filter=" + filter1, MessageEnum.UnknownFilterName.getId());
     }

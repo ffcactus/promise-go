@@ -1,9 +1,9 @@
 package dto
 
 import (
-	commonDTO "promise/common/object/dto"
-	"promise/task/object/consterror"
+	"promise/base"
 	"promise/task/object/model"
+	log "github.com/sirupsen/logrus"
 )
 
 // PostTaskStepRequest Post task step request DTO.
@@ -48,92 +48,104 @@ func (dto *GetTaskStepResponse) Load(m *model.TaskStep) {
 
 // UpdateTaskStepRequest Update task step request DTO.
 type UpdateTaskStepRequest struct {
-	commonDTO.PromiseRequest
+	base.ActionRequest
 	Name            string                        `json:"Name"`
 	ExecutionState  *model.ExecutionState         `json:"ExecutionState"`
 	ExecutionResult *UpdateExecutionResultRequest `json:"ExecutionResult"`
 }
 
-// Validate the request.
-func (dto *UpdateTaskStepRequest) Validate() error {
+// IsValid return if the request is valid. 
+func (dto *UpdateTaskStepRequest) IsValid() *base.Message {
+	var valid = false
 	if dto.ExecutionState != nil {
 		if *dto.ExecutionState == model.ExecutionStateReady {
-			return nil
+			valid = true
 		}
 		if *dto.ExecutionState == model.ExecutionStateRunning {
-			return nil
+			valid = true
 		}
 		if *dto.ExecutionState == model.ExecutionStateSuspended {
-			return nil
+			valid = true
 		}
 		if *dto.ExecutionState == model.ExecutionStateTerminated {
-			return nil
+			valid = true
 		}
-		return consterror.ErrorUnknownExecutionState
+		if (!valid) {
+			message := base.NewMessageUnknownPropertyValue()
+			return &message
+		}
 	}
+	valid = false
 	if dto.ExecutionResult != nil && dto.ExecutionResult.State != nil {
 		if *dto.ExecutionResult.State == model.ExecutionResultStateFinished {
-			return nil
+			valid = true
 		}
 		if *dto.ExecutionResult.State == model.ExecutionResultStateWarning {
-			return nil
+			valid = true
 		}
 		if *dto.ExecutionResult.State == model.ExecutionResultStateError {
-			return nil
+			valid = true
 		}
 		if *dto.ExecutionResult.State == model.ExecutionResultStateAbort {
-			return nil
+			valid = true
 		}
 		if *dto.ExecutionResult.State == model.ExecutionResultStateUnknown {
-			return nil
+			valid = true
 		}
-		return consterror.ErrorUnknownExecutionResult
+		if (!valid) {
+			message := base.NewMessageUnknownPropertyValue()
+			return &message
+		}
 	}
 	return nil
 }
 
-// UpdateModel Update the model.
-func (dto *UpdateTaskStepRequest) _updateModel(current *model.Task) {
-	for i := range current.TaskSteps {
-		if dto.Name == current.TaskSteps[i].Name {
-			if dto.ExecutionState != nil {
-				current.TaskSteps[i].ExecutionState = *dto.ExecutionState
-			}
-			if dto.ExecutionResult != nil {
-				dto.ExecutionResult.UpdateModel(&current.TaskSteps[i].ExecutionResult)
-			}
-		}
-	}
+// GetDebugName return the name for debug.
+func (dto *UpdateTaskStepRequest) GetDebugName() string {
+	return dto.Name
 }
 
 // UpdateModel Update the model.
-func (dto *UpdateTaskStepRequest) UpdateModel(m *model.Task) {
+func (dto *UpdateTaskStepRequest) UpdateModel(i base.ModelInterface) error {
+	m, ok := i.(*model.Task)
+	if !ok {
+		log.Error("UpdateTaskStepRequest.UpdateModel() convert interface failed.")
+		return base.ErrorDataConvert
+	}
 	currentTime := uint64(0)
+	foundStep := false
 	for i := range m.TaskSteps {
 		currentTime += m.TaskSteps[i].ExpectedExecutionMs
 		if m.TaskSteps[i].Name == dto.Name {
 			// Found the step, and update the current time.
-			switch m.TaskSteps[i].ExecutionState {
-			case model.ExecutionStateTerminated:
-			case model.ExecutionStateRunning:
-			case model.ExecutionStateSuspended:
-				currentTime -= m.TaskSteps[i].ExpectedExecutionMs
-			default:
-			}
+			foundStep = true
+
 			if dto.ExecutionState != nil {
 				m.TaskSteps[i].ExecutionState = *dto.ExecutionState
-				if *dto.ExecutionState == model.ExecutionStateRunning {
+				// if the user set the step to not yet finished, 
+				// we need adjust the percentage, and set the current step accrodingly.
+				switch(*dto.ExecutionState) {
+				case model.ExecutionStateReady,
+				     model.ExecutionStateRunning,
+				     model.ExecutionStateSuspended:					
+					currentTime -= m.TaskSteps[i].ExpectedExecutionMs				
 					m.CurrentStep = m.TaskSteps[i].Name
-				}
+				}		
 			}
 			if dto.ExecutionResult != nil {
 				dto.ExecutionResult.UpdateModel(&m.TaskSteps[i].ExecutionResult)
 			}
+
 			percentageF := (float32)(currentTime) / (float32)(m.ExpectedExecutionMs)
 			m.Percentage = (int)((percentageF * 100) + 0.5)
 			if m.Percentage > 100 {
 				m.Percentage = 100
 			}
+			break
 		}
 	}
+	if !foundStep {
+		return base.ErrorUnknownPropertyValue
+	}
+	return nil
 }

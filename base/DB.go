@@ -96,11 +96,11 @@ func (impl *DB) Post(m ModelInterface) (bool, ModelInterface, bool, error) {
 	return false, record.ToModel(), true, nil
 }
 
-// get is part of the process to get resource in DB, since many other operation
+// GetInternal is part of the process to get resource in DB, since many other operation
 // need this process, we seperate it out.
 // It will return if the resource been found.
 // It will return error if any.
-func (impl *DB) get(tx *gorm.DB, id string, record EntityInterface) (bool, error) {
+func (impl *DB) GetInternal(tx *gorm.DB, id string, record EntityInterface) (bool, error) {
 	var (
 		name = impl.TemplateImpl.GetResourceName()
 	)
@@ -148,7 +148,7 @@ func (impl *DB) Get(id string) ModelInterface {
 		}).Warn("Get resource in DB failed, start transaction failed.")
 		return nil
 	}
-	if exist, err := impl.get(tx, id, record); exist && err == nil {
+	if exist, err := impl.GetInternal(tx, id, record); exist && err == nil {
 		return record.ToModel()
 	}
 	return nil
@@ -179,7 +179,7 @@ func (impl *DB) Delete(id string) (bool, ModelInterface, bool, error) {
 		}).Warn("Delete resource from DB failed, start transaction failed.")
 		return true, nil, false, err
 	}
-	if exist, err := impl.get(tx, id, previous); err != nil || !exist {
+	if exist, err := impl.GetInternal(tx, id, previous); err != nil || !exist {
 		return false, nil, false, err
 	}
 	record.SetID(id)

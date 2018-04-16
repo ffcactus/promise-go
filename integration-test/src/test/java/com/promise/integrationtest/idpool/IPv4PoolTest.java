@@ -43,7 +43,7 @@ public class IPv4PoolTest extends PromiseIntegrationTest
         final ResponseEntity<DeleteResourceResponse> response1 = RestClient.delete(
                 getRootURL() + "/promise/v1/id-pool/ipv4",
                 DeleteResourceResponse.class);
-        Assert.assertEquals(HttpStatus.ACCEPTED, response1.getStatusCode());        
+        Assert.assertEquals(HttpStatus.ACCEPTED, response1.getStatusCode());
     }
 
     @Before
@@ -148,7 +148,7 @@ public class IPv4PoolTest extends PromiseIntegrationTest
         PromiseAssertUtil.assertPostMessage(
                 getRootURL() + "/promise/v1/id-pool/ipv4/i_am_not_exist/action/free",
                 MessageEnum.NotExist.getId(),
-                request2);        
+                request2);
     }
 
     /**
@@ -189,7 +189,7 @@ public class IPv4PoolTest extends PromiseIntegrationTest
                 .assertGetCollection(getRootURL() + "/promise/v1/id-pool/ipv4", 2, 2, IPv4PoolCollectionMemberResponse.class);
         Assert.assertTrue(members2.contains(response2));
         Assert.assertTrue(members2.contains(response3));
-        
+
         // Test start and count parameters.
         PromiseAssertUtil.assertGetColletcionWithStartCount(getRootURL() + "/promise/v1/id-pool/ipv4", 2);
     }
@@ -222,7 +222,7 @@ public class IPv4PoolTest extends PromiseIntegrationTest
         IPv4PoolAssertUtil.assertIPv4Allocate(response1.getId(), "key", "0.0.0.2", 2, 0, 0);
         IPv4PoolAssertUtil.assertIPv4PoolEmpty(response1.getId());
     }
-    
+
     /**
      * You can free address to the pool.
      */
@@ -251,11 +251,11 @@ public class IPv4PoolTest extends PromiseIntegrationTest
         IPv4PoolAssertUtil.assertIPv4Allocate(response1.getId(), "key", "0.0.0.2", 2, 0, 0);
         // Now do the free.
         IPv4PoolAssertUtil.assertIPv4Free(response1.getId(), "0.0.0.1", 2, 1, 1);
-        IPv4PoolAssertUtil.assertIPv4AddressNotAllocated(response1.getId(), "0.0.0.1");        
+        IPv4PoolAssertUtil.assertIPv4AddressNotAllocated(response1.getId(), "0.0.0.1");
         IPv4PoolAssertUtil.assertIPv4Free(response1.getId(), "0.0.0.2", 2, 1, 2);
         IPv4PoolAssertUtil.assertIPv4PoolAddressNotBelong(response1.getId(), "1.1.1.1");
     }
-    
+
     /**
      * System will check post pool request.
      */
@@ -271,42 +271,42 @@ public class IPv4PoolTest extends PromiseIntegrationTest
         ranges1.add(range1);
         ranges2.add(range2);
         ranges3.add(range3);
-        
+
         final PostIPv4PoolRequest request = new PostIPv4PoolRequest();
-        request.setName("pool1");      
+        request.setName("pool1");
         PromiseAssertUtil.assertPostMessage(
-                getRootURL() + "/promise/v1/id-pool/ipv4", 
-                MessageEnum.IPv4PoolRangeCountError.getId(), 
+                getRootURL() + "/promise/v1/id-pool/ipv4",
+                MessageEnum.IPv4PoolRangeCountError.getId(),
                 request);
-        
+
         request.setRanges(ranges1);
         PromiseAssertUtil.assertPostMessage(
-                getRootURL() + "/promise/v1/id-pool/ipv4", 
-                MessageEnum.IPv4PoolFormatError.getId(), 
+                getRootURL() + "/promise/v1/id-pool/ipv4",
+                MessageEnum.IPv4PoolFormatError.getId(),
                 request);
         request.setRanges(ranges2);
         PromiseAssertUtil.assertPostMessage(
-                getRootURL() + "/promise/v1/id-pool/ipv4", 
-                MessageEnum.IPv4PoolRangeEndAddressError.getId(), 
+                getRootURL() + "/promise/v1/id-pool/ipv4",
+                MessageEnum.IPv4PoolRangeEndAddressError.getId(),
                 request);
         request.setRanges(ranges3);
         PromiseAssertUtil.assertPostMessage(
-                getRootURL() + "/promise/v1/id-pool/ipv4", 
+                getRootURL() + "/promise/v1/id-pool/ipv4",
                 MessageEnum.IPv4PoolRangeSizeError.getId(),
-                request);     
+                request);
     }
-    
+
     /**
      * System will check action of freeing IPv4 address.
      */
     @Test
     public void testFreeIPv4RequestValidation()
-    {        
+    {
         final FreeIPv4Request request = new FreeIPv4Request();
         request.setAddress("a.a.a.a");
         PromiseAssertUtil.assertPostMessage(
-                getRootURL() + "/promise/v1/id-pool/ipv4/any" + "/action/free", 
+                getRootURL() + "/promise/v1/id-pool/ipv4/any" + "/action/free",
                 MessageEnum.IPv4PoolFormatError.getId(),
-                request);    
+                request);
     }
 }

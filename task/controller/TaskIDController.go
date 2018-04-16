@@ -11,7 +11,7 @@ type TaskIDController struct {
 
 // GetResourceName returns the name this controller handle of.
 func (c *TaskIDController) GetResourceName() string {
-	return "student"
+	return "task"
 }
 
 // NewResponse creates a new response DTO.

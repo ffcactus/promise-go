@@ -17,7 +17,7 @@ public class ResourceResponse
     private String createdAt;
     @JsonProperty(value = "UpdatedAt", required = true)
     private String updatedAt;
-    
+
     public String getId()
     {
         return id;

@@ -8,14 +8,17 @@ import (
 )
 
 var (
-	taskDB = &base.DB{
-		TemplateImpl: new(db.TaskDB),
+	taskDB = &db.TaskDB{
+		DB: base.DB{
+			TemplateImpl: new(db.TaskDB),
+		},
 	}
+
+	eventService event.Service
 )
 
 // TaskService is the service for student.
 type TaskService struct {
-	EventService event.Service
 }
 
 // GetCategory returns the category of this service.
@@ -35,5 +38,5 @@ func (s *TaskService) GetDB() base.DBInterface {
 
 // GetEventService returns the event service implementation.
 func (s *TaskService) GetEventService() base.EventServiceInterface {
-	return s.EventService
+	return eventService
 }

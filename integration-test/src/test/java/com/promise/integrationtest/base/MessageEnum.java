@@ -6,13 +6,14 @@ public enum MessageEnum
     NotExist ("Promise.Message.NotExist"),
     Duplicate ("Promise.Message.Duplicate"),
     InvalidRequest ("Promise.Message.InvalidRequest"),
+    UnknownPropertyValue("Promise.Message.UnknownPropertyValue"),
     Timeout ("Promise.Message.Timeout"),
-    UnknownFilterName("Promise.Message.UnknownFilterName"),
-    
+    UnknownFilterName ("Promise.Message.UnknownFilterName"),
+
     ServerGroupDeleteDefault ("Server.Message.ServerGroupDeleteDefault"),
-    
+
     ServerServerGroupDeleteDefault ("Server.Message.ServerServerGroupDeleteDefault"),
-    
+
     IPv4PoolEmpty ("IPPool.Message.IPv4PoolEmpty"),
     IPv4PoolAddressNotExist ("IPPool.Message.AddressNotExist"),
     IPv4PoolFormatError ("IPPool.Message.IPv4FormatError"),
@@ -20,11 +21,11 @@ public enum MessageEnum
     IPv4PoolRangeSizeError ("IPPool.Message.IPv4RangeSizeError"),
     IPv4PoolRangeCountError ("IPPool.Message.IPv4RangeCountError"),
     IPv4PoolNotAllocatedError ("IPPool.Message.IPv4NotAllocatedError"),
-    
-    TaskNoStep("Task.Message.NoStep"),
-    
+
+    TaskNoStep ("Task.Message.NoStep"),
+
     ;
-    
+
     private String id;
 
     MessageEnum(String id)

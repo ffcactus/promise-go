@@ -17,7 +17,7 @@ public class IPv4PoolAssertUtil
      * Assert the IPv4 pool has been posted.
      */
     public static GetIPv4PoolResponse assertIPv4PoolPosted(PostIPv4PoolRequest request)
-    {   
+    {
         GetIPv4PoolResponse response = PromiseAssertUtil.assertPostResponse(
                 PromiseIntegrationTest.getRootURL() + "/promise/v1/id-pool/ipv4",
                 request,
@@ -54,9 +54,10 @@ public class IPv4PoolAssertUtil
         Assert.assertEquals(free, response.getPool().getFree());
         Assert.assertEquals(allocatable, response.getPool().getAllocatable());
     }
-    
+
     /**
      * Assert the address be free to pool.
+     * 
      * @param id The pool ID.
      * @param address The address to free.
      * @param total The total address of the pool.
@@ -75,47 +76,55 @@ public class IPv4PoolAssertUtil
         Assert.assertEquals(free, response.getFree());
         Assert.assertEquals(allocatable, response.getAllocatable());
     }
-    
+
     /**
      * Assert the IPv4 Pool have no more address to allocate.
+     * 
      * @param id
      */
-    public static void assertIPv4PoolEmpty(String id) {
+    public static void assertIPv4PoolEmpty(String id)
+    {
         final AllocateIPv4Request request = new AllocateIPv4Request();
         PromiseAssertUtil.assertPostMessage(
-                PromiseIntegrationTest.getRootURL() + "/promise/v1/id-pool/ipv4/" + id + "/action/allocate", 
-                MessageEnum.IPv4PoolEmpty.getId(), 
+                PromiseIntegrationTest.getRootURL() + "/promise/v1/id-pool/ipv4/" + id + "/action/allocate",
+                MessageEnum.IPv4PoolEmpty.getId(),
                 request);
-        
+
         final GetIPv4PoolResponse response = PromiseAssertUtil.assertGetResponse(
-                PromiseIntegrationTest.getRootURL() + "/promise/v1/id-pool/ipv4/" + id, 
+                PromiseIntegrationTest.getRootURL() + "/promise/v1/id-pool/ipv4/" + id,
                 GetIPv4PoolResponse.class);
         Assert.assertEquals(0, response.getAllocatable());
     }
-    
+
     /**
-     * Assert the message is right when you free an address that not belong to this pool.
+     * Assert the message is right when you free an address that not belong to
+     * this pool.
+     * 
      * @param id The pool ID.
      */
-    public static void assertIPv4PoolAddressNotBelong(String id, String address) {
+    public static void assertIPv4PoolAddressNotBelong(String id, String address)
+    {
         final FreeIPv4Request request = new FreeIPv4Request();
         request.setAddress(address);
         PromiseAssertUtil.assertPostMessage(
-                PromiseIntegrationTest.getRootURL() + "/promise/v1/id-pool/ipv4/" + id + "/action/free", 
+                PromiseIntegrationTest.getRootURL() + "/promise/v1/id-pool/ipv4/" + id + "/action/free",
                 MessageEnum.IPv4PoolAddressNotExist.getId(),
                 request);
     }
-    
+
     /**
-     * Assert the message is right when you free an address which is is not allocated before.
+     * Assert the message is right when you free an address which is is not
+     * allocated before.
+     * 
      * @param id The pool ID.
      * @param address The address to free.
      */
-    public static void assertIPv4AddressNotAllocated(String id, String address) {
+    public static void assertIPv4AddressNotAllocated(String id, String address)
+    {
         final FreeIPv4Request request = new FreeIPv4Request();
         request.setAddress(address);
         PromiseAssertUtil.assertPostMessage(
-                PromiseIntegrationTest.getRootURL() + "/promise/v1/id-pool/ipv4/" + id + "/action/free", 
+                PromiseIntegrationTest.getRootURL() + "/promise/v1/id-pool/ipv4/" + id + "/action/free",
                 MessageEnum.IPv4PoolNotAllocatedError.getId(),
                 request);
     }

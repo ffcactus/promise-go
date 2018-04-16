@@ -13,15 +13,17 @@ public class PostTaskStepRequest
     @JsonProperty(value = "ExpectedExecutionMs", required = true)
     private long expectedExecutionMs;
 
-    public PostTaskStepRequest() {
-        
+    public PostTaskStepRequest()
+    {
+
     }
-    
-    public PostTaskStepRequest(String name, long expectedExecutionMs) {
+
+    public PostTaskStepRequest(String name, long expectedExecutionMs)
+    {
         this.name = name;
         this.expectedExecutionMs = expectedExecutionMs;
     }
-    
+
     public String getMessageID()
     {
         return messageID;

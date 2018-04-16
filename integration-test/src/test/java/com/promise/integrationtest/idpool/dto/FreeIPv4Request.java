@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class FreeIPv4Request
 {
-    @JsonProperty(value="Address", required=true)
+    @JsonProperty(value = "Address", required = true)
     private String address;
 
     public String getAddress()

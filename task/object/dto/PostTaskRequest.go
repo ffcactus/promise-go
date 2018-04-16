@@ -36,6 +36,7 @@ func (dto *PostTaskRequest) GetDebugName() string {
 func (dto PostTaskRequest) ToModel() base.ModelInterface {
 	m := model.Task{}
 	m.Category = base.CategoryTask
+	m.MessageID = dto.MessageID
 	m.Name = dto.Name
 	m.Description = dto.Description
 	m.ExecutionState = model.ExecutionStateReady
@@ -43,6 +44,7 @@ func (dto PostTaskRequest) ToModel() base.ModelInterface {
 	m.CreatedByURI = dto.CreatedByURI
 	m.TargetName = dto.TargetName
 	m.TargetURI = dto.TargetURI
+	m.CurrentStep = dto.TaskSteps[0].Name
 	m.Percentage = 0
 	m.ExecutionResult.State = model.ExecutionResultStateUnknown
 	m.ExpectedExecutionMs = 0

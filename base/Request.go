@@ -32,3 +32,33 @@ func (dto *Request) GetDebugName() string {
 func (dto *Request) ToModel() ModelInterface {
 	return dto.TemplateImpl.ToModel()
 }
+
+// ActionRequestTemplateInterface is the interface that a concrete ActionRequest should have.
+type ActionRequestTemplateInterface interface {
+	IsValid() *Message
+	GetDebugName() string
+	UpdateModel(ModelInterface) error
+}
+
+// ActionRequestInterface is the interface that a concrete action request should implement.
+type ActionRequestInterface interface {
+	IsValid() *Message
+	GetDebugName() string
+	UpdateModel(ModelInterface) error
+}
+
+// ActionRequest is the implement of ActionRequestInterface.
+type ActionRequest struct {
+	TemplateImpl ActionRequestTemplateInterface `json:"-"`
+}
+
+
+// IsValid checks if the request is valid.
+func (dto *ActionRequest) IsValid() *Message {
+	return dto.TemplateImpl.IsValid()
+}
+
+// GetDebugName return the name of this DTO for debug purpose.
+func (dto *ActionRequest) GetDebugName() string {
+	return dto.TemplateImpl.GetDebugName()
+}

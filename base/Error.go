@@ -19,4 +19,6 @@ var (
 	ErrorDataConvert = fmt.Errorf("data convert error")
 	// ErrorUnknownFilterName is an error.
 	ErrorUnknownFilterName = fmt.Errorf("unknown filter name")
+	// ErrorUnknownPropertyValue is an error.
+	ErrorUnknownPropertyValue = fmt.Errorf("unknown property value")
 )

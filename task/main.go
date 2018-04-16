@@ -20,7 +20,9 @@ func main() {
 		beego.NSRouter("/:id", &base.IDController{
 			TemplateImpl: new(controller.TaskIDController),
 		}),
-		// beego.NSRouter("/:id/action/:action", &controller.TaskActionController{}),
+		beego.NSRouter("/:id/action/:action", &base.ActionController{
+			TemplateImpl: new(controller.TaskActionController),
+		}),
 	)
 	beego.AddNamespace(ns)
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{

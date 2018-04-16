@@ -9,6 +9,7 @@ import (
 // GetTaskResponse Post task response DTO.
 type GetTaskResponse struct {
 	base.Response
+	MessageID	        *string               `json:"MessageID,omitempty"`
 	Name                string                `json:"Name"`
 	Description         *string               `json:"Description,omitempty"`
 	ExecutionState      model.ExecutionState  `json:"ExecutionState"`
@@ -36,6 +37,7 @@ func (dto *GetTaskResponse) Load(data base.ModelInterface) error {
 		return base.ErrorDataConvert
 	}
 	base.ResponseLoad(&dto.Response, &m.Model)
+	dto.MessageID = m.MessageID
 	dto.Name = m.Name
 	dto.Description = m.Description
 	dto.ExecutionState = m.ExecutionState

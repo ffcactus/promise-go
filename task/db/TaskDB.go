@@ -9,6 +9,7 @@ import (
 
 // TaskDB is the DB implementation for task.
 type TaskDB struct {
+	base.DB
 }
 
 // GetResourceName get the resource name.
@@ -68,4 +69,43 @@ func (impl *TaskDB) ConvertFindResultToModel(result interface{}) ([]base.ModelIn
 		ret = append(ret, m)
 	}
 	return ret, nil
+}
+
+// UpdateTaskStep update the task step.
+func (impl *TaskDB) UpdateTaskStep(id string, request base.ActionRequestInterface) (bool, base.ModelInterface, bool, error) {
+	var (
+		record = impl.NewEntity()
+		c      = impl.GetConnection()
+	)
+	tx := c.Begin()
+	if err := tx.Error; err != nil {
+		log.WithFields(log.Fields{			
+			"id":       id,
+			"error":    err,
+		}).Warn("Update task step in DB failed, start transaction failed.")
+		return true, nil, false, err
+	}	
+	if exist, err := impl.GetInternal(tx, id, record); !exist || err != nil {
+		return false, nil, false, err
+	}
+	m := record.ToModel()
+	if err := request.UpdateModel(m); err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id":    id,
+			"error": err}).
+			Warn("Update task step in DB failed, update model failed, transaction rollback.")
+		return true, nil, false, err		
+	}
+	record.Load(m)
+	record.SetID(id)
+	if err := tx.Save(record).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id":    id,
+			"error": err}).
+			Warn("Update task step in DB failed, save resource failed, transaction rollback.")
+		return true, nil, false, err
+	}
+	return true, record.ToModel(), true, nil
 }

@@ -57,7 +57,7 @@ public class GetTaskStepResponse
         this.expectedExecutionMs = expectedExecutionMs;
     }
 
-    public String getExectuionState()
+    public String getExecutionState()
     {
         return executionState;
     }

@@ -26,14 +26,16 @@ public class PostTaskRequest
     @JsonProperty(value = "TaskSteps", required = true)
     private List<PostTaskStepRequest> taskSteps;
 
-    public PostTaskRequest() {
+    public PostTaskRequest()
+    {
         taskSteps = new ArrayList<PostTaskStepRequest>();
     }
-    
-    public void addTaskStep(PostTaskStepRequest step) {
+
+    public void addTaskStep(PostTaskStepRequest step)
+    {
         taskSteps.add(step);
     }
-    
+
     public String getMessageID()
     {
         return messageID;

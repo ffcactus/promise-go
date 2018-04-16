@@ -23,6 +23,8 @@ const (
 	MessageDuplicate = "Promise.Message.Duplicate"
 	// MessageInvalidRequest is message ID.
 	MessageInvalidRequest = "Promise.Message.InvalidRequest"
+	// MessageUnknownPropertyValue is message ID.
+	MessageUnknownPropertyValue = "Promise.Message.UnknownPropertyValue"
 	// MessageTimeout is message ID.
 	MessageTimeout = "Promise.Message.Timeout"
 	// MessageTransactionError is message ID.
@@ -88,7 +90,7 @@ func NewMessage() Message {
 	return ret
 }
 
-// NewMessageNotExist return a message that means the resource does not exist.
+// NewMessageNotExist returns a message that means the resource does not exist.
 func NewMessageNotExist() Message {
 	ret := NewMessage()
 	ret.ID = MessageNotExist
@@ -100,7 +102,7 @@ func NewMessageNotExist() Message {
 	return ret
 }
 
-// NewMessageDuplicate return a message that means resource duplication happened.
+// NewMessageDuplicate returns a message that means resource duplication happened.
 func NewMessageDuplicate() Message {
 	ret := NewMessage()
 	ret.ID = MessageDuplicate
@@ -112,7 +114,7 @@ func NewMessageDuplicate() Message {
 	return ret
 }
 
-// NewMessageInvalidRequest return a message that means the request is Invalid.
+// NewMessageInvalidRequest returns a message that means the request is Invalid.
 func NewMessageInvalidRequest() Message {
 	ret := NewMessage()
 	ret.ID = MessageInvalidRequest
@@ -124,7 +126,17 @@ func NewMessageInvalidRequest() Message {
 	return ret
 }
 
-// NewMessageInternalError return a message that means there is a internal error happened.
+// NewMessageUnknownPropertyValue returns a message that means the property in the request have unknown value.
+func NewMessageUnknownPropertyValue() Message {
+	ret := NewMessage()
+	ret.ID = MessageUnknownPropertyValue
+	ret.Severity = SeverityNormal
+	ret.Description = "Unknown property value."
+	ret.Supports = []Support{}
+	return ret
+}
+
+// NewMessageInternalError returns a message that means there is a internal error happened.
 func NewMessageInternalError() Message {
 	ret := NewMessage()
 	ret.ID = MessageInternalError
@@ -136,7 +148,7 @@ func NewMessageInternalError() Message {
 	return ret
 }
 
-// NewMessageTimeout return a message that means there is a timeout happend.
+// NewMessageTimeout returns a message that means there is a timeout happend.
 func NewMessageTimeout() Message {
 	ret := NewMessage()
 	ret.ID = MessageTimeout
@@ -148,7 +160,7 @@ func NewMessageTimeout() Message {
 	return ret
 }
 
-// NewMessageTransactionError return a message that means transaction error.
+// NewMessageTransactionError returns a message that means transaction error.
 func NewMessageTransactionError() Message {
 	ret := NewMessage()
 	ret.ID = MessageTransactionError
@@ -188,7 +200,7 @@ func NewSupport() Support {
 	return ret
 }
 
-// NewSupportNotExist will return a support message.
+// NewSupportNotExist will returns a support message.
 func NewSupportNotExist() Support {
 	ret := NewSupport()
 	ret.ID = SupportNotExist
@@ -197,7 +209,7 @@ func NewSupportNotExist() Support {
 	return ret
 }
 
-// NewSupportDuplicate will return a support message.
+// NewSupportDuplicate will returns a support message.
 func NewSupportDuplicate() Support {
 	ret := NewSupport()
 	ret.ID = SupportDuplicate
@@ -206,7 +218,7 @@ func NewSupportDuplicate() Support {
 	return ret
 }
 
-// NewSupportInvalidRequest will return a support message.
+// NewSupportInvalidRequest will returns a support message.
 func NewSupportInvalidRequest() Support {
 	ret := NewSupport()
 	ret.ID = SupportInvalidRequest
@@ -215,7 +227,7 @@ func NewSupportInvalidRequest() Support {
 	return ret
 }
 
-// NewSupportInternalError will return a support message.
+// NewSupportInternalError will returns a support message.
 func NewSupportInternalError() Support {
 	ret := NewSupport()
 	ret.ID = SupportInternalError
@@ -224,7 +236,7 @@ func NewSupportInternalError() Support {
 	return ret
 }
 
-// NewSupportTimeout will return a support message.
+// NewSupportTimeout will returns a support message.
 func NewSupportTimeout() Support {
 	ret := NewSupport()
 	ret.ID = SupportTimeout
@@ -233,7 +245,7 @@ func NewSupportTimeout() Support {
 	return ret
 }
 
-// NewSupportTransactionError will return a support message.
+// NewSupportTransactionError will returns a support message.
 func NewSupportTransactionError() Support {
 	ret := NewSupport()
 	ret.ID = SupportTransactionError
