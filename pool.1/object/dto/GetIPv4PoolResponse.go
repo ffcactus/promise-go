@@ -2,13 +2,14 @@ package dto
 
 import (
 	log "github.com/sirupsen/logrus"
-	"promise/base"
+	"promise/common/object/consterror"
+	commonDTO "promise/common/object/dto"
 	"promise/pool/object/model"
 )
 
 // GetIPv4PoolResponse is the response DTO.
 type GetIPv4PoolResponse struct {
-	base.Response
+	commonDTO.PromiseResponse
 	IPv4PoolResource
 	Ranges      []IPv4RangeResponse `json:"Ranges"`
 	Total       uint32              `json:"Total"`
@@ -16,19 +17,14 @@ type GetIPv4PoolResponse struct {
 	Allocatable uint32              `json:"Allocatable"`
 }
 
-// GetDebugName return the name for debug.
-func (dto *GetIPv4PoolResponse) GetDebugName() string {
-	return dto.Name
-}
-
 // Load the data from model.
-func (dto *GetIPv4PoolResponse) Load(data base.ModelInterface) error {
+func (dto *GetIPv4PoolResponse) Load(data interface{}) error {
 	m, ok := data.(*model.IPv4Pool)
 	if !ok {
-		log.Warn("GetIPv4PoolResponse.Load() failed, convert interface failed.")
-		return base.ErrorDataConvert
+		log.Warn("GetIPv4PoolResponse load data from model failed.")
+		return consterror.ErrorDataConvert
 	}
-	base.ResponseLoad(&dto.Response, &m.Model)
+	dto.PromiseResponse.Load(&m.PromiseModel)
 	dto.Name = m.Name
 	dto.Description = m.Description
 	dto.Ranges = make([]IPv4RangeResponse, 0)

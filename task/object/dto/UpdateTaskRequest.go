@@ -7,7 +7,7 @@ import (
 )
 
 // UpdateTaskRequest UpdateTaskRequest that only includes the changable properties.
-// Note: Update sub task not use o request.
+// Note: Update sub task not use this request.
 type UpdateTaskRequest struct {
 	base.ActionRequest
 	Description         *string                       `json:"Description"`
@@ -17,7 +17,7 @@ type UpdateTaskRequest struct {
 	ExecutionResult     *UpdateExecutionResultRequest `json:"ExecutionResult"`
 }
 
-// IsValid return if the request is vali
+// IsValid return if the request is valid.
 func (dto *UpdateTaskRequest) IsValid() *base.Message {
 	message := base.NewMessageUnknownPropertyValue()
 	if dto.Percentage != nil && *dto.Percentage > 100 {

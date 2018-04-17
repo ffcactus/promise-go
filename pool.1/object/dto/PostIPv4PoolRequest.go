@@ -2,77 +2,66 @@ package dto
 
 import (
 	"net"
-	"promise/base"
+	"promise/common/category"
+	commonConstError "promise/common/object/consterror"
+	commonDTO "promise/common/object/dto"
+	"promise/pool/object/consterror"
 	"promise/pool/object/model"
 	"promise/pool/util"
 )
 
 // PostIPv4PoolRequest is the request DTO.
 type PostIPv4PoolRequest struct {
-	base.Request
+	commonDTO.PromiseRequest
 	IPv4PoolResource
 	Ranges []IPv4RangeRequest `json:"Ranges"`
 }
 
-// IsValid return if the request is valid.
-func (dto *PostIPv4PoolRequest) IsValid() *base.Message {
+// Validate the request.
+func (dto *PostIPv4PoolRequest) Validate() error {
 	if dto.SubnetMask != nil && net.ParseIP(*dto.SubnetMask) == nil {
-		message := base.NewMessageIPv4FormatError()
-		return &message
+		return commonConstError.ErrorDataConvert
 	}
 	if dto.Gateway != nil && net.ParseIP(*dto.Gateway) == nil {
-		message := base.NewMessageIPv4FormatError()
-		return &message
+		return commonConstError.ErrorDataConvert
 	}
 	if dto.SubnetMask != nil && net.ParseIP(*dto.SubnetMask) == nil {
-		message := base.NewMessageIPv4FormatError()
-		return &message
+		return commonConstError.ErrorDataConvert
 	}
 	if dto.DNSServers != nil {
 		for _, v := range *dto.DNSServers {
 			if net.ParseIP(v) == nil {
-				message := base.NewMessageIPv4FormatError()
-				return &message
+				return commonConstError.ErrorDataConvert
 			}
 		}
 	}
 
 	if len(dto.Ranges) == 0 {
-		message := base.NewMessageIPv4RangeCountError()
-		return &message
+		return consterror.ErrorRangeCount
 	}
 	for _, v := range dto.Ranges {
 		start := net.ParseIP(v.Start)
 		end := net.ParseIP(v.End)
 		if start == nil {
-			message := base.NewMessageIPv4FormatError()
-			return &message
+			return commonConstError.ErrorDataConvert
 		}
 		if end == nil {
-			message := base.NewMessageIPv4FormatError()
-			return &message
+			return commonConstError.ErrorDataConvert
 		}
 		if util.IPtoInt(start) > util.IPtoInt(end) {
-			message := base.NewMessageIPv4RangeEndAddressError()
-			return &message
+			return consterror.ErrorRangeEndAddress
 		}
 		if util.IPtoInt(end)-util.IPtoInt(start)+1 > 256 {
-			message := base.NewMessageIPv4RangeSizeError()
-			return &message
+			return consterror.ErrorRangeSize
 		}
 	}
 	return nil
 }
 
-// GetDebugName return the name for debug.
-func (dto *PostIPv4PoolRequest) GetDebugName() string {
-	return dto.Name
-}
-
-// ToModel convert the DTO to model.
-func (dto *PostIPv4PoolRequest) ToModel() base.ModelInterface {
+// ToModel will convert the DTO to model.
+func (dto *PostIPv4PoolRequest) ToModel() *model.IPv4Pool {
 	ret := model.IPv4Pool{}
-	ret.Category = base.CategoryPoolIPv4
+	ret.Category = category.PoolIPv4
 	ret.Name = dto.Name
 	ret.Description = dto.Description
 	ret.SubnetMask = dto.SubnetMask

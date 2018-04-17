@@ -4,46 +4,46 @@ import (
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 	"promise/base"
-	"promise/task/object/entity"
+	"promise/pool/object/entity"
 )
 
-// TaskDB is the concrete DB.
-type TaskDB struct {
+// IPv4PoolDB is the concrete DB.
+type IPv4PoolDB struct {
 	base.DB
 }
 
 // GetResourceName get the resource name.
-func (impl *TaskDB) GetResourceName() string {
-	return "task"
+func (impl *IPv4PoolDB) GetResourceName() string {
+	return "ipv4"
 }
 
 // NewEntity return the a new entity.
-func (impl *TaskDB) NewEntity() base.EntityInterface {
-	e := new(entity.Task)
+func (impl *IPv4PoolDB) NewEntity() base.EntityInterface {
+	e := new(entity.IPv4Pool)
 	e.Entity.TemplateImpl = e
 	return e
 }
 
 // NewEntityCollection return a collection of entity.
-func (impl *TaskDB) NewEntityCollection() interface{} {
-	return new([]entity.Task)
+func (impl *IPv4PoolDB) NewEntityCollection() interface{} {
+	return new([]entity.IPv4Pool)
 }
 
 // GetConnection return the DB connection.
-func (impl *TaskDB) GetConnection() *gorm.DB {
+func (impl *IPv4PoolDB) GetConnection() *gorm.DB {
 	return base.GetConnection()
 }
 
 // NeedCheckDuplication return if need check duplication for entity.
-func (impl *TaskDB) NeedCheckDuplication() bool {
-	return false
+func (impl *IPv4PoolDB) NeedCheckDuplication() bool {
+	return true
 }
 
 // ConvertFindResultToCollection convert the Find() result to collection mode.
-func (impl *TaskDB) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, error) {
-	collection, ok := result.(*[]entity.Task)
+func (impl *IPv4PoolDB) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, error) {
+	collection, ok := result.(*[]entity.IPv4Pool)
 	if !ok {
-		log.Error("TaskDB.ConvertFindResult() failed.")
+		log.Error("IPv4PoolDB.ConvertFindResult() failed.")
 		return nil, base.ErrorDataConvert
 	}
 	ret := base.CollectionModel{}
@@ -57,10 +57,10 @@ func (impl *TaskDB) ConvertFindResultToCollection(start int64, total int64, resu
 }
 
 // ConvertFindResultToModel convert the Find() result to model slice
-func (impl *TaskDB) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, error) {
-	collection, ok := result.(*[]entity.Task)
+func (impl *IPv4PoolDB) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, error) {
+	collection, ok := result.(*[]entity.IPv4Pool)
 	if !ok {
-		log.Error("TaskDB.ConvertFindResult() failed.")
+		log.Error("IPv4PoolDB.ConvertFindResult() failed.")
 		return nil, base.ErrorDataConvert
 	}
 	ret := make([]base.ModelInterface, 0)

@@ -32,8 +32,27 @@ const (
 	// MessageUnknownFilterName is message ID.
 	MessageUnknownFilterName = "Promise.Message.UnknownFilterName"
 
+	// --- For Task ---
+
 	// MessageTaskNoStep is message ID.
 	MessageTaskNoStep = "Task.Message.NoStep"
+
+	// --- For IPv4 ---
+
+	// MessageIPv4PoolEmpty is message ID
+	MessageIPv4PoolEmpty = "IPv4.Message.IPv4PoolEmpty"
+	// MessageIPv4AddressNotExist is message ID.
+	MessageIPv4AddressNotExist = "IPv4.Message.AddressNotExist"
+	// MessageIPv4FormateError is message ID.
+	MessageIPv4FormateError = "IPv4.Message.IPv4FormatError"
+	// MessageIPv4RangeEndAddressError is message ID.
+	MessageIPv4RangeEndAddressError = "IPv4.Message.IPv4RangeEndAddressError"
+	// MessageIPv4RangeSizeError is message ID.
+	MessageIPv4RangeSizeError = "IPv4.Message.IPv4RangeSizeError"
+	// MessageIPv4RangeCountError is message ID.
+	MessageIPv4RangeCountError = "IPv4.Message.IPv4RangeCountError"
+	// MessageIPv4NotAllocatedError is message ID.
+	MessageIPv4NotAllocatedError = "IPv4.Message.IPv4NotAllocatedError"
 )
 
 const (
@@ -189,6 +208,71 @@ func NewMessageTaskNoStep() Message {
 	ret.Severity = SeverityNormal
 	ret.Description = "No task steps included.."
 	ret.Supports = []Support{}
+	return ret
+}
+
+// --- IPv4 ---
+
+// NewMessageIPv4PoolEmpty will return a message.
+func NewMessageIPv4PoolEmpty() Message {
+	ret := NewMessage()
+	ret.ID = MessageIPv4PoolEmpty
+	ret.Severity = SeverityWarning
+	ret.Description = "No more IPv4 address can be allocated."
+	return ret
+}
+
+// NewMessageIPv4AddressNotExist will return a message.
+func NewMessageIPv4AddressNotExist() Message {
+	ret := NewMessage()
+	ret.ID = MessageIPv4AddressNotExist
+	ret.Severity = SeverityWarning
+	ret.Description = "The address does not exist in this pool."
+	return ret
+}
+
+// NewMessageIPv4FormatError will return a message.
+func NewMessageIPv4FormatError() Message {
+	ret := NewMessage()
+	ret.ID = MessageIPv4FormateError
+	ret.Severity = SeverityWarning
+	ret.Description = "Unknown IPv4 format."
+	return ret
+}
+
+// NewMessageIPv4RangeEndAddressError will return a message.
+func NewMessageIPv4RangeEndAddressError() Message {
+	ret := NewMessage()
+	ret.ID = MessageIPv4RangeEndAddressError
+	ret.Severity = SeverityWarning
+	ret.Description = "The end address in a range should equal or big then start address"
+	return ret
+}
+
+// NewMessageIPv4RangeSizeError will return a message.
+func NewMessageIPv4RangeSizeError() Message {
+	ret := NewMessage()
+	ret.ID = MessageIPv4RangeSizeError
+	ret.Severity = SeverityWarning
+	ret.Description = "The number of addresses in a range should not more than 256."
+	return ret
+}
+
+// NewMessageIPv4RangeCountError will return a message.
+func NewMessageIPv4RangeCountError() Message {
+	ret := NewMessage()
+	ret.ID = MessageIPv4RangeCountError
+	ret.Severity = SeverityWarning
+	ret.Description = "IPv4 pool should contain one range at least."
+	return ret
+}
+
+// NewMessageIPv4NotAllocatedError will return a message.
+func NewMessageIPv4NotAllocatedError() Message {
+	ret := NewMessage()
+	ret.ID = MessageIPv4NotAllocatedError
+	ret.Severity = SeverityWarning
+	ret.Description = "IP is not allocated before."
 	return ret
 }
 

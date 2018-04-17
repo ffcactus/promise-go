@@ -31,16 +31,6 @@ func (Task) TableName() string {
 	return "Task"
 }
 
-// GetID return the ID.
-func (e *Task) GetID() string {
-	return e.ID
-}
-
-// SetID set the ID.
-func (e *Task) SetID(id string) {
-	e.ID = id
-}
-
 // GetDebugName return the debug name of this entity.
 func (e *Task) GetDebugName() string {
 	return e.Name

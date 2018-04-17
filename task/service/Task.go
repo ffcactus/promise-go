@@ -17,7 +17,7 @@ var (
 	eventService event.Service
 )
 
-// Task is the service for task.
+// Task is the concrete service.
 type Task struct {
 }
 

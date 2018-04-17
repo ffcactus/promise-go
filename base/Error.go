@@ -21,4 +21,15 @@ var (
 	ErrorUnknownFilterName = fmt.Errorf("unknown filter name")
 	// ErrorUnknownPropertyValue is an error.
 	ErrorUnknownPropertyValue = fmt.Errorf("unknown property value")
+
+	// ErrorIPv4NotAllocated is an error.
+	ErrorIPv4NotAllocated = fmt.Errorf("IP has not been allocated before")
+	// ErrorIPv4NotInPool is an error.
+	ErrorIPv4NotInPool = fmt.Errorf("IP not in the pool")
+	// ErrorIPv4RangeEndAddress is an error.
+	ErrorIPv4RangeEndAddress = fmt.Errorf("end address should equal or big then start address")
+	// ErrorIPv4RangeSize is an error.
+	ErrorIPv4RangeSize = fmt.Errorf("the number addresses in range should not more than 256")
+	// ErrorIPv4RangeCount is an error.
+	ErrorIPv4RangeCount = fmt.Errorf("IPv4 pool should contain one range at least")
 )

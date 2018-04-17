@@ -4,24 +4,22 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 	log "github.com/sirupsen/logrus"
-	"promise/common/app"
-	commonDB "promise/common/db"
-	"promise/common/object/constvalue"
-	"promise/pool/controller"
-	"promise/pool/object/entity"
+	"promise/base"
+	"promise/task/controller"
+	"promise/task/object/entity"
 )
 
 func initDB() {
-	commonDB.InitConnection()
+	base.InitConnection()
 	if recreateDB, _ := beego.AppConfig.Bool("recreate_db"); recreateDB {
 		// Remove tables.
-		if commonDB.RemoveTables(entity.Tables) {
+		if base.RemoveTables(entity.Tables) {
 			log.Info("Remove all tables in DB done.")
 		} else {
 			log.Warn("Failed to remove all tables in DB.")
 		}
 		// Create tables.
-		if !commonDB.CreateTables(entity.Tables) {
+		if !base.CreateTables(entity.Tables) {
 			panic("DB Initialization failed.")
 		} else {
 			log.Info("DB schema created.")
@@ -30,13 +28,19 @@ func initDB() {
 }
 
 func main() {
-	app.Init("IDPoolApp")
+	base.Init("IDPoolApp")
 	initDB()
 	ipNS := beego.NewNamespace(
-		app.RootURL+constvalue.IDPoolBaseURI,
-		beego.NSRouter("/ipv4", &controller.IPv4RootController{}),
-		beego.NSRouter("/ipv4/:id", &controller.IPv4Controller{}),
-		beego.NSRouter("/ipv4/:id/action/:action", &controller.IPv4ActionController{}),
+		base.RootURL+base.IDPoolBaseURI,
+		beego.NSRouter("/ipv4", &base.RootController{
+			TemplateImpl: new(controller.IPv4RootController),
+		}),
+		beego.NSRouter("/ipv4/:id", &base.IDController{
+			TemplateImpl: new(controller.IPv4IDController),
+		}),
+		beego.NSRouter("/ipv4/:id/action/:action", &base.ActionController{
+			TemplateImpl: new(controller.IPv4ActionController),
+		}),
 	)
 	beego.AddNamespace(ipNS)
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
