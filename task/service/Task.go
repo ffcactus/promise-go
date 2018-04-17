@@ -17,26 +17,26 @@ var (
 	eventService event.Service
 )
 
-// TaskService is the service for student.
-type TaskService struct {
+// Task is the service for task.
+type Task struct {
 }
 
 // GetCategory returns the category of this service.
-func (s *TaskService) GetCategory() string {
+func (s *Task) GetCategory() string {
 	return base.CategoryTask
 }
 
 // NewResponse creates a new response DTO.
-func (s *TaskService) NewResponse() base.ResponseInterface {
+func (s *Task) NewResponse() base.ResponseInterface {
 	return new(dto.GetTaskResponse)
 }
 
 // GetDB returns the DB implementation.
-func (s *TaskService) GetDB() base.DBInterface {
+func (s *Task) GetDB() base.DBInterface {
 	return taskDB
 }
 
 // GetEventService returns the event service implementation.
-func (s *TaskService) GetEventService() base.EventServiceInterface {
+func (s *Task) GetEventService() base.EventServiceInterface {
 	return eventService
 }

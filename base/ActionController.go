@@ -1,20 +1,21 @@
 package base
 
 import (
-	"net/http"
 	"encoding/json"
 	"github.com/astaxie/beego"
 	log "github.com/sirupsen/logrus"
+	"net/http"
 	"strings"
 )
 
 // ActionInfo includes all the information that is required by controller to
-// handler action. 
+// handler action.
 type ActionInfo struct {
-	Name string
+	Name    string
 	Request ActionRequestInterface
 	Service ActionServiceInterface
 }
+
 // ActionControllerTemplateInterface is the interface that a concrete controller must implement.
 type ActionControllerTemplateInterface interface {
 	GetResourceName() string
@@ -30,20 +31,20 @@ type ActionController struct {
 // Post is the default method to handle POST method.
 func (c *ActionController) Post() {
 	var (
-		messages []Message
-		action = c.Ctx.Input.Param(":action")
-		id = c.Ctx.Input.Param(":id")
+		messages   []Message
+		action     = c.Ctx.Input.Param(":action")
+		id         = c.Ctx.Input.Param(":id")
 		actionInfo = c.TemplateImpl.GetActionInfo()
-		service ActionServiceInterface
-		request ActionRequestInterface
+		service    ActionServiceInterface
+		request    ActionRequestInterface
 	)
 
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.GetResourceName(),
-		"action":    action,
-		"id":  id,
+		"action":   action,
+		"id":       id,
 	}).Info("Perform action.")
-	
+
 	// Find the matching ActionInfo.s
 	for _, v := range actionInfo {
 		if strings.ToLower(action) == strings.ToLower(v.Name) {
@@ -55,8 +56,8 @@ func (c *ActionController) Post() {
 		messages = append(messages, NewMessageInvalidRequest())
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.GetResourceName(),
-			"action":    action,
-			"id":  id,
+			"action":   action,
+			"id":       id,
 			"message":  messages[0].ID,
 		}).Warn("Perform action failed, unknown action.")
 		c.Data["json"] = &messages
@@ -69,8 +70,8 @@ func (c *ActionController) Post() {
 		messages = append(messages, NewMessageInvalidRequest())
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.GetResourceName(),
-			"action":    action,
-			"id":  id,
+			"action":   action,
+			"id":       id,
 			"error":    err,
 			"message":  messages[0].ID,
 		}).Warn("Post resource failed, bad request.")
@@ -84,8 +85,8 @@ func (c *ActionController) Post() {
 		messages = append(messages, *message)
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.GetResourceName(),
-			"action":    action,
-			"id":  id,
+			"action":   action,
+			"id":       id,
 			"message":  messages[0].ID,
 		}).Warn("Post resource failed, request validation failed.")
 		c.Data["json"] = &messages
@@ -98,8 +99,8 @@ func (c *ActionController) Post() {
 	if messages != nil {
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.GetResourceName(),
-			"action":    action,
-			"id":  id,
+			"action":   action,
+			"id":       id,
 			"message":  messages[0].ID,
 		}).Warn("Post resource failed.")
 		c.Data["json"] = &messages
@@ -109,9 +110,9 @@ func (c *ActionController) Post() {
 	}
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.GetResourceName(),
-		"action":    action,
-		"id":  id,
-	}).Info("Perform action done.")	
+		"action":   action,
+		"id":       id,
+	}).Info("Perform action done.")
 	c.Data["json"] = response
 	c.Ctx.Output.SetStatus(http.StatusAccepted)
 	c.ServeJSON()

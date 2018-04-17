@@ -1,4 +1,4 @@
-package controller 
+package controller
 
 import (
 	"promise/base"
@@ -9,23 +9,32 @@ import (
 var (
 	updateTaskStep = base.ActionInfo{
 		Name: "UpdateTaskStep",
-		Request: &dto.UpdateTaskStepRequest{			
-			Name: "AAA",
+		Request: &dto.UpdateTaskStepRequest{
 			ActionRequest: base.ActionRequest{
 				TemplateImpl: new(dto.UpdateTaskStepRequest),
 			},
 		},
 		Service: &base.ActionService{
-			TemplateImpl: new(service.TaskUpdateTaskStepService),
+			TemplateImpl: new(service.UpdateTaskStep),
+		},
+	}
+	updateTask = base.ActionInfo{
+		Name: "UpdateTask",
+		Request: &dto.UpdateTaskRequest{
+			ActionRequest: base.ActionRequest{
+				TemplateImpl: new(dto.UpdateTaskRequest),
+			},
+		},
+		Service: &base.ActionService{
+			TemplateImpl: new(service.UpdateTask),
 		},
 	}
 
-	actionInfo = []base.ActionInfo{updateTaskStep}
+	actionInfo = []base.ActionInfo{updateTaskStep, updateTask}
 )
 
 // TaskActionController is implements ActionControllerTemplateInterface.
 type TaskActionController struct {
-
 }
 
 // GetResourceName returns the name this controller handle of.

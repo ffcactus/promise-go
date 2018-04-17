@@ -1,9 +1,9 @@
 package dto
 
 import (
+	log "github.com/sirupsen/logrus"
 	"promise/base"
 	"promise/task/object/model"
-	log "github.com/sirupsen/logrus"
 )
 
 // PostTaskStepRequest Post task step request DTO.
@@ -54,48 +54,14 @@ type UpdateTaskStepRequest struct {
 	ExecutionResult *UpdateExecutionResultRequest `json:"ExecutionResult"`
 }
 
-// IsValid return if the request is valid. 
+// IsValid return if the request is valid.
 func (dto *UpdateTaskStepRequest) IsValid() *base.Message {
-	var valid = false
-	if dto.ExecutionState != nil {
-		if *dto.ExecutionState == model.ExecutionStateReady {
-			valid = true
-		}
-		if *dto.ExecutionState == model.ExecutionStateRunning {
-			valid = true
-		}
-		if *dto.ExecutionState == model.ExecutionStateSuspended {
-			valid = true
-		}
-		if *dto.ExecutionState == model.ExecutionStateTerminated {
-			valid = true
-		}
-		if (!valid) {
-			message := base.NewMessageUnknownPropertyValue()
-			return &message
-		}
+	message := base.NewMessageUnknownPropertyValue()
+	if dto.ExecutionState != nil && !model.IsValidExecutionState(*dto.ExecutionState) {
+		return &message
 	}
-	valid = false
-	if dto.ExecutionResult != nil && dto.ExecutionResult.State != nil {
-		if *dto.ExecutionResult.State == model.ExecutionResultStateFinished {
-			valid = true
-		}
-		if *dto.ExecutionResult.State == model.ExecutionResultStateWarning {
-			valid = true
-		}
-		if *dto.ExecutionResult.State == model.ExecutionResultStateError {
-			valid = true
-		}
-		if *dto.ExecutionResult.State == model.ExecutionResultStateAbort {
-			valid = true
-		}
-		if *dto.ExecutionResult.State == model.ExecutionResultStateUnknown {
-			valid = true
-		}
-		if (!valid) {
-			message := base.NewMessageUnknownPropertyValue()
-			return &message
-		}
+	if dto.ExecutionResult != nil && dto.ExecutionResult.State != nil && !model.IsValidExecutionResultState(*dto.ExecutionResult.State) {
+		return &message
 	}
 	return nil
 }
@@ -123,23 +89,23 @@ func (dto *UpdateTaskStepRequest) UpdateModel(i base.ModelInterface) error {
 			if dto.ExecutionState != nil {
 				// whenever the use update a task step we think the current step is this one.
 				m.CurrentStep = m.TaskSteps[i].Name
-				
+
 				m.TaskSteps[i].ExecutionState = *dto.ExecutionState
-				// if the user set the step to not yet finished, 
+				// if the user set the step to not yet finished,
 				// we need adjust the percentage, and set the current step accrodingly.
-				switch(*dto.ExecutionState) {
+				switch *dto.ExecutionState {
 				case model.ExecutionStateReady,
-				     model.ExecutionStateRunning,
-				     model.ExecutionStateSuspended:					
-					currentTime -= m.TaskSteps[i].ExpectedExecutionMs									
-				}		
+					model.ExecutionStateRunning,
+					model.ExecutionStateSuspended:
+					currentTime -= m.TaskSteps[i].ExpectedExecutionMs
+				}
 			}
 			if dto.ExecutionResult != nil {
 				dto.ExecutionResult.UpdateModel(&m.TaskSteps[i].ExecutionResult)
 			}
 
 			percentageF := (float32)(currentTime) / (float32)(m.ExpectedExecutionMs)
-			m.Percentage = (int)((percentageF * 100) + 0.5)
+			m.Percentage = (uint32)((percentageF * 100) + 0.5)
 			if m.Percentage > 100 {
 				m.Percentage = 100
 			}

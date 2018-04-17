@@ -18,7 +18,7 @@ type Task struct {
 	TargetName          string               `gorm:"column:TargetName"`
 	TargetURI           string               `gorm:"column:TargetURI"`
 	ExpectedExecutionMs uint64               `gorm:"column:ExpectedExecutionMs"`
-	Percentage          int                  `gorm:"column:Percentage"`
+	Percentage          uint32               `gorm:"column:Percentage"`
 	CurrentStep         string               `gorm:"column:CurrentStep"`
 	// Use string to represent.
 	TaskSteps string `gorm:"column:TaskSteps"`

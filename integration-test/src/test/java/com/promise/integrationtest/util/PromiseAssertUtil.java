@@ -60,7 +60,7 @@ public class PromiseAssertUtil
         T ret = response.getBody();
         return ret;
     }
-    
+
     /**
      * Assert the POST action should fail.
      * 
@@ -100,7 +100,7 @@ public class PromiseAssertUtil
         PromiseAssertUtil.isResourceResponse(ret);
         return ret;
     }
-    
+
     /**
      * Assert the POST should fail.
      * 

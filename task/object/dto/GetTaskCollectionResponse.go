@@ -33,7 +33,7 @@ type TaskCollectionMember struct {
 	Description     *string              `json:"Description,omitempty"`
 	ExecutionState  model.ExecutionState `json:"ExecutionState"`
 	CurrentStep     string               `json:"CurrentStep"`
-	Percentage      int                  `json:"Percentage"`
+	Percentage      uint32               `json:"Percentage"`
 	ExecutionResult ExecutionResult      `json:"ExecutionResult"`
 }
 

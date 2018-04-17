@@ -53,7 +53,7 @@ func (e *Student) GetFilterNameList() []string {
 func (e *Student) GetAssociation() []interface{} {
 	ret := []interface{}{}
 	for _, v := range e.Phones {
-		ret = append(ret, v) 
+		ret = append(ret, v)
 	}
 	ret = append(ret, e)
 	return ret

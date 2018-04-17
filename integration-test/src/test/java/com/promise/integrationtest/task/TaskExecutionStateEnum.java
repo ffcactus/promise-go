@@ -2,10 +2,10 @@ package com.promise.integrationtest.task;
 
 public enum TaskExecutionStateEnum
 {
-    Ready("Ready"),
-    Running("Running"),
-    Suspended("Suspended"),
-    Terminated("Terminated"),
+    Ready ("Ready"),
+    Running ("Running"),
+    Suspended ("Suspended"),
+    Terminated ("Terminated"),
     ;
     private String id;
 

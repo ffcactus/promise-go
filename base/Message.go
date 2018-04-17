@@ -253,5 +253,3 @@ func NewSupportTransactionError() Support {
 	ret.Solution = "Try again later or contact support."
 	return ret
 }
-
-

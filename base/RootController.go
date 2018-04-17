@@ -150,9 +150,9 @@ func (c *RootController) Get() {
 		return
 	}
 	log.WithFields(log.Fields{
-		"start": startInt,
-		"count": countInt,
-		"filter": filter,
+		"start":    startInt,
+		"count":    countInt,
+		"filter":   filter,
 		"resource": c.TemplateImpl.GetResourceName(),
 	}).Info("Get resource collection done.")
 	c.Data["json"] = response

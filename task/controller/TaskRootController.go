@@ -9,7 +9,7 @@ import (
 var (
 	// StudentService is the service used in Student controller.
 	taskService = &base.Service{
-		TemplateImpl: new(service.TaskService),
+		TemplateImpl: new(service.Task),
 	}
 )
 

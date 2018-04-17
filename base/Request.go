@@ -52,7 +52,6 @@ type ActionRequest struct {
 	TemplateImpl ActionRequestTemplateInterface `json:"-"`
 }
 
-
 // IsValid checks if the request is valid.
 func (dto *ActionRequest) IsValid() *Message {
 	return dto.TemplateImpl.IsValid()

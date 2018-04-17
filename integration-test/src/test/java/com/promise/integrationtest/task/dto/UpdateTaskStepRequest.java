@@ -8,7 +8,7 @@ public class UpdateTaskStepRequest
     private String name;
     @JsonProperty(value = "ExecutionState", required = false)
     private String executionState;
-    @JsonProperty(value = "executionResult", required = false)
+    @JsonProperty(value = "ExecutionResult", required = false)
     private UpdateExecutionResultRequest executionResult;
 
     public String getName()

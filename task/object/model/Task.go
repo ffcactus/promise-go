@@ -34,6 +34,33 @@ var (
 	ExecutionResultStateUnknown ExecutionResultState = "Unknown"
 )
 
+// IsValidExecutionState check if the state is a valid execution state.
+func IsValidExecutionState(state string) bool {
+	switch state {
+	case ExecutionStateReady,
+		ExecutionStateRunning,
+		ExecutionStateSuspended,
+		ExecutionStateTerminated:
+		return true
+	default:
+		return false
+	}
+}
+
+// IsValidExecutionResultState check if the state is a valid execution result state.
+func IsValidExecutionResultState(state string) bool {
+	switch state {
+	case ExecutionResultStateFinished,
+		ExecutionResultStateWarning,
+		ExecutionResultStateError,
+		ExecutionResultStateAbort,
+		ExecutionResultStateUnknown:
+		return true
+	default:
+		return false
+	}
+}
+
 // ExecutionResult Used by Task and it's TaskStep
 type ExecutionResult struct {
 	State   ExecutionResultState
@@ -63,7 +90,7 @@ type Task struct {
 	TargetName          string
 	TargetURI           string
 	ExpectedExecutionMs uint64
-	Percentage          int
+	Percentage          uint32
 	CurrentStep         string
 	TaskSteps           []TaskStep
 	ExecutionResult     ExecutionResult
@@ -85,7 +112,7 @@ type TaskCollectionMember struct {
 	Name            string
 	Description     *string
 	ExecutionState  ExecutionState
-	Percentage      int
+	Percentage      uint32
 	CurrentStep     string
 	ExecutionResult ExecutionResult
 }

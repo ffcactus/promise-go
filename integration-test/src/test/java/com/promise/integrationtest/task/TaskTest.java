@@ -23,7 +23,9 @@ import com.promise.integrationtest.task.dto.PostTaskRequest;
 import com.promise.integrationtest.task.dto.PostTaskStepRequest;
 import com.promise.integrationtest.task.dto.TaskCollectionMemberResponse;
 import com.promise.integrationtest.task.dto.UpdateExecutionResultRequest;
+import com.promise.integrationtest.task.dto.UpdateTaskRequest;
 import com.promise.integrationtest.task.dto.UpdateTaskStepRequest;
+import com.promise.integrationtest.util.MessageUtil;
 import com.promise.integrationtest.util.PromiseAssertUtil;
 import com.promise.integrationtest.util.RestClient;
 
@@ -90,6 +92,49 @@ public class TaskTest extends PromiseIntegrationTest
 
         // Delete it.
         PromiseAssertUtil.assertDeleteResource(getRootURL() + response1.getUri());
+    }
+
+    /**
+     * The task ID must exist.
+     */
+    @Test
+    public void testNotExist()
+    {
+        // Get
+        PromiseAssertUtil.assertGetMessage(getRootURL() + "/promise/v1/task/not_exist", MessageEnum.NotExist.getId());
+        // Delete
+        PromiseAssertUtil.assertDeleteMessage(getRootURL() + "/promise/v1/task/not_exist", MessageEnum.NotExist.getId());
+        // Update task step action.
+        UpdateTaskStepRequest request1 = new UpdateTaskStepRequest();
+        PromiseAssertUtil.assertActionMessage(
+                getRootURL() + "/promise/v1/task/not_exist/action/updateTaskStep",
+                MessageEnum.NotExist.getId(),
+                request1);
+        // Update task action.
+        UpdateTaskRequest request2 = new UpdateTaskRequest();
+        PromiseAssertUtil.assertActionMessage(
+                getRootURL() + "/promise/v1/task/not_exist/action/updateTask",
+                MessageEnum.NotExist.getId(),
+                request2);
+    }
+
+    /**
+     * You should specify task step.
+     */
+    @Test
+    public void testPostTaskRequest()
+    {
+        final String name = "MyTask1";
+        final String description = "MyTask description";
+
+        final PostTaskRequest request = new PostTaskRequest();
+        request.setName(name);
+        request.setDescription(description);
+
+        PromiseAssertUtil.assertPostMessage(
+                getRootURL() + "/promise/v1/task/",
+                MessageEnum.TaskNoStep.getId(),
+                request);
     }
 
     /**
@@ -220,26 +265,93 @@ public class TaskTest extends PromiseIntegrationTest
     }
 
     /**
-     * You should specify task step.
+     * Task service will validate your update task request.
+     */
+    public void testUpdateTaskRequest()
+    {
+        final String name = "MyTask";
+        final String description = "Description to be changed.";
+
+        final PostTaskRequest request1 = new PostTaskRequest();
+        request1.setName(name);
+        request1.setDescription(description);
+        request1.addTaskStep(new PostTaskStepRequest("Step1", 1000));
+
+        // Create a task.
+        final GetTaskResponse response1 = PromiseAssertUtil.assertPostResponse(
+                getRootURL() + "/promise/v1/task/",
+                request1,
+                GetTaskResponse.class);
+        UpdateTaskRequest updateTaskRequest = new UpdateTaskRequest();
+        // Validate execution state.
+        updateTaskRequest.setExecutionState("xxxx");
+        PromiseAssertUtil.assertPostMessage(
+                getRootURL() + response1.getUri() + "/action/updateTask",
+                MessageEnum.UnknownPropertyValue.getId(),
+                updateTaskRequest);
+        // Validate percentage.
+        updateTaskRequest.setExecutionState(TaskExecutionStateEnum.Running.getId());
+        updateTaskRequest.setPercentage(100 + 1);
+        PromiseAssertUtil.assertPostMessage(
+                getRootURL() + response1.getUri() + "/action/updateTask",
+                MessageEnum.UnknownPropertyValue.getId(),
+                updateTaskRequest);
+        // Validate execution result state.
+        updateTaskRequest.setPercentage(50);
+        UpdateExecutionResultRequest updateExecutionResultRequest = new UpdateExecutionResultRequest();
+        updateExecutionResultRequest.setState("xxxx");
+        updateTaskRequest.setExecutionResult(updateExecutionResultRequest);
+        PromiseAssertUtil.assertPostMessage(
+                getRootURL() + response1.getUri() + "/action/updateTask",
+                MessageEnum.UnknownPropertyValue.getId(),
+                updateTaskRequest);
+    }
+
+    /**
+     * The task step should have all the properties that you updated.
      */
     @Test
-    public void testPostTaskRequest()
+    public void testUpdateTaskWithFullProperty()
     {
-        final String name = "MyTask1";
+        final String name = "MyTask";
         final String description = "MyTask description";
 
-        final PostTaskRequest request = new PostTaskRequest();
-        request.setName(name);
-        request.setDescription(description);
+        final PostTaskRequest request1 = new PostTaskRequest();
+        request1.setName(name);
+        request1.setDescription(description);
+        request1.addTaskStep(new PostTaskStepRequest("Step1", 1000));
 
-        PromiseAssertUtil.assertPostMessage(
+        // Create a task.
+        final GetTaskResponse createdTask = PromiseAssertUtil.assertPostResponse(
                 getRootURL() + "/promise/v1/task/",
-                MessageEnum.TaskNoStep.getId(),
-                request);
+                request1,
+                GetTaskResponse.class);
+        UpdateTaskRequest updateTaskRequest = new UpdateTaskRequest();
+        updateTaskRequest.setDescription("description");
+        updateTaskRequest.setPercentage(55);
+        updateTaskRequest.setExpectedExecutionMs(1234);
+        updateTaskRequest.setExecutionState(TaskExecutionStateEnum.Running.getId());
+
+        UpdateExecutionResultRequest executionResult = new UpdateExecutionResultRequest();
+        executionResult.setState(TaskExecutionResultStateEnum.Finished.getId());
+        executionResult.setMessage(MessageUtil.newTestMessage());
+        updateTaskRequest.setExecutionResult(executionResult);
+
+        final GetTaskResponse updatedTask = PromiseAssertUtil.assertActionResponse(
+                getRootURL() + createdTask.getUri() + "/action/updateTask",
+                updateTaskRequest,
+                GetTaskResponse.class);
+
+        Assert.assertEquals("description", updatedTask.getDescription());
+        Assert.assertEquals(55, updatedTask.getPercentage());
+        Assert.assertEquals(1234, updatedTask.getExpectedExecutionMs());
+        Assert.assertEquals(TaskExecutionStateEnum.Running.getId(), updatedTask.getExecutionState());
+        Assert.assertEquals(TaskExecutionResultStateEnum.Finished.getId(), updatedTask.getExecutionResult().getState());
+        Assert.assertEquals(MessageUtil.newTestMessage(), updatedTask.getExecutionResult().getMessage());
     }
-    
+
     /**
-     * You should provide the right update task step request.
+     * Task service will validate your update task step request.
      */
     @Test
     public void testUpdateTaskStepRequest()
@@ -286,7 +398,49 @@ public class TaskTest extends PromiseIntegrationTest
     }
 
     /**
-     * You can update task step, and task service will do some corresponding update for you.
+     * The task step should have all the properties that you updated.
+     */
+    @Test
+    public void testUpdateTaskStepWithFullProperty()
+    {
+        final String name = "MyTask";
+        final String description = "MyTask description";
+
+        final PostTaskRequest request1 = new PostTaskRequest();
+        request1.setName(name);
+        request1.setDescription(description);
+        request1.addTaskStep(new PostTaskStepRequest("Step1", 1000));
+
+        // Create a task.
+        final GetTaskResponse createdTask = PromiseAssertUtil.assertPostResponse(
+                getRootURL() + "/promise/v1/task/",
+                request1,
+                GetTaskResponse.class);
+
+        // Set all the properties
+        final UpdateTaskStepRequest taskStepRequest = new UpdateTaskStepRequest();
+        taskStepRequest.setName("Step1");
+        taskStepRequest.setExecutionState(TaskExecutionStateEnum.Terminated.getId());
+
+        UpdateExecutionResultRequest executionResult = new UpdateExecutionResultRequest();
+        executionResult.setState(TaskExecutionResultStateEnum.Finished.getId());
+        executionResult.setMessage(MessageUtil.newTestMessage());
+
+        taskStepRequest.setExecutionResult(executionResult);
+        final GetTaskResponse updatedTask = PromiseAssertUtil.assertActionResponse(
+                getRootURL() + createdTask.getUri() + "/action/updateTaskStep",
+                taskStepRequest,
+                GetTaskResponse.class);
+        Assert.assertEquals(1, updatedTask.getTaskSteps().size());
+        GetTaskStepResponse taskStep = updatedTask.getTaskSteps().get(0);
+        Assert.assertEquals(TaskExecutionStateEnum.Terminated.getId(), taskStep.getExecutionState());
+        Assert.assertEquals(TaskExecutionResultStateEnum.Finished.getId(), taskStep.getExecutionResult().getState());
+        Assert.assertEquals(MessageUtil.newTestMessage(), taskStep.getExecutionResult().getMessage());
+    }
+
+    /**
+     * You can update task step, and task service will do some corresponding
+     * update for you.
      */
     @Test
     public void testUpdateTaskStep()
@@ -312,58 +466,41 @@ public class TaskTest extends PromiseIntegrationTest
         taskStepRequest.setName("Step1");
         taskStepRequest.setExecutionState(TaskExecutionStateEnum.Running.getId());
         final GetTaskResponse response2 = PromiseAssertUtil.assertActionResponse(
-                getRootURL() + createdTask.getUri() + "/action/updateTaskStep", 
-                taskStepRequest, 
+                getRootURL() + createdTask.getUri() + "/action/updateTaskStep",
+                taskStepRequest,
                 GetTaskResponse.class);
         Assert.assertEquals(0, response2.getPercentage());
         Assert.assertEquals("Step1", response2.getCurrentStep());
-        
+
         // Set step1 to terminated, percentage should increase.
         taskStepRequest.setExecutionState(TaskExecutionStateEnum.Terminated.getId());
         final GetTaskResponse response3 = PromiseAssertUtil.assertActionResponse(
-                getRootURL() + createdTask.getUri() + "/action/updateTaskStep", 
-                taskStepRequest, 
+                getRootURL() + createdTask.getUri() + "/action/updateTaskStep",
+                taskStepRequest,
                 GetTaskResponse.class);
         Assert.assertEquals(33, response3.getPercentage());
         Assert.assertEquals("Step1", response3.getCurrentStep());
-        
+
         // Set step2 to terminated, current task should be step2.
         taskStepRequest.setName("Step2");
         taskStepRequest.setExecutionState(TaskExecutionStateEnum.Terminated.getId());
         final GetTaskResponse response4 = PromiseAssertUtil.assertActionResponse(
-                getRootURL() + createdTask.getUri() + "/action/updateTaskStep", 
-                taskStepRequest, 
+                getRootURL() + createdTask.getUri() + "/action/updateTaskStep",
+                taskStepRequest,
                 GetTaskResponse.class);
         Assert.assertEquals(67, response4.getPercentage());
         Assert.assertEquals("Step2", response4.getCurrentStep());
-        
+
         // Set step3 to terminated, percentage should be 100.
         taskStepRequest.setName("Step3");
         taskStepRequest.setExecutionState(TaskExecutionStateEnum.Terminated.getId());
         final GetTaskResponse response5 = PromiseAssertUtil.assertActionResponse(
-                getRootURL() + createdTask.getUri() + "/action/updateTaskStep", 
-                taskStepRequest, 
+                getRootURL() + createdTask.getUri() + "/action/updateTaskStep",
+                taskStepRequest,
                 GetTaskResponse.class);
         Assert.assertEquals(100, response5.getPercentage());
         Assert.assertEquals("Step3", response5.getCurrentStep());
-        
+
     }
 
-    /**
-     * The task ID must exist.
-     */
-    @Test
-    public void testNotExist()
-    {
-        // Get
-        PromiseAssertUtil.assertGetMessage(getRootURL() + "/promise/v1/task/not_exist", MessageEnum.NotExist.getId());
-        // Delete
-        PromiseAssertUtil.assertDeleteMessage(getRootURL() + "/promise/v1/task/not_exist", MessageEnum.NotExist.getId());
-        // Update task step action.
-        UpdateTaskStepRequest request1 = new UpdateTaskStepRequest();
-        PromiseAssertUtil.assertActionMessage(
-                getRootURL() + "/promise/v1/task/not_exist/action/updateTaskStep",
-                MessageEnum.NotExist.getId(),
-                request1);
-    }
 }

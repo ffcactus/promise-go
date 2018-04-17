@@ -1,35 +1,63 @@
 package dto
 
 import (
+	log "github.com/sirupsen/logrus"
+	"promise/base"
 	"promise/task/object/model"
 )
 
 // UpdateTaskRequest UpdateTaskRequest that only includes the changable properties.
 // Note: Update sub task not use o request.
 type UpdateTaskRequest struct {
-	Description         *string               `json:"Description"`
-	ExecutionState      *model.ExecutionState `json:"ExecutionState"`
-	ExpectedExecutionMs *uint64               `json:"ExpectedExecutionMs"`
-	Percentage          *int                  `json:"Percentage"`
-	ExecutionResult     *ExecutionResult      `json:"ExecutionResult"`
+	base.ActionRequest
+	Description         *string                       `json:"Description"`
+	ExecutionState      *model.ExecutionState         `json:"ExecutionState"`
+	ExpectedExecutionMs *uint64                       `json:"ExpectedExecutionMs"`
+	Percentage          *uint32                       `json:"Percentage"`
+	ExecutionResult     *UpdateExecutionResultRequest `json:"ExecutionResult"`
+}
+
+// IsValid return if the request is vali
+func (dto *UpdateTaskRequest) IsValid() *base.Message {
+	message := base.NewMessageUnknownPropertyValue()
+	if dto.Percentage != nil && *dto.Percentage > 100 {
+		return &message
+	}
+	if dto.ExecutionState != nil && !model.IsValidExecutionState(*dto.ExecutionState) {
+		return &message
+	}
+	if dto.ExecutionResult != nil && dto.ExecutionResult.State != nil && !model.IsValidExecutionResultState(*dto.ExecutionResult.State) {
+		return &message
+	}
+	return nil
+}
+
+// GetDebugName return the name for debug.
+func (dto *UpdateTaskRequest) GetDebugName() string {
+	return ""
 }
 
 // UpdateModel Update the model.
-func (dto *UpdateTaskRequest) UpdateModel(current *model.Task) {
+func (dto *UpdateTaskRequest) UpdateModel(i base.ModelInterface) error {
+	m, ok := i.(*model.Task)
+	if !ok {
+		log.Error("UpdateTaskRequest.UpdateModel() convert interface failed.")
+		return base.ErrorDataConvert
+	}
 	if dto.Description != nil {
-		current.Description = dto.Description
+		m.Description = dto.Description
 	}
 	if dto.ExecutionState != nil {
-		current.ExecutionState = *dto.ExecutionState
+		m.ExecutionState = *dto.ExecutionState
 	}
 	if dto.ExpectedExecutionMs != nil {
-		current.ExpectedExecutionMs = *dto.ExpectedExecutionMs
+		m.ExpectedExecutionMs = *dto.ExpectedExecutionMs
 	}
 	if dto.Percentage != nil {
-		current.Percentage = *dto.Percentage
+		m.Percentage = *dto.Percentage
 	}
 	if dto.ExecutionResult != nil {
-		current.ExecutionResult.State = (*dto.ExecutionResult).State
-		current.ExecutionResult.Message = (*dto.ExecutionResult).Message
+		dto.ExecutionResult.UpdateModel(&m.ExecutionResult)
 	}
+	return nil
 }

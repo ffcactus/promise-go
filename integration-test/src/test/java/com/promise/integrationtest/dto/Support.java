@@ -1,5 +1,6 @@
 package com.promise.integrationtest.dto;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -65,6 +66,34 @@ public class Support
     public void setSolutionArgument(List<Argument> solutionArgument)
     {
         this.solutionArgument = solutionArgument;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+            return false;
+        if (obj == this)
+            return true;
+        if (!(obj instanceof Support))
+            return false;
+        Support other = (Support) obj;
+        if (!other.getId().equals(this.id))
+            return false;
+        if (!other.getReason().equals(this.reason))
+            return false;
+        if (!other.getSolution().equals(this.solution))
+            return false;
+
+        if (!Arrays.equals(this.reasonArgument.toArray(), other.reasonArgument.toArray()))
+        {
+            return false;
+        }
+        if (!Arrays.equals(this.solutionArgument.toArray(), other.solutionArgument.toArray()))
+        {
+            return false;
+        }
+        return true;
     }
 
 }

@@ -6,7 +6,7 @@ public enum MessageEnum
     NotExist ("Promise.Message.NotExist"),
     Duplicate ("Promise.Message.Duplicate"),
     InvalidRequest ("Promise.Message.InvalidRequest"),
-    UnknownPropertyValue("Promise.Message.UnknownPropertyValue"),
+    UnknownPropertyValue ("Promise.Message.UnknownPropertyValue"),
     Timeout ("Promise.Message.Timeout"),
     UnknownFilterName ("Promise.Message.UnknownFilterName"),
 

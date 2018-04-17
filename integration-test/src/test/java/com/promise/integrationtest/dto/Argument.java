@@ -41,4 +41,23 @@ public class Argument
         this.value = value;
     }
 
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+            return false;
+        if (obj == this)
+            return true;
+        if (!(obj instanceof Argument))
+            return false;
+        Argument other = (Argument) obj;
+        if (!other.getName().equals(this.name))
+            return false;
+        if (!other.getType().equals(this.type))
+            return false;
+        if (!other.getValue().equals(this.value))
+            return false;
+        return true;
+    }
+
 }

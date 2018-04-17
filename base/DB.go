@@ -154,6 +154,61 @@ func (impl *DB) Get(id string) ModelInterface {
 	return nil
 }
 
+// Update is the default implement to update resource in DB.
+// It will return if the one exist.
+// It will return the updated resource.
+// It will return wether the operation commited.
+// It will return error if any.
+func (impl *DB) Update(id string, request ActionRequestInterface) (bool, ModelInterface, bool, error) {
+	var (
+		name   = impl.TemplateImpl.GetResourceName()
+		record = impl.TemplateImpl.NewEntity()
+		c      = impl.TemplateImpl.GetConnection()
+	)
+	tx := c.Begin()
+	if err := tx.Error; err != nil {
+		log.WithFields(log.Fields{
+			"resource": name,
+			"id":       id,
+			"error":    err,
+		}).Warn("Update resource in DB failed, start transaction failed.")
+		return true, nil, false, err
+	}
+	if exist, err := impl.GetInternal(tx, id, record); !exist || err != nil {
+		return false, nil, false, err
+	}
+	m := record.ToModel()
+	if err := request.UpdateModel(m); err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"resource": name,
+			"id":       id,
+			"error":    err}).
+			Warn("Update resource in DB failed, update model failed, transaction rollback.")
+		return true, nil, false, err
+	}
+	record.Load(m)
+	record.SetID(id)
+	if err := tx.Save(record).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"resource": name,
+			"id":       id,
+			"error":    err}).
+			Warn("Update resource in DB failed, save resource failed, transaction rollback.")
+		return true, nil, false, err
+	}
+	if err := tx.Commit().Error; err != nil {
+		log.WithFields(log.Fields{
+			"resource": name,
+			"id":       id,
+			"error":    err,
+		}).Warn("Update resource in DB failed, commit failed.")
+		return true, nil, false, err
+	}
+	return true, record.ToModel(), true, nil
+}
+
 // Delete is the default implement to delete resource from DB.
 // It will return if the one exist.
 // It will return the deleted one if commited.

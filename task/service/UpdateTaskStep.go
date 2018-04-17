@@ -5,15 +5,15 @@ import (
 	"promise/task/object/dto"
 )
 
-// TaskUpdateTaskStepService is the impplement of ActionService for update task step.
-type TaskUpdateTaskStepService struct {
+// UpdateTaskStep is the servcie implement to update task step.
+type UpdateTaskStep struct {
 }
 
 // Perform the update task step action.
-func (s *TaskUpdateTaskStepService) Perform(id string, request base.ActionRequestInterface) (interface{}, []base.Message) {
+func (s *UpdateTaskStep) Perform(id string, request base.ActionRequestInterface) (interface{}, []base.Message) {
 	var response dto.GetTaskResponse
 
-	exist, updatedTask, commited, err := taskDB.UpdateTaskStep(id, request)
+	exist, updatedTask, commited, err := taskDB.Update(id, request)
 	if !exist {
 		return nil, []base.Message{base.NewMessageNotExist()}
 	}

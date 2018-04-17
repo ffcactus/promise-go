@@ -9,7 +9,7 @@ import (
 // GetTaskResponse Post task response DTO.
 type GetTaskResponse struct {
 	base.Response
-	MessageID	        *string               `json:"MessageID,omitempty"`
+	MessageID           *string               `json:"MessageID,omitempty"`
 	Name                string                `json:"Name"`
 	Description         *string               `json:"Description,omitempty"`
 	ExecutionState      model.ExecutionState  `json:"ExecutionState"`
@@ -18,7 +18,7 @@ type GetTaskResponse struct {
 	TargetName          string                `json:"TargetName"`
 	TargetURI           string                `json:"TargetURI"`
 	ExpectedExecutionMs uint64                `json:"ExpectedExecutionMs"`
-	Percentage          int                   `json:"Percentage"`
+	Percentage          uint32                `json:"Percentage"`
 	CurrentStep         string                `json:"CurrentStep"`
 	TaskSteps           []GetTaskStepResponse `json:"TaskSteps"`
 	ExecutionResult     ExecutionResult       `json:"ExecutionResult"`

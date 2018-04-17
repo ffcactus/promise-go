@@ -2,11 +2,11 @@ package com.promise.integrationtest.task;
 
 public enum TaskExecutionResultStateEnum
 {
-    Finished("Finished"),
-    Warning("Warning"),
-    Error("Error"),
-    Abort("Abort"),
-    Unknown("Unknown"),
+    Finished ("Finished"),
+    Warning ("Warning"),
+    Error ("Error"),
+    Abort ("Abort"),
+    Unknown ("Unknown"),
     ;
     private String id;
 
