@@ -63,7 +63,7 @@ func (e *Task) GetAssociation() []interface{} {
 
 // GetTables returns the tables to delete when you want delete all the resources.
 func (e *Task) GetTables() []interface{} {
-	return []interface{}{Task{}}
+	return []interface{}{new(Task)}
 }
 
 // GetFilterNameList return all the property name that can be used in filter.

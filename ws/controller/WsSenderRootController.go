@@ -30,9 +30,5 @@ func (c *WsSenderRootController) Post() {
 	}
 	service.DispatchEvent(&request)
 	c.Ctx.Output.SetStatus(http.StatusCreated)
-	log.WithFields(log.Fields{
-		"category": request.Category,
-		"type":     request.Type,
-		"resource": request.ResourceID}).Info("Post ws message done.")
 	c.ServeJSON()
 }

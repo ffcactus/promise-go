@@ -107,5 +107,12 @@ func (impl *TaskDB) UpdateTaskStep(id string, request base.ActionRequestInterfac
 			Warn("Update task step in DB failed, save resource failed, transaction rollback.")
 		return true, nil, false, err
 	}
+	if err := tx.Commit().Error; err != nil {
+		log.WithFields(log.Fields{
+			"id":       id,
+			"error":    err,
+		}).Warn("Update task step in DB failed, commit failed.")
+		return true, nil, false, err
+	}
 	return true, record.ToModel(), true, nil
 }

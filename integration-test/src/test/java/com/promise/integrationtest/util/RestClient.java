@@ -16,8 +16,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class RestClient
 {
-    public static final int CONNECTION_TIMEOUT = 1000;
-    public static final int READ_TIMEOUT = 1000;
+    public static final int CONNECTION_TIMEOUT = 5000;
+    public static final int READ_TIMEOUT = 5000;
 
     /**
      * The general HTTP GET method.

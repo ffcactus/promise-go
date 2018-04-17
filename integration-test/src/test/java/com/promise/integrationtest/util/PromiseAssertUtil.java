@@ -43,26 +43,6 @@ public class PromiseAssertUtil
     }
 
     /**
-     * Assert the resource should be posted.
-     * 
-     * @param url The URL for the POST.
-     * @param request The request DTO.
-     * @param responseClass The response DTO class.
-     * @return The DTO if success.
-     */
-    public static <R, T extends ResourceResponse> T assertPostResponse(String url, R request, Class<T> responseClass)
-    {
-        final ResponseEntity<T> response = RestClient.post(
-                url,
-                request,
-                responseClass);
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        T ret = response.getBody();
-        PromiseAssertUtil.isResourceResponse(ret);
-        return ret;
-    }
-
-    /**
      * Assert the action should be accepted.
      * 
      * @param url The URL for the POST.
@@ -101,6 +81,26 @@ public class PromiseAssertUtil
         Assert.assertEquals(expectedMessageID, message.get(0).getId());
     }
 
+    /**
+     * Assert the resource should be posted.
+     * 
+     * @param url The URL for the POST.
+     * @param request The request DTO.
+     * @param responseClass The response DTO class.
+     * @return The DTO if success.
+     */
+    public static <R, T extends ResourceResponse> T assertPostResponse(String url, R request, Class<T> responseClass)
+    {
+        final ResponseEntity<T> response = RestClient.post(
+                url,
+                request,
+                responseClass);
+        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        T ret = response.getBody();
+        PromiseAssertUtil.isResourceResponse(ret);
+        return ret;
+    }
+    
     /**
      * Assert the POST should fail.
      * 

@@ -121,6 +121,9 @@ func (dto *UpdateTaskStepRequest) UpdateModel(i base.ModelInterface) error {
 			foundStep = true
 
 			if dto.ExecutionState != nil {
+				// whenever the use update a task step we think the current step is this one.
+				m.CurrentStep = m.TaskSteps[i].Name
+				
 				m.TaskSteps[i].ExecutionState = *dto.ExecutionState
 				// if the user set the step to not yet finished, 
 				// we need adjust the percentage, and set the current step accrodingly.
@@ -128,8 +131,7 @@ func (dto *UpdateTaskStepRequest) UpdateModel(i base.ModelInterface) error {
 				case model.ExecutionStateReady,
 				     model.ExecutionStateRunning,
 				     model.ExecutionStateSuspended:					
-					currentTime -= m.TaskSteps[i].ExpectedExecutionMs				
-					m.CurrentStep = m.TaskSteps[i].Name
+					currentTime -= m.TaskSteps[i].ExpectedExecutionMs									
 				}		
 			}
 			if dto.ExecutionResult != nil {

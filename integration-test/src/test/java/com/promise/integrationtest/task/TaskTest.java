@@ -302,20 +302,50 @@ public class TaskTest extends PromiseIntegrationTest
         request1.addTaskStep(new PostTaskStepRequest("Step3", 1000));
 
         // Create a task.
-        final GetTaskResponse createdTtask = PromiseAssertUtil.assertPostResponse(
+        final GetTaskResponse createdTask = PromiseAssertUtil.assertPostResponse(
                 getRootURL() + "/promise/v1/task/",
                 request1,
                 GetTaskResponse.class);
 
         // Set step1 to running, percentage should not change.
-        final UpdateTaskStepRequest request2 = new UpdateTaskStepRequest();
-        request2.setName("Step1");
-        request2.setExecutionState(TaskExecutionStateEnum.Running.getId());
+        final UpdateTaskStepRequest taskStepRequest = new UpdateTaskStepRequest();
+        taskStepRequest.setName("Step1");
+        taskStepRequest.setExecutionState(TaskExecutionStateEnum.Running.getId());
         final GetTaskResponse response2 = PromiseAssertUtil.assertActionResponse(
-                getRootURL() + createdTtask.getUri() + "/action/updateTaskStep", 
-                request2, 
+                getRootURL() + createdTask.getUri() + "/action/updateTaskStep", 
+                taskStepRequest, 
                 GetTaskResponse.class);
         Assert.assertEquals(0, response2.getPercentage());
+        Assert.assertEquals("Step1", response2.getCurrentStep());
+        
+        // Set step1 to terminated, percentage should increase.
+        taskStepRequest.setExecutionState(TaskExecutionStateEnum.Terminated.getId());
+        final GetTaskResponse response3 = PromiseAssertUtil.assertActionResponse(
+                getRootURL() + createdTask.getUri() + "/action/updateTaskStep", 
+                taskStepRequest, 
+                GetTaskResponse.class);
+        Assert.assertEquals(33, response3.getPercentage());
+        Assert.assertEquals("Step1", response3.getCurrentStep());
+        
+        // Set step2 to terminated, current task should be step2.
+        taskStepRequest.setName("Step2");
+        taskStepRequest.setExecutionState(TaskExecutionStateEnum.Terminated.getId());
+        final GetTaskResponse response4 = PromiseAssertUtil.assertActionResponse(
+                getRootURL() + createdTask.getUri() + "/action/updateTaskStep", 
+                taskStepRequest, 
+                GetTaskResponse.class);
+        Assert.assertEquals(67, response4.getPercentage());
+        Assert.assertEquals("Step2", response4.getCurrentStep());
+        
+        // Set step3 to terminated, percentage should be 100.
+        taskStepRequest.setName("Step3");
+        taskStepRequest.setExecutionState(TaskExecutionStateEnum.Terminated.getId());
+        final GetTaskResponse response5 = PromiseAssertUtil.assertActionResponse(
+                getRootURL() + createdTask.getUri() + "/action/updateTaskStep", 
+                taskStepRequest, 
+                GetTaskResponse.class);
+        Assert.assertEquals(100, response5.getPercentage());
+        Assert.assertEquals("Step3", response5.getCurrentStep());
         
     }
 
@@ -335,6 +365,5 @@ public class TaskTest extends PromiseIntegrationTest
                 getRootURL() + "/promise/v1/task/not_exist/action/updateTaskStep",
                 MessageEnum.NotExist.getId(),
                 request1);
-
     }
 }
