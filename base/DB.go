@@ -4,6 +4,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	_ "github.com/lib/pq"
 	log "github.com/sirupsen/logrus"
 	"strings"
 )
@@ -428,6 +429,8 @@ func InitConnection() error {
 		log.Info("Init DB connection.")
 		args := "host=localhost port=5432 user=postgres dbname=promise sslmode=disable password=iforgot"
 		db, err := gorm.Open("postgres", args)
+		// args := "host=100.100.194.103 port=5432 user=gaussdba dbname=NETADAPTOR sslmode=disable password=Huawei12#$"
+		// db, err := gorm.Open("gauss", args)
 		if err != nil {
 			log.Info("gorm.Open() failed, error = ", err)
 			return err

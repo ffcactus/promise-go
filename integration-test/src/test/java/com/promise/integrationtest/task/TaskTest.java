@@ -500,7 +500,6 @@ public class TaskTest extends PromiseIntegrationTest
                 GetTaskResponse.class);
         Assert.assertEquals(100, response5.getPercentage());
         Assert.assertEquals("Step3", response5.getCurrentStep());
-
     }
 
 }
