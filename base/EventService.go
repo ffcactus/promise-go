@@ -8,6 +8,3 @@ type EventServiceInterface interface {
 	DispatchDeleteCollectionEvent(category string) ([]Message, error)
 }
 
-// // EventService is the event service.
-// type EventService struct {
-// }

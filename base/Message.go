@@ -222,8 +222,8 @@ func NewMessageIPv4PoolEmpty() Message {
 	return ret
 }
 
-// NewMessageIPv4AddressNotExist will return a message.
-func NewMessageIPv4AddressNotExist() Message {
+// NewMessageIPv4AddressNotExistError will return a message.
+func NewMessageIPv4AddressNotExistError() Message {
 	ret := NewMessage()
 	ret.ID = MessageIPv4AddressNotExist
 	ret.Severity = SeverityWarning

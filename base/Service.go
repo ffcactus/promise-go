@@ -2,14 +2,18 @@ package base
 
 import ()
 
+// ActionServiceInterface is the interface that an action service should have.
+type ActionServiceInterface interface {
+	Perform(id string, request ActionRequestInterface) (interface{}, []Message)
+}
+
 // ServiceInterface is the interface that a service should have.
-type ServiceInterface interface {
+type ServiceInterface interface {	
 	Post(RequestInterface) (ModelInterface, []Message)
 	Get(id string) (ModelInterface, []Message)
 	Delete(id string) []Message
 	GetCollection(start int64, count int64, filter string) (*CollectionModel, []Message)
-	DeleteCollection() []Message
-	Perform(id string, request UpdateActionRequestInterface) (interface{}, []Message)
+	DeleteCollection() []Message	
 }
 
 // ServiceTemplateInterface is the interface that a concrete service should have.
@@ -109,13 +113,18 @@ func (s *Service) DeleteCollection() []Message {
 }
 
 // Perform the update task action.
-func (s *Service) Perform(id string, request UpdateActionRequestInterface) (interface{}, []Message) {
+func (s *Service) Perform(id string, request ActionRequestInterface) (interface{}, []Message) {
 	var (
 		db       = s.TemplateImpl.GetDB()
 		response = s.TemplateImpl.NewResponse()
 	)
 
-	exist, updatedTask, commited, err := db.Update(id, request)
+	updateAction, ok := request.(UpdateActionRequestInterface)
+	if !ok {
+		return nil, []Message{NewMessageInternalError()}
+	}
+
+	exist, updatedTask, commited, err := db.Update(id, updateAction)
 	if !exist {
 		return nil, []Message{NewMessageNotExist()}
 	}

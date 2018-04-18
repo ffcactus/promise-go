@@ -229,6 +229,7 @@ public class IPv4PoolTest extends PromiseIntegrationTest
     @Test
     public void testFree()
     {
+        // Create a pool with 2 IPs.
         final IPv4RangeRequest range1 = new IPv4RangeRequest("0.0.0.1", "0.0.0.1");
         final IPv4RangeRequest range2 = new IPv4RangeRequest("0.0.0.2", "0.0.0.2");
         final List<IPv4RangeRequest> ranges1 = new ArrayList<>();
@@ -247,12 +248,16 @@ public class IPv4PoolTest extends PromiseIntegrationTest
         };
         request1.setDnsServers(Arrays.asList(dns));
         final GetIPv4PoolResponse response1 = IPv4PoolAssertUtil.assertIPv4PoolPosted(request1);
+        // Allocate 2 IPs
         IPv4PoolAssertUtil.assertIPv4Allocate(response1.getId(), null, "0.0.0.1", 2, 1, 1);
         IPv4PoolAssertUtil.assertIPv4Allocate(response1.getId(), "key", "0.0.0.2", 2, 0, 0);
         // Now do the free.
         IPv4PoolAssertUtil.assertIPv4Free(response1.getId(), "0.0.0.1", 2, 1, 1);
+        // Free the same key should show error message.
         IPv4PoolAssertUtil.assertIPv4AddressNotAllocated(response1.getId(), "0.0.0.1");
+        // Since one of the IPs has no key, so after all the IP return to the pool, one of the IP should marked as free.
         IPv4PoolAssertUtil.assertIPv4Free(response1.getId(), "0.0.0.2", 2, 1, 2);
+        // Free a IP which doesn't belong to the pool should show error message.
         IPv4PoolAssertUtil.assertIPv4PoolAddressNotBelong(response1.getId(), "1.1.1.1");
     }
 

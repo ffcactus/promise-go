@@ -5,23 +5,33 @@ import (
 	"promise/task/object/dto"
 )
 
+// NewUpdateTaskStepRequest returns a new request.
+func NewUpdateTaskStepRequest() base.UpdateActionRequestInterface {
+	return &dto.UpdateTaskStepRequest{
+		UpdateActionRequest: base.UpdateActionRequest{
+			TemplateImpl: new(dto.UpdateTaskStepRequest),
+		},
+	}
+}
+
+// NewUpdateTaskRequest returns a new request.
+func NewUpdateTaskRequest() base.UpdateActionRequestInterface {
+	return &dto.UpdateTaskRequest{
+		UpdateActionRequest: base.UpdateActionRequest{
+			TemplateImpl: new(dto.UpdateTaskRequest),
+		},
+	}
+}
+
 var (
 	updateTaskStep = base.ActionInfo{
 		Name: "UpdateTaskStep",
-		Request: &dto.UpdateTaskStepRequest{
-			UpdateActionRequest: base.UpdateActionRequest{
-				TemplateImpl: new(dto.UpdateTaskStepRequest),
-			},
-		},
+		Request: NewUpdateTaskStepRequest,
 		Service: taskService,
 	}
 	updateTask = base.ActionInfo{
 		Name: "UpdateTask",
-		Request: &dto.UpdateTaskRequest{
-			UpdateActionRequest: base.UpdateActionRequest{
-				TemplateImpl: new(dto.UpdateTaskRequest),
-			},
-		},
+		Request: NewUpdateTaskRequest,
 		Service: taskService,
 	}
 

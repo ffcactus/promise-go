@@ -5,8 +5,8 @@ import (
 	"github.com/astaxie/beego/plugins/cors"
 	log "github.com/sirupsen/logrus"
 	"promise/base"
-	"promise/task/controller"
-	"promise/task/object/entity"
+	"promise/pool/controller"
+	"promise/pool/object/entity"
 )
 
 func initDB() {
@@ -30,7 +30,7 @@ func initDB() {
 func main() {
 	base.Init("IDPoolApp")
 	initDB()
-	ipNS := beego.NewNamespace(
+	ipv4 := beego.NewNamespace(
 		base.RootURL+base.IDPoolBaseURI,
 		beego.NSRouter("/ipv4", &base.RootController{
 			TemplateImpl: new(controller.IPv4RootController),
@@ -42,7 +42,7 @@ func main() {
 			TemplateImpl: new(controller.IPv4ActionController),
 		}),
 	)
-	beego.AddNamespace(ipNS)
+	beego.AddNamespace(ipv4)
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins:  true,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},

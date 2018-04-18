@@ -46,7 +46,6 @@ func (m *IPv4Pool) GetValueForDuplicationCheck() string {
 // IPv4PoolCollectionMember is the member in collection.
 type IPv4PoolCollectionMember struct {
 	base.CollectionMemberModel
-	ID   string
 	Name string
 }
 

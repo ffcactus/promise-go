@@ -12,8 +12,8 @@ import (
 // handler action.
 type ActionInfo struct {
 	Name    string
-	Request UpdateActionRequestInterface
-	Service ServiceInterface
+	Request func() UpdateActionRequestInterface // we need create a new one each time.
+	Service ActionServiceInterface
 }
 
 // ActionControllerTemplateInterface is the interface that a concrete controller must implement.
@@ -35,21 +35,15 @@ func (c *ActionController) Post() {
 		action     = c.Ctx.Input.Param(":action")
 		id         = c.Ctx.Input.Param(":id")
 		actionInfo = c.TemplateImpl.GetActionInfo()
-		service    ServiceInterface
+		service    ActionServiceInterface
 		request    UpdateActionRequestInterface
 	)
-
-	log.WithFields(log.Fields{
-		"resource": c.TemplateImpl.GetResourceName(),
-		"action":   action,
-		"id":       id,
-	}).Info("Perform action.")
 
 	// Find the matching ActionInfo.s
 	for _, v := range actionInfo {
 		if strings.ToLower(action) == strings.ToLower(v.Name) {
 			service = v.Service
-			request = v.Request
+			request = v.Request()
 		}
 	}
 	if service == nil {
@@ -95,6 +89,13 @@ func (c *ActionController) Post() {
 		return
 	}
 
+	log.WithFields(log.Fields{
+		"resource": c.TemplateImpl.GetResourceName(),
+		"action":   action,
+		"request":  request.GetDebugName(),
+		"id":       id,
+	}).Info("Perform action.")
+	PrintJSON(request)
 	response, messages := service.Perform(id, request)
 	if messages != nil {
 		log.WithFields(log.Fields{

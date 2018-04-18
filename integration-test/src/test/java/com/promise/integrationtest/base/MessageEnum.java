@@ -14,13 +14,13 @@ public enum MessageEnum
 
     ServerServerGroupDeleteDefault ("Server.Message.ServerServerGroupDeleteDefault"),
 
-    IPv4PoolEmpty ("IPPool.Message.IPv4PoolEmpty"),
-    IPv4PoolAddressNotExist ("IPPool.Message.AddressNotExist"),
-    IPv4PoolFormatError ("IPPool.Message.IPv4FormatError"),
-    IPv4PoolRangeEndAddressError ("IPPool.Message.IPv4RangeEndAddressError"),
-    IPv4PoolRangeSizeError ("IPPool.Message.IPv4RangeSizeError"),
-    IPv4PoolRangeCountError ("IPPool.Message.IPv4RangeCountError"),
-    IPv4PoolNotAllocatedError ("IPPool.Message.IPv4NotAllocatedError"),
+    IPv4PoolEmpty ("IPv4.Message.IPv4PoolEmpty"),
+    IPv4PoolAddressNotExist ("IPv4.Message.AddressNotExist"),
+    IPv4PoolFormatError ("IPv4.Message.IPv4FormatError"),
+    IPv4PoolRangeEndAddressError ("IPv4.Message.IPv4RangeEndAddressError"),
+    IPv4PoolRangeSizeError ("IPv4.Message.IPv4RangeSizeError"),
+    IPv4PoolRangeCountError ("IPv4.Message.IPv4RangeCountError"),
+    IPv4PoolNotAllocatedError ("IPv4.Message.IPv4NotAllocatedError"),
 
     TaskNoStep ("Task.Message.NoStep"),
 

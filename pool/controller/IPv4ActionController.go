@@ -6,28 +6,34 @@ import (
 	"promise/pool/service"
 )
 
+// NewAllocateRequest returns a new request.
+func NewAllocateRequest() base.UpdateActionRequestInterface {
+	return &dto.AllocateIPv4Request{
+		ActionRequest: base.ActionRequest{
+			TemplateImpl: new(dto.AllocateIPv4Request),
+		},
+	}
+}
+
+// NewFreeRequest returns a new request.
+func NewFreeRequest() base.UpdateActionRequestInterface {
+	return &dto.FreeIPv4Request{
+		ActionRequest: base.ActionRequest{
+			TemplateImpl: new(dto.FreeIPv4Request),
+		},
+	}
+}
+
 var (
 	allocate = base.ActionInfo{
 		Name: "allocate",
-		Request: &dto.AllocateIPv4Request{
-			ActionRequest: base.ActionRequest{
-				TemplateImpl: new(dto.AllocateIPv4Request),
-			},
-		},
-		Service: &base.ActionService{
-			TemplateImpl: new(service.Allocate),
-		},
+		Request: NewAllocateRequest,
+		Service: new(service.Allocate),
 	}
 	free = base.ActionInfo{
 		Name: "free",
-		Request: &dto.FreeIPv4Request{
-			ActionRequest: base.ActionRequest{
-				TemplateImpl: new(dto.FreeIPv4Request),
-			},
-		},
-		Service: &base.ActionService{
-			TemplateImpl: new(service.Free),
-		},
+		Request: NewFreeRequest,
+		Service: new(service.Free),
 	}
 
 	actionInfo = []base.ActionInfo{allocate, free}

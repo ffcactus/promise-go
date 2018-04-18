@@ -177,3 +177,11 @@ func (e *IPv4Pool) ToModel() base.ModelInterface {
 
 	return m
 }
+
+// ToCollectionMember convert the entity to member.
+func (e *IPv4Pool) ToCollectionMember() base.CollectionMemberModelInterface {
+	m := new(model.IPv4PoolCollectionMember)
+	base.EntityToMember(&e.Entity, &m.CollectionMemberModel)
+	m.Name = e.Name
+	return m
+}

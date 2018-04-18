@@ -34,6 +34,77 @@ type DB struct {
 	TemplateImpl DBTemplateInterface
 }
 
+// GetInternal is part of the process to get resource in DB, since many other operation
+// need this process, we seperate it out.
+// It will return if the resource been found.
+// It will return error if any.
+func (impl *DB) GetInternal(tx *gorm.DB, id string, record EntityInterface) (bool, error) {
+	var (
+		name = impl.TemplateImpl.GetResourceName()
+	)
+
+	preload := record.GetPreload()
+	if tx.Where("\"ID\" = ?", id).First(record).RecordNotFound() {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"resource": name,
+			"id":       id,
+		}).Warn("Get resource in DB failed, resource does not exist, transaction rollback.")
+		return false, ErrorResourceNotExist
+	}
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"resource": name,
+			"id":       id,
+		}).Warn("Get resource in DB failed, find first record failed, transaction rollback.")
+		return false, ErrorResourceNotExist		
+	}
+
+	tx.Where("\"ID\" = ?", id)
+	for _, v := range preload {
+		tx = tx.Preload(v)
+	}
+	if err := tx.First(record).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"resource": name,
+			"id":       id,
+			"error":    err,
+		}).Warn("Get resource in DB failed, fatch failed, transaction rollback.")
+		return true, err
+	}
+	return true, nil
+}
+
+// SaveAndCommit will save the record and do commit.
+// It will return if the operation commited.
+// It will return error if any.
+func (impl *DB) SaveAndCommit(tx *gorm.DB, record EntityInterface) (bool, error) {
+	var (
+		name = impl.TemplateImpl.GetResourceName()
+	)
+
+	if err := tx.Save(record).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"resource": name,
+			"id":    record.GetID(),
+			"error": err}).
+			Warn("Save and commit operation failed, save failed, transaction rollback.")
+		return false, err
+	}
+	if err := tx.Commit().Error; err != nil {
+		log.WithFields(log.Fields{
+			"resource": name,
+			"id":    record.GetID(),
+			"error": err}).
+			Warn("Save and commit operation failed, commit failed.")
+		return false, err
+	}
+	return true, nil
+}
+
 // Post is the default implement to post resource in DB.
 // It will return if there is one exist already with the same name.
 // It will return the newly created one if commited, or nil.
@@ -77,59 +148,11 @@ func (impl *DB) Post(m ModelInterface) (bool, ModelInterface, bool, error) {
 		}).Warn("Post resource in DB failed, create resource failed, transaction rollback.")
 		return false, nil, false, err
 	}
-	if err := tx.Save(record).Error; err != nil {
-		tx.Rollback()
-		log.WithFields(log.Fields{
-			"resource": name,
-			"name":     m.GetDebugName(),
-			"error":    err,
-		}).Warn("Post resource in DB failed, save resource failed, transaction rollback.")
-		return false, nil, false, err
-	}
-	if err := tx.Commit().Error; err != nil {
-		log.WithFields(log.Fields{
-			"resource": name,
-			"name":     m.GetDebugName(),
-			"error":    err,
-		}).Warn("Post resource in DB failed, commit failed.")
+	committed, err := impl.SaveAndCommit(tx, record)
+	if err != nil || !committed {
 		return false, nil, false, err
 	}
 	return false, record.ToModel(), true, nil
-}
-
-// GetInternal is part of the process to get resource in DB, since many other operation
-// need this process, we seperate it out.
-// It will return if the resource been found.
-// It will return error if any.
-func (impl *DB) GetInternal(tx *gorm.DB, id string, record EntityInterface) (bool, error) {
-	var (
-		name = impl.TemplateImpl.GetResourceName()
-	)
-
-	preload := record.GetPreload()
-	if tx.Where("\"ID\" = ?", id).First(record).RecordNotFound() {
-		tx.Rollback()
-		log.WithFields(log.Fields{
-			"resource": name,
-			"id":       id,
-		}).Warn("Get resource in DB failed, resource does not exist, transaction rollback.")
-		return false, ErrorResourceNotExist
-	}
-
-	tx.Where("\"ID\" = ?", id)
-	for _, v := range preload {
-		tx = tx.Preload(v)
-	}
-	if err := tx.First(record).Error; err != nil {
-		tx.Rollback()
-		log.WithFields(log.Fields{
-			"resource": name,
-			"id":       id,
-			"error":    err,
-		}).Warn("Get resource in DB failed, fatch failed, transaction rollback.")
-		return true, err
-	}
-	return true, nil
 }
 
 // Get is the default implement to get resource in DB.
@@ -149,10 +172,19 @@ func (impl *DB) Get(id string) ModelInterface {
 		}).Warn("Get resource in DB failed, start transaction failed.")
 		return nil
 	}
-	if exist, err := impl.GetInternal(tx, id, record); exist && err == nil {
-		return record.ToModel()
+	exist, err := impl.GetInternal(tx, id, record)
+	if !exist || err != nil {
+		// Rollback in GetInternal.
+		return nil
 	}
-	return nil
+	if err := tx.Commit().Error; err != nil {
+		log.WithFields(log.Fields{
+			"resource": name,
+			"id":       id,
+			"error":    err,
+		}).Warn("Get resource in DB failed, commit transaction failed.")		
+	}
+	return record.ToModel()
 }
 
 // Update is the default implement to update resource in DB.
@@ -190,21 +222,8 @@ func (impl *DB) Update(id string, request UpdateActionRequestInterface) (bool, M
 	}
 	record.Load(m)
 	record.SetID(id)
-	if err := tx.Save(record).Error; err != nil {
-		tx.Rollback()
-		log.WithFields(log.Fields{
-			"resource": name,
-			"id":       id,
-			"error":    err}).
-			Warn("Update resource in DB failed, save resource failed, transaction rollback.")
-		return true, nil, false, err
-	}
-	if err := tx.Commit().Error; err != nil {
-		log.WithFields(log.Fields{
-			"resource": name,
-			"id":       id,
-			"error":    err,
-		}).Warn("Update resource in DB failed, commit failed.")
+	commited, err := impl.SaveAndCommit(tx, record)
+	if err != nil || !commited {
 		return true, nil, false, err
 	}
 	return true, record.ToModel(), true, nil
@@ -223,9 +242,6 @@ func (impl *DB) Delete(id string) (bool, ModelInterface, bool, error) {
 		c        = impl.TemplateImpl.GetConnection()
 	)
 
-	if id == "" {
-		return true, nil, false, ErrorIDFormat
-	}
 	tx := c.Begin()
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
@@ -236,6 +252,7 @@ func (impl *DB) Delete(id string) (bool, ModelInterface, bool, error) {
 		return true, nil, false, err
 	}
 	if exist, err := impl.GetInternal(tx, id, previous); err != nil || !exist {
+		// Rollback in GetInternal.
 		return false, nil, false, err
 	}
 	record.SetID(id)
