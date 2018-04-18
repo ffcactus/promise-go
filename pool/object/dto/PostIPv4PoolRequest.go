@@ -4,7 +4,6 @@ import (
 	"net"
 	"promise/base"
 	"promise/pool/object/model"
-	"promise/pool/util"
 )
 
 // PostIPv4PoolRequest is the request DTO.
@@ -52,11 +51,11 @@ func (dto *PostIPv4PoolRequest) IsValid() *base.Message {
 			message := base.NewMessageIPv4FormatError()
 			return &message
 		}
-		if util.IPtoInt(start) > util.IPtoInt(end) {
+		if base.IPtoInt(start) > base.IPtoInt(end) {
 			message := base.NewMessageIPv4RangeEndAddressError()
 			return &message
 		}
-		if util.IPtoInt(end)-util.IPtoInt(start)+1 > 256 {
+		if base.IPtoInt(end)-base.IPtoInt(start)+1 > 256 {
 			message := base.NewMessageIPv4RangeSizeError()
 			return &message
 		}
@@ -86,12 +85,12 @@ func (dto *PostIPv4PoolRequest) ToModel() base.ModelInterface {
 
 		vv.Start = v.Start
 		vv.End = v.End
-		vv.Total = (uint32)(util.IPtoInt(end) - util.IPtoInt(start) + 1)
+		vv.Total = (uint32)(base.IPtoInt(end) - base.IPtoInt(start) + 1)
 		vv.Free = vv.Total
 		vv.Allocatable = vv.Total
-		for i := util.IPtoInt(start); i <= util.IPtoInt(end); i++ {
+		for i := base.IPtoInt(start); i <= base.IPtoInt(end); i++ {
 			address := model.IPv4Address{}
-			address.Address = util.IntToIP(i).String()
+			address.Address = base.IntToIP(i).String()
 			address.Allocated = false
 			vv.Addresses = append(vv.Addresses, address)
 		}
