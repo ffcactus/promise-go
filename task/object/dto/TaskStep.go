@@ -48,7 +48,7 @@ func (dto *GetTaskStepResponse) Load(m *model.TaskStep) {
 
 // UpdateTaskStepRequest Update task step request DTO.
 type UpdateTaskStepRequest struct {
-	base.ActionRequest
+	base.UpdateActionRequest
 	Name            string                        `json:"Name"`
 	ExecutionState  *model.ExecutionState         `json:"ExecutionState"`
 	ExecutionResult *UpdateExecutionResultRequest `json:"ExecutionResult"`

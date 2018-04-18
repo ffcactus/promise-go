@@ -4,7 +4,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	_ "github.com/lib/pq"
 	log "github.com/sirupsen/logrus"
 	"strings"
 )
@@ -24,6 +23,7 @@ type DBTemplateInterface interface {
 type DBInterface interface {
 	Post(ModelInterface) (bool, ModelInterface, bool, error)
 	Get(id string) ModelInterface
+	Update(id string, request UpdateActionRequestInterface) (bool, ModelInterface, bool, error)
 	Delete(id string) (bool, ModelInterface, bool, error)
 	GetCollection(start int64, count int64, filter string) (*CollectionModel, error)
 	DeleteCollection() ([]ModelInterface, bool, error)
@@ -160,7 +160,7 @@ func (impl *DB) Get(id string) ModelInterface {
 // It will return the updated resource.
 // It will return wether the operation commited.
 // It will return error if any.
-func (impl *DB) Update(id string, request ActionRequestInterface) (bool, ModelInterface, bool, error) {
+func (impl *DB) Update(id string, request UpdateActionRequestInterface) (bool, ModelInterface, bool, error) {
 	var (
 		name   = impl.TemplateImpl.GetResourceName()
 		record = impl.TemplateImpl.NewEntity()

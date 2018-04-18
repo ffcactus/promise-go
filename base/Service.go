@@ -9,6 +9,7 @@ type ServiceInterface interface {
 	Delete(id string) []Message
 	GetCollection(start int64, count int64, filter string) (*CollectionModel, []Message)
 	DeleteCollection() []Message
+	Perform(id string, request UpdateActionRequestInterface) (interface{}, []Message)
 }
 
 // ServiceTemplateInterface is the interface that a concrete service should have.
@@ -105,4 +106,26 @@ func (s *Service) DeleteCollection() []Message {
 	}
 	s.TemplateImpl.GetEventService().DispatchDeleteCollectionEvent(s.TemplateImpl.GetCategory())
 	return nil
+}
+
+// Perform the update task action.
+func (s *Service) Perform(id string, request UpdateActionRequestInterface) (interface{}, []Message) {
+	var (
+		db       = s.TemplateImpl.GetDB()
+		response = s.TemplateImpl.NewResponse()
+	)
+
+	exist, updatedTask, commited, err := db.Update(id, request)
+	if !exist {
+		return nil, []Message{NewMessageNotExist()}
+	}
+	if err != nil && err.Error() == ErrorUnknownPropertyValue.Error() {
+		return nil, []Message{NewMessageUnknownPropertyValue()}
+	}
+	if err != nil || !commited {
+		return nil, []Message{NewMessageTransactionError()}
+	}
+	response.Load(updatedTask)
+	s.TemplateImpl.GetEventService().DispatchUpdateEvent(response)
+	return response, nil
 }

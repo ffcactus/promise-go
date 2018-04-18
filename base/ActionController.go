@@ -12,8 +12,8 @@ import (
 // handler action.
 type ActionInfo struct {
 	Name    string
-	Request ActionRequestInterface
-	Service ActionServiceInterface
+	Request UpdateActionRequestInterface
+	Service ServiceInterface
 }
 
 // ActionControllerTemplateInterface is the interface that a concrete controller must implement.
@@ -35,8 +35,8 @@ func (c *ActionController) Post() {
 		action     = c.Ctx.Input.Param(":action")
 		id         = c.Ctx.Input.Param(":id")
 		actionInfo = c.TemplateImpl.GetActionInfo()
-		service    ActionServiceInterface
-		request    ActionRequestInterface
+		service    ServiceInterface
+		request    UpdateActionRequestInterface
 	)
 
 	log.WithFields(log.Fields{

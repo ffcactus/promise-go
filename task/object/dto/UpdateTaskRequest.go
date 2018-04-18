@@ -9,7 +9,7 @@ import (
 // UpdateTaskRequest UpdateTaskRequest that only includes the changable properties.
 // Note: Update sub task not use this request.
 type UpdateTaskRequest struct {
-	base.ActionRequest
+	base.UpdateActionRequest
 	Description         *string                       `json:"Description"`
 	ExecutionState      *model.ExecutionState         `json:"ExecutionState"`
 	ExpectedExecutionMs *uint64                       `json:"ExpectedExecutionMs"`

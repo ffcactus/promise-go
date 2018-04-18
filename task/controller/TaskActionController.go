@@ -3,31 +3,26 @@ package controller
 import (
 	"promise/base"
 	"promise/task/object/dto"
-	"promise/task/service"
 )
 
 var (
 	updateTaskStep = base.ActionInfo{
 		Name: "UpdateTaskStep",
 		Request: &dto.UpdateTaskStepRequest{
-			ActionRequest: base.ActionRequest{
+			UpdateActionRequest: base.UpdateActionRequest{
 				TemplateImpl: new(dto.UpdateTaskStepRequest),
 			},
 		},
-		Service: &base.ActionService{
-			TemplateImpl: new(service.UpdateTaskStep),
-		},
+		Service: taskService,
 	}
 	updateTask = base.ActionInfo{
 		Name: "UpdateTask",
 		Request: &dto.UpdateTaskRequest{
-			ActionRequest: base.ActionRequest{
+			UpdateActionRequest: base.UpdateActionRequest{
 				TemplateImpl: new(dto.UpdateTaskRequest),
 			},
 		},
-		Service: &base.ActionService{
-			TemplateImpl: new(service.UpdateTask),
-		},
+		Service: taskService,
 	}
 
 	actionInfo = []base.ActionInfo{updateTaskStep, updateTask}
