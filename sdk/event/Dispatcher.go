@@ -5,9 +5,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"promise/base"
-	"promise/common/app/rest"
-	commonConstError "promise/common/object/consterror"
-	"promise/ws/object/constvalue"
 	wsDTO "promise/ws/object/dto"
 	"time"
 )
@@ -22,7 +19,7 @@ type Service struct {
 }
 
 func dispatch(event *wsDTO.PostEventRequest) ([]base.Message, error) {
-	messages, err := rest.Do(
+	messages, err := base.REST(
 		http.MethodPost,
 		WsSenderServiceURL,
 		event,
@@ -60,7 +57,7 @@ func DispatchResourceEvent(eventType string, dto base.ResponseInterface) ([]base
 			"type":     event.Type,
 			"resource": event.ResourceID,
 			"error":    err}).Warn("Dispatch event failed, failed to unmarshal resource.")
-		return nil, commonConstError.ErrorDataConvert
+		return nil, base.ErrorDataConvert
 	}
 	event.Data = json.RawMessage(b)
 	return dispatch(&event)
@@ -68,17 +65,17 @@ func DispatchResourceEvent(eventType string, dto base.ResponseInterface) ([]base
 
 // DispatchCreateEvent can dispatch resource create event.
 func (s Service) DispatchCreateEvent(dto base.ResponseInterface) ([]base.Message, error) {
-	return DispatchResourceEvent(constvalue.CreateEvent, dto)
+	return DispatchResourceEvent(base.CreateEvent, dto)
 }
 
 // DispatchUpdateEvent can dispatch resource udpate event.
 func (s Service) DispatchUpdateEvent(dto base.ResponseInterface) ([]base.Message, error) {
-	return DispatchResourceEvent(constvalue.UpdateEvent, dto)
+	return DispatchResourceEvent(base.UpdateEvent, dto)
 }
 
 // DispatchDeleteEvent can dispatch resource delete event.
 func (s Service) DispatchDeleteEvent(dto base.ResponseInterface) ([]base.Message, error) {
-	return DispatchResourceEvent(constvalue.DeleteEvent, dto)
+	return DispatchResourceEvent(base.DeleteEvent, dto)
 }
 
 // DispatchDeleteCollectionEvent dispatch an event about resource collection deleted.
@@ -88,6 +85,6 @@ func (s Service) DispatchDeleteCollectionEvent(category string) ([]base.Message,
 	)
 	event.CreatedAt = time.Now()
 	event.Category = category
-	event.Type = constvalue.DeleteCollectionEvent
+	event.Type = base.DeleteCollectionEvent
 	return dispatch(&event)
 }

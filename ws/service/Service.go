@@ -4,7 +4,7 @@ import (
 	"container/list"
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
-	"promise/common/util"
+	"promise/base"
 	"promise/ws/object/dto"
 )
 
@@ -28,8 +28,11 @@ func StartEventDispatcher() {
 		var next *list.Element
 		for each := wsConnection.Front(); each != nil; each = next {
 			next = each.Next()
-			if err := each.Value.(*websocket.Conn).WriteMessage(websocket.TextMessage, []byte(util.StructToString(e))); err != nil {
-				log.WithFields(log.Fields{"error": err, "remain": wsConnection.Len()}).Info("Send message to the listener failed, remove the listener.")
+			if err := each.Value.(*websocket.Conn).WriteMessage(websocket.TextMessage, []byte(base.StructToString(e))); err != nil {
+				log.WithFields(log.Fields{
+					"error": err, 
+					"remain": wsConnection.Len(),
+				}).Info("Send message to the listener failed, remove the listener.")
 				wsConnection.Remove(each)
 
 			} else {
@@ -37,7 +40,12 @@ func StartEventDispatcher() {
 			}
 		}
 		if count > 0 {
-			log.WithFields(log.Fields{"count": count, "type": e.Type, "category": e.Category, "resource": e.ResourceID}).Info("Event dispatched.")
+			log.WithFields(log.Fields{
+				"count": count, 
+				"type": e.Type, 
+				"category": e.Category, 
+				"resource": e.ResourceID,
+			}).Info("Event dispatched.")
 		}
 	}
 }

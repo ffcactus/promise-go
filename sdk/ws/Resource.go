@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"promise/base"
 	"promise/common/app"
 	"promise/common/app/rest"
 	commonConstError "promise/common/object/consterror"
 	commonConstValue "promise/common/object/constvalue"
 	commonDTO "promise/common/object/dto"
-	"promise/ws/object/constvalue"
 	wsDTO "promise/ws/object/dto"
 	"time"
 )
@@ -65,17 +65,17 @@ func DispatchResourceEvent(eventType string, dto commonDTO.PromiseResponseInterf
 
 // DispatchResourceCreateEvent can dispatch resource create event.
 func DispatchResourceCreateEvent(dto commonDTO.PromiseResponseInterface) ([]commonDTO.Message, error) {
-	return DispatchResourceEvent(constvalue.CreateEvent, dto)
+	return DispatchResourceEvent(base.CreateEvent, dto)
 }
 
 // DispatchResourceUpdateEvent can dispatch resource udpate event.
 func DispatchResourceUpdateEvent(dto commonDTO.PromiseResponseInterface) ([]commonDTO.Message, error) {
-	return DispatchResourceEvent(constvalue.UpdateEvent, dto)
+	return DispatchResourceEvent(base.UpdateEvent, dto)
 }
 
 // DispatchResourceDeleteEvent can dispatch resource delete event.
 func DispatchResourceDeleteEvent(dto commonDTO.PromiseResponseInterface) ([]commonDTO.Message, error) {
-	return DispatchResourceEvent(constvalue.DeleteEvent, dto)
+	return DispatchResourceEvent(base.DeleteEvent, dto)
 }
 
 // DispatchResourceCollectionDeleteEvent dispatch an event about resource collection deleted.
@@ -85,6 +85,6 @@ func DispatchResourceCollectionDeleteEvent(category string) ([]commonDTO.Message
 	)
 	event.CreatedAt = time.Now()
 	event.Category = category
-	event.Type = constvalue.DeleteCollectionEvent
+	event.Type = base.DeleteCollectionEvent
 	return dispatch(&event)
 }

@@ -3,10 +3,10 @@ package strategy
 import (
 	log "github.com/sirupsen/logrus"
 	wsSDK "promise/sdk/ws"
+	"promise/base"
 	"promise/server/context"
 	"promise/server/object/dto"
 	"promise/server/object/model"
-	wsConstValue "promise/ws/object/constvalue"
 )
 
 /**
@@ -48,21 +48,21 @@ func (s *ServerEventStrategy) dispatchServerEvent(c *context.ServerContext, even
 // Generally we don't care much about the error while sending event.
 // If the server created, but event failed to dispatch, the error won't return to user.
 func (s *ServerEventStrategy) DispatchServerCreate(c *context.ServerContext, server *model.Server) {
-	s.dispatchServerEvent(c, wsConstValue.CreateEvent, server)
+	s.dispatchServerEvent(c, base.CreateEvent, server)
 }
 
 // DispatchServerUpdate will send server update event.
 // Generally we don't care much about the error while sending event.
 // If the server created, but event failed to dispatch, the error won't return to user.
 func (s *ServerEventStrategy) DispatchServerUpdate(c *context.ServerContext, server *model.Server) {
-	s.dispatchServerEvent(c, wsConstValue.UpdateEvent, server)
+	s.dispatchServerEvent(c, base.UpdateEvent, server)
 }
 
 // DispatchServerDelete will send server delete event.
 // Generally we don't care much about the error while sending event.
 // If the server created, but event failed to dispatch, the error won't return to user.
 func (s *ServerEventStrategy) DispatchServerDelete(c *context.ServerContext, server *model.Server) {
-	s.dispatchServerEvent(c, wsConstValue.DeleteEvent, server)
+	s.dispatchServerEvent(c, base.DeleteEvent, server)
 }
 
 func (s *ServerEventStrategy) dispatchServerServerGroupEvent(c *context.ServerContext, eventType string, ssg *model.ServerServerGroup) {
@@ -101,12 +101,12 @@ func (s *ServerEventStrategy) dispatchServerServerGroupEvent(c *context.ServerCo
 // Generally we don't care much about the error while sending event.
 // If the server created, but event failed to dispatch, the error won't return to user.
 func (s *ServerEventStrategy) DispatchServerServerGroupCreate(c *context.ServerContext, ssg *model.ServerServerGroup) {
-	s.dispatchServerServerGroupEvent(c, wsConstValue.CreateEvent, ssg)
+	s.dispatchServerServerGroupEvent(c, base.CreateEvent, ssg)
 }
 
 // DispatchServerServerGroupDelete will send server-servergroup create event.
 // Generally we don't care much about the error while sending event.
 // If the server created, but event failed to dispatch, the error won't return to user.
 func (s *ServerEventStrategy) DispatchServerServerGroupDelete(c *context.ServerContext, ssg *model.ServerServerGroup) {
-	s.dispatchServerServerGroupEvent(c, wsConstValue.DeleteEvent, ssg)
+	s.dispatchServerServerGroupEvent(c, base.DeleteEvent, ssg)
 }
