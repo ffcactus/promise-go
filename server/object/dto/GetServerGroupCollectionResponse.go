@@ -1,44 +1,46 @@
 package dto
 
 import (
-	"promise/common/object/constvalue"
+	log "github.com/sirupsen/logrus"
+	"promise/base"
 	"promise/server/object/model"
 )
 
-// ServerGroupMember is the Members property in DTO.
-type ServerGroupMember struct {
-	URI  string `json:"URI"`
-	ID   string `json:"ID"`
+// ServerGroupCollectionMember is the DTO used in collection response.
+type ServerGroupCollectionMember struct {
+	base.CollectionMemberResponse
 	Name string `json:"Name"`
+}
+
+// Load will load info from model.
+func (dto *ServerGroupCollectionMember) Load(i interface{}) error {
+	m, ok := i.(*model.ServerGroupCollectionMember)
+	if !ok {
+		log.Error("ServerGroupCollectionMember.Load() failed, convert data failed.")
+		return base.ErrorDataConvert
+	}
+	dto.CollectionMemberResponse.Load(&m.CollectionMemberModel)
+	dto.Name = m.Name
+	return nil
 }
 
 // GetServerGroupCollectionResponse is the DTO.
 type GetServerGroupCollectionResponse struct {
-	Start       int64               `json:"Start"`
-	Count       int64               `json:"Count"`
-	Total       int64               `json:"Total"`
-	Members     []ServerGroupMember `json:"Members"`
-	NextPageURI *string             `json:"NextPageURI,omitempty"`
-	PrevPageURI *string             `json:"PrevPageURI,omitempty"`
+	base.CollectionResponse
 }
 
 // Load will load from model.
-func (dto *GetServerGroupCollectionResponse) Load(m *model.ServerGroupCollection) {
+func (dto *GetServerGroupCollectionResponse) Load(m *base.CollectionModel) error {
 	dto.Start = m.Start
 	dto.Count = m.Count
 	dto.Total = m.Total
-	dto.Members = make([]ServerGroupMember, 0)
-	for i := range m.Members {
-		dto.Members = append(dto.Members, ServerGroupMember{
-			URI:  constvalue.ToServerGroupURI(m.Members[i].ID),
-			ID:   m.Members[i].ID,
-			Name: m.Members[i].Name,
-		})
+	dto.Members = make([]interface{}, 0)
+	for _, v := range m.Members {
+		member := ServerGroupCollectionMember{}
+		if err := member.Load(v); err != nil {
+			return err
+		}
+		dto.Members = append(dto.Members, member)
 	}
-	if m.NextPageURI != "" {
-		dto.NextPageURI = &m.NextPageURI
-	}
-	if m.PrevPageURI != "" {
-		dto.PrevPageURI = &m.PrevPageURI
-	}
+	return nil
 }

@@ -58,7 +58,7 @@ func (impl *DB) GetInternal(tx *gorm.DB, id string, record EntityInterface) (boo
 			"resource": name,
 			"id":       id,
 		}).Warn("Get resource in DB failed, find first record failed, transaction rollback.")
-		return false, ErrorResourceNotExist		
+		return false, ErrorResourceNotExist
 	}
 
 	tx.Where("\"ID\" = ?", id)
@@ -89,16 +89,16 @@ func (impl *DB) SaveAndCommit(tx *gorm.DB, record EntityInterface) (bool, error)
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
-			"id":    record.GetID(),
-			"error": err}).
+			"id":       record.GetID(),
+			"error":    err}).
 			Warn("Save and commit operation failed, save failed, transaction rollback.")
 		return false, err
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
-			"id":    record.GetID(),
-			"error": err}).
+			"id":       record.GetID(),
+			"error":    err}).
 			Warn("Save and commit operation failed, commit failed.")
 		return false, err
 	}
@@ -182,7 +182,7 @@ func (impl *DB) Get(id string) ModelInterface {
 			"resource": name,
 			"id":       id,
 			"error":    err,
-		}).Warn("Get resource in DB failed, commit transaction failed.")		
+		}).Warn("Get resource in DB failed, commit transaction failed.")
 	}
 	return record.ToModel()
 }

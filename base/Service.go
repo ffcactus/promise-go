@@ -8,12 +8,12 @@ type ActionServiceInterface interface {
 }
 
 // ServiceInterface is the interface that a service should have.
-type ServiceInterface interface {	
+type ServiceInterface interface {
 	Post(RequestInterface) (ModelInterface, []Message)
 	Get(id string) (ModelInterface, []Message)
 	Delete(id string) []Message
 	GetCollection(start int64, count int64, filter string) (*CollectionModel, []Message)
-	DeleteCollection() []Message	
+	DeleteCollection() []Message
 }
 
 // ServiceTemplateInterface is the interface that a concrete service should have.

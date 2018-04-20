@@ -1,29 +1,32 @@
 package dto
 
 import (
-	"promise/common/category"
-	commonDTO "promise/common/object/dto"
-	commonMessage "promise/common/object/message"
+	"promise/base"
 	"promise/server/object/model"
 )
 
 // PostServerGroupRequest is the DTO for post server group.
 type PostServerGroupRequest struct {
-	commonDTO.PromiseRequest
+	base.Request
 	Name        string `json:"Name"`
 	Description string `json:"Description"`
 }
 
-// Validate the request.
-func (dto *PostServerGroupRequest) Validate() *commonMessage.Message {
+// IsValid return if the request is valid.
+func (dto *PostServerGroupRequest) IsValid() *base.Message {
 	return nil
 }
 
-// ToModel will return a model based on DTO.
-func (dto *PostServerGroupRequest) ToModel() *model.ServerGroup {
-	ret := new(model.ServerGroup)
-	ret.Category = category.ServerGroup
+// GetDebugName return the name for debug.
+func (dto *PostServerGroupRequest) GetDebugName() string {
+	return dto.Name
+}
+
+// ToModel convert the DTO to model.
+func (dto *PostServerGroupRequest) ToModel() base.ModelInterface {
+	ret := model.ServerGroup{}
+	ret.Category = base.CategoryServerGroup
 	ret.Name = dto.Name
 	ret.Description = dto.Description
-	return ret
+	return &ret
 }

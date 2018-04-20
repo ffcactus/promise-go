@@ -135,7 +135,7 @@ func (e *IPv4Pool) Load(i base.ModelInterface) error {
 
 // ToModel will create a new model from entity.
 func (e *IPv4Pool) ToModel() base.ModelInterface {
-	m := new(model.IPv4Pool)
+	m := model.IPv4Pool{}
 	base.EntityToModel(&e.Entity, &m.Model)
 	m.Name = e.Name
 	m.Description = e.Description
@@ -175,7 +175,7 @@ func (e *IPv4Pool) ToModel() base.ModelInterface {
 		m.DNSServers = &dns
 	}
 
-	return m
+	return &m
 }
 
 // ToCollectionMember convert the entity to member.

@@ -18,4 +18,3 @@ type EventServiceInterface interface {
 	DispatchDeleteEvent(ResponseInterface) ([]Message, error)
 	DispatchDeleteCollectionEvent(category string) ([]Message, error)
 }
-

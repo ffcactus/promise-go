@@ -1,43 +1,71 @@
 package main
 
 import (
-	"promise/common/app"
-	commonDB "promise/common/db"
-	"promise/common/object/constvalue"
-	"promise/server/controller"
-	"promise/server/object/entity"
-	"promise/server/service"
-
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 	log "github.com/sirupsen/logrus"
+	"promise/base"
+	"promise/server/controller"
+	"promise/server/object/entity"
+	"promise/server/service"
 )
 
+func initDB() {
+	base.InitConnection()
+	if recreateDB, _ := beego.AppConfig.Bool("recreate_db"); recreateDB {
+		// Remove tables.
+		if base.RemoveTables(entity.Tables) {
+			log.Info("Remove all tables in DB done.")
+		} else {
+			log.Warn("Failed to remove all tables in DB.")
+		}
+		// Create tables.
+		if !base.CreateTables(entity.Tables) {
+			panic("DB Initialization failed.")
+		} else {
+			log.Info("DB schema created.")
+		}
+	}
+	service.CreateDefaultServerGroup()
+}
+
 func main() {
-	app.Init("ServerApp")
+	base.Init("ServerApp")
 	initDB()
-
 	// go service.FindServerStateAdded()
-
 	serverNS := beego.NewNamespace(
-		app.RootURL+constvalue.ServerBaseURI,
-		beego.NSRouter("/", &controller.ServerRootController{}),
-		beego.NSRouter("/:id", &controller.ServerController{}),
-		beego.NSRouter("/:id/action/:action", &controller.ServerActionController{}),
+		base.RootURL+base.ServerBaseURI,
+		beego.NSRouter("/", &base.IDController{
+			TemplateImpl: new(controller.ServerRootController),
+		}),
+		beego.NSRouter("/:id", &base.IDController{
+			TemplateImpl: new(controller.ServerIDController),
+		}),
+		beego.NSRouter("/:id/action/:action", &base.IDController{
+			TemplateImpl: new(controller.ServerActionController),
+		}),
 	)
 	beego.AddNamespace(serverNS)
 
 	serverGroupNS := beego.NewNamespace(
-		app.RootURL+constvalue.ServerGroupBaseURI,
-		beego.NSRouter("/", &controller.ServerGroupRootController{}),
-		beego.NSRouter("/:id", &controller.ServerGroupController{}),
+		base.RootURL+base.ServerGroupBaseURI,
+		beego.NSRouter("/", &base.RootController{
+			TemplateImpl: new(controller.ServerGroupRootController),
+		}),
+		beego.NSRouter("/:id", &base.IDController{
+			TemplateImpl: new(controller.ServerGroupIDController),
+		}),
 	)
 	beego.AddNamespace(serverGroupNS)
 
 	serverServerGroupNS := beego.NewNamespace(
-		app.RootURL+constvalue.ServerServerGroupBaseURI,
-		beego.NSRouter("/", &controller.ServerServerGroupRootController{}),
-		beego.NSRouter("/:id", &controller.ServerServerGroupController{}),
+		base.RootURL+base.ServerServerGroupBaseURI,
+		beego.NSRouter("/", &base.IDController{
+			TemplateImpl: new(controller.ServerServerGroupRootController),
+		}),
+		beego.NSRouter("/:id", &base.IDController{
+			TemplateImpl: new(controller.ServerServerGroupIDController),
+		}),
 	)
 	beego.AddNamespace(serverServerGroupNS)
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
@@ -48,23 +76,4 @@ func main() {
 		AllowCredentials: true,
 	}))
 	beego.Run()
-}
-
-func initDB() {
-	commonDB.InitConnection()
-	if recreateDB, _ := beego.AppConfig.Bool("recreate_db"); recreateDB {
-		// Remove tables.
-		if commonDB.RemoveTables(entity.Tables) {
-			log.Info("Remove all tables in DB done.")
-		} else {
-			log.Warn("Failed to remove all tables in DB.")
-		}
-		// Create tables.
-		if !commonDB.CreateTables(entity.Tables) {
-			panic("DB Initialization failed.")
-		} else {
-			log.Info("DB schema created.")
-		}
-	}
-	service.CreateDefaultServerGroup()
 }

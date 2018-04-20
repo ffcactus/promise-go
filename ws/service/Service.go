@@ -30,7 +30,7 @@ func StartEventDispatcher() {
 			next = each.Next()
 			if err := each.Value.(*websocket.Conn).WriteMessage(websocket.TextMessage, []byte(base.StructToString(e))); err != nil {
 				log.WithFields(log.Fields{
-					"error": err, 
+					"error":  err,
 					"remain": wsConnection.Len(),
 				}).Info("Send message to the listener failed, remove the listener.")
 				wsConnection.Remove(each)
@@ -41,9 +41,9 @@ func StartEventDispatcher() {
 		}
 		if count > 0 {
 			log.WithFields(log.Fields{
-				"count": count, 
-				"type": e.Type, 
-				"category": e.Category, 
+				"count":    count,
+				"type":     e.Type,
+				"category": e.Category,
 				"resource": e.ResourceID,
 			}).Info("Event dispatched.")
 		}

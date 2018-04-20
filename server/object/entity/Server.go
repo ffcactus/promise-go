@@ -1,41 +1,139 @@
 package entity
 
 import (
-	commonEntity "promise/common/object/entity"
+	log "github.com/sirupsen/logrus"
+	"promise/base"
 	"promise/server/object/model"
 )
 
 // Server Server entity.
 type Server struct {
-	commonEntity.PromiseEntity
-	State              string
-	Health             string
-	Name               string
-	Description        string
-	OriginURIsChassis  *string
-	OriginURIsSystem   *string
-	PhysicalUUID       string
-	Hostname           string
-	Type               string
-	Protocol           string
-	Credential         string
-	Processors         []Processor         `gorm:"ForeignKey:ServerRef"`
-	Memory             []Memory            `gorm:"ForeignKey:ServerRef"`
-	EthernetInterfaces []EthernetInterface `gorm:"ForeignKey:ServerRef"`
-	NetworkInterfaces  []NetworkInterface  `gorm:"ForeignKey:ServerRef"`
-	Storages           []Storage           `gorm:"ForeignKey:ServerRef"`
-	Power              Power               `gorm:"ForeignKey:ServerRef"`
-	Thermal            Thermal             `gorm:"ForeignKey:ServerRef"`
-	OemHuaweiBoards    []OemHuaweiBoard    `gorm:"ForeignKey:ServerRef"`
-	Drives             []Drive             `gorm:"ForeignKey:ServerRef"`
-	PCIeDevices        []PCIeDevice        `gorm:"ForeignKey:ServerRef"`
-	NetworkAdapters    []NetworkAdapter    `gorm:"ForeignKey:ServerRef"`
+	base.Entity
+	State              string              `gorm:"column:State"`
+	Health             string              `gorm:"column:Health"`
+	Name               string              `gorm:"column:Name"`
+	Description        string              `gorm:"column:Description"`
+	OriginURIsChassis  *string             `gorm:"column:OriginURIsChassis"`
+	OriginURIsSystem   *string             `gorm:"column:OriginURIsSystem"`
+	PhysicalUUID       string              `gorm:"column:PhysicalUUID"`
+	Hostname           string              `gorm:"column:Hostname"`
+	Type               string              `gorm:"column:Type"`
+	Protocol           string              `gorm:"column:Protocol"`
+	Credential         string              `gorm:"column:Credential"`
+	Processors         []Processor         `gorm:"column:Processors;ForeignKey:ServerRef"`
+	Memory             []Memory            `gorm:"column:Memory;ForeignKey:ServerRef"`
+	EthernetInterfaces []EthernetInterface `gorm:"column:EthernetInterfaces;ForeignKey:ServerRef"`
+	NetworkInterfaces  []NetworkInterface  `gorm:"column:NetworkInterfaces;ForeignKey:ServerRef"`
+	Storages           []Storage           `gorm:"column:Storages;ForeignKey:ServerRef"`
+	Power              Power               `gorm:"column:Power;ForeignKey:ServerRef"`
+	Thermal            Thermal             `gorm:"column:Thermal;ForeignKey:ServerRef"`
+	OemHuaweiBoards    []OemHuaweiBoard    `gorm:"column:OemHuaweiBoards;ForeignKey:ServerRef"`
+	Drives             []Drive             `gorm:"column:Drives;ForeignKey:ServerRef"`
+	PCIeDevices        []PCIeDevice        `gorm:"column:PCIeDevices;ForeignKey:ServerRef"`
+	NetworkAdapters    []NetworkAdapter    `gorm:"column:NetworkAdapters;ForeignKey:ServerRef"`
+}
+
+// TableName will set the table name.
+func (Server) TableName() string {
+	return "Server"
+}
+
+// GetDebugName return the debug name of this entity.
+func (e *Server) GetDebugName() string {
+	return e.Name
+}
+
+// GetPropertyNameForDuplicationCheck return the property name used for duplication check.
+func (e *Server) GetPropertyNameForDuplicationCheck() string {
+	return "PhysicalUUID"
+}
+
+// GetPreload return the property names that need to be preload.
+func (e *Server) GetPreload() []string {
+	return []string{
+		"Processors",
+		"Memory",
+		"EthernetInterfaces",
+		"EthernetInterfaces.IPv4Addresses",
+		"EthernetInterfaces.IPv6Addresses",
+		"EthernetInterfaces.VLANs",
+		"NetworkInterfaces",
+		"Storages",
+		"Storages.StorageControllers",
+		"Power",
+		"Power.PowerControl",
+		"Power.Voltages",
+		"Power.PowerSupplies",
+		"Power.Redundancy",
+		"Thermal",
+		"Thermal.Temperatures",
+		"Thermal.Fans",
+		"OemHuaweiBoards",
+		"NetworkAdapters",
+		"NetworkAdapters.Controllers",
+		"NetworkAdapters.Controllers.NetworkPorts",
+		"Drives",
+		"Drives.Location",
+		"Drives.Location.PostalAddress",
+		"Drives.Location.Placement",
+		"PCIeDevices",
+		"PCIeDevices.PCIeFunctions",
+	}
+}
+
+// GetAssociation return all the assocations that need to delete when deleting a resource.
+func (e *Server) GetAssociation() []interface{} {
+	ret := []interface{}{
+		// TODO
+	}
+	return ret
+}
+
+// GetTables returns the tables to delete when you want delete all the resources.
+func (e *Server) GetTables() []interface{} {
+	return []interface{}{
+		// TODO
+	}
+}
+
+// GetFilterNameList return all the property name that can be used in filter.
+func (e *Server) GetFilterNameList() []string {
+	return []string{
+		"State",
+		"Name",
+		"Health",
+		"Description",
+		"PhysicalUUID",
+		"Hostname",
+	}
+}
+
+// Load will load data from model. this function is used on POST.
+func (e *Server) Load(i base.ModelInterface) error {
+	m, ok := i.(*model.Server)
+	if !ok {
+		log.Error("entity.Server.Load() failed, convert interface failed.")
+		return base.ErrorDataConvert
+	}
+	base.EntityLoad(&e.Entity, &m.Model)
+	e.State = m.State
+	e.Health = m.Health
+	e.Name = m.Name
+	e.Description = m.Description
+	e.OriginURIsChassis = m.OriginURIs.Chassis
+	e.OriginURIsSystem = m.OriginURIs.System
+	e.PhysicalUUID = m.PhysicalUUID
+	e.Hostname = m.Hostname
+	e.Credential = m.Credential
+	e.Type = m.Type
+	e.Protocol = m.Protocol
+	return nil
 }
 
 // ToModel will create a new model from entity.
-func (e *Server) ToModel() *model.Server {
-	m := new(model.Server)
-	m.PromiseModel = e.PromiseEntity.ToModel()
+func (e *Server) ToModel() base.ModelInterface {
+	m := model.Server{}
+	base.EntityToModel(&e.Entity, &m.Model)
 	m.OriginURIs.Chassis = e.OriginURIsChassis
 	m.OriginURIs.System = e.OriginURIsSystem
 	m.PhysicalUUID = e.PhysicalUUID
@@ -139,21 +237,15 @@ func (e *Server) ToModel() *model.Server {
 		pcieDevices = append(pcieDevices, *e.PCIeDevices[i].ToModel())
 	}
 	m.Chassis.PCIeDevices = pcieDevices
-	return m
+	return &m
 }
 
-// Load will load data from model.
-func (e *Server) Load(m *model.Server) {
-	e.PromiseEntity.Load(m.PromiseModel)
-	e.State = m.State
-	e.Health = m.Health
-	e.Name = m.Name
-	e.Description = m.Description
-	e.OriginURIsChassis = m.OriginURIs.Chassis
-	e.OriginURIsSystem = m.OriginURIs.System
-	e.PhysicalUUID = m.PhysicalUUID
-	e.Hostname = m.Hostname
-	e.Credential = m.Credential
-	e.Type = m.Type
-	e.Protocol = m.Protocol
+// ToCollectionMember convert the entity to member.
+func (e *Server) ToCollectionMember() base.CollectionMemberModelInterface {
+	m := new(model.ServerCollectionMember)
+	base.EntityToMember(&e.Entity, &m.CollectionMemberModel)
+	m.Name = e.Name
+	m.State = e.State
+	m.Health = e.Health
+	return m
 }

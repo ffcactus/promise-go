@@ -2,8 +2,7 @@ package dto
 
 import (
 	log "github.com/sirupsen/logrus"
-	"promise/common/object/consterror"
-	commonDTO "promise/common/object/dto"
+	"promise/base"
 	"promise/server/object/model"
 )
 
@@ -28,7 +27,7 @@ type Chassis struct {
 
 // GetServerResponse is DTO.
 type GetServerResponse struct {
-	commonDTO.PromiseResponse
+	base.Response
 	Name           string         `json:"Name"`
 	Description    string         `json:"Description"`
 	State          string         `json:"State"`
@@ -40,14 +39,19 @@ type GetServerResponse struct {
 	Chassis        Chassis        `json:"Chassis"`
 }
 
+// GetDebugName return the name for debug.
+func (dto *GetServerResponse) GetDebugName() string {
+	return dto.Name
+}
+
 // Load will load data from model.
-func (dto *GetServerResponse) Load(data interface{}) error {
+func (dto *GetServerResponse) Load(data base.ModelInterface) error {
 	m, ok := data.(*model.Server)
 	if !ok {
-		log.Warn("GetServerGroupResponse load data from model failed.")
-		return consterror.ErrorDataConvert
+		log.Error("GetServerResponse.Load() failed, convert interface failed.")
+		return base.ErrorDataConvert
 	}
-	dto.PromiseResponse.Load(&m.PromiseModel)
+	base.ResponseLoad(&dto.Response, &m.Model)
 	dto.Name = m.Name
 	dto.Description = m.Description
 	dto.State = m.State

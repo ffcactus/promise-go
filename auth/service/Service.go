@@ -2,10 +2,10 @@ package service
 
 import (
 	log "github.com/sirupsen/logrus"
-	"promise/base"
 	"promise/auth/db"
 	"promise/auth/object/dto"
 	"promise/auth/object/model"
+	"promise/base"
 )
 
 // Login On success return the session.

@@ -71,7 +71,6 @@ func (impl *IPv4PoolDB) ConvertFindResultToModel(result interface{}) ([]base.Mod
 	return ret, nil
 }
 
-
 // AllocateIPv4Address will allocate IPv4 address from IP pool.
 // It will return if the pool exist.
 // It will return the address if operation commited, or nil
@@ -80,7 +79,7 @@ func (impl *IPv4PoolDB) ConvertFindResultToModel(result interface{}) ([]base.Mod
 // It will return error if any, or nil.
 func (impl *IPv4PoolDB) AllocateIPv4Address(id string, key string) (bool, string, base.ModelInterface, bool, error) {
 	var (
-		c                = impl.TemplateImpl.GetConnection()
+		c = impl.TemplateImpl.GetConnection()
 	)
 	record := new(entity.IPv4Pool)
 	record.Entity.TemplateImpl = record
@@ -194,7 +193,7 @@ func (impl *IPv4PoolDB) AllocateIPv4Address(id string, key string) (bool, string
 // It will return error if any.
 func (impl *IPv4PoolDB) FreeIPv4Address(id string, address string) (bool, base.ModelInterface, bool, error) {
 	var (
-		c                = impl.TemplateImpl.GetConnection()
+		c = impl.TemplateImpl.GetConnection()
 	)
 	record := new(entity.IPv4Pool)
 	record.Entity.TemplateImpl = record
@@ -226,7 +225,7 @@ func (impl *IPv4PoolDB) FreeIPv4Address(id string, address string) (bool, base.M
 					log.WithFields(log.Fields{
 						"id":      id,
 						"address": address,
-					}).Warn("Free IPv4 failed, the address didn't allocate, transaction rollback.")					
+					}).Warn("Free IPv4 failed, the address didn't allocate, transaction rollback.")
 					return true, nil, false, base.ErrorIPv4NotAllocated
 				}
 				record.Ranges[i].Addresses[j].Allocated = false

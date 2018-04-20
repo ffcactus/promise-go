@@ -1,8 +1,8 @@
 package model
 
 import (
+	"promise/base"
 	"promise/common/category"
-	"promise/common/object/model"
 )
 
 // OriginURIs The
@@ -43,9 +43,9 @@ type ServerBasicInfo struct {
 	OriginPassword *string
 }
 
-// Server Server object.
+// Server is the model of server.
 type Server struct {
-	model.PromiseModel
+	base.Model
 	Name           string
 	Description    string
 	State          string
@@ -60,6 +60,34 @@ type Server struct {
 	Credential     string
 	ComputerSystem ComputerSystem
 	Chassis        Chassis
+}
+
+// GetDebugName return the debug name the model.
+func (m *Server) GetDebugName() string {
+	return m.Name
+}
+
+// GetValueForDuplicationCheck return the value for duplication check.
+func (m *Server) GetValueForDuplicationCheck() string {
+	return m.Name
+}
+
+// ServerCollectionMember is the member in collection.
+type ServerCollectionMember struct {
+	base.CollectionMemberModel
+	Name   string
+	State  string
+	Health string
+}
+
+// ServerCollection is the model of collection.
+type ServerCollection struct {
+	base.CollectionModel
+}
+
+// NewModelMember return a new ModelMember
+func (m *ServerCollection) NewModelMember() interface{} {
+	return new(ServerCollectionMember)
 }
 
 // CreateServer Create servr object.

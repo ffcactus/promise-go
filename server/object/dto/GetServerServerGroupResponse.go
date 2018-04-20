@@ -2,32 +2,35 @@ package dto
 
 import (
 	log "github.com/sirupsen/logrus"
-	"promise/common/object/consterror"
-	"promise/common/object/constvalue"
-	commonDTO "promise/common/object/dto"
+	"promise/base"
 	"promise/server/object/model"
 )
 
-// GetServerServerGroupResponse is the DTO.
+// GetServerServerGroupResponse is the response DTO.
 type GetServerServerGroupResponse struct {
-	commonDTO.PromiseResponse
+	base.Response
 	ServerID       string `json:"ServerID"`
 	ServerURI      string `json:"ServerURI"`
 	ServerGroupID  string `json:"ServerGroupID"`
 	ServerGroupURI string `json:"ServerGroupURI"`
 }
 
+// GetDebugName return the name for debug.
+func (dto *GetServerServerGroupResponse) GetDebugName() string {
+	return dto.ServerID + " " + dto.ServerGroupID
+}
+
 // Load the data from model.
-func (dto *GetServerServerGroupResponse) Load(data interface{}) error {
+func (dto *GetServerServerGroupResponse) Load(data base.ModelInterface) error {
 	m, ok := data.(*model.ServerServerGroup)
 	if !ok {
-		log.Warn("GetServerServerGroupResponse load data from model failed.")
-		return consterror.ErrorDataConvert
+		log.Error("GetIPv4PoolResponse.Load() failed, convert interface failed.")
+		return base.ErrorDataConvert
 	}
-	dto.PromiseResponse.Load(&m.PromiseModel)
+	base.ResponseLoad(&dto.Response, &m.Model)
 	dto.ServerID = m.ServerID
-	dto.ServerURI = constvalue.ToServerURI(m.ServerID)
+	dto.ServerURI = base.ToServerURI(m.ServerID)
 	dto.ServerGroupID = m.ServerGroupID
-	dto.ServerGroupURI = constvalue.ToServerGroupURI(m.ServerGroupID)
+	dto.ServerGroupURI = base.ToServerGroupURI(m.ServerGroupID)
 	return nil
 }

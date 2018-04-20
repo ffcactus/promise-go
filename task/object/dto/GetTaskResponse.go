@@ -33,7 +33,7 @@ func (dto *GetTaskResponse) GetDebugName() string {
 func (dto *GetTaskResponse) Load(data base.ModelInterface) error {
 	m, ok := data.(*model.Task)
 	if !ok {
-		log.Warn("GetTaskResponse.Load() failed, convert interface failed.")
+		log.Error("GetTaskResponse.Load() failed, convert interface failed.")
 		return base.ErrorDataConvert
 	}
 	base.ResponseLoad(&dto.Response, &m.Model)

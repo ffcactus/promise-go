@@ -25,12 +25,12 @@ func NewUpdateTaskRequest() base.UpdateActionRequestInterface {
 
 var (
 	updateTaskStep = base.ActionInfo{
-		Name: "UpdateTaskStep",
+		Name:    "UpdateTaskStep",
 		Request: NewUpdateTaskStepRequest,
 		Service: taskService,
 	}
 	updateTask = base.ActionInfo{
-		Name: "UpdateTask",
+		Name:    "UpdateTask",
 		Request: NewUpdateTaskRequest,
 		Service: taskService,
 	}

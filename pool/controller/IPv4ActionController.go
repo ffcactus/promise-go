@@ -26,12 +26,12 @@ func NewFreeRequest() base.UpdateActionRequestInterface {
 
 var (
 	allocate = base.ActionInfo{
-		Name: "allocate",
+		Name:    "allocate",
 		Request: NewAllocateRequest,
 		Service: new(service.Allocate),
 	}
 	free = base.ActionInfo{
-		Name: "free",
+		Name:    "free",
 		Request: NewFreeRequest,
 		Service: new(service.Free),
 	}

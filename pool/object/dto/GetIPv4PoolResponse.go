@@ -25,7 +25,7 @@ func (dto *GetIPv4PoolResponse) GetDebugName() string {
 func (dto *GetIPv4PoolResponse) Load(data base.ModelInterface) error {
 	m, ok := data.(*model.IPv4Pool)
 	if !ok {
-		log.Warn("GetIPv4PoolResponse.Load() failed, convert interface failed.")
+		log.Error("GetIPv4PoolResponse.Load() failed, convert interface failed.")
 		return base.ErrorDataConvert
 	}
 	base.ResponseLoad(&dto.Response, &m.Model)

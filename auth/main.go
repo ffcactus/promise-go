@@ -1,13 +1,13 @@
 package main
 
 import (
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/plugins/cors"
+	log "github.com/sirupsen/logrus"
 	"promise/auth/controller"
 	"promise/auth/object/entity"
 	"promise/auth/service"
 	"promise/base"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/plugins/cors"
-	log "github.com/sirupsen/logrus"
 )
 
 func initDB() {

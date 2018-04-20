@@ -32,14 +32,14 @@ func (c *RootController) Get() {
 		return
 	} else if err != nil {
 		log.WithFields(log.Fields{
-			"remote": c.Ctx.Request.RemoteAddr, 
-			"error": err,
+			"remote": c.Ctx.Request.RemoteAddr,
+			"error":  err,
 		}).Warn("Cannot setup websocket connection.")
 		return
 	}
 	count := service.AddListener(ws)
 	log.WithFields(log.Fields{
-		"count": count, 
+		"count":  count,
 		"remote": c.Ctx.Request.RemoteAddr,
 	}).Info("Websocket add a listener.")
 }

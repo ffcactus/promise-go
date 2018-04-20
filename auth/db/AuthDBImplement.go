@@ -1,10 +1,10 @@
 package db
 
 import (
-	"promise/base"
+	"github.com/google/uuid"
 	"promise/auth/object/entity"
 	"promise/auth/object/model"
-	"github.com/google/uuid"
+	"promise/base"
 )
 
 // AuthDBImplement Auth DB implementation.

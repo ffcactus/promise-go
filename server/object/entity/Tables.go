@@ -1,12 +1,12 @@
 package entity
 
 import (
-	commonDB "promise/common/db"
+	"promise/base"
 )
 
 var (
 	// Tables The tables used by this project.
-	Tables = []commonDB.TableInfo{
+	Tables = []base.TableInfo{
 		{Name: "Location", Info: new(Location)},
 		{Name: "PostalAddress", Info: new(PostalAddress)},
 		{Name: "Placement", Info: new(Placement)},
@@ -40,7 +40,7 @@ var (
 	}
 
 	// ServerTables The tables used by server resources.
-	ServerTables = []commonDB.TableInfo{
+	ServerTables = []base.TableInfo{
 		{Name: "Location", Info: new(Location)},
 		{Name: "PostalAddress", Info: new(PostalAddress)},
 		{Name: "Placement", Info: new(Placement)},

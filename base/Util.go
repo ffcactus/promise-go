@@ -2,11 +2,11 @@ package base
 
 import (
 	"bytes"
+	"encoding/json"
+	log "github.com/sirupsen/logrus"
 	"net"
 	"strconv"
 	"strings"
-	"encoding/json"
-	log "github.com/sirupsen/logrus"
 )
 
 // PrintJSON will log the object.
