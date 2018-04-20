@@ -3,16 +3,16 @@ package main
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
-	"promise/common/app"
+	"promise/base"
 	"promise/global/controller"
 )
 
 func main() {
-	app.Init("GlobalApp")
+	base.Init("GlobalApp")
 	beego.SetLevel(beego.LevelDebug)
 
 	ns := beego.NewNamespace(
-		app.RootURL+"/global",
+		base.RootURL+"/global",
 		beego.NSRouter("/", &controller.RootController{}),
 	)
 

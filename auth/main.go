@@ -4,26 +4,23 @@ import (
 	"promise/auth/controller"
 	"promise/auth/object/entity"
 	"promise/auth/service"
-	"promise/common/app"
-	commonDB "promise/common/db"
-	"promise/common/object/constvalue"
-
+	"promise/base"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 	log "github.com/sirupsen/logrus"
 )
 
 func initDB() {
-	commonDB.InitConnection()
+	base.InitConnection()
 	if recreateDB, _ := beego.AppConfig.Bool("recreate_db"); recreateDB {
 		// Remove tables.
-		if commonDB.RemoveTables(entity.Tables) {
+		if base.RemoveTables(entity.Tables) {
 			log.Info("Remove all tables in DB done.")
 		} else {
 			log.Warn("Failed to remove all tables in DB.")
 		}
 		// Create tables.
-		if !commonDB.CreateTables(entity.Tables) {
+		if !base.CreateTables(entity.Tables) {
 			panic("DB Initialization failed.")
 		} else {
 			log.Info("DB schema created.")
@@ -33,11 +30,11 @@ func initDB() {
 }
 
 func main() {
-	app.Init("AuthApp")
+	base.Init("AuthApp")
 	beego.SetLevel(beego.LevelDebug)
 	initDB()
 	ns := beego.NewNamespace(
-		app.RootURL+constvalue.AuthBaseURI,
+		base.RootURL+base.AuthBaseURI,
 		beego.NSRouter("/login", &controller.LoginController{}),
 	)
 	beego.AddNamespace(ns)

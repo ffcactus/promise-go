@@ -1,10 +1,9 @@
 package db
 
 import (
+	"promise/base"
 	"promise/auth/object/entity"
 	"promise/auth/object/model"
-	commonDB "promise/common/db"
-
 	"github.com/google/uuid"
 )
 
@@ -20,7 +19,7 @@ func GetDBInstance() AuthDBInterface {
 // GetAccountByName Get user by name.
 // In any case that the user can't be found, return nil.
 func (impl *AuthDBImplement) GetAccountByName(username string) *model.Account {
-	c := commonDB.GetConnection()
+	c := base.GetConnection()
 	account := new(entity.Account)
 	if c.Where("Name = ?", username).First(account).RecordNotFound() {
 		return nil
@@ -30,7 +29,7 @@ func (impl *AuthDBImplement) GetAccountByName(username string) *model.Account {
 
 // PostAccount Post a user in DB.
 func (impl *AuthDBImplement) PostAccount(account *model.Account) *model.Account {
-	c := commonDB.GetConnection()
+	c := base.GetConnection()
 	e := new(entity.Account)
 	e.Load(account)
 	e.ID = uuid.New().String()
@@ -41,7 +40,7 @@ func (impl *AuthDBImplement) PostAccount(account *model.Account) *model.Account 
 
 // PostSession Post a session in DB.
 func (impl *AuthDBImplement) PostSession(session *model.Session) *model.Session {
-	c := commonDB.GetConnection()
+	c := base.GetConnection()
 	e := new(entity.Session)
 	e.Load(session)
 	c.Create(e)
@@ -50,7 +49,7 @@ func (impl *AuthDBImplement) PostSession(session *model.Session) *model.Session 
 
 // GetSessionByToken Get session by token.
 func (impl *AuthDBImplement) GetSessionByToken(token string) *model.Session {
-	c := commonDB.GetConnection()
+	c := base.GetConnection()
 	session := new(entity.Session)
 	if c.Where("Token = ?", token).First(session).RecordNotFound() {
 		return nil

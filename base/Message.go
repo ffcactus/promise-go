@@ -14,6 +14,7 @@ const (
 	SeverityCritical = "Critical"
 )
 
+// For common message.
 const (
 	// MessageInternalError is message ID.
 	MessageInternalError = "Promise.Message.InternalError"
@@ -31,14 +32,29 @@ const (
 	MessageTransactionError = "Promise.Message.TransactionError"
 	// MessageUnknownFilterName is message ID.
 	MessageUnknownFilterName = "Promise.Message.UnknownFilterName"
+)
 
-	// --- For Task ---
+const (
+	// MessageAuthSuccess Success
+	MessageAuthSuccess = "Auth.Message.Success"
+	// MessageAuthInternalError Internel error
+	MessageAuthInternalError = "Auth.Message.InternalError"
+	// MessageAuthBadRequest Bad request
+	MessageAuthBadRequest = "Auth.Message.BadRequest"
+	// MessageAuthIncorrectCredential Incorrect credential
+	MessageAuthIncorrectCredential = "Auth.Message.IncorrectCredential"
+	// MessageAuthNotFoundSession Session not found
+	MessageAuthNotFoundSession = "Auth.Message.NotFoundSession"
+)
 
+// For task.
+const (
 	// MessageTaskNoStep is message ID.
 	MessageTaskNoStep = "Task.Message.NoStep"
+)
 
-	// --- For IPv4 ---
-
+// For IPv4.
+const (
 	// MessageIPv4PoolEmpty is message ID
 	MessageIPv4PoolEmpty = "IPv4.Message.IPv4PoolEmpty"
 	// MessageIPv4AddressNotExist is message ID.
@@ -55,6 +71,7 @@ const (
 	MessageIPv4NotAllocatedError = "IPv4.Message.IPv4NotAllocatedError"
 )
 
+// For common.
 const (
 	// SupportNotExist is Support ID.
 	SupportNotExist = "Promise.Support.NotExist"
@@ -68,6 +85,18 @@ const (
 	SupportTimeout = "Promise.Support.Timeout"
 	// SupportTransactionError is Support ID.
 	SupportTransactionError = "Promise.Support.TransactionError"
+)
+
+// For auth.
+const (
+	// SupportAuthInternalError Internel error
+	SupportAuthInternalError = "Auth.Support.InternalError"
+	// SupportAuthBadRequest Bad request
+	SupportAuthBadRequest = "Auth.Support.BadRequest"
+	// SupportAuthIncorrectCredential Incorrect credential
+	SupportAuthIncorrectCredential = "Auth.Support.IncorrectCredential"
+	// SupportAuthNotFoundSession Session not found
+	SupportAuthNotFoundSession = "Auth.Support.NotFoundSession"
 )
 
 // Argument is used to replace a portion in a string. For example, to express
@@ -211,6 +240,60 @@ func NewMessageTaskNoStep() Message {
 	return ret
 }
 
+// --- Auth ---
+
+// NewMessageAuthInternalError Internel error
+func NewMessageAuthInternalError() Message {
+	ret := NewMessage()
+	ret.ID = MessageAuthInternalError
+	ret.StatusCode = http.StatusInternalServerError
+	ret.Severity = SeverityCritical
+	ret.Description = "Internal error."
+	ret.Supports = []Support{
+		NewSupportAuthInternalError(),
+	}
+	return ret
+}
+
+// NewMessageAuthBadRequest Bad request
+func NewMessageAuthBadRequest() Message {
+	m := NewMessage()
+	m.ID = MessageAuthBadRequest
+	m.StatusCode = http.StatusBadRequest
+	m.Severity = SeverityNormal
+	m.Description = "Bad request."
+	m.Supports = []Support{
+		NewSupportAuthBadRequest(),
+	}
+	return m
+}
+
+// NewMessageAuthIncorrectCredential Incorrect credential
+func NewMessageAuthIncorrectCredential() Message {
+	m := NewMessage()
+	m.ID = MessageAuthIncorrectCredential
+	m.StatusCode = http.StatusBadRequest
+	m.Severity = SeverityNormal
+	m.Description = "Incorrect credential."
+	m.Supports = []Support{
+		NewSupportAuthIncorrectCredential(),
+	}
+	return m
+}
+
+// NewMessageAuthNotFoundSession Session not found
+func NewMessageAuthNotFoundSession() Message {
+	m := NewMessage()
+	m.ID = MessageAuthNotFoundSession
+	m.StatusCode = http.StatusBadRequest
+	m.Severity = SeverityNormal
+	m.Description = "Session not found."
+	m.Supports = []Support{
+		NewSupportAuthNotFoundSession(),
+	}
+	return m
+}
+
 // --- IPv4 ---
 
 // NewMessageIPv4PoolEmpty will return a message.
@@ -335,5 +418,43 @@ func NewSupportTransactionError() Support {
 	ret.ID = SupportTransactionError
 	ret.Reason = "DB operation failed."
 	ret.Solution = "Try again later or contact support."
+	return ret
+}
+
+// --- Auth ---
+
+// NewSupportAuthInternalError Internel error
+func NewSupportAuthInternalError() Support {
+	ret := NewSupport()
+	ret.ID = SupportAuthInternalError
+	ret.Reason = "An internal error happened."
+	ret.Solution = "Contact Support."
+	return ret
+}
+
+// NewSupportAuthBadRequest Bad request
+func NewSupportAuthBadRequest() Support {
+	ret := NewSupport()
+	ret.ID = SupportAuthBadRequest
+	ret.Reason = "Invalid request."
+	ret.Solution = "Check the request and correct it."
+	return ret
+}
+
+// NewSupportAuthIncorrectCredential Incorrect credential
+func NewSupportAuthIncorrectCredential() Support {
+	ret := NewSupport()
+	ret.ID = SupportAuthIncorrectCredential
+	ret.Reason = "Incorrect credential."
+	ret.Solution = "Correct the credential and try again."
+	return ret
+}
+
+// NewSupportAuthNotFoundSession Session not found
+func NewSupportAuthNotFoundSession() Support {
+	ret := NewSupport()
+	ret.ID = SupportAuthNotFoundSession
+	ret.Reason = "Session not found."
+	ret.Solution = "Provide the right key."
 	return ret
 }
