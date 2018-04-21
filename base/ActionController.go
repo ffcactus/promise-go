@@ -8,11 +8,21 @@ import (
 	"strings"
 )
 
+const (
+	// ActionTypeUpdate means the update action.
+	ActionTypeUpdate = "Update"
+	// ActionTypeSych means the sychronous action.
+	ActionTypeSych = "Sychronous"
+	// ActionTypeAsych means the asychronous action.
+	ActionTypeAsych = "Asychronous"
+)
+
 // ActionInfo includes all the information that is required by controller to
 // handler action.
 type ActionInfo struct {
 	Name    string
-	Request func() UpdateActionRequestInterface // we need create a new one each time.
+	Type	string
+	Request func() ActionRequestInterface // we need create a new one each time.
 	Service ActionServiceInterface
 }
 

@@ -4,7 +4,7 @@ import ()
 
 // ActionServiceInterface is the interface that an action service should have.
 type ActionServiceInterface interface {
-	Perform(id string, request ActionRequestInterface) (interface{}, []Message)
+	Perform(id string, request ActionRequestInterface) (interface{}, *string, []Message)
 }
 
 // ServiceInterface is the interface that a service should have.
@@ -113,7 +113,7 @@ func (s *Service) DeleteCollection() []Message {
 }
 
 // Perform the update task action.
-func (s *Service) Perform(id string, request ActionRequestInterface) (interface{}, []Message) {
+func (s *Service) Perform(id string, request ActionRequestInterface) (interface{}, *string, []Message) {
 	var (
 		db       = s.TemplateImpl.GetDB()
 		response = s.TemplateImpl.NewResponse()
@@ -137,4 +137,40 @@ func (s *Service) Perform(id string, request ActionRequestInterface) (interface{
 	response.Load(updatedTask)
 	s.TemplateImpl.GetEventService().DispatchUpdateEvent(response)
 	return response, nil
+}
+
+func (s *Service) PerformSych(id string, request ActionReqeustInterface) (interface{}, []Message) {
+
+}
+
+// AsychServiceTemplateInterface is the interface that a concrete AsychService should have.
+type AsychServiceTemplateInterface interface {
+	CreateContext(AsychActionInterface) ContextInterface
+	CreateStrategy(AsychActionInterface) StrategyInterface
+}
+
+// AsychServiceInterface is the interface that AsychService have.
+type AsychServiceInterface interface {
+	PerformAsych(id string, request ActionRequestInterface) (interface{}, *string, []Message)
+}
+
+// AsychService is the template of the service that is going to handle asychronous action.
+type AsychService struct {
+	TemplateImpl AsychServiceTemplateInterface
+}
+
+// PerformAsych will perform the asychronous action.
+func (s *AsychService) PerformAsych(id string, request ActionRequestInterface) (interface{}, *string, []Message) {
+	asychAction, ok := request.(ActionRequestInterface)
+	if !ok {
+		return nil, []Message{NewMessageInternalError()}
+	}
+
+	context := s.TemplateImpl.CreateContext(asychAction)
+	strategy := s.TemplateImpl.CreateStrategy(asychAction)
+	response, taskURI, messages := strategy.execute(context)
+	if messages != nil {
+		return nil, nil, messages
+	}
+	return response, taskURI, nil
 }

@@ -43,7 +43,7 @@ func (impl *IPv4PoolDB) NeedCheckDuplication() bool {
 func (impl *IPv4PoolDB) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, error) {
 	collection, ok := result.(*[]entity.IPv4Pool)
 	if !ok {
-		log.Error("IPv4PoolDB.ConvertFindResult() failed.")
+		log.Error("IPv4PoolDB.ConvertFindResult() failed, convert data failed.")
 		return nil, base.ErrorDataConvert
 	}
 	ret := base.CollectionModel{}
@@ -60,7 +60,7 @@ func (impl *IPv4PoolDB) ConvertFindResultToCollection(start int64, total int64, 
 func (impl *IPv4PoolDB) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, error) {
 	collection, ok := result.(*[]entity.IPv4Pool)
 	if !ok {
-		log.Error("IPv4PoolDB.ConvertFindResult() failed.")
+		log.Error("IPv4PoolDB.ConvertFindResult() failed, convert data failed.")
 		return nil, base.ErrorDataConvert
 	}
 	ret := make([]base.ModelInterface, 0)

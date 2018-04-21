@@ -53,7 +53,7 @@ func (s *RackServerPostStrategy) Execute(c *context.PostServerContext, tempServe
 	// Set the servers init state and health.
 	tempServer.State = constvalue.ServerStateAdded
 	tempServer.Health = constvalue.ServerHealthOK
-	server, ssg, err := c.DB.PostServer(tempServer)
+	server, ssg, err := c.DB.Post(tempServer)
 	if err != nil {
 		c.AppendMessage(commonMessage.NewTransactionError())
 		return nil, err

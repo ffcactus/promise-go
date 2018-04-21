@@ -1,72 +1,39 @@
 package service
 
 import (
-	commonMessage "promise/common/object/message"
+	"promise/base"
 	"promise/server/db"
-	"promise/server/object/consterror"
 	"promise/server/object/dto"
-	"promise/server/object/message"
-	"promise/server/object/model"
+	"promise/sdk/event"
 )
 
-// PostServerServerGroup post a server-group.
-func PostServerServerGroup(request *dto.PostServerServerGroupRequest) (*model.ServerServerGroup, []commonMessage.Message) {
-	dbImpl := db.GetServerServerGroupInstance()
-
-	posted, exist, err := dbImpl.PostServerServerGroup(request.ToModel())
-	if exist {
-		return nil, []commonMessage.Message{commonMessage.NewDuplicate()}
+var (
+	serverServerGroupDB = &db.ServerServerGroupDB{
+		DB: base.DB{
+			TemplateImpl: new(db.ServerServerGroupDB),
+		},
 	}
-	if err != nil {
-		return nil, []commonMessage.Message{commonMessage.NewTransactionError()}
-	}
-	return posted, nil
+)
+// ServerServerGroup is the concrete service.
+type ServerServerGroup struct {
 }
 
-// GetServerServerGroup will get server group by ID.
-func GetServerServerGroup(id string) (*model.ServerServerGroup, []commonMessage.Message) {
-	dbImpl := db.GetServerServerGroupInstance()
-
-	ssg := dbImpl.GetServerServerGroup(id)
-	if ssg == nil {
-		return nil, []commonMessage.Message{commonMessage.NewNotExist()}
-	}
-	return ssg, nil
+// GetCategory returns the category of this service.
+func (s *ServerServerGroup) GetCategory() string {
+	return base.CategoryServerServerGroup
 }
 
-// GetServerServerGroupCollection will get server collection.
-func GetServerServerGroupCollection(start int64, count int64, filter string) (*model.ServerServerGroupCollection, []commonMessage.Message) {
-	dbImpl := db.GetServerServerGroupInstance()
-	ret, err := dbImpl.GetServerServerGroupCollection(start, count, filter)
-	if err != nil {
-		return nil, []commonMessage.Message{commonMessage.NewTransactionError()}
-	}
-	return ret, nil
+// NewResponse creates a new response DTO.
+func (s *ServerServerGroup) NewResponse() base.ResponseInterface {
+	return new(dto.GetServerServerGroupResponse)
 }
 
-// DeleteServerServerGroup will delete server group by ID.
-func DeleteServerServerGroup(id string) []commonMessage.Message {
-	dbImpl := db.GetServerServerGroupInstance()
-	previous, err := dbImpl.DeleteServerServerGroup(id)
-	if err != nil && err.Error() == consterror.ErrorDeleteDefaultServerServerGroup.Error() {
-		return []commonMessage.Message{message.NewDeleteDefaultServerServerGroup()}
-	}
-	if previous == nil {
-		return []commonMessage.Message{commonMessage.NewNotExist()}
-	}
-	if err != nil {
-		return []commonMessage.Message{commonMessage.NewTransactionError()}
-	}
-
-	return nil
+// GetDB returns the DB implementation.
+func (s *ServerServerGroup) GetDB() base.DBInterface {
+	return serverServerGroupDB
 }
 
-// DeleteServerServerGroupCollection will delete all the server group except the default "all".
-func DeleteServerServerGroupCollection() []commonMessage.Message {
-	dbImpl := db.GetServerServerGroupInstance()
-	err := dbImpl.DeleteServerServerGroupCollection()
-	if err != nil {
-		return []commonMessage.Message{commonMessage.NewTransactionError()}
-	}
-	return nil
+// GetEventService returns the event service implementation.
+func (s *ServerServerGroup) GetEventService() base.EventServiceInterface {
+	return eventService
 }

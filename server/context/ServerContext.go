@@ -6,21 +6,12 @@ import (
 	"promise/server/object/model"
 )
 
-// ServerContextInterface Server context interface.
-// type ServerContextInterface interface {
-// 	ErrorHandlerInterface
-// 	CredentialHandlerInterface
-// 	TaskHandlerInterface
-// 	serverClient.ServerClientInterface
-// 	db.ServerDBInterface
-// }
-
 // ServerContext Server context.
 type ServerContext struct {
 	ErrorHandler
 	CredentialHandler
 	ServerClient serverClient.ServerClientInterface
-	DB           db.ServerDBImplement
+	DB           db.ServerDB
 }
 
 // CreateServerContext Create server context by server.
