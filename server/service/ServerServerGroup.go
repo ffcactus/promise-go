@@ -2,9 +2,9 @@ package service
 
 import (
 	"promise/base"
+	"promise/sdk/event"
 	"promise/server/db"
 	"promise/server/object/dto"
-	"promise/sdk/event"
 )
 
 var (
@@ -14,6 +14,7 @@ var (
 		},
 	}
 )
+
 // ServerServerGroup is the concrete service.
 type ServerServerGroup struct {
 }

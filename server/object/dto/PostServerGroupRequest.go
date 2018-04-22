@@ -7,9 +7,13 @@ import (
 
 // PostServerGroupRequest is the DTO for post server group.
 type PostServerGroupRequest struct {
-	base.Request
 	Name        string `json:"Name"`
 	Description string `json:"Description"`
+}
+
+// NewInstance creates a new instance.
+func (dto *PostServerGroupRequest) NewInstance() base.RequestInterface {
+	return new(PostServerGroupRequest)
 }
 
 // IsValid return if the request is valid.
@@ -17,8 +21,8 @@ func (dto *PostServerGroupRequest) IsValid() *base.Message {
 	return nil
 }
 
-// GetDebugName return the name for debug.
-func (dto *PostServerGroupRequest) GetDebugName() string {
+// DebugInfo return the name for debug.
+func (dto *PostServerGroupRequest) DebugInfo() string {
 	return dto.Name
 }
 

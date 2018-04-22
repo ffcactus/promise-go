@@ -16,7 +16,7 @@ type ServerServerGroupCollectionMember struct {
 }
 
 // Load will load info from model.
-func (dto *ServerServerGroupCollectionMember) Load(i interface{}) error {
+func (dto *ServerServerGroupCollectionMember) Load(i base.CollectionMemberModelInterface) error {
 	m, ok := i.(*model.ServerServerGroupCollectionMember)
 	if !ok {
 		log.Error("ServerServerGroupCollectionMember.Load() failed, convert data failed.")
@@ -40,13 +40,12 @@ func (dto *GetServerServerGroupCollectionResponse) Load(m *base.CollectionModel)
 	dto.Start = m.Start
 	dto.Count = m.Count
 	dto.Total = m.Total
-	dto.Members = make([]interface{}, 0)
 	for _, v := range m.Members {
 		member := ServerServerGroupCollectionMember{}
 		if err := member.Load(v); err != nil {
 			return err
 		}
-		dto.Members = append(dto.Members, member)
+		dto.Members = append(dto.Members, &member)
 	}
 	return nil
 }

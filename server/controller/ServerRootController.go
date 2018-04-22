@@ -6,31 +6,36 @@ import (
 	"promise/server/service"
 )
 
+// TODO
+// Should not support Post().
+
+var (
+	serverService = &base.CRUDService{
+		TemplateImpl: new(service.Server),
+	}
+)
+
 // ServerRootController is ther servergroup controller.
 type ServerRootController struct {
 }
 
-// GetResourceName returns the name this controller handle of.
-func (c *ServerRootController) GetResourceName() string {
-	return "server-servergroup"
+// ResourceName returns the name this controller handle of.
+func (c *ServerRootController) ResourceName() string {
+	return "server"
 }
 
-// NewRequest creates a new request DTO.
-func (c *ServerRootController) NewRequest() base.RequestInterface {
-	request := new(dto.PostServerRequest)
-	request.TemplateImpl = request
-	return request
+// Request creates a new request DTO.
+func (c *ServerRootController) Request() base.RequestInterface {
+	return nil
 }
 
-// NewResponse creates a new response DTO.
-func (c *ServerRootController) NewResponse() base.ResponseInterface {
-	response := new(dto.GetServerResponse)
-	response.TemplateImpl = response
-	return response
+// Response creates a new response DTO.
+func (c *ServerRootController) Response() base.GetResponseInterface {
+	return new(dto.GetServerResponse)
 }
 
-// GetService returns the service.
-func (c *ServerRootController) GetService() base.ServiceInterface {
+// Service returns the service.
+func (c *ServerRootController) Service() base.CRUDServiceInterface {
 	return serverService
 }
 

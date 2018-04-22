@@ -10,27 +10,23 @@ import (
 type ServerGroupRootController struct {
 }
 
-// GetResourceName returns the name this controller handle of.
-func (c *ServerGroupRootController) GetResourceName() string {
+// ResourceName returns the name this controller handle of.
+func (c *ServerGroupRootController) ResourceName() string {
 	return "servergroup"
 }
 
-// NewRequest creates a new request DTO.
-func (c *ServerGroupRootController) NewRequest() base.RequestInterface {
-	request := new(dto.PostServerGroupRequest)
-	request.TemplateImpl = request
-	return request
+// Request creates a new request DTO.
+func (c *ServerGroupRootController) Request() base.PostRequestInterface {
+	return new(dto.PostServerGroupRequest)
 }
 
-// NewResponse creates a new response DTO.
-func (c *ServerGroupRootController) NewResponse() base.ResponseInterface {
-	response := new(dto.GetServerGroupResponse)
-	response.TemplateImpl = response
-	return response
+// Response creates a new response DTO.
+func (c *ServerGroupRootController) Response() base.GetResponseInterface {
+	return new(dto.GetServerGroupResponse)
 }
 
-// GetService returns the service.
-func (c *ServerGroupRootController) GetService() base.ServiceInterface {
+// Service returns the service.
+func (c *ServerGroupRootController) Service() base.CRUDServiceInterface {
 	return serverGroupService
 }
 

@@ -1,41 +1,32 @@
 package controller
 
 import (
-	"github.com/astaxie/beego"
 	log "github.com/sirupsen/logrus"
-	"net/http"
-	commonDto "promise/common/object/dto"
-	commonMessage "promise/common/object/message"
-	"promise/server/object/constvalue"
 	"promise/server/service"
 	"strings"
 )
 
+var (
+	discover = base.ActionInfo{
+		Name:    "discover",
+		Type:    base.ActionTypeAsych,
+		Request: new(dto.DiscoverServerRequest),
+		Service: new(service.Discover),
+	}
+
+	actionInfo = []base.ActionInfo{discover}
+)
+
 // ServerActionController Server action controller
 type ServerActionController struct {
-	beego.Controller
 }
 
-// Post Post method.
-func (c *ServerActionController) Post() {
-	action := c.Ctx.Input.Param(":action")
-	id := c.Ctx.Input.Param(":id")
-	log.WithFields(log.Fields{"action": action, "id": id}).Info("Cast action on server.")
-	switch strings.ToLower(action) {
-	case constvalue.ServerActionRefresh:
-		if resp, messages := service.RefreshServer(id); messages != nil {
-			c.Data["json"] = commonDto.MessagesToDto(messages)
-			c.Ctx.Output.SetStatus(messages[0].StatusCode)
-			log.WithFields(log.Fields{"action": action, "id": id, "message": messages[0].ID}).Warn("Cast action on server failed.")
-		} else {
-			c.Data["json"] = &resp
-			c.Ctx.Output.SetStatus(http.StatusAccepted)
-		}
-	default:
-		messages := []commonMessage.Message{}
-		messages = append(messages, commonMessage.NewInvalidRequest())
-		c.Data["json"] = commonDto.MessagesToDto(messages)
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-	}
-	c.ServeJSON()
+// ResourceName returns the name this controller handle of.
+func (c *ServerActionController) ResourceName() string {
+	return "server"
+}
+
+// ActionInfo returns the name this controller handle of.
+func (c *ServerActionController) ActionInfo() []base.ActionInfo {
+	return actionInfo
 }

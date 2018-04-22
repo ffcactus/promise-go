@@ -11,6 +11,10 @@ import (
 	"time"
 )
 
+// Server is the server service
+type Server struct {
+}
+
 // PostServer since the server is not known yet. we have to create the context step by step.
 func PostServer(request *dto.PostServerRequest) (*model.Server, []commonMessage.Message) {
 	dbImpl := db.GetDBInstance()

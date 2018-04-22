@@ -8,13 +8,13 @@ import (
 
 // GetServerGroupResponse is the DTO.
 type GetServerGroupResponse struct {
-	base.Response
+	base.GetResponse
 	Name        string `json:"Name"`
 	Description string `json:"Description"`
 }
 
-// GetDebugName return the name for debug.
-func (dto *GetServerGroupResponse) GetDebugName() string {
+// DebugInfo return the name for debug.
+func (dto *GetServerGroupResponse) DebugInfo() string {
 	return dto.Name
 }
 
@@ -25,7 +25,7 @@ func (dto *GetServerGroupResponse) Load(data base.ModelInterface) error {
 		log.Warn("GetServerGroupResponse.Load() failed, convert interface failed.")
 		return base.ErrorDataConvert
 	}
-	base.ResponseLoad(&dto.Response, &m.Model)
+	dto.GetResponse.Load(&m.Model)
 	dto.Name = m.Name
 	dto.Description = m.Description
 	return nil

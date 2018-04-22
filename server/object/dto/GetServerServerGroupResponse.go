@@ -8,15 +8,15 @@ import (
 
 // GetServerServerGroupResponse is the response DTO.
 type GetServerServerGroupResponse struct {
-	base.Response
+	base.GetResponse
 	ServerID       string `json:"ServerID"`
 	ServerURI      string `json:"ServerURI"`
 	ServerGroupID  string `json:"ServerGroupID"`
 	ServerGroupURI string `json:"ServerGroupURI"`
 }
 
-// GetDebugName return the name for debug.
-func (dto *GetServerServerGroupResponse) GetDebugName() string {
+// DebugInfo return the name for debug.
+func (dto *GetServerServerGroupResponse) DebugInfo() string {
 	return dto.ServerID + " " + dto.ServerGroupID
 }
 
@@ -27,7 +27,7 @@ func (dto *GetServerServerGroupResponse) Load(data base.ModelInterface) error {
 		log.Error("GetIPv4PoolResponse.Load() failed, convert interface failed.")
 		return base.ErrorDataConvert
 	}
-	base.ResponseLoad(&dto.Response, &m.Model)
+	dto.GetResponse.Load(&m.Model)
 	dto.ServerID = m.ServerID
 	dto.ServerURI = base.ToServerURI(m.ServerID)
 	dto.ServerGroupID = m.ServerGroupID

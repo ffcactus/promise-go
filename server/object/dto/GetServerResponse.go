@@ -27,7 +27,7 @@ type Chassis struct {
 
 // GetServerResponse is DTO.
 type GetServerResponse struct {
-	base.Response
+	base.GetResponse
 	Name           string         `json:"Name"`
 	Description    string         `json:"Description"`
 	State          string         `json:"State"`
@@ -39,8 +39,8 @@ type GetServerResponse struct {
 	Chassis        Chassis        `json:"Chassis"`
 }
 
-// GetDebugName return the name for debug.
-func (dto *GetServerResponse) GetDebugName() string {
+// DebugInfo return the name for debug.
+func (dto *GetServerResponse) DebugInfo() string {
 	return dto.Name
 }
 
@@ -51,7 +51,7 @@ func (dto *GetServerResponse) Load(data base.ModelInterface) error {
 		log.Error("GetServerResponse.Load() failed, convert interface failed.")
 		return base.ErrorDataConvert
 	}
-	base.ResponseLoad(&dto.Response, &m.Model)
+	dto.GetResponse.Load(&m.Model)
 	dto.Name = m.Name
 	dto.Description = m.Description
 	dto.State = m.State

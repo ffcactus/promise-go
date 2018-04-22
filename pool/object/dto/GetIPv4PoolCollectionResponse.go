@@ -34,7 +34,6 @@ func (dto *GetIPv4PoolCollectionResponse) Load(m *base.CollectionModel) error {
 	dto.Start = m.Start
 	dto.Count = m.Count
 	dto.Total = m.Total
-
 	for _, v := range m.Members {
 		member := IPv4PoolCollectionMember{}
 		if err := member.Load(v); err != nil {

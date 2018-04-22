@@ -17,6 +17,10 @@ var (
 	eventService event.Service
 )
 
+// ServerGroup is the servergroup service.
+struct ServerGroup struct {
+}
+
 // CreateDefaultServerGroup will create the default server group.
 func CreateDefaultServerGroup() {
 	var request dto.PostServerGroupRequest
