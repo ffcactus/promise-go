@@ -21,22 +21,22 @@ var (
 type IPv4Pool struct {
 }
 
-// GetCategory returns the category of this service.
-func (s *IPv4Pool) GetCategory() string {
+// Category returns the category of this service.
+func (s *IPv4Pool) Category() string {
 	return base.CategoryPoolIPv4
 }
 
-// NewResponse creates a new response DTO.
-func (s *IPv4Pool) NewResponse() base.ResponseInterface {
+// Response creates a new response DTO.
+func (s *IPv4Pool) Response() base.GetResponseInterface {
 	return new(dto.GetIPv4PoolResponse)
 }
 
-// GetDB returns the DB implementation.
-func (s *IPv4Pool) GetDB() base.DBInterface {
+// DB returns the DB implementation.
+func (s *IPv4Pool) DB() base.DBInterface {
 	return ipv4PoolDB
 }
 
-// GetEventService returns the event service implementation.
-func (s *IPv4Pool) GetEventService() base.EventServiceInterface {
+// EventService returns the event service implementation.
+func (s *IPv4Pool) EventService() base.EventServiceInterface {
 	return eventService
 }

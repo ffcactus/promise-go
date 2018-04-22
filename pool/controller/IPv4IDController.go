@@ -9,19 +9,17 @@ import (
 type IPv4IDController struct {
 }
 
-// GetResourceName returns the name this controller handle of.
-func (c *IPv4IDController) GetResourceName() string {
+// ResourceName returns the name this controller handle of.
+func (c *IPv4IDController) ResourceName() string {
 	return "ipv4"
 }
 
-// NewResponse creates a new response DTO.
-func (c *IPv4IDController) NewResponse() base.ResponseInterface {
-	response := new(dto.GetIPv4PoolResponse)
-	response.TemplateImpl = response
-	return response
+// Response creates a new response DTO.
+func (c *IPv4IDController) Response() base.GetResponseInterface {
+	return new(dto.GetIPv4PoolResponse)
 }
 
-// GetService returns the service.
-func (c *IPv4IDController) GetService() base.ServiceInterface {
+// Service returns the service.
+func (c *IPv4IDController) Service() base.CRUDServiceInterface {
 	return ipv4Service
 }

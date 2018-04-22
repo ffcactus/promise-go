@@ -6,33 +6,17 @@ import (
 	"promise/pool/service"
 )
 
-// NewAllocateRequest returns a new request.
-func NewAllocateRequest() base.UpdateActionRequestInterface {
-	return &dto.AllocateIPv4Request{
-		ActionRequest: base.ActionRequest{
-			TemplateImpl: new(dto.AllocateIPv4Request),
-		},
-	}
-}
-
-// NewFreeRequest returns a new request.
-func NewFreeRequest() base.UpdateActionRequestInterface {
-	return &dto.FreeIPv4Request{
-		ActionRequest: base.ActionRequest{
-			TemplateImpl: new(dto.FreeIPv4Request),
-		},
-	}
-}
-
 var (
 	allocate = base.ActionInfo{
 		Name:    "allocate",
-		Request: NewAllocateRequest,
+		Type:    base.ActionTypeSych,
+		Request: new(dto.AllocateIPv4Request),
 		Service: new(service.Allocate),
 	}
 	free = base.ActionInfo{
 		Name:    "free",
-		Request: NewFreeRequest,
+		Type:    base.ActionTypeSych,
+		Request: new(dto.FreeIPv4Request),
 		Service: new(service.Free),
 	}
 
@@ -43,12 +27,12 @@ var (
 type IPv4ActionController struct {
 }
 
-// GetResourceName returns the name this controller handle of.
-func (c *IPv4ActionController) GetResourceName() string {
+// ResourceName returns the name this controller handle of.
+func (c *IPv4ActionController) ResourceName() string {
 	return "ipv4"
 }
 
-// GetActionInfo returns the name this controller handle of.
-func (c *IPv4ActionController) GetActionInfo() []base.ActionInfo {
+// ActionInfo returns the name this controller handle of.
+func (c *IPv4ActionController) ActionInfo() []base.ActionInfo {
 	return actionInfo
 }

@@ -9,8 +9,12 @@ import (
 
 // FreeIPv4Request is the DTO to free an IP.
 type FreeIPv4Request struct {
-	base.ActionRequest
 	Address string `json:"Address"`
+}
+
+// NewInstance returns a new instance.
+func (dto *FreeIPv4Request) NewInstance() base.RequestInterface {
+	return new(FreeIPv4Request)
 }
 
 // IsValid return if the request is valid.
@@ -22,8 +26,8 @@ func (dto *FreeIPv4Request) IsValid() *base.Message {
 	return nil
 }
 
-// GetDebugName return the name for debug.
-func (dto *FreeIPv4Request) GetDebugName() string {
+// DebugInfo return the name for debug.
+func (dto *FreeIPv4Request) DebugInfo() string {
 	return dto.Address
 }
 

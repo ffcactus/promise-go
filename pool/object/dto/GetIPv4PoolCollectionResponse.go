@@ -13,7 +13,7 @@ type IPv4PoolCollectionMember struct {
 }
 
 // Load will load info from model.
-func (dto *IPv4PoolCollectionMember) Load(i interface{}) error {
+func (dto *IPv4PoolCollectionMember) Load(i base.CollectionMemberModelInterface) error {
 	m, ok := i.(*model.IPv4PoolCollectionMember)
 	if !ok {
 		log.Error("IPv4PoolCollectionMember.Load() failed, convert data failed.")
@@ -34,13 +34,13 @@ func (dto *GetIPv4PoolCollectionResponse) Load(m *base.CollectionModel) error {
 	dto.Start = m.Start
 	dto.Count = m.Count
 	dto.Total = m.Total
-	dto.Members = make([]interface{}, 0)
+
 	for _, v := range m.Members {
 		member := IPv4PoolCollectionMember{}
 		if err := member.Load(v); err != nil {
 			return err
 		}
-		dto.Members = append(dto.Members, member)
+		dto.Members = append(dto.Members, &member)
 	}
 	return nil
 }

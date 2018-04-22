@@ -5,3 +5,8 @@ type AllocateIPv4Response struct {
 	Address string
 	Pool    GetIPv4PoolResponse
 }
+
+// DebugInfo return the debug info.
+func (dto *AllocateIPv4Response) DebugInfo() string {
+	return dto.Address
+}

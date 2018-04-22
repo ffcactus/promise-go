@@ -20,9 +20,9 @@ const (
 // ActionInfo includes all the information that is required by controller to
 // handler action.
 type ActionInfo struct {
-	Name    string                  // The action name.
-	Type    string                  // The type of this action.
-	Request func() RequestInterface // we need create a new one each time.
+	Name    string           // The action name.
+	Type    string           // The type of this action.
+	Request RequestInterface // we need create a new one each time.
 	Service ActionServiceInterface
 }
 
@@ -58,7 +58,7 @@ func (c *ActionController) Post() {
 			service = v.Service
 			actionType = v.Type
 			// We need create a new instance here.
-			request = v.Request().NewInstance()
+			request = v.Request.NewInstance()
 		}
 	}
 	if service == nil {
@@ -142,7 +142,7 @@ func (c *ActionController) Post() {
 		ok = false
 	}
 	if !ok {
-		messages := []Message{NewMessageInternalError()}
+		messages = []Message{NewMessageInternalError()}
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),
 			"action":   action,
@@ -150,6 +150,19 @@ func (c *ActionController) Post() {
 			"id":       id,
 			"message":  messages[0].ID,
 		}).Warn("Perform action failed, convert request and service failed.")
+		c.Data["json"] = &messages
+		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.ServeJSON()
+		return
+	}
+	if messages != nil {
+		log.WithFields(log.Fields{
+			"resource": c.TemplateImpl.ResourceName(),
+			"action":   action,
+			"type":     actionType,
+			"id":       id,
+			"message":  messages[0].ID,
+		}).Warn("Perform action failed.")
 		c.Data["json"] = &messages
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()

@@ -10,7 +10,7 @@ type Free struct {
 }
 
 // Perform the free IPv4 action.
-func (s *Free) Perform(id string, request base.ActionRequestInterface) (interface{}, []base.Message) {
+func (s *Free) Perform(id string, request base.ActionRequestInterface) (base.ResponseInterface, []base.Message) {
 	var (
 		response dto.GetIPv4PoolResponse
 	)

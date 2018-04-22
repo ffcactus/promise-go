@@ -8,9 +8,13 @@ import (
 
 // PostIPv4PoolRequest is the request DTO.
 type PostIPv4PoolRequest struct {
-	base.Request
 	IPv4PoolResource
 	Ranges []IPv4RangeRequest `json:"Ranges"`
+}
+
+// NewInstance creates a new instance.
+func (dto *PostIPv4PoolRequest) NewInstance() base.RequestInterface {
+	return new(PostIPv4PoolRequest)
 }
 
 // IsValid return if the request is valid.
@@ -63,8 +67,8 @@ func (dto *PostIPv4PoolRequest) IsValid() *base.Message {
 	return nil
 }
 
-// GetDebugName return the name for debug.
-func (dto *PostIPv4PoolRequest) GetDebugName() string {
+// DebugInfo return the name for debug.
+func (dto *PostIPv4PoolRequest) DebugInfo() string {
 	return dto.Name
 }
 

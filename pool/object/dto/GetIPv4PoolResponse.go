@@ -8,7 +8,7 @@ import (
 
 // GetIPv4PoolResponse is the response DTO.
 type GetIPv4PoolResponse struct {
-	base.Response
+	base.GetResponse
 	IPv4PoolResource
 	Ranges      []IPv4RangeResponse `json:"Ranges"`
 	Total       uint32              `json:"Total"`
@@ -16,8 +16,8 @@ type GetIPv4PoolResponse struct {
 	Allocatable uint32              `json:"Allocatable"`
 }
 
-// GetDebugName return the name for debug.
-func (dto *GetIPv4PoolResponse) GetDebugName() string {
+// DebugInfo return the name for debug.
+func (dto *GetIPv4PoolResponse) DebugInfo() string {
 	return dto.Name
 }
 
@@ -28,7 +28,7 @@ func (dto *GetIPv4PoolResponse) Load(data base.ModelInterface) error {
 		log.Error("GetIPv4PoolResponse.Load() failed, convert interface failed.")
 		return base.ErrorDataConvert
 	}
-	base.ResponseLoad(&dto.Response, &m.Model)
+	dto.GetResponse.Load(&m.Model)
 	dto.Name = m.Name
 	dto.Description = m.Description
 	dto.Ranges = make([]IPv4RangeResponse, 0)

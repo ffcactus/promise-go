@@ -10,7 +10,7 @@ type Allocate struct {
 }
 
 // Perform the allocate IPv4 action.
-func (s *Allocate) Perform(id string, request base.ActionRequestInterface) (interface{}, []base.Message) {
+func (s *Allocate) Perform(id string, request base.ActionRequestInterface) (base.ResponseInterface, []base.Message) {
 	var (
 		response dto.AllocateIPv4Response
 	)

@@ -8,7 +8,7 @@ import (
 
 var (
 	// ipv4Service is the service used in Student controller.
-	ipv4Service = &base.Service{
+	ipv4Service = &base.CRUDService{
 		TemplateImpl: new(service.IPv4Pool),
 	}
 )
@@ -17,27 +17,23 @@ var (
 type IPv4RootController struct {
 }
 
-// GetResourceName returns the name this controller handle of.
-func (c *IPv4RootController) GetResourceName() string {
+// ResourceName returns the name this controller handle of.
+func (c *IPv4RootController) ResourceName() string {
 	return "ipv4"
 }
 
-// NewRequest creates a new request DTO.
-func (c *IPv4RootController) NewRequest() base.RequestInterface {
-	request := new(dto.PostIPv4PoolRequest)
-	request.TemplateImpl = request
-	return request
+// Request creates a new request DTO.
+func (c *IPv4RootController) Request() base.PostRequestInterface {
+	return new(dto.PostIPv4PoolRequest)
 }
 
-// NewResponse creates a new response DTO.
-func (c *IPv4RootController) NewResponse() base.ResponseInterface {
-	response := new(dto.GetIPv4PoolResponse)
-	response.TemplateImpl = response
-	return response
+// Response creates a new response DTO.
+func (c *IPv4RootController) Response() base.GetResponseInterface {
+	return new(dto.GetIPv4PoolResponse)
 }
 
-// GetService returns the service.
-func (c *IPv4RootController) GetService() base.ServiceInterface {
+// Service returns the service.
+func (c *IPv4RootController) Service() base.CRUDServiceInterface {
 	return ipv4Service
 }
 
