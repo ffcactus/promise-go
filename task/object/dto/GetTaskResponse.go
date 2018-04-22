@@ -8,7 +8,7 @@ import (
 
 // GetTaskResponse Post task response DTO.
 type GetTaskResponse struct {
-	base.Response
+	base.GetResponse
 	MessageID           *string               `json:"MessageID,omitempty"`
 	Name                string                `json:"Name"`
 	Description         *string               `json:"Description,omitempty"`
@@ -24,8 +24,8 @@ type GetTaskResponse struct {
 	ExecutionResult     ExecutionResult       `json:"ExecutionResult"`
 }
 
-// GetDebugName return the name for debug.
-func (dto *GetTaskResponse) GetDebugName() string {
+// DebugInfo return the name for debug.
+func (dto *GetTaskResponse) DebugInfo() string {
 	return dto.Name
 }
 
@@ -36,7 +36,7 @@ func (dto *GetTaskResponse) Load(data base.ModelInterface) error {
 		log.Error("GetTaskResponse.Load() failed, convert interface failed.")
 		return base.ErrorDataConvert
 	}
-	base.ResponseLoad(&dto.Response, &m.Model)
+	dto.GetResponse.Load(&m.Model)
 	dto.MessageID = m.MessageID
 	dto.Name = m.Name
 	dto.Description = m.Description

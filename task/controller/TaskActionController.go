@@ -5,33 +5,17 @@ import (
 	"promise/task/object/dto"
 )
 
-// NewUpdateTaskStepRequest returns a new request.
-func NewUpdateTaskStepRequest() base.UpdateActionRequestInterface {
-	return &dto.UpdateTaskStepRequest{
-		UpdateActionRequest: base.UpdateActionRequest{
-			TemplateImpl: new(dto.UpdateTaskStepRequest),
-		},
-	}
-}
-
-// NewUpdateTaskRequest returns a new request.
-func NewUpdateTaskRequest() base.UpdateActionRequestInterface {
-	return &dto.UpdateTaskRequest{
-		UpdateActionRequest: base.UpdateActionRequest{
-			TemplateImpl: new(dto.UpdateTaskRequest),
-		},
-	}
-}
-
 var (
 	updateTaskStep = base.ActionInfo{
 		Name:    "UpdateTaskStep",
-		Request: NewUpdateTaskStepRequest,
+		Type:    base.ActionTypeUpdate,
+		Request: new(dto.UpdateTaskStepRequest),
 		Service: taskService,
 	}
 	updateTask = base.ActionInfo{
 		Name:    "UpdateTask",
-		Request: NewUpdateTaskRequest,
+		Type:    base.ActionTypeUpdate,
+		Request: new(dto.UpdateTaskRequest),
 		Service: taskService,
 	}
 
@@ -42,12 +26,12 @@ var (
 type TaskActionController struct {
 }
 
-// GetResourceName returns the name this controller handle of.
-func (c *TaskActionController) GetResourceName() string {
+// ResourceName returns the name this controller handle of.
+func (c *TaskActionController) ResourceName() string {
 	return "task"
 }
 
-// GetActionInfo returns the name this controller handle of.
-func (c *TaskActionController) GetActionInfo() []base.ActionInfo {
+// ActionInfo returns the name this controller handle of.
+func (c *TaskActionController) ActionInfo() []base.ActionInfo {
 	return actionInfo
 }

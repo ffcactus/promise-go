@@ -9,19 +9,17 @@ import (
 type TaskIDController struct {
 }
 
-// GetResourceName returns the name this controller handle of.
-func (c *TaskIDController) GetResourceName() string {
+// ResourceName returns the name this controller handle of.
+func (c *TaskIDController) ResourceName() string {
 	return "task"
 }
 
-// NewResponse creates a new response DTO.
-func (c *TaskIDController) NewResponse() base.ResponseInterface {
-	response := new(dto.GetTaskResponse)
-	response.TemplateImpl = response
-	return response
+// Response creates a new response DTO.
+func (c *TaskIDController) Response() base.GetResponseInterface {
+	return new(dto.GetTaskResponse)
 }
 
-// GetService returns the service.
-func (c *TaskIDController) GetService() base.ServiceInterface {
+// Service returns the service.
+func (c *TaskIDController) Service() base.CRUDServiceInterface {
 	return taskService
 }

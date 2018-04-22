@@ -23,7 +23,7 @@ type ActionInfo struct {
 	Name    string           // The action name.
 	Type    string           // The type of this action.
 	Request RequestInterface // we need create a new one each time.
-	Service ActionServiceInterface
+	Service ServiceInterface
 }
 
 // ActionControllerTemplateInterface is the interface that a concrete controller must implement.

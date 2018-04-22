@@ -39,8 +39,3 @@ func (dto *GetResponse) GetID() string {
 func (dto *GetResponse) GetCategory() string {
 	return dto.Category
 }
-
-// // Load data from model.
-// func (dto *GetResponse) Load(m ModelInterface) error {
-// 	return dto.TemplateImpl.Load(m)
-// }

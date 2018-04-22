@@ -48,10 +48,14 @@ func (dto *GetTaskStepResponse) Load(m *model.TaskStep) {
 
 // UpdateTaskStepRequest Update task step request DTO.
 type UpdateTaskStepRequest struct {
-	base.UpdateActionRequest
 	Name            string                        `json:"Name"`
 	ExecutionState  *model.ExecutionState         `json:"ExecutionState"`
 	ExecutionResult *UpdateExecutionResultRequest `json:"ExecutionResult"`
+}
+
+// NewInstance creates a new instance.
+func (dto *UpdateTaskStepRequest) NewInstance() base.RequestInterface {
+	return new(UpdateTaskStepRequest)
 }
 
 // IsValid return if the request is valid.
@@ -66,8 +70,8 @@ func (dto *UpdateTaskStepRequest) IsValid() *base.Message {
 	return nil
 }
 
-// GetDebugName return the name for debug.
-func (dto *UpdateTaskStepRequest) GetDebugName() string {
+// DebugInfo return the name for debug.
+func (dto *UpdateTaskStepRequest) DebugInfo() string {
 	return dto.Name
 }
 

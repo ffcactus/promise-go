@@ -7,7 +7,6 @@ import (
 
 // PostTaskRequest Post task request DTO.
 type PostTaskRequest struct {
-	base.Request
 	MessageID     *string               `json:"MessageID"`
 	Name          string                `json:"Name"`
 	Description   *string               `json:"Description"`
@@ -16,6 +15,11 @@ type PostTaskRequest struct {
 	TargetName    string                `json:"TargetName"`
 	TargetURI     string                `json:"TargetURI"`
 	TaskSteps     []PostTaskStepRequest `json:"TaskSteps"`
+}
+
+// NewInstance creates a new instance.
+func (dto *PostTaskRequest) NewInstance() base.RequestInterface {
+	return new(PostTaskRequest)
 }
 
 // IsValid return if the request is valid.
@@ -27,8 +31,8 @@ func (dto *PostTaskRequest) IsValid() *base.Message {
 	return nil
 }
 
-// GetDebugName return the name for debug.
-func (dto *PostTaskRequest) GetDebugName() string {
+// DebugInfo return the name for debug.
+func (dto *PostTaskRequest) DebugInfo() string {
 	return dto.Name
 }
 

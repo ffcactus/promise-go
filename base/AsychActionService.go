@@ -19,11 +19,6 @@ type AsychActionService struct {
 
 // PerformAsych will perform the asychronous action.
 func (s *AsychActionService) PerformAsych(id string, request AsychActionRequestInterface) (ResponseInterface, *string, []Message) {
-	// request, ok := request.(AsychActionRequestInterface)
-	// if !ok {
-	// 	return nil, nil, []Message{NewMessageInternalError()}
-	// }
-
 	context := s.TemplateImpl.CreateContext(request)
 	strategy := s.TemplateImpl.CreateStrategy(request)
 	response, taskURI, messages := strategy.Execute(context)

@@ -21,22 +21,22 @@ var (
 type Task struct {
 }
 
-// GetCategory returns the category of this service.
-func (s *Task) GetCategory() string {
+// Category returns the category of this service.
+func (s *Task) Category() string {
 	return base.CategoryTask
 }
 
-// NewResponse creates a new response DTO.
-func (s *Task) NewResponse() base.ResponseInterface {
+// Response creates a new response DTO.
+func (s *Task) Response() base.GetResponseInterface {
 	return new(dto.GetTaskResponse)
 }
 
-// GetDB returns the DB implementation.
-func (s *Task) GetDB() base.DBInterface {
+// DB returns the DB implementation.
+func (s *Task) DB() base.DBInterface {
 	return taskDB
 }
 
-// GetEventService returns the event service implementation.
-func (s *Task) GetEventService() base.EventServiceInterface {
+// EventService returns the event service implementation.
+func (s *Task) EventService() base.EventServiceInterface {
 	return eventService
 }

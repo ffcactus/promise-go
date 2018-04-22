@@ -8,7 +8,7 @@ import (
 
 var (
 	// StudentService is the service used in Student controller.
-	taskService = &base.Service{
+	taskService = &base.CRUDService{
 		TemplateImpl: new(service.Task),
 	}
 )
@@ -17,27 +17,23 @@ var (
 type TaskRootController struct {
 }
 
-// GetResourceName returns the name this controller handle of.
-func (c *TaskRootController) GetResourceName() string {
+// ResourceName returns the name this controller handle of.
+func (c *TaskRootController) ResourceName() string {
 	return "task"
 }
 
-// NewRequest creates a new request DTO.
-func (c *TaskRootController) NewRequest() base.RequestInterface {
-	request := new(dto.PostTaskRequest)
-	request.TemplateImpl = request
-	return request
+// Request creates a new request DTO.
+func (c *TaskRootController) Request() base.PostRequestInterface {
+	return new(dto.PostTaskRequest)
 }
 
-// NewResponse creates a new response DTO.
-func (c *TaskRootController) NewResponse() base.ResponseInterface {
-	response := new(dto.GetTaskResponse)
-	response.TemplateImpl = response
-	return response
+// Response creates a new response DTO.
+func (c *TaskRootController) Response() base.GetResponseInterface {
+	return new(dto.GetTaskResponse)
 }
 
-// GetService returns the service.
-func (c *TaskRootController) GetService() base.ServiceInterface {
+// Service returns the service.
+func (c *TaskRootController) Service() base.CRUDServiceInterface {
 	return taskService
 }
 

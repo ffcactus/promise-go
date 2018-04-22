@@ -9,12 +9,16 @@ import (
 // UpdateTaskRequest UpdateTaskRequest that only includes the changable properties.
 // Note: Update sub task not use this request.
 type UpdateTaskRequest struct {
-	base.UpdateActionRequest
 	Description         *string                       `json:"Description"`
 	ExecutionState      *model.ExecutionState         `json:"ExecutionState"`
 	ExpectedExecutionMs *uint64                       `json:"ExpectedExecutionMs"`
 	Percentage          *uint32                       `json:"Percentage"`
 	ExecutionResult     *UpdateExecutionResultRequest `json:"ExecutionResult"`
+}
+
+// NewInstance creates a new instance.
+func (dto *UpdateTaskRequest) NewInstance() base.RequestInterface {
+	return new(UpdateTaskRequest)
 }
 
 // IsValid return if the request is valid.
@@ -32,8 +36,8 @@ func (dto *UpdateTaskRequest) IsValid() *base.Message {
 	return nil
 }
 
-// GetDebugName return the name for debug.
-func (dto *UpdateTaskRequest) GetDebugName() string {
+// DebugInfo return the name for debug.
+func (dto *UpdateTaskRequest) DebugInfo() string {
 	return ""
 }
 
