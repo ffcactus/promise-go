@@ -21,9 +21,9 @@ type DBTemplateInterface interface {
 
 // DBInterface is the interface that DB should have.
 type DBInterface interface {
-	Post(ModelInterface) (bool, ModelInterface, bool, error)
+	Create(ModelInterface) (bool, ModelInterface, bool, error)
 	Get(id string) ModelInterface
-	Update(id string, request UpdateActionRequestInterface) (bool, ModelInterface, bool, error)
+	Update(id string, request UpdateRequestInterface) (bool, ModelInterface, bool, error)
 	Delete(id string) (bool, ModelInterface, bool, error)
 	GetCollection(start int64, count int64, filter string) (*CollectionModel, error)
 	DeleteCollection() ([]ModelInterface, bool, error)
@@ -105,12 +105,12 @@ func (impl *DB) SaveAndCommit(tx *gorm.DB, record EntityInterface) (bool, error)
 	return true, nil
 }
 
-// Post is the default implement to post resource in DB.
+// Create is the default implement to post resource in DB.
 // It will return if there is one exist already with the same name.
 // It will return the newly created one if commited, or nil.
 // It will return if the transaction commited.
 // It will return error if any.
-func (impl *DB) Post(m ModelInterface) (bool, ModelInterface, bool, error) {
+func (impl *DB) Create(m ModelInterface) (bool, ModelInterface, bool, error) {
 	var (
 		name   = impl.TemplateImpl.GetResourceName()
 		record = impl.TemplateImpl.NewEntity()
@@ -192,7 +192,7 @@ func (impl *DB) Get(id string) ModelInterface {
 // It will return the updated resource.
 // It will return wether the operation commited.
 // It will return error if any.
-func (impl *DB) Update(id string, request UpdateActionRequestInterface) (bool, ModelInterface, bool, error) {
+func (impl *DB) Update(id string, request UpdateRequestInterface) (bool, ModelInterface, bool, error) {
 	var (
 		name   = impl.TemplateImpl.GetResourceName()
 		record = impl.TemplateImpl.NewEntity()

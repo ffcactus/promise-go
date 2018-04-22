@@ -8,14 +8,14 @@ import (
 
 // GetStudentResponse is the DTO of get student response.
 type GetStudentResponse struct {
-	base.Response
+	base.GetResponse
 	Name   string
 	Age    int
 	Phones []PhoneResponse
 }
 
-// GetDebugName return the name for debug.
-func (dto *GetStudentResponse) GetDebugName() string {
+// DebugInfo return the debug info.
+func (dto *GetStudentResponse) DebugInfo() string {
 	return dto.Name
 }
 
@@ -26,7 +26,7 @@ func (dto *GetStudentResponse) Load(i base.ModelInterface) error {
 		log.Error("GetStudentResponse.Load() failed, convert interface failed.")
 		return base.ErrorDataConvert
 	}
-	base.ResponseLoad(&dto.Response, &m.Model)
+	dto.GetResponse.Load(&m.Model)
 	dto.Name = m.Name
 	dto.Age = m.Age
 	for _, v := range m.Phones {

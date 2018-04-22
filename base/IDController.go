@@ -8,9 +8,9 @@ import (
 
 // IDControllerTemplateInterface is the interface that a concrete ID controller should provide.
 type IDControllerTemplateInterface interface {
-	GetResourceName() string
-	GetService() ServiceInterface
-	NewResponse() ResponseInterface
+	ResourceName() string
+	Service() CRUDServiceInterface
+	Response() GetResponseInterface
 }
 
 // IDController is the controller that handle request on a specific resource.
@@ -24,16 +24,16 @@ type IDController struct {
 func (c *IDController) Get() {
 	var (
 		id       = c.Ctx.Input.Param(":id")
-		response = c.TemplateImpl.NewResponse()
+		response = c.TemplateImpl.Response()
 	)
 	log.WithFields(log.Fields{
-		"resource": c.TemplateImpl.GetResourceName(),
+		"resource": c.TemplateImpl.ResourceName(),
 		"id":       id,
 	}).Debug("Get resource.")
-	model, messages := c.TemplateImpl.GetService().Get(id)
+	model, messages := c.TemplateImpl.Service().Get(id)
 	if messages != nil {
 		log.WithFields(log.Fields{
-			"resource": c.TemplateImpl.GetResourceName(),
+			"resource": c.TemplateImpl.ResourceName(),
 			"id":       id,
 			"message":  messages[0].ID,
 		}).Warn("Get resource failed.")
@@ -53,9 +53,9 @@ func (c *IDController) Delete() {
 	var (
 		id = c.Ctx.Input.Param(":id")
 	)
-	if messages := c.TemplateImpl.GetService().Delete(id); messages != nil {
+	if messages := c.TemplateImpl.Service().Delete(id); messages != nil {
 		log.WithFields(log.Fields{
-			"resource": c.TemplateImpl.GetResourceName(),
+			"resource": c.TemplateImpl.ResourceName(),
 			"id":       id,
 			"message":  messages[0].ID,
 		}).Warn("Delete resource failed.")
@@ -65,7 +65,7 @@ func (c *IDController) Delete() {
 		return
 	}
 	log.WithFields(log.Fields{
-		"resource": c.TemplateImpl.GetResourceName(),
+		"resource": c.TemplateImpl.ResourceName(),
 		"id":       id,
 	}).Info("Delete resource done.")
 	c.Ctx.Output.SetStatus(http.StatusAccepted)

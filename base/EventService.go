@@ -13,8 +13,8 @@ const (
 
 // EventServiceInterface is the interface that event service should have.
 type EventServiceInterface interface {
-	DispatchCreateEvent(ResponseInterface) ([]Message, error)
-	DispatchUpdateEvent(ResponseInterface) ([]Message, error)
-	DispatchDeleteEvent(ResponseInterface) ([]Message, error)
+	DispatchCreateEvent(GetResponseInterface) ([]Message, error)
+	DispatchUpdateEvent(GetResponseInterface) ([]Message, error)
+	DispatchDeleteEvent(GetResponseInterface) ([]Message, error)
 	DispatchDeleteCollectionEvent(category string) ([]Message, error)
 }

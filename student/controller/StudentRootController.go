@@ -8,8 +8,8 @@ import (
 
 var (
 	// StudentService is the concrete service in student project.
-	StudentService = &base.Service{
-		TemplateImpl: new(service.StudentService),
+	StudentService = &base.CRUDService{
+		TemplateImpl: new(service.StudentCRUDService),
 	}
 )
 
@@ -17,27 +17,23 @@ var (
 type StudentRootController struct {
 }
 
-// GetResourceName returns the name this controller handle of.
-func (c *StudentRootController) GetResourceName() string {
+// ResourceName returns the name this controller handle of.
+func (c *StudentRootController) ResourceName() string {
 	return "student"
 }
 
-// NewRequest creates a new request DTO.
-func (c *StudentRootController) NewRequest() base.RequestInterface {
-	request := new(dto.PostStudentRequest)
-	request.TemplateImpl = request
-	return request
+// Request creates a new request DTO.
+func (c *StudentRootController) Request() base.PostRequestInterface {
+	return new(dto.PostStudentRequest)
 }
 
-// NewResponse creates a new response DTO.
-func (c *StudentRootController) NewResponse() base.ResponseInterface {
-	response := new(dto.GetStudentResponse)
-	response.TemplateImpl = response
-	return response
+// Response creates a new response DTO.
+func (c *StudentRootController) Response() base.GetResponseInterface {
+	return new(dto.GetStudentResponse)
 }
 
-// GetService returns the service.
-func (c *StudentRootController) GetService() base.ServiceInterface {
+// Service returns the service.
+func (c *StudentRootController) Service() base.CRUDServiceInterface {
 	return StudentService
 }
 

@@ -9,19 +9,17 @@ import (
 type StudentIDController struct {
 }
 
-// GetResourceName returns the name this controller handle of.
-func (c *StudentIDController) GetResourceName() string {
+// ResourceName returns the name this controller handle of.
+func (c *StudentIDController) ResourceName() string {
 	return "student"
 }
 
-// NewResponse creates a new response DTO.
-func (c *StudentIDController) NewResponse() base.ResponseInterface {
-	response := new(dto.GetStudentResponse)
-	response.TemplateImpl = response
-	return response
+// Response creates a new response DTO.
+func (c *StudentIDController) Response() base.GetResponseInterface {
+	return new(dto.GetStudentResponse)
 }
 
-// GetService returns the service.
-func (c *StudentIDController) GetService() base.ServiceInterface {
+// Service returns the service.
+func (c *StudentIDController) Service() base.CRUDServiceInterface {
 	return StudentService
 }
