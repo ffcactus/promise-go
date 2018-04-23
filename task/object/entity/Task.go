@@ -31,33 +31,33 @@ func (Task) TableName() string {
 	return "Task"
 }
 
-// GetDebugName return the debug name of this entity.
-func (e *Task) GetDebugName() string {
+// DebugInfo return the debug name of this entity.
+func (e *Task) DebugInfo() string {
 	return e.Name
 }
 
-// GetPropertyNameForDuplicationCheck return the property name used for duplication check.
-func (e *Task) GetPropertyNameForDuplicationCheck() string {
+// PropertyNameForDuplicationCheck return the property name used for duplication check.
+func (e *Task) PropertyNameForDuplicationCheck() string {
 	return ""
 }
 
-// GetPreload return the property names that need to be preload.
-func (e *Task) GetPreload() []string {
+// Preload return the property names that need to be preload.
+func (e *Task) Preload() []string {
 	return nil
 }
 
-// GetAssociation return all the assocations that need to delete when deleting a resource.
-func (e *Task) GetAssociation() []interface{} {
+// Association return all the assocations that need to delete when deleting a resource.
+func (e *Task) Association() []interface{} {
 	return []interface{}{}
 }
 
-// GetTables returns the tables to delete when you want delete all the resources.
-func (e *Task) GetTables() []interface{} {
+// Tables returns the tables to delete when you want delete all the resources.
+func (e *Task) Tables() []interface{} {
 	return []interface{}{new(Task)}
 }
 
-// GetFilterNameList return all the property name that can be used in filter.
-func (e *Task) GetFilterNameList() []string {
+// FilterNameList return all the property name that can be used in filter.
+func (e *Task) FilterNameList() []string {
 	return []string{"Name", "ExecutionState", "TargetName", "TargetURI", "CreatedByName", "CreatedByURI", "Percentage", "CurrentStep", "ExecutionResult"}
 }
 

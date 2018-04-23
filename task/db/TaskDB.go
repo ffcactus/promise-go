@@ -12,8 +12,8 @@ type TaskDB struct {
 	base.DB
 }
 
-// GetResourceName get the resource name.
-func (impl *TaskDB) GetResourceName() string {
+// ResourceName get the resource name.
+func (impl *TaskDB) ResourceName() string {
 	return "task"
 }
 

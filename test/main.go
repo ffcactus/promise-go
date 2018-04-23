@@ -5,7 +5,7 @@ import (
 )
 
 type Show interface {
-	Print(v Value) 
+	Print(v Value)
 }
 
 type Value interface {
@@ -13,11 +13,9 @@ type Value interface {
 }
 
 type MyShow struct {
-
 }
 
 type MyValue struct {
-
 }
 
 func (s *MyValue) Value() string {
@@ -31,7 +29,7 @@ func (s *MyShow) Print(v *MyValue) {
 func main() {
 	var (
 		value Value
-		show Show
+		show  Show
 	)
 	value = new(MyValue)
 	show = new(MyShow)

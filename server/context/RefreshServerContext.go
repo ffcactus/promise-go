@@ -4,14 +4,14 @@ import (
 	m "promise/server/object/model"
 )
 
-// RefreshServerContext Refresh server context.
-type RefreshServerContext struct {
-	ServerContext
+// RefreshServer Refresh server context.
+type RefreshServer struct {
+	Base
 }
 
 // CreateRefreshServerContext Create a new instance by server.
-func CreateRefreshServerContext(server *m.Server) *RefreshServerContext {
-	var context RefreshServerContext
-	context.ServerContext = *CreateServerContext(server)
+func CreateRefreshServerContext(server *m.Server) *RefreshServer {
+	var context RefreshServer
+	context.Base = *CreateServerContext(server)
 	return &context
 }

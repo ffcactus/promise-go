@@ -2,7 +2,6 @@ package service
 
 import (
 	"promise/base"
-	"promise/sdk/event"
 	"promise/server/db"
 	"promise/server/object/dto"
 )
@@ -19,22 +18,22 @@ var (
 type ServerServerGroup struct {
 }
 
-// GetCategory returns the category of this service.
-func (s *ServerServerGroup) GetCategory() string {
+// Category returns the category of this service.
+func (s *ServerServerGroup) Category() string {
 	return base.CategoryServerServerGroup
 }
 
-// NewResponse creates a new response DTO.
-func (s *ServerServerGroup) NewResponse() base.ResponseInterface {
+// Response creates a new response DTO.
+func (s *ServerServerGroup) Response() base.GetResponseInterface {
 	return new(dto.GetServerServerGroupResponse)
 }
 
-// GetDB returns the DB implementation.
-func (s *ServerServerGroup) GetDB() base.DBInterface {
+// DB returns the DB implementation.
+func (s *ServerServerGroup) DB() base.DBInterface {
 	return serverServerGroupDB
 }
 
-// GetEventService returns the event service implementation.
-func (s *ServerServerGroup) GetEventService() base.EventServiceInterface {
+// EventService returns the event service implementation.
+func (s *ServerServerGroup) EventService() base.EventServiceInterface {
 	return eventService
 }

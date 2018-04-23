@@ -16,18 +16,18 @@ type ErrorHandler struct {
 }
 
 // AppendMessage Append message.
-func (c *ServerContext) AppendMessage(message base.Message) {
+func (c *Base) AppendMessage(message base.Message) {
 	c.messages = append(c.messages, message)
 }
 
 // AppendMessages Append messages.
-func (c *ServerContext) AppendMessages(messages []base.Message) {
+func (c *Base) AppendMessages(messages []base.Message) {
 	for i := range messages {
 		c.messages = append(c.messages, messages[i])
 	}
 }
 
 // Messages Get messages.
-func (c *ServerContext) Messages() []base.Message {
+func (c *Base) Messages() []base.Message {
 	return c.messages
 }

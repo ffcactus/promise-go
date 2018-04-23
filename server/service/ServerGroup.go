@@ -8,17 +8,15 @@ import (
 )
 
 var (
-	serverGroupDB = &db.IPv4PoolDB{
+	serverGroupDB = &db.ServerGroup{
 		DB: base.DB{
-			TemplateImpl: new(db.serverGroup),
+			TemplateImpl: new(db.ServerGroup),
 		},
 	}
-
-	eventService event.Service
 )
 
 // ServerGroup is the servergroup service.
-struct ServerGroup struct {
+type ServerGroup struct {
 }
 
 // CreateDefaultServerGroup will create the default server group.
@@ -26,43 +24,39 @@ func CreateDefaultServerGroup() {
 	var request dto.PostServerGroupRequest
 	request.Name = "all"
 	request.Description = "The default servergroup that includes all the servers."
-	dbImpl := db.GetServerGroupDB()
-	sg, exist, err := dbImpl.PostServerGroup(request.ToModel())
+	exist, sg, committed, err := serverGroupDB.Create(request.ToModel())
 	if exist {
 		log.Debug("The default servergroup exist.")
 	}
-	if err != nil {
+	if err != nil || !committed {
 		log.Fatal("Failed to create default servergroup.")
 	} else {
-		var sgDTO dto.GetServerGroupResponse
-		sgDTO.Load(sg)
-		wsSDK.DispatchResourceCreateEvent(&sgDTO)
-		log.Info("Default servergroup created.")
+		var response dto.GetServerGroupResponse
+		response.Load(sg)
+		eventService.DispatchCreateEvent(&response)
+		log.WithFields(log.Fields{
+			"id": sg.GetID(),
+		}).Info("Default servergroup created.")
 	}
-	db.DefaultServerGroupID = sg.ID
+	db.DefaultServerGroupID = sg.GetID()
 }
 
-
-// ServerGroup is the concrete service.
-type ServerGroup struct {
-}
-
-// GetCategory returns the category of this service.
-func (s *ServerGroup) GetCategory() string {
+// Category returns the category of this service.
+func (s *ServerGroup) Category() string {
 	return base.CategoryServerGroup
 }
 
-// NewResponse creates a new response DTO.
-func (s *ServerGroup) NewResponse() base.ResponseInterface {
+// Response creates a new response DTO.
+func (s *ServerGroup) Response() base.GetResponseInterface {
 	return new(dto.GetServerGroupResponse)
 }
 
-// GetDB returns the DB implementation.
-func (s *ServerGroup) GetDB() base.DBInterface {
+// DB returns the DB implementation.
+func (s *ServerGroup) DB() base.DBInterface {
 	return serverGroupDB
 }
 
-// GetEventService returns the event service implementation.
-func (s *ServerGroup) GetEventService() base.EventServiceInterface {
+// EventService returns the event service implementation.
+func (s *ServerGroup) EventService() base.EventServiceInterface {
 	return eventService
 }

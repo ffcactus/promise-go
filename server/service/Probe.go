@@ -9,7 +9,7 @@ import (
 )
 
 // Probe will try to probe the server.
-func Probe(request *dto.PostServerRequest) (*model.ServerBasicInfo, error) {
+func Probe(request *dto.DiscoverServerRequest) (*model.ServerBasicInfo, error) {
 	c := client.FindBestClient(request.Hostname, request.Username, request.Password)
 	if c == nil {
 		log.WithFields(log.Fields{"hostname": request.Hostname}).Warn("Probe server failed, can not find client.")

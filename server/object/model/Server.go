@@ -62,13 +62,13 @@ type Server struct {
 	Chassis        Chassis
 }
 
-// GetDebugName return the debug name the model.
-func (m *Server) GetDebugName() string {
+// DebugInfo return the debug name the model.
+func (m *Server) DebugInfo() string {
 	return m.Name
 }
 
-// GetValueForDuplicationCheck return the value for duplication check.
-func (m *Server) GetValueForDuplicationCheck() string {
+// ValueForDuplicationCheck return the value for duplication check.
+func (m *Server) ValueForDuplicationCheck() string {
 	return m.Name
 }
 

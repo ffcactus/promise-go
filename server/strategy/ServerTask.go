@@ -164,8 +164,8 @@ var (
 	}
 )
 
-// ServerTaskStrategy is the server task strategy implementation.
-type ServerTaskStrategy struct {
+// ServerTask is the server task strategy implementation.
+type ServerTask struct {
 }
 
 // createRefreshTaskRequest will return a refresh server task request.
@@ -184,7 +184,7 @@ func createRefreshTaskRequest(server *model.Server) *taskDTO.PostTaskRequest {
 }
 
 // createTask creates the task.
-func (s *ServerTaskStrategy) createTask(request *taskDTO.PostTaskRequest, server *model.Server) (string, error) {
+func (s *ServerTask) createTask(request *taskDTO.PostTaskRequest, server *model.Server) (string, error) {
 	taskResp, message, err := taskSDK.CreateTask(request)
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -211,12 +211,12 @@ func (s *ServerTaskStrategy) createTask(request *taskDTO.PostTaskRequest, server
 }
 
 // CreateRefreshServerTask will create a server refresh task.
-func (s *ServerTaskStrategy) CreateRefreshServerTask(c *context.ServerContext, server *model.Server) (string, error) {
+func (s *ServerTask) CreateRefreshServerTask(c *context.Base, server *model.Server) (string, error) {
 	return s.createTask(createRefreshTaskRequest(server), server)
 }
 
 // UpdateStepExecutionState Update the step's execution state.
-func (s *ServerTaskStrategy) UpdateStepExecutionState(id string, stepName string, state taskModel.ExecutionState, server *model.Server) {
+func (s *ServerTask) UpdateStepExecutionState(id string, stepName string, state taskModel.ExecutionState, server *model.Server) {
 	_, message, err := taskSDK.SetStepExecutionState(id, stepName, state)
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -238,7 +238,7 @@ func (s *ServerTaskStrategy) UpdateStepExecutionState(id string, stepName string
 }
 
 // UpdateStepExecutionResultState Update the step's execution result state.
-func (s *ServerTaskStrategy) UpdateStepExecutionResultState(c *context.ServerContext, id string, stepName string, state taskModel.ExecutionResultState, server *model.Server) {
+func (s *ServerTask) UpdateStepExecutionResultState(c *context.Base, id string, stepName string, state taskModel.ExecutionResultState, server *model.Server) {
 	_, message, err := taskSDK.SetStepExecutionResultState(id, stepName, state)
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -261,7 +261,7 @@ func (s *ServerTaskStrategy) UpdateStepExecutionResultState(c *context.ServerCon
 }
 
 // SetTaskStepRunning Set the task to running.
-func (s *ServerTaskStrategy) SetTaskStepRunning(c *context.ServerContext, id string, stepName string, server *model.Server) {
+func (s *ServerTask) SetTaskStepRunning(c *context.Base, id string, stepName string, server *model.Server) {
 	log.WithFields(log.Fields{
 		"server": server.ID,
 		"task":   id,
@@ -286,7 +286,7 @@ func (s *ServerTaskStrategy) SetTaskStepRunning(c *context.ServerContext, id str
 	}
 }
 
-func (s *ServerTaskStrategy) logUpdateStepResult(c *context.ServerContext, id string, stepName string, server *model.Server, err error, message []commonDTO.Message) {
+func (s *ServerTask) logUpdateStepResult(c *context.Base, id string, stepName string, server *model.Server, err error, message []commonDTO.Message) {
 	if err != nil {
 		log.WithFields(log.Fields{
 			"server": server.ID,
@@ -306,7 +306,7 @@ func (s *ServerTaskStrategy) logUpdateStepResult(c *context.ServerContext, id st
 }
 
 // SetTaskStepFinished Set the task to finished.
-func (s *ServerTaskStrategy) SetTaskStepFinished(c *context.ServerContext, id string, stepName string, server *model.Server) {
+func (s *ServerTask) SetTaskStepFinished(c *context.Base, id string, stepName string, server *model.Server) {
 	request := new(taskDTO.UpdateTaskStepRequest)
 	request.Name = stepName
 	request.ExecutionState = &taskModel.ExecutionStateTerminated
@@ -317,7 +317,7 @@ func (s *ServerTaskStrategy) SetTaskStepFinished(c *context.ServerContext, id st
 }
 
 // SetTaskStepWarning Set the task step to warning.
-func (s *ServerTaskStrategy) SetTaskStepWarning(c *context.ServerContext, id string, stepName string, server *model.Server) {
+func (s *ServerTask) SetTaskStepWarning(c *context.Base, id string, stepName string, server *model.Server) {
 	request := new(taskDTO.UpdateTaskStepRequest)
 	request.Name = stepName
 	request.ExecutionState = &taskModel.ExecutionStateTerminated
@@ -328,7 +328,7 @@ func (s *ServerTaskStrategy) SetTaskStepWarning(c *context.ServerContext, id str
 }
 
 // SetTaskStepError Set the task step to error.
-func (s *ServerTaskStrategy) SetTaskStepError(c *context.ServerContext, id string, stepName string, server *model.Server) {
+func (s *ServerTask) SetTaskStepError(c *context.Base, id string, stepName string, server *model.Server) {
 	log.WithFields(log.Fields{"server": server.ID, "task": id, "step": stepName}).Debug("Set task step to error.")
 	request := new(taskDTO.UpdateTaskStepRequest)
 	request.Name = stepName

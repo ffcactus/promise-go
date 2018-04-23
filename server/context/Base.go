@@ -6,8 +6,8 @@ import (
 	"promise/server/object/model"
 )
 
-// ServerContext Server context.
-type ServerContext struct {
+// Base is the base Server context.
+type Base struct {
 	ErrorHandler
 	CredentialHandler
 	ServerClient serverClient.ServerClientInterface
@@ -15,8 +15,8 @@ type ServerContext struct {
 }
 
 // CreateServerContext Create server context by server.
-func CreateServerContext(server *model.Server) *ServerContext {
-	var context ServerContext
+func CreateServerContext(server *model.Server) *Base {
+	var context Base
 	context.ServerClient = serverClient.GetServerClient(server)
 	return &context
 }

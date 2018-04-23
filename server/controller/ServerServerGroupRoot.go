@@ -6,6 +6,13 @@ import (
 	"promise/server/service"
 )
 
+var (
+	// ipv4Service is the service used in Student controller.
+	serverServerGroupService = &base.CRUDService{
+		TemplateImpl: new(service.ServerServerGroup),
+	}
+)
+
 // ServerServerGroupRoot is ther servergroup controller.
 type ServerServerGroupRoot struct {
 }

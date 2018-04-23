@@ -1,12 +1,8 @@
 package controller
 
 import (
-	"github.com/astaxie/beego"
-	log "github.com/sirupsen/logrus"
-	"net/http"
-	commonDto "promise/common/object/dto"
-	dto "promise/server/object/dto"
-	"promise/server/service"
+	"promise/base"
+	"promise/server/object/dto"
 )
 
 // ServerID Server ID controller.
@@ -14,16 +10,16 @@ type ServerID struct {
 }
 
 // ResourceName returns the name this controller handle of.
-func (c *IPv4IDController) ResourceName() string {
+func (c *ServerID) ResourceName() string {
 	return "server"
 }
 
 // Response creates a new response DTO.
-func (c *IPv4IDController) Response() base.GetResponseInterface {
+func (c *ServerID) Response() base.GetResponseInterface {
 	return new(dto.GetServerResponse)
 }
 
 // Service returns the service.
-func (c *IPv4IDController) Service() base.CRUDServiceInterface {
+func (c *ServerID) Service() base.CRUDServiceInterface {
 	return serverService
 }

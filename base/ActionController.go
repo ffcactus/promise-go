@@ -75,45 +75,51 @@ func (c *ActionController) Post() {
 		c.ServeJSON()
 		return
 	}
-	// Unmarshal the request.
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
-		messages = append(messages, NewMessageInvalidRequest())
-		log.WithFields(log.Fields{
-			"resource": c.TemplateImpl.ResourceName(),
-			"action":   action,
-			"type":     actionType,
-			"id":       id,
-			"error":    err,
-			"message":  messages[0].ID,
-		}).Warn("Perform action failed, bad request.")
-		c.Data["json"] = &messages
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		c.ServeJSON()
-		return
-	}
-	// Validate the request.
-	if message := request.IsValid(); message != nil {
-		messages = append(messages, *message)
-		log.WithFields(log.Fields{
-			"resource": c.TemplateImpl.ResourceName(),
-			"action":   action,
-			"type":     actionType,
-			"id":       id,
-			"message":  messages[0].ID,
-		}).Warn("Perform action failed, request validation failed.")
-		c.Data["json"] = &messages
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		c.ServeJSON()
-		return
+
+	if request != nil {
+		// Unmarshal the request.
+		if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
+			messages = append(messages, NewMessageInvalidRequest())
+			log.WithFields(log.Fields{
+				"resource": c.TemplateImpl.ResourceName(),
+				"action":   action,
+				"type":     actionType,
+				"id":       id,
+				"error":    err,
+				"message":  messages[0].ID,
+			}).Warn("Perform action failed, bad request.")
+			c.Data["json"] = &messages
+			c.Ctx.Output.SetStatus(messages[0].StatusCode)
+			c.ServeJSON()
+			return
+		}
+		// Validate the request.
+		if message := request.IsValid(); message != nil {
+			messages = append(messages, *message)
+			log.WithFields(log.Fields{
+				"resource": c.TemplateImpl.ResourceName(),
+				"action":   action,
+				"type":     actionType,
+				"id":       id,
+				"message":  messages[0].ID,
+			}).Warn("Perform action failed, request validation failed.")
+			c.Data["json"] = &messages
+			c.Ctx.Output.SetStatus(messages[0].StatusCode)
+			c.ServeJSON()
+			return
+		}
 	}
 
+	requestDebugInfo := ""
+	if request != nil {
+		requestDebugInfo = request.DebugInfo()
+	}
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.ResourceName(),
 		"action":   action,
-		"request":  request.DebugInfo(),
+		"request":  requestDebugInfo,
 		"id":       id,
 	}).Info("Perform action.")
-	PrintJSON(request)
 	// Now the request is correct, select the right runtine by action type.
 	ok := true
 	switch actionType {
@@ -189,6 +195,9 @@ func (c *ActionController) convertToUpdate(request RequestInterface, service Ser
 	if !ok {
 		return nil, nil, ok
 	}
+	if request == nil {
+		return nil, updateService, true
+	}
 	updateRequest, ok := request.(UpdateRequestInterface)
 	if !ok {
 		return nil, nil, ok
@@ -201,6 +210,9 @@ func (c *ActionController) convertToAction(request RequestInterface, service Ser
 	if !ok {
 		return nil, nil, ok
 	}
+	if request == nil {
+		return nil, actionService, true
+	}
 	actionRequest, ok := request.(ActionRequestInterface)
 	if !ok {
 		return nil, nil, ok
@@ -212,6 +224,9 @@ func (c *ActionController) convertToAsychAction(request RequestInterface, servic
 	asychActionService, ok := service.(AsychActionServiceInterface)
 	if !ok {
 		return nil, nil, ok
+	}
+	if request == nil {
+		return nil, asychActionService, true
 	}
 	asychActionRequest, ok := request.(UpdateRequestInterface)
 	if !ok {

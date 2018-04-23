@@ -98,7 +98,6 @@ func NewMessageServerRefreshTaskFailed() base.Message {
 	return ret
 }
 
-
 // NewSupportServerUnableConnect Create a new support.
 func NewSupportServerUnableConnect() base.Support {
 	ret := base.Support{}

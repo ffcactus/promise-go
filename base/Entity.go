@@ -7,22 +7,22 @@ import (
 // EntityTemplateInterface is the interface that a concrete entity should have.
 type EntityTemplateInterface interface {
 	TableName() string
-	GetPropertyNameForDuplicationCheck() string
-	GetDebugName() string
-	GetPreload() []string
-	GetAssociation() []interface{}
-	GetFilterNameList() []string
+	PropertyNameForDuplicationCheck() string
+	DebugInfo() string
+	Preload() []string
+	Association() []interface{}
+	FilterNameList() []string
 }
 
 // EntityInterface is the interface of a Promise entity should have.
 type EntityInterface interface {
 	TableName() string
-	GetPropertyNameForDuplicationCheck() string
-	GetDebugName() string
-	GetPreload() []string
-	GetAssociation() []interface{}
-	GetTables() []interface{}
-	GetFilterNameList() []string
+	PropertyNameForDuplicationCheck() string
+	DebugInfo() string
+	Preload() []string
+	Association() []interface{}
+	Tables() []interface{}
+	FilterNameList() []string
 	ToModel() ModelInterface
 	ToCollectionMember() CollectionMemberModelInterface
 	Load(ModelInterface) error
@@ -57,34 +57,34 @@ func (e *Entity) SetID(id string) {
 	e.ID = id
 }
 
-// GetDebugName return the debug name of this entity.
-func (e *Entity) GetDebugName() string {
-	return e.TemplateImpl.GetDebugName()
+// DebugInfo return the debug name of this entity.
+func (e *Entity) DebugInfo() string {
+	return e.TemplateImpl.DebugInfo()
 }
 
-// GetPropertyNameForDuplicationCheck return the property name used for duplication check.
-func (e *Entity) GetPropertyNameForDuplicationCheck() string {
-	return e.TemplateImpl.GetPropertyNameForDuplicationCheck()
+// PropertyNameForDuplicationCheck return the property name used for duplication check.
+func (e *Entity) PropertyNameForDuplicationCheck() string {
+	return e.TemplateImpl.PropertyNameForDuplicationCheck()
 }
 
-// GetPreload return the property names that need to be preload.
-func (e *Entity) GetPreload() []string {
-	return e.TemplateImpl.GetPreload()
+// Preload return the property names that need to be preload.
+func (e *Entity) Preload() []string {
+	return e.TemplateImpl.Preload()
 }
 
-// GetAssociation return all the assocations that need to delete when deleting a resource.
-func (e *Entity) GetAssociation() []interface{} {
-	return e.TemplateImpl.GetAssociation()
+// Association return all the assocations that need to delete when deleting a resource.
+func (e *Entity) Association() []interface{} {
+	return e.TemplateImpl.Association()
 }
 
-// GetTables returns the tables to delete when you want delete all the resources.
-func (e *Entity) GetTables() []interface{} {
-	return e.TemplateImpl.GetTables()
+// Tables returns the tables to delete when you want delete all the resources.
+func (e *Entity) Tables() []interface{} {
+	return e.TemplateImpl.Tables()
 }
 
-// GetFilterNameList return all the property name that can be used in filter.
-func (e *Entity) GetFilterNameList() []string {
-	return e.TemplateImpl.GetFilterNameList()
+// FilterNameList return all the property name that can be used in filter.
+func (e *Entity) FilterNameList() []string {
+	return e.TemplateImpl.FilterNameList()
 }
 
 // Load will load info from model.

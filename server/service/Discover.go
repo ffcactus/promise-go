@@ -5,6 +5,7 @@ import (
 	"promise/base"
 	"promise/server/context"
 	"promise/server/object/dto"
+	"promise/server/object/message"
 	"promise/server/strategy"
 )
 
@@ -12,24 +13,26 @@ import (
 type Discover struct {
 }
 
-// Perform will process the action.
-func (s *Discover) Perform(id string, request ActionRequestInterface) (base.ResponseInterface, []base.Message) {
+// Perform will process the discover action.
+func (s *Discover) Perform(id string, request base.ActionRequestInterface) (base.ResponseInterface, []base.Message) {
 	discoverRequest, ok := request.(*dto.DiscoverServerRequest)
 	if !ok {
 		log.Error("Perform discover server failed, convert request failed.")
 		return nil, []base.Message{base.NewMessageInternalError()}
 	}
-	serverBasicInfo, err := Probe(request)
-	server := serverBaiscInfo.CreateServer()
-	ctx := context.CreatePostServerContext(server, discoverRequest)
-	st := strategy.CreatePostServerStrategy(server)
-	response, _, messages := st.Execute(ctx)
-	getResponse, ok := response.(base.GetResponseInterfaced)
+	serverBasicInfo, err := Probe(discoverRequest)
+	server := serverBasicInfo.CreateServer()
+	ctx := context.CreateDiscoverServerContext(server, discoverRequest)
+	st := strategy.CreateDiscoverServerStrategy(server)
+	response, err := st.Execute(ctx, server)
+	if err != nil {
+		return nil, []base.Message{message.NewMessageServerDiscoverFailed()}
+	}
+	getResponse, ok := response.(base.GetResponseInterface)
 	if !ok {
 		log.Error("Perform discover server failed, convert response failed.")
 		return nil, []base.Message{base.NewMessageInternalError()}
 	}
 	eventService.DispatchCreateEvent(getResponse)
-	return getResponse, messages
+	return getResponse, nil
 }
-

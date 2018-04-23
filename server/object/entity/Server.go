@@ -38,18 +38,18 @@ func (Server) TableName() string {
 	return "Server"
 }
 
-// GetDebugName return the debug name of this entity.
-func (e *Server) GetDebugName() string {
+// DebugInfo return the debug name of this entity.
+func (e *Server) DebugInfo() string {
 	return e.Name
 }
 
-// GetPropertyNameForDuplicationCheck return the property name used for duplication check.
-func (e *Server) GetPropertyNameForDuplicationCheck() string {
+// PropertyNameForDuplicationCheck return the property name used for duplication check.
+func (e *Server) PropertyNameForDuplicationCheck() string {
 	return "PhysicalUUID"
 }
 
-// GetPreload return the property names that need to be preload.
-func (e *Server) GetPreload() []string {
+// Preload return the property names that need to be preload.
+func (e *Server) Preload() []string {
 	return []string{
 		"Processors",
 		"Memory",
@@ -81,23 +81,23 @@ func (e *Server) GetPreload() []string {
 	}
 }
 
-// GetAssociation return all the assocations that need to delete when deleting a resource.
-func (e *Server) GetAssociation() []interface{} {
+// Association return all the assocations that need to delete when deleting a resource.
+func (e *Server) Association() []interface{} {
 	ret := []interface{}{
 		// TODO
 	}
 	return ret
 }
 
-// GetTables returns the tables to delete when you want delete all the resources.
-func (e *Server) GetTables() []interface{} {
+// Tables returns the tables to delete when you want delete all the resources.
+func (e *Server) Tables() []interface{} {
 	return []interface{}{
 		// TODO
 	}
 }
 
-// GetFilterNameList return all the property name that can be used in filter.
-func (e *Server) GetFilterNameList() []string {
+// FilterNameList return all the property name that can be used in filter.
+func (e *Server) FilterNameList() []string {
 	return []string{
 		"State",
 		"Name",

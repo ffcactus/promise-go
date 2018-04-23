@@ -69,7 +69,7 @@ type VLanNetworkInterface struct {
 	VLANID     *int  // This indicates the VLAN identifier for this VLAN.
 }
 
-// ToModel will create a new model from 
+// ToModel will create a new model from
 func (e *EthernetInterface) ToModel() *model.EthernetInterface {
 	m := model.EthernetInterface{}
 	createResourceModel(&e.EmbeddedResource, &m.Resource)

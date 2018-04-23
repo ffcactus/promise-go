@@ -29,28 +29,28 @@ func (e *Student) SetID(id string) {
 	e.ID = id
 }
 
-// GetDebugName return the debug name of this entity.
-func (e *Student) GetDebugName() string {
+// DebugInfo return the debug name of this entity.
+func (e *Student) DebugInfo() string {
 	return e.Name
 }
 
-// GetPropertyNameForDuplicationCheck return the property name used for duplication check.
-func (e *Student) GetPropertyNameForDuplicationCheck() string {
+// PropertyNameForDuplicationCheck return the property name used for duplication check.
+func (e *Student) PropertyNameForDuplicationCheck() string {
 	return "Name"
 }
 
-// GetPreload return the property names that need to be preload.
-func (e *Student) GetPreload() []string {
+// Preload return the property names that need to be preload.
+func (e *Student) Preload() []string {
 	return []string{"Phones"}
 }
 
-// GetFilterNameList return all the property name that can be used in filter.
-func (e *Student) GetFilterNameList() []string {
+// FilterNameList return all the property name that can be used in filter.
+func (e *Student) FilterNameList() []string {
 	return []string{"Name", "Age"}
 }
 
-// GetAssociation return all the assocations that need to delete when deleting a resource.
-func (e *Student) GetAssociation() []interface{} {
+// Association return all the assocations that need to delete when deleting a resource.
+func (e *Student) Association() []interface{} {
 	ret := []interface{}{}
 	for _, v := range e.Phones {
 		ret = append(ret, v)
@@ -59,8 +59,8 @@ func (e *Student) GetAssociation() []interface{} {
 	return ret
 }
 
-// GetTables returns the tables to delete when you want delete all the resources.
-func (e *Student) GetTables() []interface{} {
+// Tables returns the tables to delete when you want delete all the resources.
+func (e *Student) Tables() []interface{} {
 	return []interface{}{Phone{}, Student{}}
 }
 

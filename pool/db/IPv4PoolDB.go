@@ -12,8 +12,8 @@ type IPv4PoolDB struct {
 	base.DB
 }
 
-// GetResourceName get the resource name.
-func (impl *IPv4PoolDB) GetResourceName() string {
+// ResourceName get the resource name.
+func (impl *IPv4PoolDB) ResourceName() string {
 	return "ipv4"
 }
 

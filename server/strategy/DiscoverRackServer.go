@@ -9,20 +9,20 @@ import (
 	"promise/server/object/model"
 )
 
-// DiscoverRackServerStrategy is the strategy for post rack server.
-type DiscoverRackServerStrategy struct {
-	ServerStrategy
-	ServerEventStrategy
+// DiscoverRackServer is the strategy for post rack server.
+type DiscoverRackServer struct {
+	Base
+	ServerEvent
 }
 
 // Get the management account.
-func (s *DiscoverRackServerStrategy) getManagementAccount(c *context.DiscoverServer) (string, string) {
+func (s *DiscoverRackServer) getManagementAccount(c *context.DiscoverServer) (string, string) {
 	// Should ask the auth service to provider the management account.
 	return "Director", "Huawei12#$"
 }
 
 // CreateManagementAccount will create a management account.
-func (s *DiscoverRackServerStrategy) CreateManagementAccount(c *context.DiscoverServer, server *model.Server) error {
+func (s *DiscoverRackServer) CreateManagementAccount(c *context.DiscoverServer, server *model.Server) error {
 	username, password := s.getManagementAccount(c)
 	if err := c.ServerClient.CreateManagementAccount(username, password); err != nil {
 		c.AppendMessage(message.NewMessageServerAccountExist(server))
@@ -37,13 +37,13 @@ func (s *DiscoverRackServerStrategy) CreateManagementAccount(c *context.Discover
 }
 
 // Claim the server.
-func (s *DiscoverRackServerStrategy) Claim(c *context.DiscoverServer, server *model.Server) error {
+func (s *DiscoverRackServer) Claim(c *context.DiscoverServer, server *model.Server) error {
 	log.WithFields(log.Fields{"hostname": c.Request().Hostname}).Info("Claim server.")
 	return nil
 }
 
 // Execute will execute all the steps.
-func (s *DiscoverRackServerStrategy) Execute(c *context.DiscoverServer, tempServer *model.Server) (*model.Server, error) {
+func (s *DiscoverRackServer) Execute(c *context.DiscoverServer, tempServer *model.Server) (base.ModelInterface, error) {
 	if err := s.CreateManagementAccount(c, tempServer); err != nil {
 		return nil, err
 	}
@@ -53,15 +53,15 @@ func (s *DiscoverRackServerStrategy) Execute(c *context.DiscoverServer, tempServ
 	// Set the servers init state and health.
 	tempServer.State = constvalue.ServerStateAdded
 	tempServer.Health = constvalue.ServerHealthOK
-	server, ssg, err := c.DB.Create(tempServer)
+	server, ssg, err := c.DB.CreateServer(tempServer)
 	if err != nil {
 		c.AppendMessage(base.NewMessageTransactionError())
 		return nil, err
 	}
-	tempServer = server
+	// tempServer = server
 	// Dispatch event.
-	s.DispatchServerCreate(&c.ServerContext, server)
-	s.DispatchServerServerGroupCreate(&c.ServerContext, ssg)
+	s.DispatchServerCreate(&c.Base, server)
+	s.DispatchServerServerGroupCreate(&c.Base, ssg)
 
 	return server, nil
 }

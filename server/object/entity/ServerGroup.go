@@ -18,34 +18,34 @@ func (ServerGroup) TableName() string {
 	return "ServerGroup"
 }
 
-// GetDebugName return the debug name of this entity.
-func (e *ServerGroup) GetDebugName() string {
+// DebugInfo return the debug name of this entity.
+func (e *ServerGroup) DebugInfo() string {
 	return e.Name
 }
 
-// GetPropertyNameForDuplicationCheck return the property name used for duplication check.
-func (e *ServerGroup) GetPropertyNameForDuplicationCheck() string {
+// PropertyNameForDuplicationCheck return the property name used for duplication check.
+func (e *ServerGroup) PropertyNameForDuplicationCheck() string {
 	return "Name"
 }
 
-// GetPreload return the property names that need to be preload.
-func (e *ServerGroup) GetPreload() []string {
+// Preload return the property names that need to be preload.
+func (e *ServerGroup) Preload() []string {
 	return []string{}
 }
 
-// GetAssociation return all the assocations that need to delete when deleting a resource.
-func (e *ServerGroup) GetAssociation() []interface{} {
+// Association return all the assocations that need to delete when deleting a resource.
+func (e *ServerGroup) Association() []interface{} {
 	ret := []interface{}{}
 	return ret
 }
 
-// GetTables returns the tables to delete when you want delete all the resources.
-func (e *ServerGroup) GetTables() []interface{} {
+// Tables returns the tables to delete when you want delete all the resources.
+func (e *ServerGroup) Tables() []interface{} {
 	return []interface{}{}
 }
 
-// GetFilterNameList return all the property name that can be used in filter.
-func (e *ServerGroup) GetFilterNameList() []string {
+// FilterNameList return all the property name that can be used in filter.
+func (e *ServerGroup) FilterNameList() []string {
 	return []string{"Name"}
 }
 

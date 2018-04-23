@@ -39,7 +39,7 @@ func main() {
 			TemplateImpl: new(controller.ServerRoot),
 		}),
 		beego.NSRouter("/action/:action", &base.ActionController{
-			TemplateImpl: new(controller.ServerDiscover),
+			TemplateImpl: new(controller.ServerRootAction),
 		}),
 		beego.NSRouter("/:id", &base.IDController{
 			TemplateImpl: new(controller.ServerID),

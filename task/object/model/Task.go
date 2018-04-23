@@ -96,13 +96,13 @@ type Task struct {
 	ExecutionResult     ExecutionResult
 }
 
-// GetDebugName return the debug name the model.
-func (m *Task) GetDebugName() string {
+// DebugInfo return the debug name the model.
+func (m *Task) DebugInfo() string {
 	return m.Name
 }
 
-// GetValueForDuplicationCheck return the value for duplication check.
-func (m *Task) GetValueForDuplicationCheck() string {
+// ValueForDuplicationCheck return the value for duplication check.
+func (m *Task) ValueForDuplicationCheck() string {
 	return m.Name
 }
 

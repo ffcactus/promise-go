@@ -10,13 +10,13 @@ import (
 	"promise/server/object/model"
 )
 
-// ServerStrategy Common server strategy.
-type ServerStrategy struct {
-	ServerEventStrategy
+// Base is the base server strategy.
+type Base struct {
+	ServerEvent
 }
 
 // LockServer Lock the server.
-func (s *ServerStrategy) LockServer(c *context.ServerContext, server *model.Server) error {
+func (s *Base) LockServer(c *context.Base, server *model.Server) error {
 	success, lockedServer := c.DB.GetAndLockServer(server.ID)
 	if lockedServer == nil {
 		log.WithFields(log.Fields{"id": server.ID}).Info("Can not get and lock server, server not exist.")
@@ -33,7 +33,7 @@ func (s *ServerStrategy) LockServer(c *context.ServerContext, server *model.Serv
 }
 
 // SetServerState Set server state.
-func (s *ServerStrategy) SetServerState(c *context.ServerContext, server *model.Server, state string) error {
+func (s *Base) SetServerState(c *context.Base, server *model.Server, state string) error {
 	if c.DB.SetServerState(server.ID, state) {
 		s.DispatchServerUpdate(c, server)
 		return nil
@@ -42,7 +42,7 @@ func (s *ServerStrategy) SetServerState(c *context.ServerContext, server *model.
 }
 
 // SetServerHealth Set server health.
-func (s *ServerStrategy) SetServerHealth(c *context.ServerContext, server *model.Server, health string) error {
+func (s *Base) SetServerHealth(c *context.Base, server *model.Server, health string) error {
 	if c.DB.SetServerHealth(server.ID, health) {
 		s.DispatchServerUpdate(c, server)
 		return nil

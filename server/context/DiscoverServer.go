@@ -7,14 +7,14 @@ import (
 
 // DiscoverServer The context for post server.
 type DiscoverServer struct {
-	ServerContext
+	Base
 	DiscoverRequest *dto.DiscoverServerRequest
 }
 
-// CreateDiscoverServer Create the context based on server and request.
-func CreateDiscoverServer(server *model.Server, request *dto.DiscoverServerRequest) *DiscoverServer {
+// CreateDiscoverServerContext Create the context based on server and request.
+func CreateDiscoverServerContext(server *model.Server, request *dto.DiscoverServerRequest) *DiscoverServer {
 	var context DiscoverServer
-	context.ServerContext = *CreateServerContext(server)
+	context.Base = *CreateServerContext(server)
 	context.DiscoverRequest = request
 	return &context
 }

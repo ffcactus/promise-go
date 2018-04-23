@@ -11,13 +11,13 @@ type ServerServerGroup struct {
 	ServerGroupID string
 }
 
-// GetDebugName return the debug name the model.
-func (m *ServerServerGroup) GetDebugName() string {
+// DebugInfo return the debug name the model.
+func (m *ServerServerGroup) DebugInfo() string {
 	return m.ServerID + " " + m.ServerGroupID
 }
 
-// GetValueForDuplicationCheck return the value for duplication check.
-func (m *ServerServerGroup) GetValueForDuplicationCheck() string {
+// ValueForDuplicationCheck return the value for duplication check.
+func (m *ServerServerGroup) ValueForDuplicationCheck() string {
 	return ""
 }
 

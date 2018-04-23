@@ -2,6 +2,7 @@ package controller
 
 import (
 	"promise/base"
+	"promise/server/object/dto"
 	"promise/server/service"
 )
 
@@ -13,19 +14,19 @@ var (
 		Service: new(service.Discover),
 	}
 
-	actionInfo = []base.ActionInfo{discover}
+	serverRootActionInfo = []base.ActionInfo{discover}
 )
 
-// ServerDiscover Server action controller
-type ServerDiscover struct {
+// ServerRootAction is the service for actions on server root.
+type ServerRootAction struct {
 }
 
 // ResourceName returns the name this controller handle of.
-func (c *ServerDiscover) ResourceName() string {
+func (c *ServerRootAction) ResourceName() string {
 	return "server"
 }
 
 // ActionInfo returns the name this controller handle of.
-func (c *ServerDiscover) ActionInfo() []base.ActionInfo {
-	return actionInfo
+func (c *ServerRootAction) ActionInfo() []base.ActionInfo {
+	return serverRootActionInfo
 }

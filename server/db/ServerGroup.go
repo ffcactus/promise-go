@@ -17,9 +17,8 @@ type ServerGroup struct {
 	base.DB
 }
 
-
-// GetResourceName get the resource name.
-func (impl *ServerGroup) GetResourceName() string {
+// ResourceName get the resource name.
+func (impl *ServerGroup) ResourceName() string {
 	return "servergroup"
 }
 

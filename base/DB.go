@@ -10,7 +10,7 @@ import (
 
 // DBTemplateInterface is the interface that a concrete DB implement should have.
 type DBTemplateInterface interface {
-	GetResourceName() string
+	ResourceName() string
 	NeedCheckDuplication() bool
 	GetConnection() *gorm.DB
 	NewEntity() EntityInterface
@@ -40,10 +40,10 @@ type DB struct {
 // It will return error if any.
 func (impl *DB) GetInternal(tx *gorm.DB, id string, record EntityInterface) (bool, error) {
 	var (
-		name = impl.TemplateImpl.GetResourceName()
+		name = impl.TemplateImpl.ResourceName()
 	)
 
-	preload := record.GetPreload()
+	preload := record.Preload()
 	if tx.Where("\"ID\" = ?", id).First(record).RecordNotFound() {
 		tx.Rollback()
 		log.WithFields(log.Fields{
@@ -82,7 +82,7 @@ func (impl *DB) GetInternal(tx *gorm.DB, id string, record EntityInterface) (boo
 // It will return error if any.
 func (impl *DB) SaveAndCommit(tx *gorm.DB, record EntityInterface) (bool, error) {
 	var (
-		name = impl.TemplateImpl.GetResourceName()
+		name = impl.TemplateImpl.ResourceName()
 	)
 
 	if err := tx.Save(record).Error; err != nil {
@@ -112,7 +112,7 @@ func (impl *DB) SaveAndCommit(tx *gorm.DB, record EntityInterface) (bool, error)
 // It will return error if any.
 func (impl *DB) Create(m ModelInterface) (bool, ModelInterface, bool, error) {
 	var (
-		name   = impl.TemplateImpl.GetResourceName()
+		name   = impl.TemplateImpl.ResourceName()
 		record = impl.TemplateImpl.NewEntity()
 		c      = impl.TemplateImpl.GetConnection()
 	)
@@ -125,13 +125,13 @@ func (impl *DB) Create(m ModelInterface) (bool, ModelInterface, bool, error) {
 		return false, nil, false, err
 	}
 	if impl.TemplateImpl.NeedCheckDuplication() {
-		where := "\"" + record.GetPropertyNameForDuplicationCheck() + "\" = ?"
-		if !tx.Where(where, m.GetValueForDuplicationCheck()).First(record).RecordNotFound() {
+		where := "\"" + record.PropertyNameForDuplicationCheck() + "\" = ?"
+		if !tx.Where(where, m.ValueForDuplicationCheck()).First(record).RecordNotFound() {
 			tx.Rollback()
 			log.WithFields(log.Fields{
 				"resource": name,
 				"id":       record.GetID(),
-				"name":     record.GetDebugName(),
+				"name":     record.DebugInfo(),
 			}).Warn("Post resource in DB failed, duplicated resource, transaction rollback.")
 			return true, nil, false, ErrorResourceNotExist
 		}
@@ -143,7 +143,7 @@ func (impl *DB) Create(m ModelInterface) (bool, ModelInterface, bool, error) {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
-			"name":     m.GetDebugName(),
+			"name":     m.DebugInfo(),
 			"error":    err,
 		}).Warn("Post resource in DB failed, create resource failed, transaction rollback.")
 		return false, nil, false, err
@@ -159,7 +159,7 @@ func (impl *DB) Create(m ModelInterface) (bool, ModelInterface, bool, error) {
 // If the resource does not exist in the DB return nil.
 func (impl *DB) Get(id string) ModelInterface {
 	var (
-		name   = impl.TemplateImpl.GetResourceName()
+		name   = impl.TemplateImpl.ResourceName()
 		record = impl.TemplateImpl.NewEntity()
 		c      = impl.TemplateImpl.GetConnection()
 	)
@@ -194,7 +194,7 @@ func (impl *DB) Get(id string) ModelInterface {
 // It will return error if any.
 func (impl *DB) Update(id string, request UpdateRequestInterface) (bool, ModelInterface, bool, error) {
 	var (
-		name   = impl.TemplateImpl.GetResourceName()
+		name   = impl.TemplateImpl.ResourceName()
 		record = impl.TemplateImpl.NewEntity()
 		c      = impl.TemplateImpl.GetConnection()
 	)
@@ -236,7 +236,7 @@ func (impl *DB) Update(id string, request UpdateRequestInterface) (bool, ModelIn
 // It will return error if any.
 func (impl *DB) Delete(id string) (bool, ModelInterface, bool, error) {
 	var (
-		name     = impl.TemplateImpl.GetResourceName()
+		name     = impl.TemplateImpl.ResourceName()
 		record   = impl.TemplateImpl.NewEntity()
 		previous = impl.TemplateImpl.NewEntity()
 		c        = impl.TemplateImpl.GetConnection()
@@ -256,7 +256,7 @@ func (impl *DB) Delete(id string) (bool, ModelInterface, bool, error) {
 		return false, nil, false, err
 	}
 	record.SetID(id)
-	for _, v := range record.GetAssociation() {
+	for _, v := range record.Association() {
 		if err := tx.Delete(v).Error; err != nil {
 			tx.Rollback()
 			log.WithFields(log.Fields{
@@ -313,7 +313,7 @@ func (impl *DB) convertFilter(filter string, filterNames []string) (string, erro
 // It returns nil if any error.
 func (impl *DB) GetCollection(start int64, count int64, filter string) (*CollectionModel, error) {
 	var (
-		name             = impl.TemplateImpl.GetResourceName()
+		name             = impl.TemplateImpl.ResourceName()
 		total            int64
 		record           = impl.TemplateImpl.NewEntity()
 		recordCollection = impl.TemplateImpl.NewEntityCollection()
@@ -321,7 +321,7 @@ func (impl *DB) GetCollection(start int64, count int64, filter string) (*Collect
 	)
 
 	// Check filter first to avoid starting a transaction.
-	where, err := impl.convertFilter(filter, record.GetFilterNameList())
+	where, err := impl.convertFilter(filter, record.FilterNameList())
 	if err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
@@ -380,10 +380,10 @@ func (impl *DB) GetCollection(start int64, count int64, filter string) (*Collect
 // It returens error if any.
 func (impl *DB) DeleteCollection() ([]ModelInterface, bool, error) {
 	var (
-		name             = impl.TemplateImpl.GetResourceName()
+		name             = impl.TemplateImpl.ResourceName()
 		recordCollection = impl.TemplateImpl.NewEntityCollection()
 		c                = impl.TemplateImpl.GetConnection()
-		tables           = impl.TemplateImpl.NewEntity().GetTables()
+		tables           = impl.TemplateImpl.NewEntity().Tables()
 	)
 
 	// We need transaction to ensure the total and the query count is consistent.

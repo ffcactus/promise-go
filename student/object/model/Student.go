@@ -12,13 +12,13 @@ type Student struct {
 	Phones []Phone
 }
 
-// GetDebugName return the debug name the model.
-func (m *Student) GetDebugName() string {
+// DebugInfo return the debug name the model.
+func (m *Student) DebugInfo() string {
 	return m.Name
 }
 
-// GetValueForDuplicationCheck return the value for duplication check.
-func (m *Student) GetValueForDuplicationCheck() string {
+// ValueForDuplicationCheck return the value for duplication check.
+func (m *Student) ValueForDuplicationCheck() string {
 	return m.Name
 }
 

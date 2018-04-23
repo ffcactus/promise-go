@@ -6,8 +6,9 @@ import (
 
 // ModelInterface is the interface of Model.
 type ModelInterface interface {
-	GetValueForDuplicationCheck() string
-	GetDebugName() string
+	ValueForDuplicationCheck() string
+	DebugInfo() string
+	GetID() string
 }
 
 // Model is the model object used in Promise project.
@@ -16,6 +17,11 @@ type Model struct {
 	Category  string
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+// GetID returns the ID of the model.
+func (m *Model) GetID() string {
+	return m.ID
 }
 
 // CollectionMemberModelInterface is the interface a Member should have

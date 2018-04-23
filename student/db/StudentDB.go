@@ -11,8 +11,8 @@ import (
 type StudentDB struct {
 }
 
-// GetResourceName get the resource name.
-func (impl *StudentDB) GetResourceName() string {
+// ResourceName get the resource name.
+func (impl *StudentDB) ResourceName() string {
 	return "student"
 }
 

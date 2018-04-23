@@ -6,6 +6,12 @@ import (
 	"promise/server/service"
 )
 
+var (
+	serverGroupService = &base.CRUDService{
+		TemplateImpl: new(service.ServerGroup),
+	}
+)
+
 // ServerGroupRoot is ther servergroup controller.
 type ServerGroupRoot struct {
 }

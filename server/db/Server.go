@@ -16,8 +16,8 @@ type Server struct {
 	base.DB
 }
 
-// GetResourceName get the resource name.
-func (impl *Server) GetResourceName() string {
+// ResourceName get the resource name.
+func (impl *Server) ResourceName() string {
 	return "servergroup"
 }
 
@@ -75,6 +75,20 @@ func (impl *Server) ConvertFindResultToModel(result interface{}) ([]base.ModelIn
 	return ret, nil
 }
 
+// TODO There is a cap between we find the server with state "Added" and lock it.
+
+// FindServerStateAdded Find the first server with state "Added" and return the server ID.
+func (impl *Server) FindServerStateAdded() string {
+	var (
+		c      = impl.TemplateImpl.GetConnection()
+		server = new(entity.Server)
+	)
+	if notFound := c.Where("\"State\" = ?", constvalue.ServerStateAdded).First(server).RecordNotFound(); notFound {
+		return ""
+	}
+	return server.ID
+}
+
 // IsServerExist Check the existance of the server, if found, return it.
 func (impl *Server) IsServerExist(s *model.Server) (bool, base.ModelInterface) {
 	var (
@@ -93,10 +107,10 @@ func (impl *Server) IsServerExist(s *model.Server) (bool, base.ModelInterface) {
 	return false, nil
 }
 
-// Create will save the server to the DB.
+// CreateServer will save the server to the DB.
 // Since a server should belongs to the default servergroup, we need create server and servergroup
 // in DB at the same time, we also need return them both back for event dispatch.
-func (impl *Server) Create(s *model.Server) (base.ModelInterface, base.ModelInterface, error) {
+func (impl *Server) CreateServer(s *model.Server) (base.ModelInterface, base.ModelInterface, error) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)

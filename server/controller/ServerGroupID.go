@@ -5,12 +5,6 @@ import (
 	"promise/server/object/dto"
 )
 
-var (
-	serverGroupService = &base.CRUDService{
-		TemplateImpl: new(service.ServerGroup),
-	}
-)
-
 // ServerGroupID Task controller
 type ServerGroupID struct {
 }
@@ -32,10 +26,5 @@ func (c *ServerGroupID) Response() base.GetResponseInterface {
 
 // Service returns the service.
 func (c *ServerGroupID) Service() base.CRUDServiceInterface {
-	return serverGroupService
-}
-
-// GetService returns the service.
-func (c *ServerGroupID) GetService() base.ServiceInterface {
 	return serverGroupService
 }

@@ -5,13 +5,6 @@ import (
 	"promise/server/object/dto"
 )
 
-var (
-	// ipv4Service is the service used in Student controller.
-	serverServerGroupService = &base.CRUDService{
-		TemplateImpl: new(service.ServerServerGroup),
-	}
-)
-
 // ServerServerGroupID Task controller
 type ServerServerGroupID struct {
 }
@@ -21,11 +14,9 @@ func (c *ServerServerGroupID) ResourceName() string {
 	return "server-servergroup"
 }
 
-// NewResponse creates a new response DTO.
-func (c *ServerServerGroupID) NewResponse() base.PostRequestInterface {
-	response := new(dto.GetServerServerGroupResponse)
-	response.TemplateImpl = response
-	return response
+// Request creates a new request DTO.
+func (c *ServerServerGroupID) Request() base.PostRequestInterface {
+	return new(dto.PostServerServerGroupRequest)
 }
 
 // Response creates a new response DTO.

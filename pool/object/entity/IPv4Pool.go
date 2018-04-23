@@ -54,23 +54,23 @@ func (IPv4Pool) TableName() string {
 	return "IPv4Pool"
 }
 
-// GetDebugName return the debug name of this entity.
-func (e *IPv4Pool) GetDebugName() string {
+// DebugInfo return the debug name of this entity.
+func (e *IPv4Pool) DebugInfo() string {
 	return e.Name
 }
 
-// GetPropertyNameForDuplicationCheck return the property name used for duplication check.
-func (e *IPv4Pool) GetPropertyNameForDuplicationCheck() string {
+// PropertyNameForDuplicationCheck return the property name used for duplication check.
+func (e *IPv4Pool) PropertyNameForDuplicationCheck() string {
 	return "Name"
 }
 
-// GetPreload return the property names that need to be preload.
-func (e *IPv4Pool) GetPreload() []string {
+// Preload return the property names that need to be preload.
+func (e *IPv4Pool) Preload() []string {
 	return []string{"Ranges", "Ranges.Addresses"}
 }
 
-// GetAssociation return all the assocations that need to delete when deleting a resource.
-func (e *IPv4Pool) GetAssociation() []interface{} {
+// Association return all the assocations that need to delete when deleting a resource.
+func (e *IPv4Pool) Association() []interface{} {
 	ret := []interface{}{}
 	for _, v := range e.Ranges {
 		for _, j := range v.Addresses {
@@ -81,13 +81,13 @@ func (e *IPv4Pool) GetAssociation() []interface{} {
 	return ret
 }
 
-// GetTables returns the tables to delete when you want delete all the resources.
-func (e *IPv4Pool) GetTables() []interface{} {
+// Tables returns the tables to delete when you want delete all the resources.
+func (e *IPv4Pool) Tables() []interface{} {
 	return []interface{}{new(IPv4Address), new(IPv4Range), new(IPv4Pool)}
 }
 
-// GetFilterNameList return all the property name that can be used in filter.
-func (e *IPv4Pool) GetFilterNameList() []string {
+// FilterNameList return all the property name that can be used in filter.
+func (e *IPv4Pool) FilterNameList() []string {
 	return []string{"Name"}
 }
 

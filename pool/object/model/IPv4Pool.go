@@ -33,13 +33,13 @@ type IPv4Pool struct {
 	DNSServers  *[]string
 }
 
-// GetDebugName return the debug name the model.
-func (m *IPv4Pool) GetDebugName() string {
+// DebugInfo return the debug name the model.
+func (m *IPv4Pool) DebugInfo() string {
 	return m.Name
 }
 
-// GetValueForDuplicationCheck return the value for duplication check.
-func (m *IPv4Pool) GetValueForDuplicationCheck() string {
+// ValueForDuplicationCheck return the value for duplication check.
+func (m *IPv4Pool) ValueForDuplicationCheck() string {
 	return m.Name
 }
 
