@@ -70,3 +70,11 @@ func (e *ServerGroup) ToModel() base.ModelInterface {
 	m.Description = e.Description
 	return &m
 }
+
+// ToCollectionMember convert the entity to member.
+func (e *ServerGroup) ToCollectionMember() base.CollectionMemberModelInterface {
+	m := new(model.ServerGroupCollectionMember)
+	base.EntityToMember(&e.Entity, &m.CollectionMemberModel)
+	m.Name = e.Name
+	return m
+}
