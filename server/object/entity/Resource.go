@@ -148,6 +148,58 @@ type Location struct {
 	Placement     *Placement     `gorm:"ForeignKey:LocationRef"` // A place within the addressed location.
 }
 
+// Load will load data from model.
+func (e *Location) Load(m *model.Location) {
+	e.Info = m.Info
+	e.InfoFormat = m.InfoFormat
+	if m.PostalAddress != nil {
+		postalAddress := new(PostalAddress)
+		postalAddress.Country = m.PostalAddress.Country
+		postalAddress.Territory = m.PostalAddress.Territory
+		postalAddress.District = m.PostalAddress.District
+		postalAddress.City = m.PostalAddress.City
+		postalAddress.Division = m.PostalAddress.Division
+		postalAddress.Neighborhood = m.PostalAddress.Neighborhood
+		postalAddress.LeadingStreetDirection = m.PostalAddress.LeadingStreetDirection
+		postalAddress.Street = m.PostalAddress.Street
+		postalAddress.TrailingStreetSuffix = m.PostalAddress.TrailingStreetSuffix
+		postalAddress.StreetSuffix = m.PostalAddress.StreetSuffix
+		postalAddress.HouseNumber = m.PostalAddress.HouseNumber
+		postalAddress.HouseNumberSuffix = m.PostalAddress.HouseNumberSuffix
+		postalAddress.Landmark = m.PostalAddress.Landmark
+		postalAddress.Location = m.PostalAddress.Location
+		postalAddress.Floor = m.PostalAddress.Floor
+		postalAddress.Name = m.PostalAddress.Name
+		postalAddress.PostalCode = m.PostalAddress.PostalCode
+		postalAddress.Building = m.PostalAddress.Building
+		postalAddress.Unit = m.PostalAddress.Unit
+		postalAddress.Room = m.PostalAddress.Room
+		postalAddress.Seat = m.PostalAddress.Seat
+		postalAddress.PlaceType = m.PostalAddress.PlaceType
+		postalAddress.Community = m.PostalAddress.Community
+		postalAddress.POBox = m.PostalAddress.POBox
+		postalAddress.AdditionalCode = m.PostalAddress.AdditionalCode
+		postalAddress.Road = m.PostalAddress.Road
+		postalAddress.RoadSection = m.PostalAddress.RoadSection
+		postalAddress.RoadBranch = m.PostalAddress.RoadBranch
+		postalAddress.RoadSubBranch = m.PostalAddress.RoadSubBranch
+		postalAddress.RoadPreModifier = m.PostalAddress.RoadPreModifier
+		postalAddress.RoadPostModifier = m.PostalAddress.RoadPostModifier
+		postalAddress.GPSCoords = m.PostalAddress.GPSCoords
+
+		e.PostalAddress = postalAddress
+	}
+	if m.Placement != nil {
+		placement := new(Placement)
+		placement.Row = m.Placement.Row
+		placement.Rack = m.Placement.Rack
+		placement.RackOffsetUnits = m.Placement.RackOffsetUnits
+		placement.RackOffset = m.Placement.RackOffset
+
+		e.Placement = placement
+	}
+}
+
 func createResourceModel(e *EmbeddedResource, m *model.Resource) {
 	m.URI = e.URI
 	m.OriginID = e.OriginID
@@ -239,4 +291,46 @@ func createLocationModel(e *Location, m *model.Location) {
 
 		m.Placement = placement
 	}
+}
+
+func updateResourceEntity(e *EmbeddedResource, m *model.Resource) {
+	// ID won't be updated.
+	e.URI = m.URI
+	e.OriginID = m.OriginID
+	e.Name = m.Name
+	e.Description = m.Description
+	e.State = m.State
+	e.Health = m.Health
+	e.PhysicalState = m.PhysicalState
+	e.PhysicalHealth = m.PhysicalHealth
+}
+
+func updateMemberEntity(e *Member, m *model.Member) {
+	e.URI = m.URI
+	e.OriginMemberID = m.OriginMemberID
+	e.Name = m.Name
+	e.Description = m.Description
+	e.State = m.State
+	e.Health = m.Health
+	e.PhysicalState = m.PhysicalState
+	e.PhysicalHealth = m.PhysicalHealth
+}
+
+func updateProductInfoEntity(e *ProductInfo, m *model.ProductInfo) {
+	e.Model = m.Model
+	e.Manufacturer = m.Manufacturer
+	e.SerialNumber = m.SerialNumber
+	e.PartNumber = m.PartNumber
+	e.SparePartNumber = m.SparePartNumber
+	e.SKU = m.SKU
+	e.AssetTag = m.AssetTag
+}
+
+func updateThresholdEntity(e *Threshold, m *model.Threshold) {
+	e.UpperThresholdNonCritical = m.UpperThresholdNonCritical
+	e.UpperThresholdCritical = m.UpperThresholdCritical
+	e.UpperThresholdFatal = m.UpperThresholdFatal
+	e.LowerThresholdNonCritical = m.LowerThresholdNonCritical
+	e.LowerThresholdCritical = m.LowerThresholdCritical
+	e.LowerThresholdFatal = m.LowerThresholdFatal
 }

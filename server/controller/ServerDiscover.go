@@ -1,9 +1,8 @@
 package controller
 
 import (
-	log "github.com/sirupsen/logrus"
+	"promise/base"
 	"promise/server/service"
-	"strings"
 )
 
 var (
@@ -17,16 +16,16 @@ var (
 	actionInfo = []base.ActionInfo{discover}
 )
 
-// ServerActionController Server action controller
-type ServerActionController struct {
+// ServerDiscover Server action controller
+type ServerDiscover struct {
 }
 
 // ResourceName returns the name this controller handle of.
-func (c *ServerActionController) ResourceName() string {
+func (c *ServerDiscover) ResourceName() string {
 	return "server"
 }
 
 // ActionInfo returns the name this controller handle of.
-func (c *ServerActionController) ActionInfo() []base.ActionInfo {
+func (c *ServerDiscover) ActionInfo() []base.ActionInfo {
 	return actionInfo
 }

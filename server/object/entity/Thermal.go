@@ -60,3 +60,36 @@ func (e *Fan) ToModel() *model.Fan {
 	m.ReadingUnits = e.ReadingUnits
 	return m
 }
+
+// Load will load data from model.
+func (e *Thermal) Load(m *model.Thermal) {
+	updateResourceEntity(&e.EmbeddedResource, &m.Resource)
+	temperatures := []Temperature{}
+	for i := range m.Temperatures {
+		e := Temperature{}
+		m := m.Temperatures[i]
+		updateMemberEntity(&e.Member, &m.Member)
+		updateThresholdEntity(&e.Threshold, &m.Threshold)
+		e.SensorNumber = m.SensorNumber
+		e.ReadingCelsius = m.ReadingCelsius
+		e.MinReadingRangeTemp = m.MinReadingRangeTemp
+		e.MaxReadingRangeTemp = m.MaxReadingRangeTemp
+		temperatures = append(temperatures, e)
+	}
+	e.Temperatures = temperatures
+
+	fans := []Fan{}
+	for i := range m.Fans {
+		e := Fan{}
+		m := m.Fans[i]
+		updateMemberEntity(&e.Member, &m.Member)
+		updateProductInfoEntity(&e.ProductInfo, &m.ProductInfo)
+		updateThresholdEntity(&e.Threshold, &m.Threshold)
+		e.Reading = m.Reading
+		e.MinReadingRange = m.MinReadingRange
+		e.MaxReadingRange = m.MaxReadingRange
+		e.ReadingUnits = m.ReadingUnits
+		fans = append(fans, e)
+	}
+	e.Fans = fans
+}

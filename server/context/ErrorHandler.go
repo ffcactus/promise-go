@@ -1,34 +1,33 @@
 package context
 
 import (
-	commonDto "promise/common/object/dto"
-	commonMessage "promise/common/object/message"
+	"promise/base"
 )
 
 // ErrorHandlerInterface The interface of error handler.
 type ErrorHandlerInterface interface {
-	AppendErrorMessage(message commonMessage.Message)
-	ErrorMessages() *[]commonMessage.Message
+	AppendErrorMessage(message base.Message)
+	ErrorMessages() *[]base.Message
 }
 
 // ErrorHandler The implementation of error handler.
 type ErrorHandler struct {
-	messages []commonMessage.Message
+	messages []base.Message
 }
 
 // AppendMessage Append message.
-func (c *ServerContext) AppendMessage(message commonMessage.Message) {
+func (c *ServerContext) AppendMessage(message base.Message) {
 	c.messages = append(c.messages, message)
 }
 
 // AppendMessages Append messages.
-func (c *ServerContext) AppendMessages(messages []commonDto.Message) {
+func (c *ServerContext) AppendMessages(messages []base.Message) {
 	for i := range messages {
-		c.messages = append(c.messages, *messages[i].Model())
+		c.messages = append(c.messages, messages[i])
 	}
 }
 
 // Messages Get messages.
-func (c *ServerContext) Messages() []commonMessage.Message {
+func (c *ServerContext) Messages() []base.Message {
 	return c.messages
 }

@@ -44,3 +44,20 @@ func (e *Storage) ToModel() *model.Storage {
 	}
 	return &m
 }
+
+// Load will load data from model.
+func (e *Storage) Load(m *model.Storage) {
+	updateResourceEntity(&e.EmbeddedResource, &m.Resource)
+	s := commonUtil.StructToString(m.DriveURIs)
+	e.DriveURIs = s
+	for i := range m.StorageControllers {
+		each := StorageController{}
+		updateMemberEntity(&each.Member, &m.StorageControllers[i].Member)
+		updateProductInfoEntity(&each.ProductInfo, &m.StorageControllers[i].ProductInfo)
+		each.SpeedGbps = m.StorageControllers[i].SpeedGbps
+		each.FirmwareVersion = m.StorageControllers[i].FirmwareVersion
+		s := commonUtil.StructToString(m.StorageControllers[i].SupportedDeviceProtocols)
+		each.SupportedDeviceProtocols = s
+		e.StorageControllers = append(e.StorageControllers, each)
+	}
+}

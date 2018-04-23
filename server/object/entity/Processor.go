@@ -53,3 +53,22 @@ func (e *Processor) ToModel() *model.Processor {
 	}
 	return &m
 }
+
+// Load will load data from model.
+func (e *Processor) Load(m *model.Processor) {
+	updateResourceEntity(&(*e).EmbeddedResource, &(*m).Resource)
+	updateProductInfoEntity(&(*e).ProductInfo, &(*m).ProductInfo)
+	e.Socket = m.Socket
+	e.ProcessorType = m.ProcessorType
+	e.ProcessorArchitecture = m.ProcessorArchitecture
+	e.InstructionSet = m.InstructionSet
+	e.MaxSpeedMHz = m.MaxSpeedMHz
+	e.TotalCores = m.TotalCores
+	e.TotalThreads = m.TotalThreads
+	e.ProcessorIDVendorID = m.ProcessorID.VendorID
+	e.ProcessorIDIdentificationRegisters = m.ProcessorID.IdentificationRegisters
+	e.ProcessorIDEffectiveFamily = m.ProcessorID.EffectiveFamily
+	e.ProcessorIDEffectiveModel = m.ProcessorID.EffectiveModel
+	e.ProcessorIDStep = m.ProcessorID.Step
+	e.ProcessorIDMicrocodeInfo = m.ProcessorID.MicrocodeInfo
+}

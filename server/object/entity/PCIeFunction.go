@@ -1,7 +1,7 @@
 package entity
 
 import (
-	commonUtil "promise/common/util"
+	"promise/base"
 	"promise/server/object/model"
 )
 
@@ -27,7 +27,19 @@ func (e *PCIeFunction) ToModel() *model.PCIeFunction {
 	m.SubsystemID = e.SubsystemID
 	m.SubsystemVendorID = e.SubsystemVendorID
 	a := []string{}
-	commonUtil.StringToStruct(e.EthernetInterfaces, &a)
+	base.StringToStruct(e.EthernetInterfaces, &a)
 	m.EthernetInterfaces = a
 	return m
+}
+
+// Load will load data from model.
+func (e *PCIeFunction) Load(m *model.PCIeFunction) {
+	updateResourceEntity(&e.EmbeddedResource, &m.Resource)
+	e.DeviceClass = m.DeviceClass
+	e.DeviceID = m.DeviceID
+	e.VendorID = m.VendorID
+	e.SubsystemID = m.SubsystemID
+	e.SubsystemVendorID = m.SubsystemVendorID
+	s := base.StructToString(m.EthernetInterfaces)
+	e.EthernetInterfaces = s
 }

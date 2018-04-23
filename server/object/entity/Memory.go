@@ -69,3 +69,45 @@ func (e *Memory) ToModel() *model.Memory {
 	}
 	return &m
 }
+
+// Load will load data from model.
+func (e *Memory) Load(m *model.Memory) {
+	updateResourceEntity(&(*e).EmbeddedResource, &(*m).Resource)
+	updateProductInfoEntity(&(*e).ProductInfo, &(*m).ProductInfo)
+	e.MemoryType = m.MemoryType
+	e.MemoryDeviceType = m.MemoryDeviceType
+	e.BaseModuleType = m.BaseModuleType
+	e.MemoryMedia = m.MemoryMedia
+	e.CapacityMiB = m.CapacityMiB
+	e.DataWidthBits = m.DataWidthBits
+	e.BusWidthBits = m.BusWidthBits
+	e.AllowedSpeedsMHz = m.AllowedSpeedsMHz
+	e.FirmwareRevision = m.FirmwareRevision
+	e.FirmwareAPIVersion = m.FirmwareAPIVersion
+	e.VendorID = m.VendorID
+	e.DeviceID = m.DeviceID
+	e.SubsystemVendorID = m.SubsystemVendorID
+	e.SubsystemDeviceID = m.SubsystemDeviceID
+	e.SpareDeviceCount = m.SpareDeviceCount
+	e.RankCount = m.RankCount
+	e.DeviceLocator = m.DeviceLocator
+	if m.MemoryLocation != nil {
+		e.MemoryLocationSocket = m.MemoryLocation.Socket
+		e.MemoryLocationController = m.MemoryLocation.Controller
+		e.MemoryLocationChannel = m.MemoryLocation.Channel
+		e.MemoryLocationSlot = m.MemoryLocation.Slot
+	}
+	e.ErrorCorrection = m.ErrorCorrection
+	e.OperatingSpeedMhz = m.OperatingSpeedMhz
+	e.VolatileRegionSizeLimitMiB = m.VolatileRegionSizeLimitMiB
+	e.PersistentRegionSizeLimitMiB = m.PersistentRegionSizeLimitMiB
+	e.OperatingMemoryModes = m.OperatingMemoryModes
+	e.IsSpareDeviceEnabled = m.IsSpareDeviceEnabled
+	e.IsRankSpareEnabled = m.IsRankSpareEnabled
+	e.VolatileRegionNumberLimit = m.VolatileRegionNumberLimit
+	e.PersistentRegionNumberLimit = m.PersistentRegionNumberLimit
+	e.VolatileRegionSizeMaxMiB = m.VolatileRegionSizeMaxMiB
+	e.PersistentRegionSizeMaxMiB = m.PersistentRegionSizeMaxMiB
+	e.AllocationIncrementMiB = m.AllocationIncrementMiB
+	e.AllocationAlignmentMiB = m.AllocationAlignmentMiB
+}

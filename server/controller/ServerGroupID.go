@@ -11,31 +11,31 @@ var (
 	}
 )
 
-// ServerGroupIDController Task controller
-type ServerGroupIDController struct {
+// ServerGroupID Task controller
+type ServerGroupID struct {
 }
 
 // ResourceName returns the name this controller handle of.
-func (c *ServerGroupIDController) ResourceName() string {
+func (c *ServerGroupID) ResourceName() string {
 	return "servergroup"
 }
 
 // Request creates a new request DTO.
-func (c *ServerGroupIDController) Request() base.PostRequestInterface {
+func (c *ServerGroupID) Request() base.PostRequestInterface {
 	return new(dto.PostServerGroupRequest)
 }
 
 // Response creates a new response DTO.
-func (c *ServerGroupIDController) Response() base.GetResponseInterface {
+func (c *ServerGroupID) Response() base.GetResponseInterface {
 	return new(dto.GetServerGroupResponse)
 }
 
 // Service returns the service.
-func (c *ServerGroupIDController) Service() base.CRUDServiceInterface {
+func (c *ServerGroupID) Service() base.CRUDServiceInterface {
 	return serverGroupService
 }
 
 // GetService returns the service.
-func (c *ServerGroupIDController) GetService() base.ServiceInterface {
+func (c *ServerGroupID) GetService() base.ServiceInterface {
 	return serverGroupService
 }

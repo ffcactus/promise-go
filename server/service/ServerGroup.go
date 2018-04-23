@@ -10,7 +10,7 @@ import (
 var (
 	serverGroupDB = &db.IPv4PoolDB{
 		DB: base.DB{
-			TemplateImpl: new(db.serverGroupDB),
+			TemplateImpl: new(db.serverGroup),
 		},
 	}
 

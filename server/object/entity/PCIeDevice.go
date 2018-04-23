@@ -26,3 +26,16 @@ func (e *PCIeDevice) ToModel() *model.PCIeDevice {
 	}
 	return m
 }
+
+// Load will load data from model.
+func (e *PCIeDevice) Load(m *model.PCIeDevice) {
+	updateResourceEntity(&e.EmbeddedResource, &m.Resource)
+	updateProductInfoEntity(&e.ProductInfo, &m.ProductInfo)
+	e.DeviceType = m.DeviceType
+	e.FirmwareVersion = m.FirmwareVersion
+	for _, v := range m.PCIeFunctions {
+		pcieFunctionE := PCIeFunction{}
+		pcieFunctionE.Load(&v)
+		e.PCIeFunctions = append(e.PCIeFunctions, pcieFunctionE)
+	}
+}

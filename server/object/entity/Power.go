@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"promise/base"
 	"promise/server/object/model"
 )
 
@@ -132,4 +133,81 @@ func (e *PowerSupply) ToModel() *model.PowerSupply {
 	m.FirmwareVersion = e.FirmwareVersion
 	m.IndicatorLed = e.IndicatorLed
 	return &m
+}
+
+// Load will load data from model.
+func (e *Power) Load(m *model.Power) {
+	updateResourceEntity(&e.EmbeddedResource, &m.Resource)
+	// PowerControl
+	if m.PowerControl != nil {
+		for i := range *m.PowerControl {
+			each := PowerControl{}
+			powerControl := (*m.PowerControl)[i]
+			updateResourceEntity(&each.EmbeddedResource, &powerControl.Resource)
+			updateProductInfoEntity(&each.ProductInfo, &powerControl.ProductInfo)
+			each.PowerConsumedWatts = powerControl.PowerConsumedWatts
+			each.PowerRequestedWatts = powerControl.PowerRequestedWatts
+			each.PowerAvailableWatts = powerControl.PowerAvailableWatts
+			each.PowerCapacityWatts = powerControl.PowerCapacityWatts
+			each.PowerAllocatedWatts = powerControl.PowerAllocatedWatts
+			if powerControl.PowerMetrics != nil {
+				each.PowerMetricsMinConsumedWatts = powerControl.PowerMetrics.MinConsumedWatts
+				each.PowerMetricsMaxConsumedWatts = powerControl.PowerMetrics.MaxConsumedWatts
+				each.PowerMetricsAverageConsumedWatts = powerControl.PowerMetrics.AverageConsumedWatts
+			}
+			if powerControl.PowerLimit != nil {
+				each.PowerLimitLimitInWatts = powerControl.PowerLimit.LimitInWatts
+				each.PowerLimitLimitException = powerControl.PowerLimit.LimitException
+				each.PowerLimitCorrectionInMs = powerControl.PowerLimit.CorrectionInMs
+			}
+			e.PowerControl = append(e.PowerControl, each)
+		}
+	}
+	// Voltages
+	if m.Voltages != nil {
+		for i := range *m.Voltages {
+			each := Voltage{}
+			voltages := (*m.Voltages)[i]
+			updateResourceEntity(&each.EmbeddedResource, &voltages.Resource)
+			updateThresholdEntity(&each.Threshold, &voltages.Threshold)
+			each.SensorNumber = voltages.SensorNumber
+			each.ReadingVolts = voltages.ReadingVolts
+			each.MinReadingRange = voltages.MinReadingRange
+			each.MaxReadingRange = voltages.MaxReadingRange
+			each.PhysicalContext = voltages.PhysicalContext
+			e.Voltages = append(e.Voltages, each)
+		}
+	}
+	// PowerSupplies
+	if m.PowerSupplies != nil {
+		for i := range *m.PowerSupplies {
+			each := PowerSupply{}
+			powerSupplies := (*m.PowerSupplies)[i]
+			updateResourceEntity(&each.EmbeddedResource, &powerSupplies.Resource)
+			updateProductInfoEntity(&each.ProductInfo, &powerSupplies.ProductInfo)
+			each.PowerSupplyType = powerSupplies.PowerSupplyType
+			each.LineInputVoltageType = powerSupplies.LineInputVoltageType
+			each.LineInputVoltage = powerSupplies.LineInputVoltage
+			each.PowerCapacityWatts = powerSupplies.PowerCapacityWatts
+			each.LastPowerOutputWatts = powerSupplies.LastPowerOutputWatts
+			each.FirmwareVersion = powerSupplies.FirmwareVersion
+			each.IndicatorLed = powerSupplies.IndicatorLed
+			e.PowerSupplies = append(e.PowerSupplies, each)
+		}
+	}
+	// Redundancy
+	if m.Redundancy != nil {
+		for i := range *m.Redundancy {
+			each := Redundancy{}
+			redundancy := (*m.Redundancy)[i]
+			updateResourceEntity(&each.EmbeddedResource, &redundancy.Resource)
+			each.Mode = redundancy.Mode
+			each.MaxNumSupported = redundancy.MaxNumSupported
+			each.MinNumNeeded = redundancy.MinNumNeeded
+			s := base.StructToString(redundancy.RedundancySet)
+			each.RedundancySet = &s
+			each.RedundancyEnabled = redundancy.RedundancyEnabled
+			e.Redundancy = append(e.Redundancy, each)
+		}
+	}
 }

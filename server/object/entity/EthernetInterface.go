@@ -69,7 +69,7 @@ type VLanNetworkInterface struct {
 	VLANID     *int  // This indicates the VLAN identifier for this VLAN.
 }
 
-// ToModel will create a new model from entity.
+// ToModel will create a new model from 
 func (e *EthernetInterface) ToModel() *model.EthernetInterface {
 	m := model.EthernetInterface{}
 	createResourceModel(&e.EmbeddedResource, &m.Resource)
@@ -113,4 +113,46 @@ func (e *EthernetInterface) ToModel() *model.EthernetInterface {
 		m.VLANs = append(m.VLANs, each)
 	}
 	return &m
+}
+
+// Load will load data from model.
+func (e *EthernetInterface) Load(m *model.EthernetInterface) {
+	updateResourceEntity(&(*e).EmbeddedResource, &(*m).Resource)
+	e.UefiDevicePath = m.UefiDevicePath
+	e.InterfaceEnabled = m.InterfaceEnabled
+	e.PermanentMACAddress = m.PermanentMACAddress
+	e.MACAddress = m.MACAddress
+	e.SpeedMbps = m.SpeedMbps
+	e.AutoNeg = m.AutoNeg
+	e.FullDuplex = m.FullDuplex
+	e.MTUSize = m.MTUSize
+	e.HostName = m.HostName
+	e.FQDN = m.FQDN
+	e.MaxIPv6StaticAddresses = m.MaxIPv6StaticAddresses
+	e.LinkStatus = m.LinkStatus
+
+	for i := range m.IPv4Addresses {
+		each := IPv4Address{}
+		each.Address = m.IPv4Addresses[i].Address
+		each.SubnetMask = m.IPv4Addresses[i].SubnetMask
+		each.AddressOrigin = m.IPv4Addresses[i].AddressOrigin
+		each.Gateway = m.IPv4Addresses[i].Gateway
+		e.IPv4Addresses = append(e.IPv4Addresses, each)
+	}
+
+	for i := range m.IPv6Addresses {
+		each := IPv6Address{}
+		each.Address = m.IPv6Addresses[i].Address
+		each.PrefixLength = m.IPv6Addresses[i].PrefixLength
+		each.AddressOrigin = m.IPv6Addresses[i].AddressOrigin
+		each.AddressState = m.IPv6Addresses[i].AddressState
+		e.IPv6Addresses = append(e.IPv6Addresses, each)
+	}
+	for i := range m.VLANs {
+		each := VLanNetworkInterface{}
+		updateResourceEntity(&each.EmbeddedResource, &m.VLANs[i].Resource)
+		each.VLANEnable = m.VLANs[i].VLANEnable
+		each.VLANID = m.VLANs[i].VLANID
+		e.VLANs = append(e.VLANs, each)
+	}
 }

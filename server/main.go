@@ -36,13 +36,16 @@ func main() {
 	serverNS := beego.NewNamespace(
 		base.RootURL+base.ServerBaseURI,
 		beego.NSRouter("/", &base.IDController{
-			TemplateImpl: new(controller.ServerRootController),
+			TemplateImpl: new(controller.ServerRoot),
+		}),
+		beego.NSRouter("/action/:action", &base.ActionController{
+			TemplateImpl: new(controller.ServerDiscover),
 		}),
 		beego.NSRouter("/:id", &base.IDController{
-			TemplateImpl: new(controller.ServerIDController),
+			TemplateImpl: new(controller.ServerID),
 		}),
-		beego.NSRouter("/:id/action/:action", &base.IDController{
-			TemplateImpl: new(controller.ServerActionController),
+		beego.NSRouter("/:id/action/:action", &base.ActionController{
+			TemplateImpl: new(controller.ServerAction),
 		}),
 	)
 	beego.AddNamespace(serverNS)
@@ -50,10 +53,10 @@ func main() {
 	serverGroupNS := beego.NewNamespace(
 		base.RootURL+base.ServerGroupBaseURI,
 		beego.NSRouter("/", &base.RootController{
-			TemplateImpl: new(controller.ServerGroupRootController),
+			TemplateImpl: new(controller.ServerGroupRoot),
 		}),
 		beego.NSRouter("/:id", &base.IDController{
-			TemplateImpl: new(controller.ServerGroupIDController),
+			TemplateImpl: new(controller.ServerGroupID),
 		}),
 	)
 	beego.AddNamespace(serverGroupNS)
@@ -61,10 +64,10 @@ func main() {
 	serverServerGroupNS := beego.NewNamespace(
 		base.RootURL+base.ServerServerGroupBaseURI,
 		beego.NSRouter("/", &base.IDController{
-			TemplateImpl: new(controller.ServerServerGroupRootController),
+			TemplateImpl: new(controller.ServerServerGroupRoot),
 		}),
 		beego.NSRouter("/:id", &base.IDController{
-			TemplateImpl: new(controller.ServerServerGroupIDController),
+			TemplateImpl: new(controller.ServerServerGroupID),
 		}),
 	)
 	beego.AddNamespace(serverServerGroupNS)

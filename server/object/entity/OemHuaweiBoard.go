@@ -36,3 +36,18 @@ func (e *OemHuaweiBoard) ToModel() *model.OemHuaweiBoard {
 	m.ManufactureDate = e.ManufactureDate
 	return m
 }
+
+// Load will load data from model.
+func (e *OemHuaweiBoard) Load(m *model.OemHuaweiBoard) {
+	updateResourceEntity(&e.EmbeddedResource, &m.Resource)
+	updateProductInfoEntity(&e.ProductInfo, &m.ProductInfo)
+	e.CardNo = m.CardNo
+	e.DeviceLocator = m.DeviceLocator
+	e.DeviceType = m.DeviceType
+	e.Location = m.Location
+	e.CPLDVersion = m.CPLDVersion
+	e.PCBVersion = m.PCBVersion
+	e.BoardName = m.BoardName
+	e.BoardID = m.BoardID
+	e.ManufactureDate = m.ManufactureDate
+}

@@ -18,3 +18,9 @@ func (e *NetworkInterface) ToModel() *model.NetworkInterface {
 	m.NetworkAdapterURI = e.NetworkAdapterURI
 	return &m
 }
+
+// Load will load data from model.
+func (e *NetworkInterface) Load(m *model.NetworkInterface) {
+	updateResourceEntity(&e.EmbeddedResource, &m.Resource)
+	e.NetworkAdapterURI = m.NetworkAdapterURI
+}

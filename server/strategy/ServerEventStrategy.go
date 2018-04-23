@@ -3,7 +3,7 @@ package strategy
 import (
 	log "github.com/sirupsen/logrus"
 	"promise/base"
-	wsSDK "promise/sdk/ws"
+	"promise/sdk/event"
 	"promise/server/context"
 	"promise/server/object/dto"
 	"promise/server/object/model"
@@ -27,7 +27,7 @@ func (s *ServerEventStrategy) dispatchServerEvent(c *context.ServerContext, even
 			"error": err}).Warn("Dispatch server event failed, create event failed.")
 		return
 	}
-	messages, err := wsSDK.DispatchResourceEvent(eventType, serverDTO)
+	messages, err := event.DispatchResourceEvent(eventType, serverDTO)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"id":    server.ID,
@@ -73,18 +73,19 @@ func (s *ServerEventStrategy) dispatchServerServerGroupEvent(c *context.ServerCo
 			"type":        eventType,
 			"server":      ssg.ServerID,
 			"servergroup": ssg.ServerGroupID,
-			"error":       err}).Warn("Dispatch server-servergroup event failed, create event failed.")
+			"error":       err,
+		}).Warn("Dispatch server-servergroup event failed, create event failed.")
 		return
 	}
-	messages, err := wsSDK.DispatchResourceEvent(eventType, ssgDTO)
+	messages, err := event.DispatchResourceEvent(eventType, ssgDTO)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"id":          ssg.ID,
 			"type":        eventType,
 			"server":      ssg.ServerID,
 			"servergroup": ssg.ServerGroupID,
-			"error":       err}).
-			Warn("Dispatch server-servergroup event failed, event dispatching failed.")
+			"error":       err,
+		}).Warn("Dispatch server-servergroup event failed, event dispatching failed.")
 	}
 	if messages != nil {
 		log.WithFields(log.Fields{
@@ -92,8 +93,8 @@ func (s *ServerEventStrategy) dispatchServerServerGroupEvent(c *context.ServerCo
 			"type":        eventType,
 			"server":      ssg.ServerID,
 			"servergroup": ssg.ServerGroupID,
-			"message":     messages[0].ID}).
-			Warn("Dispatch server-servergroup create event failed, message returned, event dispatching failed.")
+			"message":     messages[0].ID},
+		).Warn("Dispatch server-servergroup create event failed, message returned, event dispatching failed.")
 	}
 }
 

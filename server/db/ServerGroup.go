@@ -7,44 +7,49 @@ import (
 	"promise/server/object/entity"
 )
 
-// ServerDB is the concrete DB.
-type ServerDB struct {
+// DefaultServerGroupID records the ID of default servergroup. We don't have to retrieve it each time.
+var (
+	DefaultServerGroupID string
+)
+
+// ServerGroup is the concrete DB.
+type ServerGroup struct {
 	base.DB
 }
 
 
 // GetResourceName get the resource name.
-func (impl *ServerDB) GetResourceName() string {
+func (impl *ServerGroup) GetResourceName() string {
 	return "servergroup"
 }
 
 // NewEntity return the a new entity.
-func (impl *ServerDB) NewEntity() base.EntityInterface {
-	e := new(entity.Server)
+func (impl *ServerGroup) NewEntity() base.EntityInterface {
+	e := new(entity.ServerGroup)
 	e.Entity.TemplateImpl = e
 	return e
 }
 
 // NewEntityCollection return a collection of entity.
-func (impl *ServerDB) NewEntityCollection() interface{} {
-	return new([]entity.Server)
+func (impl *ServerGroup) NewEntityCollection() interface{} {
+	return new([]entity.ServerGroup)
 }
 
 // GetConnection return the DB connection.
-func (impl *ServerDB) GetConnection() *gorm.DB {
+func (impl *ServerGroup) GetConnection() *gorm.DB {
 	return base.GetConnection()
 }
 
 // NeedCheckDuplication return if need check duplication for entity.
-func (impl *ServerDB) NeedCheckDuplication() bool {
+func (impl *ServerGroup) NeedCheckDuplication() bool {
 	return true
 }
 
 // ConvertFindResultToCollection convert the Find() result to collection mode.
-func (impl *ServerDB) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, error) {
-	collection, ok := result.(*[]entity.Server)
+func (impl *ServerGroup) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, error) {
+	collection, ok := result.(*[]entity.ServerGroup)
 	if !ok {
-		log.Error("ServerDB.ConvertFindResult() failed, convert data failed.")
+		log.Error("ServerGroup.ConvertFindResult() failed, convert data failed.")
 		return nil, base.ErrorDataConvert
 	}
 	ret := base.CollectionModel{}
@@ -58,10 +63,10 @@ func (impl *ServerDB) ConvertFindResultToCollection(start int64, total int64, re
 }
 
 // ConvertFindResultToModel convert the Find() result to model slice
-func (impl *ServerDB) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, error) {
-	collection, ok := result.(*[]entity.Server)
+func (impl *ServerGroup) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, error) {
+	collection, ok := result.(*[]entity.ServerGroup)
 	if !ok {
-		log.Error("ServerDB.ConvertFindResult() failed, convert data failed.")
+		log.Error("ServerGroup.ConvertFindResult() failed, convert data failed.")
 		return nil, base.ErrorDataConvert
 	}
 	ret := make([]base.ModelInterface, 0)

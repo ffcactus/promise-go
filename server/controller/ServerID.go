@@ -9,8 +9,8 @@ import (
 	"promise/server/service"
 )
 
-// ServerIDController Server ID controller.
-type ServerIDController struct {
+// ServerID Server ID controller.
+type ServerID struct {
 }
 
 // ResourceName returns the name this controller handle of.

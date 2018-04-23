@@ -46,3 +46,25 @@ func (e *Drive) ToModel() *model.Drive {
 	}
 	return m
 }
+
+// Load will load data from model.
+func (e *Drive) Load(m *model.Drive) {
+	updateResourceEntity(&e.EmbeddedResource, &m.Resource)
+	updateProductInfoEntity(&e.ProductInfo, &m.ProductInfo)
+	e.StatusIndicator = m.StatusIndicator
+	e.IndicatorLED = m.IndicatorLED
+	e.Revision = m.Revision
+	e.CapacityBytes = m.CapacityBytes
+	e.FailurePredicted = m.FailurePredicted
+	e.Protocol = m.Protocol
+	e.MediaType = m.MediaType
+	e.HotspareType = m.HotspareType
+	e.CapableSpeedGbs = m.CapableSpeedGbs
+	e.NegotiatedSpeedGbs = m.NegotiatedSpeedGbs
+	e.PredictedMediaLifeLeftPercent = m.PredictedMediaLifeLeftPercent
+	for _, v := range m.Location {
+		locationE := Location{}
+		locationE.Load(&v)
+		e.Location = append(e.Location, locationE)
+	}
+}

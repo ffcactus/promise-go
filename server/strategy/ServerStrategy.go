@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	log "github.com/sirupsen/logrus"
-	commonMessage "promise/common/object/message"
+	"promise/base"
 	"promise/server/context"
 	"promise/server/object/message"
 	"promise/server/object/model"
@@ -20,12 +20,12 @@ func (s *ServerStrategy) LockServer(c *context.ServerContext, server *model.Serv
 	success, lockedServer := c.DB.GetAndLockServer(server.ID)
 	if lockedServer == nil {
 		log.WithFields(log.Fields{"id": server.ID}).Info("Can not get and lock server, server not exist.")
-		c.AppendMessage(commonMessage.NewNotExist())
+		c.AppendMessage(base.NewMessageNotExist())
 		return errors.New("failed to lock server, server not exist")
 	}
 	if !success {
 		log.WithFields(log.Fields{"id": server.ID, "state": server.State}).Info("Can not get and lock server.")
-		c.AppendMessage(message.NewServerLockFailed(server))
+		c.AppendMessage(message.NewMessageServerLockFailed(server))
 		return errors.New("failed to lock server. server can't be lock")
 	}
 	s.DispatchServerUpdate(c, server)

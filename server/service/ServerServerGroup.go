@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	serverServerGroupDB = &db.ServerServerGroupDB{
+	serverServerGroupDB = &db.ServerServerGroup{
 		DB: base.DB{
-			TemplateImpl: new(db.ServerServerGroupDB),
+			TemplateImpl: new(db.ServerServerGroup),
 		},
 	}
 )

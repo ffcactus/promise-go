@@ -34,6 +34,7 @@ const (
 	MessageUnknownFilterName = "Promise.Message.UnknownFilterName"
 )
 
+// For AA.
 const (
 	// MessageAuthSuccess Success
 	MessageAuthSuccess = "Auth.Message.Success"
@@ -47,7 +48,7 @@ const (
 	MessageAuthNotFoundSession = "Auth.Message.NotFoundSession"
 )
 
-// For task.
+// For Task.
 const (
 	// MessageTaskNoStep is message ID.
 	MessageTaskNoStep = "Task.Message.NoStep"
@@ -56,19 +57,19 @@ const (
 // For IPv4.
 const (
 	// MessageIPv4PoolEmpty is message ID
-	MessageIPv4PoolEmpty = "IPv4.Message.IPv4PoolEmpty"
+	MessageIPv4PoolEmpty = "IPv4.Message.PoolEmpty"
 	// MessageIPv4AddressNotExist is message ID.
 	MessageIPv4AddressNotExist = "IPv4.Message.AddressNotExist"
 	// MessageIPv4FormateError is message ID.
-	MessageIPv4FormateError = "IPv4.Message.IPv4FormatError"
+	MessageIPv4FormateError = "IPv4.Message.FormatError"
 	// MessageIPv4RangeEndAddressError is message ID.
-	MessageIPv4RangeEndAddressError = "IPv4.Message.IPv4RangeEndAddressError"
+	MessageIPv4RangeEndAddressError = "IPv4.Message.RangeEndAddressError"
 	// MessageIPv4RangeSizeError is message ID.
-	MessageIPv4RangeSizeError = "IPv4.Message.IPv4RangeSizeError"
+	MessageIPv4RangeSizeError = "IPv4.Message.RangeSizeError"
 	// MessageIPv4RangeCountError is message ID.
-	MessageIPv4RangeCountError = "IPv4.Message.IPv4RangeCountError"
+	MessageIPv4RangeCountError = "IPv4.Message.RangeCountError"
 	// MessageIPv4NotAllocatedError is message ID.
-	MessageIPv4NotAllocatedError = "IPv4.Message.IPv4NotAllocatedError"
+	MessageIPv4NotAllocatedError = "IPv4.Message.NotAllocatedError"
 )
 
 // For common.

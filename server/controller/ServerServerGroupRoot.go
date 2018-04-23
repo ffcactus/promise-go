@@ -6,32 +6,32 @@ import (
 	"promise/server/service"
 )
 
-// ServerServerGroupRootController is ther servergroup controller.
-type ServerServerGroupRootController struct {
+// ServerServerGroupRoot is ther servergroup controller.
+type ServerServerGroupRoot struct {
 }
 
 // ResourceName returns the name this controller handle of.
-func (c *ServerServerGroupRootController) ResourceName() string {
+func (c *ServerServerGroupRoot) ResourceName() string {
 	return "server-servergroup"
 }
 
 // Request creates a new request DTO.
-func (c *ServerServerGroupRootController) Request() base.PostRequestInterface {
+func (c *ServerServerGroupRoot) Request() base.PostRequestInterface {
 	return new(dto.PostServerServerGroupRequest)
 }
 
 // Response creates a new response DTO.
-func (c *ServerServerGroupRootController) Response() base.GetResponseInterface {
+func (c *ServerServerGroupRoot) Response() base.GetResponseInterface {
 	return new(dto.GetServerServerGroupResponse)
 }
 
 // Service returns the service.
-func (c *ServerServerGroupRootController) Service() base.CRUDServiceInterface {
+func (c *ServerServerGroupRoot) Service() base.CRUDServiceInterface {
 	return serverServerGroupService
 }
 
 // ConvertCollectionModel convert data to concrete DTO.
-func (c *ServerServerGroupRootController) ConvertCollectionModel(m *base.CollectionModel) (interface{}, error) {
+func (c *ServerServerGroupRoot) ConvertCollectionModel(m *base.CollectionModel) (interface{}, error) {
 	ret := new(dto.GetServerServerGroupCollectionResponse)
 	if err := ret.Load(m); err != nil {
 		return nil, err

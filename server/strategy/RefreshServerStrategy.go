@@ -27,9 +27,9 @@ type RefreshServerStrategy interface {
 func CreateRefreshServerStrategy(server *model.Server) RefreshServerStrategy {
 	switch server.Type {
 	case constvalue.RackType:
-		return new(RackServerRefreshStrategy)
+		return new(RefreshRackServerStrategy)
 	case constvalue.MockType:
-		return new(MockServerRefreshStrategy)
+		return new(RefreshMockServerStrategy)
 	default:
 		log.WithFields(log.Fields{"id": server.ID, "type": server.Type}).Warn("Can not find refresh server strategy.")
 		return nil

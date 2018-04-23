@@ -46,3 +46,30 @@ func (e *NetworkAdapter) ToModel() *model.NetworkAdapter {
 	}
 	return m
 }
+
+// Load will load data from model.
+func (e *NetworkAdapter) Load(m *model.NetworkAdapter) {
+	updateResourceEntity(&e.EmbeddedResource, &m.Resource)
+	updateProductInfoEntity(&e.ProductInfo, &m.ProductInfo)
+	controllers := []Controller{}
+	for i := range m.Controllers {
+		controllerE := Controller{}
+		controllerM := m.Controllers[i]
+		controllerE.FirmwarePackageVersion = controllerM.FirmwarePackageVersion
+		controllerE.ControllerCapabilitiesNetworkPortCount = controllerM.ControllerCapabilities.NetworkPortCount
+		ports := []NetworkPort{}
+		for j := range controllerM.NetworkPorts {
+			portE := NetworkPort{}
+			portM := controllerM.NetworkPorts[j]
+			updateResourceEntity(&portE.EmbeddedResource, &portM.Resource)
+			portE.PhysicalPortNumber = portM.PhysicalPortNumber
+			portE.LinkStatus = portM.LinkStatus
+			s := commonUtil.StructToString(portM.AssociatedNetworkAddresses)
+			portE.AssociatedNetworkAddresses = s
+			ports = append(ports, portE)
+		}
+		controllerE.NetworkPorts = ports
+		controllers = append(controllers, controllerE)
+	}
+	e.Controllers = controllers
+}

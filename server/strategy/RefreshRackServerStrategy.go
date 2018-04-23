@@ -7,15 +7,15 @@ import (
 	"promise/server/object/model"
 )
 
-// RackServerRefreshStrategy is the strategy of rack server refresh.
-type RackServerRefreshStrategy struct {
+// RefreshRackServerStrategy is the strategy of rack server refresh.
+type RefreshRackServerStrategy struct {
 	ServerStrategy
 	ServerEventStrategy
 	ServerTaskStrategy
 }
 
 // Execute will execute all the steps.
-func (s *RackServerRefreshStrategy) Execute(c *context.RefreshServerContext, server *model.Server) error {
+func (s *RefreshRackServerStrategy) Execute(c *context.RefreshServerContext, server *model.Server) error {
 	// defer s.IndexServer(&c.ServerContext)
 	// defer s.SetServerState(&c.ServerContext, ServerStateReady)
 	// defer s.SetServerHealth(&c.ServerContext, ServerHealthOK)
@@ -84,7 +84,7 @@ func (s *RackServerRefreshStrategy) Execute(c *context.RefreshServerContext, ser
 type Stepfunc func(c *context.RefreshServerContext, server *model.Server) error
 
 // StepWarper is a warper.
-func (s *RackServerRefreshStrategy) StepWarper(
+func (s *RefreshRackServerStrategy) StepWarper(
 	id string,
 	stepName string,
 	c *context.RefreshServerContext,
@@ -101,7 +101,7 @@ func (s *RackServerRefreshStrategy) StepWarper(
 }
 
 // RefreshProcessors refresh the processor of the server.
-func (s *RackServerRefreshStrategy) RefreshProcessors(c *context.RefreshServerContext, server *model.Server) error {
+func (s *RefreshRackServerStrategy) RefreshProcessors(c *context.RefreshServerContext, server *model.Server) error {
 	var component = "Processor"
 	processors, err := c.ServerClient.GetProcessors(*server.OriginURIs.System)
 	if err != nil {
@@ -118,7 +118,7 @@ func (s *RackServerRefreshStrategy) RefreshProcessors(c *context.RefreshServerCo
 }
 
 // RefreshMemory refresh the memory
-func (s *RackServerRefreshStrategy) RefreshMemory(c *context.RefreshServerContext, server *model.Server) error {
+func (s *RefreshRackServerStrategy) RefreshMemory(c *context.RefreshServerContext, server *model.Server) error {
 	var component = "Memory"
 	memory, err := c.ServerClient.GetMemory(*server.OriginURIs.System)
 	if err != nil {
@@ -134,7 +134,7 @@ func (s *RackServerRefreshStrategy) RefreshMemory(c *context.RefreshServerContex
 }
 
 // RefreshEthernetInterfaces refresh the ethernet interfaces.
-func (s *RackServerRefreshStrategy) RefreshEthernetInterfaces(c *context.RefreshServerContext, server *model.Server) error {
+func (s *RefreshRackServerStrategy) RefreshEthernetInterfaces(c *context.RefreshServerContext, server *model.Server) error {
 	var component = "EthernetInterfaces"
 	ethernet, err := c.ServerClient.GetEthernetInterfaces(*server.OriginURIs.System)
 	if err != nil {
@@ -150,7 +150,7 @@ func (s *RackServerRefreshStrategy) RefreshEthernetInterfaces(c *context.Refresh
 }
 
 // RefreshNetworkInterfaces refresh the network interfaces.
-func (s *RackServerRefreshStrategy) RefreshNetworkInterfaces(c *context.RefreshServerContext, server *model.Server) error {
+func (s *RefreshRackServerStrategy) RefreshNetworkInterfaces(c *context.RefreshServerContext, server *model.Server) error {
 	var component = "NetworkInterfaces"
 	networks, err := c.ServerClient.GetNetworkInterfaces(*server.OriginURIs.System)
 	if err != nil {
@@ -166,7 +166,7 @@ func (s *RackServerRefreshStrategy) RefreshNetworkInterfaces(c *context.RefreshS
 }
 
 // RefreshStorages refresh the storages.
-func (s *RackServerRefreshStrategy) RefreshStorages(c *context.RefreshServerContext, server *model.Server) error {
+func (s *RefreshRackServerStrategy) RefreshStorages(c *context.RefreshServerContext, server *model.Server) error {
 	var component = "Storages"
 	storages, err := c.ServerClient.GetStorages(*server.OriginURIs.System)
 	if err != nil {
@@ -182,7 +182,7 @@ func (s *RackServerRefreshStrategy) RefreshStorages(c *context.RefreshServerCont
 }
 
 // RefreshPower refresh the power.
-func (s *RackServerRefreshStrategy) RefreshPower(c *context.RefreshServerContext, server *model.Server) error {
+func (s *RefreshRackServerStrategy) RefreshPower(c *context.RefreshServerContext, server *model.Server) error {
 	var component = "Power"
 	power, err := c.ServerClient.GetPower(*server.OriginURIs.Chassis)
 	if err != nil {
@@ -198,7 +198,7 @@ func (s *RackServerRefreshStrategy) RefreshPower(c *context.RefreshServerContext
 }
 
 // RefreshThermal refresh the thermal.
-func (s *RackServerRefreshStrategy) RefreshThermal(c *context.RefreshServerContext, server *model.Server) error {
+func (s *RefreshRackServerStrategy) RefreshThermal(c *context.RefreshServerContext, server *model.Server) error {
 	var component = "Thermal"
 	thermal, err := c.ServerClient.GetThermal(*server.OriginURIs.Chassis)
 	if err != nil {
@@ -214,7 +214,7 @@ func (s *RackServerRefreshStrategy) RefreshThermal(c *context.RefreshServerConte
 }
 
 // RefreshOemHuaweiBoards refresh the OEM boards.
-func (s *RackServerRefreshStrategy) RefreshOemHuaweiBoards(c *context.RefreshServerContext, server *model.Server) error {
+func (s *RefreshRackServerStrategy) RefreshOemHuaweiBoards(c *context.RefreshServerContext, server *model.Server) error {
 	var component = "OemHuaweiBoards"
 	boards, err := c.ServerClient.GetOemHuaweiBoards(*server.OriginURIs.Chassis)
 	if err != nil {
@@ -230,7 +230,7 @@ func (s *RackServerRefreshStrategy) RefreshOemHuaweiBoards(c *context.RefreshSer
 }
 
 // RefreshNetworkAdapters refresh the network adapters.
-func (s *RackServerRefreshStrategy) RefreshNetworkAdapters(c *context.RefreshServerContext, server *model.Server) error {
+func (s *RefreshRackServerStrategy) RefreshNetworkAdapters(c *context.RefreshServerContext, server *model.Server) error {
 	var component = "NetworkAdapters"
 	networkAdapters, err := c.ServerClient.GetNetworkAdapters(*server.OriginURIs.Chassis)
 	if err != nil {
@@ -246,7 +246,7 @@ func (s *RackServerRefreshStrategy) RefreshNetworkAdapters(c *context.RefreshSer
 }
 
 // RefreshDrives refresh the drives.
-func (s *RackServerRefreshStrategy) RefreshDrives(c *context.RefreshServerContext, server *model.Server) error {
+func (s *RefreshRackServerStrategy) RefreshDrives(c *context.RefreshServerContext, server *model.Server) error {
 	var component = "Drives"
 	drives, err := c.ServerClient.GetDrives(*server.OriginURIs.Chassis)
 	if err != nil {
@@ -262,7 +262,7 @@ func (s *RackServerRefreshStrategy) RefreshDrives(c *context.RefreshServerContex
 }
 
 // RefreshPCIeDevices refresh the PCIe devices.
-func (s *RackServerRefreshStrategy) RefreshPCIeDevices(c *context.RefreshServerContext, server *model.Server) error {
+func (s *RefreshRackServerStrategy) RefreshPCIeDevices(c *context.RefreshServerContext, server *model.Server) error {
 	var component = "PCIeDevices"
 	pcieDevice, err := c.ServerClient.GetPCIeDevices(*server.OriginURIs.Chassis)
 	if err != nil {
