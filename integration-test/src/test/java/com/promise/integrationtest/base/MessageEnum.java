@@ -10,9 +10,9 @@ public enum MessageEnum
     Timeout ("Promise.Message.Timeout"),
     UnknownFilterName ("Promise.Message.UnknownFilterName"),
 
-    ServerGroupDeleteDefault ("Server.Message.ServerGroupDeleteDefault"),
+    ServerGroupDeleteDefault ("ServerGroup.Message.DeleteDefault"),
 
-    ServerServerGroupDeleteDefault ("Server.Message.ServerServerGroupDeleteDefault"),
+    ServerServerGroupDeleteDefault ("ServerServerGroup.Message.DeleteDefault"),
 
     IPv4PoolEmpty ("IPv4.Message.PoolEmpty"),
     IPv4PoolAddressNotExist ("IPv4.Message.AddressNotExist"),

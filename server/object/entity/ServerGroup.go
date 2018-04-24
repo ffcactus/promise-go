@@ -41,7 +41,7 @@ func (e *ServerGroup) Association() []interface{} {
 
 // Tables returns the tables to delete when you want delete all the resources.
 func (e *ServerGroup) Tables() []interface{} {
-	return []interface{}{}
+	return []interface{}{new(ServerGroup)}
 }
 
 // FilterNameList return all the property name that can be used in filter.

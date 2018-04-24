@@ -28,9 +28,9 @@ func (s *Refresh) FindServerStateAdded() {
 
 // Perform will process the refresh action.
 func (s *Refresh) Perform(id string, request base.ActionRequestInterface) (base.ResponseInterface, []base.Message) {
-	modelInterface := serverDB.Get(id)
-	if modelInterface == nil {
-		return nil, []base.Message{base.NewMessageNotExist()}
+	modelInterface, message := serverDB.Get(id)
+	if message != nil {
+		return nil, []base.Message{*message}
 	}
 	server, ok := modelInterface.(*model.Server)
 	if !ok {

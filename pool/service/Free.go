@@ -20,18 +20,9 @@ func (s *Free) Perform(id string, request base.ActionRequestInterface) (base.Res
 		return nil, []base.Message{base.NewMessageInternalError()}
 	}
 
-	exist, updatedPool, commited, err := ipv4PoolDB.FreeIPv4Address(id, freeRequest.Address)
-	if !exist {
-		return nil, []base.Message{base.NewMessageNotExist()}
-	}
-	if err != nil && err.Error() == base.ErrorIPv4NotInPool.Error() {
-		return nil, []base.Message{base.NewMessageIPv4AddressNotExistError()}
-	}
-	if err != nil && err.Error() == base.ErrorIPv4NotAllocated.Error() {
-		return nil, []base.Message{base.NewMessageIPv4NotAllocatedError()}
-	}
-	if err != nil || !commited {
-		return nil, []base.Message{base.NewMessageTransactionError()}
+	updatedPool, message := ipv4PoolDB.FreeIPv4Address(id, freeRequest.Address)
+	if message != nil {
+		return nil, []base.Message{*message}
 	}
 	response.Load(updatedPool)
 	eventService.DispatchUpdateEvent(&response)

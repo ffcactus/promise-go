@@ -31,12 +31,9 @@ func (s *CRUDService) Create(request PostRequestInterface) (ModelInterface, []Me
 		response = s.TemplateImpl.Response()
 		model    = request.ToModel()
 	)
-	exist, posted, commited, err := db.Create(model)
-	if exist {
-		return nil, []Message{NewMessageDuplicate()}
-	}
-	if err != nil || !commited {
-		return nil, []Message{NewMessageTransactionError()}
+	posted, message := db.Create(model)
+	if message != nil {
+		return nil, []Message{*message}
 	}
 	response.Load(posted)
 	s.TemplateImpl.EventService().DispatchCreateEvent(response)
@@ -48,9 +45,9 @@ func (s *CRUDService) Get(id string) (ModelInterface, []Message) {
 	var (
 		db = s.TemplateImpl.DB()
 	)
-	model := db.Get(id)
-	if model == nil {
-		return nil, []Message{NewMessageNotExist()}
+	model, message := db.Get(id)
+	if message != nil {
+		return nil, []Message{*message}
 	}
 	return model, nil
 }
@@ -62,12 +59,9 @@ func (s *CRUDService) Delete(id string) []Message {
 		response = s.TemplateImpl.Response()
 	)
 
-	exist, model, commited, err := db.Delete(id)
-	if !exist {
-		return []Message{NewMessageNotExist()}
-	}
-	if err != nil || !commited {
-		return []Message{NewMessageTransactionError()}
+	model, message := db.Delete(id)
+	if message != nil {
+		return []Message{*message}
 	}
 	response.Load(model)
 	s.TemplateImpl.EventService().DispatchDeleteEvent(response)
@@ -79,12 +73,9 @@ func (s *CRUDService) GetCollection(start int64, count int64, filter string) (*C
 	var (
 		db = s.TemplateImpl.DB()
 	)
-	collection, err := db.GetCollection(start, count, filter)
-	if err != nil && err.Error() == ErrorUnknownFilterName.Error() {
-		return nil, []Message{NewMessageUnknownFilterName()}
-	}
-	if err != nil {
-		return nil, []Message{NewMessageTransactionError()}
+	collection, message := db.GetCollection(start, count, filter)
+	if message != nil {
+		return nil, []Message{*message}
 	}
 	return collection, nil
 }
@@ -94,9 +85,9 @@ func (s *CRUDService) DeleteCollection() []Message {
 	var (
 		db = s.TemplateImpl.DB()
 	)
-	records, commited, err := db.DeleteCollection()
-	if err != nil || !commited {
-		return []Message{NewMessageTransactionError()}
+	records, message := db.DeleteCollection()
+	if message != nil {
+		return []Message{*message}
 	}
 	for _, v := range records {
 		response := s.TemplateImpl.Response()
@@ -119,15 +110,9 @@ func (s *CRUDService) Update(id string, request UpdateRequestInterface) (GetResp
 		return nil, []Message{NewMessageInternalError()}
 	}
 
-	exist, updatedTask, commited, err := db.Update(id, updateAction)
-	if !exist {
-		return nil, []Message{NewMessageNotExist()}
-	}
-	if err != nil && err.Error() == ErrorUnknownPropertyValue.Error() {
-		return nil, []Message{NewMessageUnknownPropertyValue()}
-	}
-	if err != nil || !commited {
-		return nil, []Message{NewMessageTransactionError()}
+	updatedTask, message := db.Update(id, updateAction)
+	if message != nil {
+		return nil, []Message{*message}
 	}
 	response.Load(updatedTask)
 	s.TemplateImpl.EventService().DispatchUpdateEvent(response)

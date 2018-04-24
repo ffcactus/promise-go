@@ -8,6 +8,14 @@ import (
 	"strings"
 )
 
+var (
+	messageTransactionError = NewMessageTransactionError()
+	messageDuplicate = NewMessageDuplicate()
+	messageNotExist = NewMessageNotExist()
+	messageUnknownFilterName = NewMessageUnknownFilterName()
+	messageUnknownPropertyValue = NewMessageUnknownPropertyValue()
+)
+
 // DBTemplateInterface is the interface that a concrete DB implement should have.
 type DBTemplateInterface interface {
 	ResourceName() string
@@ -15,18 +23,18 @@ type DBTemplateInterface interface {
 	GetConnection() *gorm.DB
 	NewEntity() EntityInterface
 	NewEntityCollection() interface{}
-	ConvertFindResultToCollection(start int64, total int64, result interface{}) (*CollectionModel, error)
-	ConvertFindResultToModel(interface{}) ([]ModelInterface, error)
+	ConvertFindResultToCollection(start int64, total int64, result interface{}) (*CollectionModel, *Message)
+	ConvertFindResultToModel(interface{}) ([]ModelInterface, *Message)
 }
 
 // DBInterface is the interface that DB should have.
 type DBInterface interface {
-	Create(ModelInterface) (bool, ModelInterface, bool, error)
-	Get(id string) ModelInterface
-	Update(id string, request UpdateRequestInterface) (bool, ModelInterface, bool, error)
-	Delete(id string) (bool, ModelInterface, bool, error)
-	GetCollection(start int64, count int64, filter string) (*CollectionModel, error)
-	DeleteCollection() ([]ModelInterface, bool, error)
+	Create(ModelInterface) (ModelInterface, *Message)
+	Get(id string) (ModelInterface, *Message)
+	Update(id string, request UpdateRequestInterface) (ModelInterface, *Message)
+	Delete(id string) (ModelInterface, *Message)
+	GetCollection(start int64, count int64, filter string) (*CollectionModel, *Message)
+	DeleteCollection() ([]ModelInterface, *Message)
 }
 
 // DB is the DB implementation in Promise project.
@@ -90,27 +98,25 @@ func (impl *DB) SaveAndCommit(tx *gorm.DB, record EntityInterface) (bool, error)
 		log.WithFields(log.Fields{
 			"resource": name,
 			"id":       record.GetID(),
-			"error":    err}).
-			Warn("Save and commit operation failed, save failed, transaction rollback.")
+			"error":    err,
+		}).Warn("Save and commit operation failed, save failed, transaction rollback.")
 		return false, err
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
 			"id":       record.GetID(),
-			"error":    err}).
-			Warn("Save and commit operation failed, commit failed.")
+			"error":    err,
+		}).Warn("Save and commit operation failed, commit failed.")
 		return false, err
 	}
 	return true, nil
 }
 
 // Create is the default implement to post resource in DB.
-// It will return if there is one exist already with the same name.
 // It will return the newly created one if commited, or nil.
-// It will return if the transaction commited.
-// It will return error if any.
-func (impl *DB) Create(m ModelInterface) (bool, ModelInterface, bool, error) {
+// It will return message if any error.
+func (impl *DB) Create(m ModelInterface) (ModelInterface, *Message) {
 	var (
 		name   = impl.TemplateImpl.ResourceName()
 		record = impl.TemplateImpl.NewEntity()
@@ -122,7 +128,7 @@ func (impl *DB) Create(m ModelInterface) (bool, ModelInterface, bool, error) {
 			"resource": name,
 			"error":    err,
 		}).Warn("Post resource in DB failed, start transaction failed.")
-		return false, nil, false, err
+		return nil, &messageTransactionError
 	}
 	if impl.TemplateImpl.NeedCheckDuplication() {
 		where := "\"" + record.PropertyNameForDuplicationCheck() + "\" = ?"
@@ -133,7 +139,7 @@ func (impl *DB) Create(m ModelInterface) (bool, ModelInterface, bool, error) {
 				"id":       record.GetID(),
 				"name":     record.DebugInfo(),
 			}).Warn("Post resource in DB failed, duplicated resource, transaction rollback.")
-			return true, nil, false, ErrorResourceNotExist
+			return nil, &messageDuplicate
 		}
 	}
 
@@ -146,18 +152,18 @@ func (impl *DB) Create(m ModelInterface) (bool, ModelInterface, bool, error) {
 			"name":     m.DebugInfo(),
 			"error":    err,
 		}).Warn("Post resource in DB failed, create resource failed, transaction rollback.")
-		return false, nil, false, err
+		return nil, &messageTransactionError
 	}
 	committed, err := impl.SaveAndCommit(tx, record)
 	if err != nil || !committed {
-		return false, nil, false, err
+		return nil, &messageTransactionError
 	}
-	return false, record.ToModel(), true, nil
+	return record.ToModel(), nil
 }
 
 // Get is the default implement to get resource in DB.
 // If the resource does not exist in the DB return nil.
-func (impl *DB) Get(id string) ModelInterface {
+func (impl *DB) Get(id string) (ModelInterface, *Message) {
 	var (
 		name   = impl.TemplateImpl.ResourceName()
 		record = impl.TemplateImpl.NewEntity()
@@ -170,12 +176,14 @@ func (impl *DB) Get(id string) ModelInterface {
 			"id":       id,
 			"error":    err,
 		}).Warn("Get resource in DB failed, start transaction failed.")
-		return nil
+		return nil, &messageTransactionError
 	}
 	exist, err := impl.GetInternal(tx, id, record)
-	if !exist || err != nil {
-		// Rollback in GetInternal.
-		return nil
+	if !exist {
+		return nil, &messageNotExist
+	}
+	if err != nil {
+		return nil, &messageTransactionError
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
@@ -183,16 +191,15 @@ func (impl *DB) Get(id string) ModelInterface {
 			"id":       id,
 			"error":    err,
 		}).Warn("Get resource in DB failed, commit transaction failed.")
+		return nil, &messageTransactionError
 	}
-	return record.ToModel()
+	return record.ToModel(), nil
 }
 
 // Update is the default implement to update resource in DB.
-// It will return if the one exist.
 // It will return the updated resource.
-// It will return wether the operation commited.
-// It will return error if any.
-func (impl *DB) Update(id string, request UpdateRequestInterface) (bool, ModelInterface, bool, error) {
+// It will return message if any error.
+func (impl *DB) Update(id string, request UpdateRequestInterface) (ModelInterface, *Message) {
 	var (
 		name   = impl.TemplateImpl.ResourceName()
 		record = impl.TemplateImpl.NewEntity()
@@ -205,36 +212,39 @@ func (impl *DB) Update(id string, request UpdateRequestInterface) (bool, ModelIn
 			"id":       id,
 			"error":    err,
 		}).Warn("Update resource in DB failed, start transaction failed.")
-		return true, nil, false, err
+		return nil, &messageTransactionError
 	}
-	if exist, err := impl.GetInternal(tx, id, record); !exist || err != nil {
-		return false, nil, false, err
+	exist, err := impl.GetInternal(tx, id, record)
+	if !exist {
+		return nil, &messageNotExist
 	}
+	if err != nil {
+		return nil, &messageTransactionError
+	}
+
 	m := record.ToModel()
 	if err := request.UpdateModel(m); err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
 			"id":       id,
-			"error":    err}).
-			Warn("Update resource in DB failed, update model failed, transaction rollback.")
-		return true, nil, false, err
+			"error":    err,
+		}).Warn("Update resource in DB failed, update model failed, transaction rollback.")
+		return nil, &messageUnknownPropertyValue
 	}
 	record.Load(m)
 	record.SetID(id)
 	commited, err := impl.SaveAndCommit(tx, record)
 	if err != nil || !commited {
-		return true, nil, false, err
+		return nil, &messageTransactionError
 	}
-	return true, record.ToModel(), true, nil
+	return record.ToModel(), nil
 }
 
 // Delete is the default implement to delete resource from DB.
-// It will return if the one exist.
 // It will return the deleted one if commited.
-// It will return wether the operation commited.
-// It will return error if any.
-func (impl *DB) Delete(id string) (bool, ModelInterface, bool, error) {
+// It will return message if any error.
+func (impl *DB) Delete(id string) (ModelInterface, *Message) {
 	var (
 		name     = impl.TemplateImpl.ResourceName()
 		record   = impl.TemplateImpl.NewEntity()
@@ -249,12 +259,17 @@ func (impl *DB) Delete(id string) (bool, ModelInterface, bool, error) {
 			"id":       id,
 			"error":    err,
 		}).Warn("Delete resource from DB failed, start transaction failed.")
-		return true, nil, false, err
+		return nil, &messageTransactionError
 	}
-	if exist, err := impl.GetInternal(tx, id, previous); err != nil || !exist {
-		// Rollback in GetInternal.
-		return false, nil, false, err
+	exist, err := impl.GetInternal(tx, id, previous)
+	// Rollback in GetInternal.
+	if !exist {
+		return nil, &messageNotExist
 	}
+	if err != nil {
+		return nil, &messageTransactionError
+	}
+
 	record.SetID(id)
 	for _, v := range record.Association() {
 		if err := tx.Delete(v).Error; err != nil {
@@ -264,7 +279,7 @@ func (impl *DB) Delete(id string) (bool, ModelInterface, bool, error) {
 				"id":       id,
 				"error":    err,
 			}).Warn("Delete resource from DB failed, delete association failed, transaction rollback.")
-			return true, nil, false, err
+			return nil, &messageTransactionError
 		}
 	}
 	if err := tx.Delete(record).Error; err != nil {
@@ -274,7 +289,7 @@ func (impl *DB) Delete(id string) (bool, ModelInterface, bool, error) {
 			"id":       id,
 			"error":    err,
 		}).Warn("Delete resource from DB failed, delete resource failed, transaction rollback.")
-		return true, nil, false, err
+		return nil, &messageTransactionError
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
@@ -282,9 +297,9 @@ func (impl *DB) Delete(id string) (bool, ModelInterface, bool, error) {
 			"id":       id,
 			"error":    err,
 		}).Warn("Delete resource from DB failed, commit failed.")
-		return true, nil, false, err
+		return nil, &messageTransactionError
 	}
-	return true, previous.ToModel(), true, nil
+	return previous.ToModel(), nil
 }
 
 func (impl *DB) convertFilter(filter string, filterNames []string) (string, error) {
@@ -311,7 +326,7 @@ func (impl *DB) convertFilter(filter string, filterNames []string) (string, erro
 
 // GetCollection get the collection in DB.
 // It returns nil if any error.
-func (impl *DB) GetCollection(start int64, count int64, filter string) (*CollectionModel, error) {
+func (impl *DB) GetCollection(start int64, count int64, filter string) (*CollectionModel, *Message) {
 	var (
 		name             = impl.TemplateImpl.ResourceName()
 		total            int64
@@ -326,9 +341,9 @@ func (impl *DB) GetCollection(start int64, count int64, filter string) (*Collect
 		log.WithFields(log.Fields{
 			"resource": name,
 			"filter":   filter,
-			"error":    err}).
-			Warn("Get collection in DB failed, convert filter failed.")
-		return nil, err
+			"error":    err,
+		}).Warn("Get collection in DB failed, convert filter failed.")
+		return nil, &messageUnknownFilterName
 	}
 	log.WithFields(log.Fields{
 		"resource": name,
@@ -340,9 +355,9 @@ func (impl *DB) GetCollection(start int64, count int64, filter string) (*Collect
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
-			"error":    err}).
-			Warn("Get collection in DB failed, start transaction failed.")
-		return nil, err
+			"error":    err,
+		}).Warn("Get collection in DB failed, start transaction failed.")
+		return nil, &messageTransactionError
 	}
 
 	// Get total count.
@@ -352,7 +367,7 @@ func (impl *DB) GetCollection(start int64, count int64, filter string) (*Collect
 			"resource": name,
 			"error":    err,
 		}).Warn("Get collection in DB failed, get count failed.")
-		return nil, err
+		return nil, &messageTransactionError
 	}
 
 	// Find all the matches.
@@ -360,16 +375,16 @@ func (impl *DB) GetCollection(start int64, count int64, filter string) (*Collect
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
-			"error":    err}).
-			Warn("Get collection in DB failed, find resource failed.")
-		return nil, err
+			"error":    err,
+		}).Warn("Get collection in DB failed, find resource failed.")
+		return nil, &messageTransactionError
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
-			"error":    err}).
-			Warn("Get collection in DB failed, commit failed.")
-		return nil, err
+			"error":    err,
+		}).Warn("Get collection in DB failed, commit failed.")
+		return nil, &messageTransactionError
 	}
 	return impl.TemplateImpl.ConvertFindResultToCollection(start, total, recordCollection)
 }
@@ -378,7 +393,7 @@ func (impl *DB) GetCollection(start int64, count int64, filter string) (*Collect
 // It returns all the deleted resources,
 // It returnes if committed.
 // It returens error if any.
-func (impl *DB) DeleteCollection() ([]ModelInterface, bool, error) {
+func (impl *DB) DeleteCollection() ([]ModelInterface, *Message) {
 	var (
 		name             = impl.TemplateImpl.ResourceName()
 		recordCollection = impl.TemplateImpl.NewEntityCollection()
@@ -391,45 +406,45 @@ func (impl *DB) DeleteCollection() ([]ModelInterface, bool, error) {
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
-			"error":    err}).
-			Warn("Get collection in DB failed, start transaction failed.")
-		return nil, false, err
+			"error":    err,
+		}).Warn("Get collection in DB failed, start transaction failed.")
+		return nil, &messageTransactionError
 	}
 
 	if err := tx.Find(recordCollection).Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
-			"error":    err}).
-			Warn("Delete collection in DB failed, find resource failed.")
-		return nil, false, err
+			"error":    err,
+		}).Warn("Delete collection in DB failed, find resource failed.")
+		return nil, &messageTransactionError
 	}
 	for _, v := range tables {
 		if err := tx.Delete(v).Error; err != nil {
 			tx.Rollback()
 			log.WithFields(log.Fields{
 				"resource": name,
-				"error":    err}).
-				Warn("Delete collection in DB failed, delete resources failed, transaction rollback.")
-			return nil, false, err
+				"error":    err,
+			}).Warn("Delete collection in DB failed, delete resources failed, transaction rollback.")
+			return nil, &messageTransactionError
 		}
 	}
-	ret, err := impl.TemplateImpl.ConvertFindResultToModel(recordCollection)
-	if err != nil {
+	ret, message := impl.TemplateImpl.ConvertFindResultToModel(recordCollection)
+	if message != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
-			"error":    err}).
-			Warn("Delete collection in DB failed, convert find result failed, transaction rollback.")
-		return nil, false, err
+			"message":    message.ID,
+		}).Warn("Delete collection in DB failed, convert find result failed, transaction rollback.")
+		return nil, message
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
-			"error":    err}).
-			Warn("Delete collection in DB failed, commit failed.")
-		return nil, false, err
+			"error":    err,
+		}).Warn("Delete collection in DB failed, commit failed.")
+		return nil, &messageTransactionError
 	}
-	return ret, true, nil
+	return ret, nil
 }
 
 // TableInfo The tables in DB.

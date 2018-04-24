@@ -39,11 +39,12 @@ func (impl *StudentDB) NeedCheckDuplication() bool {
 }
 
 // ConvertFindResultToCollection convert the Find() result to collection mode.
-func (impl *StudentDB) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, error) {
+func (impl *StudentDB) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.Message) {
 	collection, ok := result.(*[]entity.Student)
 	if !ok {
 		log.Error("StudentDB.ConvertFindResult() failed.")
-		return nil, base.ErrorDataConvert
+		message := base.NewMessageInternalError()
+		return nil, &message
 	}
 	ret := base.CollectionModel{}
 	ret.Start = start
@@ -56,11 +57,12 @@ func (impl *StudentDB) ConvertFindResultToCollection(start int64, total int64, r
 }
 
 // ConvertFindResultToModel convert the Find() result to model slice
-func (impl *StudentDB) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, error) {
+func (impl *StudentDB) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.Message) {
 	collection, ok := result.(*[]entity.Student)
 	if !ok {
 		log.Error("StudentDB.ConvertFindResult() failed.")
-		return nil, base.ErrorDataConvert
+		message := base.NewMessageInternalError()
+		return nil, &message
 	}
 	ret := make([]base.ModelInterface, 0)
 	for _, v := range *collection {

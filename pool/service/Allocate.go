@@ -23,15 +23,9 @@ func (s *Allocate) Perform(id string, request base.ActionRequestInterface) (base
 	if allocateRequest.Key != nil {
 		key = *allocateRequest.Key
 	}
-	exist, address, updatedPool, commited, err := ipv4PoolDB.AllocateIPv4Address(id, key)
-	if !exist {
-		return nil, []base.Message{base.NewMessageNotExist()}
-	}
-	if exist && address == "" && !commited && err == nil {
-		return nil, []base.Message{base.NewMessageIPv4PoolEmpty()}
-	}
-	if err != nil || !commited {
-		return nil, []base.Message{base.NewMessageTransactionError()}
+	address, updatedPool, message := ipv4PoolDB.AllocateIPv4Address(id, key)
+	if message != nil {
+		return nil, []base.Message{*message}
 	}
 	response.Address = address
 	if err := response.Pool.Load(updatedPool); err != nil {

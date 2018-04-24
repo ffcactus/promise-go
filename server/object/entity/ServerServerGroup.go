@@ -35,13 +35,12 @@ func (e *ServerServerGroup) Preload() []string {
 
 // Association return all the assocations that need to delete when deleting a resource.
 func (e *ServerServerGroup) Association() []interface{} {
-	ret := []interface{}{}
-	return ret
+	return []interface{}{}
 }
 
 // Tables returns the tables to delete when you want delete all the resources.
 func (e *ServerServerGroup) Tables() []interface{} {
-	return []interface{}{}
+	return []interface{}{new(ServerServerGroup)}
 }
 
 // FilterNameList return all the property name that can be used in filter.

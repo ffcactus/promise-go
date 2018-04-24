@@ -21,23 +21,25 @@ type ServerGroup struct {
 
 // CreateDefaultServerGroup will create the default server group.
 func CreateDefaultServerGroup() {
-	var request dto.PostServerGroupRequest
+	var (
+		request dto.PostServerGroupRequest
+		response dto.GetServerGroupResponse
+	)
 	request.Name = "all"
 	request.Description = "The default servergroup that includes all the servers."
-	exist, sg, committed, err := serverGroupDB.Create(request.ToModel())
-	if exist {
+	sg, message := serverGroupDB.Create(request.ToModel())
+	if message != nil && message.ID == base.MessageDuplicate {
 		log.Debug("The default servergroup exist.")
 	}
-	if err != nil || !committed {
+	if message != nil {
 		log.Fatal("Failed to create default servergroup.")
-	} else {
-		var response dto.GetServerGroupResponse
-		response.Load(sg)
-		eventService.DispatchCreateEvent(&response)
-		log.WithFields(log.Fields{
-			"id": sg.GetID(),
-		}).Info("Default servergroup created.")
 	}
+	
+	response.Load(sg)
+	eventService.DispatchCreateEvent(&response)
+	log.WithFields(log.Fields{
+		"id": sg.GetID(),
+	}).Info("Default servergroup created.")
 	db.DefaultServerGroupID = sg.GetID()
 }
 

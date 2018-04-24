@@ -40,11 +40,12 @@ func (impl *ServerServerGroup) NeedCheckDuplication() bool {
 }
 
 // ConvertFindResultToCollection convert the Find() result to collection mode.
-func (impl *ServerServerGroup) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, error) {
+func (impl *ServerServerGroup) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.Message) {
 	collection, ok := result.(*[]entity.ServerServerGroup)
 	if !ok {
 		log.Error("ServerServerGroup.ConvertFindResult() failed, convert data failed.")
-		return nil, base.ErrorDataConvert
+		message := base.NewMessageInternalError()
+		return nil, &message
 	}
 	ret := base.CollectionModel{}
 	ret.Start = start
@@ -57,11 +58,12 @@ func (impl *ServerServerGroup) ConvertFindResultToCollection(start int64, total 
 }
 
 // ConvertFindResultToModel convert the Find() result to model slice
-func (impl *ServerServerGroup) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, error) {
+func (impl *ServerServerGroup) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.Message) {
 	collection, ok := result.(*[]entity.ServerServerGroup)
 	if !ok {
 		log.Error("ServerServerGroup.ConvertFindResult() failed, convert data failed.")
-		return nil, base.ErrorDataConvert
+		message := base.NewMessageInternalError()
+		return nil, &message
 	}
 	ret := make([]base.ModelInterface, 0)
 	for _, v := range *collection {
