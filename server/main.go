@@ -35,7 +35,7 @@ func main() {
 	// go service.FindServerStateAdded()
 	serverNS := beego.NewNamespace(
 		base.RootURL+base.ServerBaseURI,
-		beego.NSRouter("/", &base.IDController{
+		beego.NSRouter("/", &base.RootController{
 			TemplateImpl: new(controller.ServerRoot),
 		}),
 		beego.NSRouter("/action/:action", &base.ActionController{
@@ -63,7 +63,7 @@ func main() {
 
 	serverServerGroupNS := beego.NewNamespace(
 		base.RootURL+base.ServerServerGroupBaseURI,
-		beego.NSRouter("/", &base.IDController{
+		beego.NSRouter("/", &base.RootController{
 			TemplateImpl: new(controller.ServerServerGroupRoot),
 		}),
 		beego.NSRouter("/:id", &base.IDController{

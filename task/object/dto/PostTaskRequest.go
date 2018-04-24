@@ -2,8 +2,8 @@ package dto
 
 import (
 	"promise/base"
-	"promise/task/object/model"
 	"promise/task/object/message"
+	"promise/task/object/model"
 )
 
 // PostTaskRequest Post task request DTO.

@@ -399,7 +399,7 @@ func (impl *DB) DeleteCollection() ([]ModelInterface, *Message) {
 		log.WithFields(log.Fields{
 			"resource": name,
 			"error":    err,
-		}).Warn("Get collection in DB failed, start transaction failed.")
+		}).Warn("Delete collection in DB failed, start transaction failed.")
 		return nil, NewMessageTransactionError()
 	}
 
@@ -425,7 +425,7 @@ func (impl *DB) DeleteCollection() ([]ModelInterface, *Message) {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
-			"message":    message.ID,
+			"message":  message.ID,
 		}).Warn("Delete collection in DB failed, convert find result failed, transaction rollback.")
 		return nil, message
 	}
@@ -451,7 +451,7 @@ var connection *gorm.DB
 func InitConnection() error {
 	if connection == nil {
 		log.Info("Init DB connection.")
-		args := "host=localhost port=5432 user=postgres dbname=promise sslmode=disable password=iforgot"
+		args := "host=10.93.81.79 port=5432 user=postgres dbname=promise sslmode=disable password=iforgot"
 		db, err := gorm.Open("postgres", args)
 		// args := "host=100.100.194.103 port=5432 user=gaussdba dbname=NETADAPTOR sslmode=disable password=Huawei12#$"
 		// db, err := gorm.Open("gauss", args)

@@ -29,14 +29,14 @@ func (c *IDController) Get() {
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.ResourceName(),
 		"id":       id,
-	}).Debug("Get resource.")
+	}).Debug("IDController get resource.")
 	model, messages := c.TemplateImpl.Service().Get(id)
 	if messages != nil {
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),
 			"id":       id,
 			"message":  messages[0].ID,
-		}).Warn("Get resource failed.")
+		}).Warn("IDController get resource failed.")
 		c.Data["json"] = &messages
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
@@ -58,7 +58,7 @@ func (c *IDController) Delete() {
 			"resource": c.TemplateImpl.ResourceName(),
 			"id":       id,
 			"message":  messages[0].ID,
-		}).Warn("Delete resource failed.")
+		}).Warn("IDController delete resource failed.")
 		c.Data["json"] = &messages
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
@@ -67,7 +67,7 @@ func (c *IDController) Delete() {
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.ResourceName(),
 		"id":       id,
-	}).Info("Delete resource done.")
+	}).Info("IDController delete resource done.")
 	c.Ctx.Output.SetStatus(http.StatusAccepted)
 	c.ServeJSON()
 }

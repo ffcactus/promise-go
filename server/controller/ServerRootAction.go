@@ -9,7 +9,7 @@ import (
 var (
 	discover = base.ActionInfo{
 		Name:    "discover",
-		Type:    base.ActionTypeAsych,
+		Type:    base.ActionTypeSych,
 		Request: new(dto.DiscoverServerRequest),
 		Service: new(service.Discover),
 	}

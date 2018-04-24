@@ -11,12 +11,13 @@ type Base struct {
 	ErrorHandler
 	CredentialHandler
 	ServerClient serverClient.ServerClientInterface
-	DB           db.Server
+	DB db.Server
 }
 
 // CreateServerContext Create server context by server.
 func CreateServerContext(server *model.Server) *Base {
 	var context Base
+	context.DB.TemplateImpl = new(db.Server)
 	context.ServerClient = serverClient.GetServerClient(server)
 	return &context
 }

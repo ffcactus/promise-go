@@ -10,7 +10,7 @@ import (
 
 // DefaultServerGroupID records the ID of default servergroup. We don't have to retrieve it each time.
 var (
-	DefaultServerGroupID string
+	DefaultServerGroupID    string
 	messageTransactionError = base.NewMessageTransactionError()
 )
 
@@ -116,14 +116,14 @@ func (impl *ServerGroup) DeleteCollection() ([]base.ModelInterface, *base.Messag
 			"resource": name,
 			"error":    err,
 		}).Warn("Delete collection in DB failed.")
-		return nil, base.NewMessageTransactionError()		
+		return nil, base.NewMessageTransactionError()
 	}
 	ret, message := impl.TemplateImpl.ConvertFindResultToModel(recordCollection)
 	if message != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
-			"message":    message.ID,
+			"message":  message.ID,
 		}).Warn("Delete collection in DB failed, convert find result failed, transaction rollback.")
 		return nil, message
 	}
@@ -134,5 +134,5 @@ func (impl *ServerGroup) DeleteCollection() ([]base.ModelInterface, *base.Messag
 		}).Warn("Delete collection in DB failed, commit failed.")
 		return nil, base.NewMessageTransactionError()
 	}
-	return ret, nil	
+	return ret, nil
 }

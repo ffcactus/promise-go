@@ -37,7 +37,7 @@ func (c *RootController) Post() {
 			"resource": c.TemplateImpl.ResourceName(),
 			"error":    err,
 			"message":  messages[0].ID,
-		}).Warn("Post resource failed, bad request.")
+		}).Warn("RootController post resource failed, bad request.")
 		c.Data["json"] = &messages
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
@@ -49,7 +49,7 @@ func (c *RootController) Post() {
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),
 			"message":  messages[0].ID,
-		}).Warn("Post resource failed, request validation failed.")
+		}).Warn("RootController post resource failed, request validation failed.")
 		c.Data["json"] = &messages
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
@@ -58,12 +58,12 @@ func (c *RootController) Post() {
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.ResourceName(),
 		"request":  request.DebugInfo(),
-	}).Info("Post resource.")
+	}).Info("RootController post resource.")
 	model, messages := c.TemplateImpl.Service().Create(request)
 	if messages != nil {
 		log.WithFields(log.Fields{
 			"message": messages[0].ID,
-		}).Warn("Post resource failed, POST callback return message.")
+		}).Warn("RootController post resource failed, POST callback return message.")
 		c.Data["json"] = messages
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
@@ -74,7 +74,7 @@ func (c *RootController) Post() {
 		"resource": c.TemplateImpl.ResourceName(),
 		"request":  request.DebugInfo(),
 		"ID":       response.GetID(),
-	}).Info("Post resource done.")
+	}).Info("RootController post resource done.")
 	c.Data["json"] = response
 	c.Ctx.Output.SetStatus(http.StatusCreated)
 	c.ServeJSON()
@@ -91,7 +91,7 @@ func (c *RootController) Get() {
 		"resource": c.TemplateImpl.ResourceName(),
 		"start":    start,
 		"count":    count,
-	}).Info("Get resource collection.")
+	}).Info("RootController get resource collection.")
 	if start != "" {
 		_startInt, err := strconv.ParseInt(start, 10, 64)
 		if err != nil || _startInt < 0 {
@@ -119,7 +119,7 @@ func (c *RootController) Get() {
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),
 			"message":  messages[0].ID,
-		}).Warn("Get resource collection failed, parameter error.")
+		}).Warn("RootController get resource collection failed, parameter error.")
 		c.Data["json"] = &messages
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
@@ -130,7 +130,7 @@ func (c *RootController) Get() {
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),
 			"message":  messages[0].ID,
-		}).Warn("Get resource collection failed.")
+		}).Warn("RootController get resource collection failed.")
 		c.Data["json"] = &messages
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
@@ -143,7 +143,7 @@ func (c *RootController) Get() {
 			"resource": c.TemplateImpl.ResourceName(),
 			"message":  messages[0].ID,
 			"error":    err,
-		}).Warn("Convert resource collection response failed.")
+		}).Warn("RootController convert resource collection response failed.")
 		c.Data["json"] = &messages
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
@@ -154,7 +154,7 @@ func (c *RootController) Get() {
 		"count":    countInt,
 		"filter":   filter,
 		"resource": c.TemplateImpl.ResourceName(),
-	}).Info("Get resource collection done.")
+	}).Info("RootController get resource collection done.")
 	c.Data["json"] = response
 	c.Ctx.Output.SetStatus(http.StatusOK)
 	c.ServeJSON()
@@ -172,7 +172,7 @@ func (c *RootController) Delete() {
 	c.Ctx.Output.SetStatus(http.StatusAccepted)
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.ResourceName(),
-	}).Info("DELETE resource collection done.")
+	}).Info("RootController delete resource collection done.")
 	c.ServeJSON()
 }
 

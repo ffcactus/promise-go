@@ -25,7 +25,7 @@ func (c *ServerRoot) ResourceName() string {
 }
 
 // Request creates a new request DTO.
-func (c *ServerRoot) Request() base.RequestInterface {
+func (c *ServerRoot) Request() base.PostRequestInterface {
 	return nil
 }
 

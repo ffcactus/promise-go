@@ -4,8 +4,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	"promise/auth/db"
 	"promise/auth/object/dto"
-	"promise/auth/object/model"
 	"promise/auth/object/message"
+	"promise/auth/object/model"
 	"promise/base"
 )
 

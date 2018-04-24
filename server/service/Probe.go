@@ -12,13 +12,18 @@ import (
 func Probe(request *dto.DiscoverServerRequest) (*model.ServerBasicInfo, error) {
 	c := client.FindBestClient(request.Hostname, request.Username, request.Password)
 	if c == nil {
-		log.WithFields(log.Fields{"hostname": request.Hostname}).Warn("Probe server failed, can not find client.")
+		log.WithFields(log.Fields{
+			"hostname": request.Hostname,
+		}).Warn("Probe server failed, can not find client.")
 		return nil, fmt.Errorf("failed to get server client")
 	}
 
 	serverBasicInfo, err := c.GetBasicInfo()
 	if err != nil {
-		log.WithFields(log.Fields{"hostname": request.Hostname, "error": err}).Warn("Probe server failed, can not get basic info.")
+		log.WithFields(log.Fields{
+			"hostname": request.Hostname, 
+			"error": err,
+		}).Warn("Probe server failed, can not get basic info.")
 	}
 
 	serverBasicInfo.Hostname = request.Hostname

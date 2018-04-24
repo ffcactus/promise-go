@@ -25,10 +25,10 @@ type EntityRefType string
 
 // Entity is the entity used in Promise project.
 type Entity struct {
-	ID           string          `gorm:"column:ID;primary_key"`
-	Category     string          `gorm:"column:Category"`
-	CreatedAt    time.Time       `gorm:"column:CreatedAt"`
-	UpdatedAt    time.Time       `gorm:"column:UpdatedAt"`
+	ID        string    `gorm:"column:ID;primary_key"`
+	Category  string    `gorm:"column:Category"`
+	CreatedAt time.Time `gorm:"column:CreatedAt"`
+	UpdatedAt time.Time `gorm:"column:UpdatedAt"`
 }
 
 // GetID return the ID.
@@ -66,5 +66,5 @@ type ElementEntityRefType uint64
 
 // ElementEntity represents an element in an array in entity.
 type ElementEntity struct {
-	ID           uint64                 `gorm:"column:ID;primary_key"`
+	ID uint64 `gorm:"column:ID;primary_key"`
 }

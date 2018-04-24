@@ -22,7 +22,7 @@ type ServerGroup struct {
 // CreateDefaultServerGroup will create the default server group.
 func CreateDefaultServerGroup() {
 	var (
-		request dto.PostServerGroupRequest
+		request  dto.PostServerGroupRequest
 		response dto.GetServerGroupResponse
 	)
 	request.Name = "all"
@@ -34,7 +34,7 @@ func CreateDefaultServerGroup() {
 	if message != nil {
 		log.Fatal("Failed to create default servergroup.")
 	}
-	
+
 	response.Load(sg)
 	eventService.DispatchCreateEvent(&response)
 	log.WithFields(log.Fields{

@@ -45,8 +45,17 @@ func (c *ActionController) Post() {
 		action     = c.Ctx.Input.Param(":action")
 		id         = c.Ctx.Input.Param(":id")
 		actionInfo = c.TemplateImpl.ActionInfo()
-		service    ServiceInterface
+		
 		request    RequestInterface
+		updateRequest UpdateRequestInterface
+		actionRequest ActionRequestInterface
+		asychActionRequest AsychActionRequestInterface
+
+		service    ServiceInterface
+		updateService CRUDServiceInterface
+		actionService ActionServiceInterface
+		asychActionService AsychActionServiceInterface
+
 		response   ResponseInterface
 		taskURI    *string
 		actionType string
@@ -69,7 +78,7 @@ func (c *ActionController) Post() {
 			"type":     actionType,
 			"id":       id,
 			"message":  messages[0].ID,
-		}).Warn("Perform action failed, unknown action.")
+		}).Warn("ActionController perform action failed, unknown action.")
 		c.Data["json"] = &messages
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
@@ -87,7 +96,7 @@ func (c *ActionController) Post() {
 				"id":       id,
 				"error":    err,
 				"message":  messages[0].ID,
-			}).Warn("Perform action failed, bad request.")
+			}).Warn("ActionController perform action failed, bad request.")
 			c.Data["json"] = &messages
 			c.Ctx.Output.SetStatus(messages[0].StatusCode)
 			c.ServeJSON()
@@ -102,7 +111,7 @@ func (c *ActionController) Post() {
 				"type":     actionType,
 				"id":       id,
 				"message":  messages[0].ID,
-			}).Warn("Perform action failed, request validation failed.")
+			}).Warn("ActionController perform action failed, request validation failed.")
 			c.Data["json"] = &messages
 			c.Ctx.Output.SetStatus(messages[0].StatusCode)
 			c.ServeJSON()
@@ -119,32 +128,32 @@ func (c *ActionController) Post() {
 		"action":   action,
 		"request":  requestDebugInfo,
 		"id":       id,
-	}).Info("Perform action.")
+	}).Info("ActionController perform action.")
 	// Now the request is correct, select the right runtine by action type.
 	ok := true
 	switch actionType {
 	case ActionTypeUpdate:
-		updateRequest, updateService, ok := c.convertToUpdate(request, service)
+		updateRequest, updateService, ok = c.convertToUpdate(request, service)
 		if ok {
 			response, messages = updateService.Update(id, updateRequest)
 		}
 	case ActionTypeSych:
-		actionRequest, actionService, ok := c.convertToAction(request, service)
+		actionRequest, actionService, ok = c.convertToAction(request, service)
 		if ok {
 			response, messages = actionService.Perform(id, actionRequest)
 		}
 	case ActionTypeAsych:
-		asychActionRequest, asychActionService, ok := c.convertToAsychAction(request, service)
+		asychActionRequest, asychActionService, ok = c.convertToAsychAction(request, service)
 		if ok {
 			response, taskURI, messages = asychActionService.PerformAsych(id, asychActionRequest)
-		}
+		}		
 	default:
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),
 			"action":   action,
 			"type":     actionType,
 			"id":       id,
-		}).Warn("Perform action failed, Unknown action type.")
+		}).Warn("ActionController perform action failed, Unknown action type.")
 		ok = false
 	}
 	if !ok {
@@ -155,7 +164,7 @@ func (c *ActionController) Post() {
 			"type":     actionType,
 			"id":       id,
 			"message":  messages[0].ID,
-		}).Warn("Perform action failed, convert request and service failed.")
+		}).Warn("ActionController perform action failed, convert request and service failed.")
 		c.Data["json"] = &messages
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
@@ -168,20 +177,24 @@ func (c *ActionController) Post() {
 			"type":     actionType,
 			"id":       id,
 			"message":  messages[0].ID,
-		}).Warn("Perform action failed.")
+		}).Warn("ActionController perform action failed.")
 		c.Data["json"] = &messages
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()
 		return
+	}
+	responseDebugInfo := ""
+	if response != nil {
+		responseDebugInfo = response.DebugInfo()
 	}
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.ResourceName(),
 		"action":   action,
 		"type":     actionType,
 		"id":       id,
-		"response": response.DebugInfo(),
+		"response": responseDebugInfo,
 		"task":     taskURI,
-	}).Info("Perform action done.")
+	}).Info("ActionController perform action done.")
 	if taskURI != nil {
 		c.Ctx.Output.Header("Location", *taskURI)
 	}

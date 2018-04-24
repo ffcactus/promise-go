@@ -76,10 +76,10 @@ func (impl *IPv4Pool) ConvertFindResultToModel(result interface{}) ([]base.Model
 // It will return message if any error.
 func (impl *IPv4Pool) AllocateIPv4Address(id string, key string) (string, base.ModelInterface, *base.Message) {
 	var (
-		c = impl.TemplateImpl.GetConnection()
+		c      = impl.TemplateImpl.GetConnection()
 		record = new(entity.IPv4Pool)
 	)
-	
+
 	tx := c.Begin()
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
@@ -169,7 +169,7 @@ func (impl *IPv4Pool) AllocateIPv4Address(id string, key string) (string, base.M
 				if commited && err == nil {
 					return record.Ranges[i].Addresses[j].Address, record.ToModel(), nil
 				}
-				return  "", nil, base.NewMessageTransactionError()
+				return "", nil, base.NewMessageTransactionError()
 			}
 		}
 	}
@@ -187,10 +187,10 @@ func (impl *IPv4Pool) AllocateIPv4Address(id string, key string) (string, base.M
 // It will return message if any error.
 func (impl *IPv4Pool) FreeIPv4Address(id string, address string) (base.ModelInterface, *base.Message) {
 	var (
-		c = impl.TemplateImpl.GetConnection()
-		record= new(entity.IPv4Pool)
+		c      = impl.TemplateImpl.GetConnection()
+		record = new(entity.IPv4Pool)
 	)
-	
+
 	tx := c.Begin()
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{

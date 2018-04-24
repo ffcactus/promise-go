@@ -3,8 +3,8 @@ package dto
 import (
 	"net"
 	"promise/base"
-	"promise/pool/object/model"
 	"promise/pool/object/message"
+	"promise/pool/object/model"
 )
 
 // PostIPv4PoolRequest is the request DTO.

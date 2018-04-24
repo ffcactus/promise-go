@@ -4,8 +4,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	"net"
 	"promise/base"
-	"promise/pool/object/model"
 	"promise/pool/object/message"
+	"promise/pool/object/model"
 )
 
 // FreeIPv4Request is the DTO to free an IP.

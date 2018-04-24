@@ -33,7 +33,6 @@ const (
 	MessageUnknownFilterName = "Promise.Message.UnknownFilterName"
 )
 
-
 const (
 	// SupportNotExist is Support ID.
 	SupportNotExist = "Promise.Support.NotExist"
@@ -50,7 +49,6 @@ const (
 )
 
 // For auth.
-
 
 // Argument is used to replace a portion in a string. For example, to express
 // an error happend on a server, we need replace the {0} in the string below:
@@ -244,5 +242,3 @@ func NewSupportTransactionError() Support {
 	ret.Solution = "Try again later or contact support."
 	return ret
 }
-
-

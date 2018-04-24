@@ -18,7 +18,7 @@ type Server struct {
 
 // ResourceName get the resource name.
 func (impl *Server) ResourceName() string {
-	return "servergroup"
+	return "server"
 }
 
 // NewEntity return the a new entity.
@@ -98,7 +98,7 @@ func (impl *Server) IsServerExist(s *model.Server) (bool, base.ModelInterface) {
 		return false, nil
 	}
 
-	c.Where("\"Physical_UUID\" = ?", s.PhysicalUUID).First(server)
+	c.Where("\"PhysicalUUID\" = ?", s.PhysicalUUID).First(server)
 	if s.PhysicalUUID == server.PhysicalUUID {
 		return true, server.ToModel()
 	}
