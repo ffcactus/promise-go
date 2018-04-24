@@ -13,32 +13,32 @@ var (
 	}
 )
 
-// TaskRootController is the root controller for task.
-type TaskRootController struct {
+// TaskRoot is the root controller for task.
+type TaskRoot struct {
 }
 
 // ResourceName returns the name this controller handle of.
-func (c *TaskRootController) ResourceName() string {
+func (c *TaskRoot) ResourceName() string {
 	return "task"
 }
 
 // Request creates a new request DTO.
-func (c *TaskRootController) Request() base.PostRequestInterface {
+func (c *TaskRoot) Request() base.PostRequestInterface {
 	return new(dto.PostTaskRequest)
 }
 
 // Response creates a new response DTO.
-func (c *TaskRootController) Response() base.GetResponseInterface {
+func (c *TaskRoot) Response() base.GetResponseInterface {
 	return new(dto.GetTaskResponse)
 }
 
 // Service returns the service.
-func (c *TaskRootController) Service() base.CRUDServiceInterface {
+func (c *TaskRoot) Service() base.CRUDServiceInterface {
 	return taskService
 }
 
 // ConvertCollectionModel convert data to concrete DTO.
-func (c *TaskRootController) ConvertCollectionModel(m *base.CollectionModel) (interface{}, error) {
+func (c *TaskRoot) ConvertCollectionModel(m *base.CollectionModel) (interface{}, error) {
 	ret := new(dto.GetTaskCollectionResponse)
 	if err := ret.Load(m); err != nil {
 		return nil, err

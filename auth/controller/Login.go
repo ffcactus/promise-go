@@ -8,13 +8,13 @@ import (
 	"promise/auth/service"
 )
 
-// LoginController Login controller
-type LoginController struct {
+// Login Login controller
+type Login struct {
 	beego.Controller
 }
 
 // Post Post Login.
-func (c *LoginController) Post() {
+func (c *Login) Post() {
 	log.Debug("POST Login request.")
 	request := new(dto.PostLoginRequest)
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {

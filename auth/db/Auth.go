@@ -7,18 +7,18 @@ import (
 	"promise/base"
 )
 
-// AuthDBImplement Auth DB implementation.
-type AuthDBImplement struct {
+// Auth Auth DB implementation.
+type Auth struct {
 }
 
 // GetDBInstance Get DB instance.
-func GetDBInstance() AuthDBInterface {
-	return &AuthDBImplement{}
+func GetDBInstance() *Auth {
+	return &Auth{}
 }
 
 // GetAccountByName Get user by name.
 // In any case that the user can't be found, return nil.
-func (impl *AuthDBImplement) GetAccountByName(username string) *model.Account {
+func (impl *Auth) GetAccountByName(username string) *model.Account {
 	c := base.GetConnection()
 	account := new(entity.Account)
 	if c.Where("Name = ?", username).First(account).RecordNotFound() {
@@ -28,7 +28,7 @@ func (impl *AuthDBImplement) GetAccountByName(username string) *model.Account {
 }
 
 // PostAccount Post a user in DB.
-func (impl *AuthDBImplement) PostAccount(account *model.Account) *model.Account {
+func (impl *Auth) PostAccount(account *model.Account) *model.Account {
 	c := base.GetConnection()
 	e := new(entity.Account)
 	e.Load(account)
@@ -39,7 +39,7 @@ func (impl *AuthDBImplement) PostAccount(account *model.Account) *model.Account 
 }
 
 // PostSession Post a session in DB.
-func (impl *AuthDBImplement) PostSession(session *model.Session) *model.Session {
+func (impl *Auth) PostSession(session *model.Session) *model.Session {
 	c := base.GetConnection()
 	e := new(entity.Session)
 	e.Load(session)
@@ -48,7 +48,7 @@ func (impl *AuthDBImplement) PostSession(session *model.Session) *model.Session 
 }
 
 // GetSessionByToken Get session by token.
-func (impl *AuthDBImplement) GetSessionByToken(token string) *model.Session {
+func (impl *Auth) GetSessionByToken(token string) *model.Session {
 	c := base.GetConnection()
 	session := new(entity.Session)
 	if c.Where("Token = ?", token).First(session).RecordNotFound() {

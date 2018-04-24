@@ -1,4 +1,4 @@
-all: student global auth ws task server pool
+all: global auth ws task server pool
 
 global:
 	$(MAKE) -C global
@@ -12,8 +12,6 @@ server:
 	$(MAKE) -C server
 pool:
 	$(MAKE) -C pool
-student:
-	$(MAKE) -C student
  
 clean:
 	$(MAKE) -C global clean
@@ -22,7 +20,6 @@ clean:
 	$(MAKE) -C ws clean
 	$(MAKE) -C server clean
 	$(MAKE) -C pool clean
-	$(MAKE) -C student clean
 
 start:
 	# Make sure the start order is right.
@@ -31,6 +28,5 @@ start:
 	$(MAKE) -C task start
 	$(MAKE) -C server start
 	$(MAKE) -C pool start
-	$(MAKE) -C student start
 
-.PHONY: global auth task ws server pool student clean start
+.PHONY: global auth task ws server pool clean start

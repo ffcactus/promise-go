@@ -15,13 +15,13 @@ func main() {
 	ns := beego.NewNamespace(
 		base.RootURL+base.TaskBaseURI,
 		beego.NSRouter("/", &base.RootController{
-			TemplateImpl: new(controller.TaskRootController),
+			TemplateImpl: new(controller.TaskRoot),
 		}),
 		beego.NSRouter("/:id", &base.IDController{
-			TemplateImpl: new(controller.TaskIDController),
+			TemplateImpl: new(controller.TaskID),
 		}),
 		beego.NSRouter("/:id/action/:action", &base.ActionController{
-			TemplateImpl: new(controller.TaskActionController),
+			TemplateImpl: new(controller.TaskAction),
 		}),
 	)
 	beego.AddNamespace(ns)

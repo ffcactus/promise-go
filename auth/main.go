@@ -35,7 +35,7 @@ func main() {
 	initDB()
 	ns := beego.NewNamespace(
 		base.RootURL+base.AuthBaseURI,
-		beego.NSRouter("/login", &controller.LoginController{}),
+		beego.NSRouter("/login", &controller.Login{}),
 	)
 	beego.AddNamespace(ns)
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{

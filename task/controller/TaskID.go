@@ -5,21 +5,21 @@ import (
 	"promise/task/object/dto"
 )
 
-// TaskIDController Task controller
-type TaskIDController struct {
+// TaskID Task controller
+type TaskID struct {
 }
 
 // ResourceName returns the name this controller handle of.
-func (c *TaskIDController) ResourceName() string {
+func (c *TaskID) ResourceName() string {
 	return "task"
 }
 
 // Response creates a new response DTO.
-func (c *TaskIDController) Response() base.GetResponseInterface {
+func (c *TaskID) Response() base.GetResponseInterface {
 	return new(dto.GetTaskResponse)
 }
 
 // Service returns the service.
-func (c *TaskIDController) Service() base.CRUDServiceInterface {
+func (c *TaskID) Service() base.CRUDServiceInterface {
 	return taskService
 }

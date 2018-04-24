@@ -23,16 +23,16 @@ var (
 	actionInfo = []base.ActionInfo{allocate, free}
 )
 
-// IPv4ActionController is implements ActionControllerTemplateInterface.
-type IPv4ActionController struct {
+// IPv4Action is implements ActionControllerTemplateInterface.
+type IPv4Action struct {
 }
 
 // ResourceName returns the name this controller handle of.
-func (c *IPv4ActionController) ResourceName() string {
+func (c *IPv4Action) ResourceName() string {
 	return "ipv4"
 }
 
 // ActionInfo returns the name this controller handle of.
-func (c *IPv4ActionController) ActionInfo() []base.ActionInfo {
+func (c *IPv4Action) ActionInfo() []base.ActionInfo {
 	return actionInfo
 }

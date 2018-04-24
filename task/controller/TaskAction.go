@@ -22,16 +22,16 @@ var (
 	actionInfo = []base.ActionInfo{updateTaskStep, updateTask}
 )
 
-// TaskActionController is implements ActionControllerTemplateInterface.
-type TaskActionController struct {
+// TaskAction is implements ActionControllerTemplateInterface.
+type TaskAction struct {
 }
 
 // ResourceName returns the name this controller handle of.
-func (c *TaskActionController) ResourceName() string {
+func (c *TaskAction) ResourceName() string {
 	return "task"
 }
 
 // ActionInfo returns the name this controller handle of.
-func (c *TaskActionController) ActionInfo() []base.ActionInfo {
+func (c *TaskAction) ActionInfo() []base.ActionInfo {
 	return actionInfo
 }

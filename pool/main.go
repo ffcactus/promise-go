@@ -33,13 +33,13 @@ func main() {
 	ipv4 := beego.NewNamespace(
 		base.RootURL+base.IDPoolBaseURI,
 		beego.NSRouter("/ipv4", &base.RootController{
-			TemplateImpl: new(controller.IPv4RootController),
+			TemplateImpl: new(controller.IPv4Root),
 		}),
 		beego.NSRouter("/ipv4/:id", &base.IDController{
-			TemplateImpl: new(controller.IPv4IDController),
+			TemplateImpl: new(controller.IPv4ID),
 		}),
 		beego.NSRouter("/ipv4/:id/action/:action", &base.ActionController{
-			TemplateImpl: new(controller.IPv4ActionController),
+			TemplateImpl: new(controller.IPv4Action),
 		}),
 	)
 	beego.AddNamespace(ipv4)
