@@ -19,9 +19,7 @@ func (impl *Task) ResourceName() string {
 
 // NewEntity return the a new entity.
 func (impl *Task) NewEntity() base.EntityInterface {
-	e := new(entity.Task)
-	e.Entity.TemplateImpl = e
-	return e
+	return new(entity.Task)
 }
 
 // NewEntityCollection return a collection of entity.

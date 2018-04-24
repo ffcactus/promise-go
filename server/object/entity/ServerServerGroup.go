@@ -69,3 +69,12 @@ func (e *ServerServerGroup) ToModel() base.ModelInterface {
 	m.ServerGroupID = e.ServerGroupID
 	return &m
 }
+
+// ToCollectionMember convert the entity to member.
+func (e *ServerServerGroup) ToCollectionMember() base.CollectionMemberModelInterface {
+	m := new(model.ServerServerGroupCollectionMember)
+	base.EntityToMember(&e.Entity, &m.CollectionMemberModel)
+	m.ServerID = e.ServerID
+	m.ServerGroupID = e.ServerGroupID
+	return m
+}

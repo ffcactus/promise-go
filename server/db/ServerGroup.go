@@ -26,9 +26,7 @@ func (impl *ServerGroup) ResourceName() string {
 
 // NewEntity return the a new entity.
 func (impl *ServerGroup) NewEntity() base.EntityInterface {
-	e := new(entity.ServerGroup)
-	e.Entity.TemplateImpl = e
-	return e
+	return new(entity.ServerGroup)
 }
 
 // NewEntityCollection return a collection of entity.

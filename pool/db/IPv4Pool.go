@@ -20,9 +20,7 @@ func (impl *IPv4Pool) ResourceName() string {
 
 // NewEntity return the a new entity.
 func (impl *IPv4Pool) NewEntity() base.EntityInterface {
-	e := new(entity.IPv4Pool)
-	e.Entity.TemplateImpl = e
-	return e
+	return new(entity.IPv4Pool)
 }
 
 // NewEntityCollection return a collection of entity.
@@ -79,10 +77,9 @@ func (impl *IPv4Pool) ConvertFindResultToModel(result interface{}) ([]base.Model
 func (impl *IPv4Pool) AllocateIPv4Address(id string, key string) (string, base.ModelInterface, *base.Message) {
 	var (
 		c = impl.TemplateImpl.GetConnection()
+		record = new(entity.IPv4Pool)
 	)
-	record := new(entity.IPv4Pool)
-	record.Entity.TemplateImpl = record
-
+	
 	tx := c.Begin()
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
@@ -191,10 +188,9 @@ func (impl *IPv4Pool) AllocateIPv4Address(id string, key string) (string, base.M
 func (impl *IPv4Pool) FreeIPv4Address(id string, address string) (base.ModelInterface, *base.Message) {
 	var (
 		c = impl.TemplateImpl.GetConnection()
+		record= new(entity.IPv4Pool)
 	)
-	record := new(entity.IPv4Pool)
-	record.Entity.TemplateImpl = record
-
+	
 	tx := c.Begin()
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
