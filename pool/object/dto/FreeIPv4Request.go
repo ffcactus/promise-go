@@ -5,6 +5,7 @@ import (
 	"net"
 	"promise/base"
 	"promise/pool/object/model"
+	"promise/pool/object/message"
 )
 
 // FreeIPv4Request is the DTO to free an IP.
@@ -20,8 +21,7 @@ func (dto *FreeIPv4Request) NewInstance() base.RequestInterface {
 // IsValid return if the request is valid.
 func (dto *FreeIPv4Request) IsValid() *base.Message {
 	if net.ParseIP(dto.Address) == nil {
-		message := base.NewMessageIPv4FormatError()
-		return &message
+		return message.NewMessageIPv4FormatError()
 	}
 	return nil
 }

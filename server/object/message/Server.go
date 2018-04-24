@@ -38,7 +38,7 @@ func NewArgumentServerID(s *model.Server) base.Argument {
 }
 
 // NewMessageServerDiscoverFailed create new message.
-func NewMessageServerDiscoverFailed() base.Message {
+func NewMessageServerDiscoverFailed() *base.Message {
 	ret := base.NewMessage()
 	ret.ID = MessageServerDiscoverFailed
 	ret.Severity = base.SeverityWarning
@@ -52,7 +52,7 @@ func NewMessageServerDiscoverFailed() base.Message {
 }
 
 // NewMessageServerLockFailed create new message.
-func NewMessageServerLockFailed(s *model.Server) base.Message {
+func NewMessageServerLockFailed(s *model.Server) *base.Message {
 	ret := base.NewMessage()
 	ret.ID = MessageServerLockFailed
 	ret.StatusCode = http.StatusConflict
@@ -71,7 +71,7 @@ func NewMessageServerLockFailed(s *model.Server) base.Message {
 }
 
 // NewMessageServerAccountExist create new message.
-func NewMessageServerAccountExist(s *model.Server) base.Message {
+func NewMessageServerAccountExist(s *model.Server) *base.Message {
 	ret := base.NewMessage()
 	ret.ID = MessageServerAccountExist
 	ret.Severity = base.SeverityNormal
@@ -87,7 +87,7 @@ func NewMessageServerAccountExist(s *model.Server) base.Message {
 }
 
 // NewMessageServerRefreshTaskFailed create new message.
-func NewMessageServerRefreshTaskFailed() base.Message {
+func NewMessageServerRefreshTaskFailed() *base.Message {
 	ret := base.NewMessage()
 	ret.ID = MessageServerRefreshTaskFailed
 	ret.Severity = base.SeverityNormal

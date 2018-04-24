@@ -17,7 +17,7 @@ func (s *Free) Perform(id string, request base.ActionRequestInterface) (base.Res
 
 	freeRequest, ok := request.(*dto.FreeIPv4Request)
 	if !ok {
-		return nil, []base.Message{base.NewMessageInternalError()}
+		return nil, []base.Message{*base.NewMessageInternalError()}
 	}
 
 	updatedPool, message := ipv4PoolDB.FreeIPv4Address(id, freeRequest.Address)

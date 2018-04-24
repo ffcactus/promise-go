@@ -7,45 +7,44 @@ import (
 	"promise/task/object/entity"
 )
 
-// TaskDB is the concrete DB.
-type TaskDB struct {
+// Task is the concrete DB.
+type Task struct {
 	base.DB
 }
 
 // ResourceName get the resource name.
-func (impl *TaskDB) ResourceName() string {
+func (impl *Task) ResourceName() string {
 	return "task"
 }
 
 // NewEntity return the a new entity.
-func (impl *TaskDB) NewEntity() base.EntityInterface {
+func (impl *Task) NewEntity() base.EntityInterface {
 	e := new(entity.Task)
 	e.Entity.TemplateImpl = e
 	return e
 }
 
 // NewEntityCollection return a collection of entity.
-func (impl *TaskDB) NewEntityCollection() interface{} {
+func (impl *Task) NewEntityCollection() interface{} {
 	return new([]entity.Task)
 }
 
 // GetConnection return the DB connection.
-func (impl *TaskDB) GetConnection() *gorm.DB {
+func (impl *Task) GetConnection() *gorm.DB {
 	return base.GetConnection()
 }
 
 // NeedCheckDuplication return if need check duplication for entity.
-func (impl *TaskDB) NeedCheckDuplication() bool {
+func (impl *Task) NeedCheckDuplication() bool {
 	return false
 }
 
 // ConvertFindResultToCollection convert the Find() result to collection mode.
-func (impl *TaskDB) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.Message) {
+func (impl *Task) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.Message) {
 	collection, ok := result.(*[]entity.Task)
 	if !ok {
-		log.Error("TaskDB.ConvertFindResult() failed.")
-		message := base.NewMessageInternalError()
-		return nil, &message
+		log.Error("Task.ConvertFindResult() failed.")
+		return nil, base.NewMessageInternalError()
 	}
 	ret := base.CollectionModel{}
 	ret.Start = start
@@ -58,12 +57,11 @@ func (impl *TaskDB) ConvertFindResultToCollection(start int64, total int64, resu
 }
 
 // ConvertFindResultToModel convert the Find() result to model slice
-func (impl *TaskDB) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.Message) {
+func (impl *Task) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.Message) {
 	collection, ok := result.(*[]entity.Task)
 	if !ok {
-		log.Error("TaskDB.ConvertFindResult() failed.")
-		message := base.NewMessageInternalError()
-		return nil, &message
+		log.Error("Task.ConvertFindResult() failed.")
+		return nil, base.NewMessageInternalError()
 	}
 	ret := make([]base.ModelInterface, 0)
 	for _, v := range *collection {

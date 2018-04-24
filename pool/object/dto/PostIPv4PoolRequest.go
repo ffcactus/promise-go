@@ -4,6 +4,7 @@ import (
 	"net"
 	"promise/base"
 	"promise/pool/object/model"
+	"promise/pool/object/message"
 )
 
 // PostIPv4PoolRequest is the request DTO.
@@ -20,48 +21,39 @@ func (dto *PostIPv4PoolRequest) NewInstance() base.RequestInterface {
 // IsValid return if the request is valid.
 func (dto *PostIPv4PoolRequest) IsValid() *base.Message {
 	if dto.SubnetMask != nil && net.ParseIP(*dto.SubnetMask) == nil {
-		message := base.NewMessageIPv4FormatError()
-		return &message
+		return message.NewMessageIPv4FormatError()
 	}
 	if dto.Gateway != nil && net.ParseIP(*dto.Gateway) == nil {
-		message := base.NewMessageIPv4FormatError()
-		return &message
+		return message.NewMessageIPv4FormatError()
 	}
 	if dto.SubnetMask != nil && net.ParseIP(*dto.SubnetMask) == nil {
-		message := base.NewMessageIPv4FormatError()
-		return &message
+		return message.NewMessageIPv4FormatError()
 	}
 	if dto.DNSServers != nil {
 		for _, v := range *dto.DNSServers {
 			if net.ParseIP(v) == nil {
-				message := base.NewMessageIPv4FormatError()
-				return &message
+				return message.NewMessageIPv4FormatError()
 			}
 		}
 	}
 
 	if len(dto.Ranges) == 0 {
-		message := base.NewMessageIPv4RangeCountError()
-		return &message
+		return message.NewMessageIPv4RangeCountError()
 	}
 	for _, v := range dto.Ranges {
 		start := net.ParseIP(v.Start)
 		end := net.ParseIP(v.End)
 		if start == nil {
-			message := base.NewMessageIPv4FormatError()
-			return &message
+			return message.NewMessageIPv4FormatError()
 		}
 		if end == nil {
-			message := base.NewMessageIPv4FormatError()
-			return &message
+			return message.NewMessageIPv4FormatError()
 		}
 		if base.IPtoInt(start) > base.IPtoInt(end) {
-			message := base.NewMessageIPv4RangeEndAddressError()
-			return &message
+			return message.NewMessageIPv4RangeEndAddressError()
 		}
 		if base.IPtoInt(end)-base.IPtoInt(start)+1 > 256 {
-			message := base.NewMessageIPv4RangeSizeError()
-			return &message
+			return message.NewMessageIPv4RangeSizeError()
 		}
 	}
 	return nil

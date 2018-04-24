@@ -34,7 +34,7 @@ func (s *Refresh) Perform(id string, request base.ActionRequestInterface) (base.
 	}
 	server, ok := modelInterface.(*model.Server)
 	if !ok {
-		return nil, []base.Message{base.NewMessageInternalError()}
+		return nil, []base.Message{*base.NewMessageInternalError()}
 	}
 	ctx := context.CreateRefreshServerContext(server)
 	st := strategy.CreateRefreshServerStrategy(server)

@@ -20,12 +20,12 @@ func (s *Base) LockServer(c *context.Base, server *model.Server) error {
 	success, lockedServer := c.DB.GetAndLockServer(server.ID)
 	if lockedServer == nil {
 		log.WithFields(log.Fields{"id": server.ID}).Info("Can not get and lock server, server not exist.")
-		c.AppendMessage(base.NewMessageNotExist())
+		c.AppendMessage(*base.NewMessageNotExist())
 		return errors.New("failed to lock server, server not exist")
 	}
 	if !success {
 		log.WithFields(log.Fields{"id": server.ID, "state": server.State}).Info("Can not get and lock server.")
-		c.AppendMessage(message.NewMessageServerLockFailed(server))
+		c.AppendMessage(*message.NewMessageServerLockFailed(server))
 		return errors.New("failed to lock server. server can't be lock")
 	}
 	s.DispatchServerUpdate(c, server)

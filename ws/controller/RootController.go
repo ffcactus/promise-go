@@ -52,7 +52,7 @@ func (c *RootController) Post() {
 			"error": err,
 		}).Warn("Post ws failed, unable to unmarshal request.")
 		messages := []base.Message{}
-		messages = append(messages, base.NewMessageInvalidRequest())
+		messages = append(messages, *base.NewMessageInvalidRequest())
 		c.Data["json"] = &messages
 		c.Ctx.Output.SetStatus(messages[0].StatusCode)
 		c.ServeJSON()

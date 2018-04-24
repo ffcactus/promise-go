@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	taskDB = &db.TaskDB{
+	taskDB = &db.Task{
 		DB: base.DB{
-			TemplateImpl: new(db.TaskDB),
+			TemplateImpl: new(db.Task),
 		},
 	}
 

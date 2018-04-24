@@ -14,7 +14,6 @@ const (
 	SeverityCritical = "Critical"
 )
 
-// For common message.
 const (
 	// MessageInternalError is message ID.
 	MessageInternalError = "Promise.Message.InternalError"
@@ -34,45 +33,7 @@ const (
 	MessageUnknownFilterName = "Promise.Message.UnknownFilterName"
 )
 
-// For AA.
-const (
-	// MessageAuthSuccess Success
-	MessageAuthSuccess = "Auth.Message.Success"
-	// MessageAuthInternalError Internel error
-	MessageAuthInternalError = "Auth.Message.InternalError"
-	// MessageAuthBadRequest Bad request
-	MessageAuthBadRequest = "Auth.Message.BadRequest"
-	// MessageAuthIncorrectCredential Incorrect credential
-	MessageAuthIncorrectCredential = "Auth.Message.IncorrectCredential"
-	// MessageAuthNotFoundSession Session not found
-	MessageAuthNotFoundSession = "Auth.Message.NotFoundSession"
-)
 
-// For Task.
-const (
-	// MessageTaskNoStep is message ID.
-	MessageTaskNoStep = "Task.Message.NoStep"
-)
-
-// For IPv4.
-const (
-	// MessageIPv4PoolEmpty is message ID
-	MessageIPv4PoolEmpty = "IPv4.Message.PoolEmpty"
-	// MessageIPv4AddressNotExist is message ID.
-	MessageIPv4AddressNotExist = "IPv4.Message.AddressNotExist"
-	// MessageIPv4FormateError is message ID.
-	MessageIPv4FormateError = "IPv4.Message.FormatError"
-	// MessageIPv4RangeEndAddressError is message ID.
-	MessageIPv4RangeEndAddressError = "IPv4.Message.RangeEndAddressError"
-	// MessageIPv4RangeSizeError is message ID.
-	MessageIPv4RangeSizeError = "IPv4.Message.RangeSizeError"
-	// MessageIPv4RangeCountError is message ID.
-	MessageIPv4RangeCountError = "IPv4.Message.RangeCountError"
-	// MessageIPv4NotAllocatedError is message ID.
-	MessageIPv4NotAllocatedError = "IPv4.Message.NotAllocatedError"
-)
-
-// For common.
 const (
 	// SupportNotExist is Support ID.
 	SupportNotExist = "Promise.Support.NotExist"
@@ -89,16 +50,7 @@ const (
 )
 
 // For auth.
-const (
-	// SupportAuthInternalError Internel error
-	SupportAuthInternalError = "Auth.Support.InternalError"
-	// SupportAuthBadRequest Bad request
-	SupportAuthBadRequest = "Auth.Support.BadRequest"
-	// SupportAuthIncorrectCredential Incorrect credential
-	SupportAuthIncorrectCredential = "Auth.Support.IncorrectCredential"
-	// SupportAuthNotFoundSession Session not found
-	SupportAuthNotFoundSession = "Auth.Support.NotFoundSession"
-)
+
 
 // Argument is used to replace a portion in a string. For example, to express
 // an error happend on a server, we need replace the {0} in the string below:
@@ -131,16 +83,16 @@ type Message struct {
 }
 
 // NewMessage create a message with default value.
-func NewMessage() Message {
+func NewMessage() *Message {
 	ret := Message{
 		CreatedAt:  time.Now(),
 		StatusCode: http.StatusBadRequest,
 	}
-	return ret
+	return &ret
 }
 
 // NewMessageNotExist returns a message that means the resource does not exist.
-func NewMessageNotExist() Message {
+func NewMessageNotExist() *Message {
 	ret := NewMessage()
 	ret.ID = MessageNotExist
 	ret.Severity = SeverityNormal
@@ -152,7 +104,7 @@ func NewMessageNotExist() Message {
 }
 
 // NewMessageDuplicate returns a message that means resource duplication happened.
-func NewMessageDuplicate() Message {
+func NewMessageDuplicate() *Message {
 	ret := NewMessage()
 	ret.ID = MessageDuplicate
 	ret.Severity = SeverityNormal
@@ -164,7 +116,7 @@ func NewMessageDuplicate() Message {
 }
 
 // NewMessageInvalidRequest returns a message that means the request is Invalid.
-func NewMessageInvalidRequest() Message {
+func NewMessageInvalidRequest() *Message {
 	ret := NewMessage()
 	ret.ID = MessageInvalidRequest
 	ret.Severity = SeverityNormal
@@ -176,7 +128,7 @@ func NewMessageInvalidRequest() Message {
 }
 
 // NewMessageUnknownPropertyValue returns a message that means the property in the request have unknown value.
-func NewMessageUnknownPropertyValue() Message {
+func NewMessageUnknownPropertyValue() *Message {
 	ret := NewMessage()
 	ret.ID = MessageUnknownPropertyValue
 	ret.Severity = SeverityNormal
@@ -186,7 +138,7 @@ func NewMessageUnknownPropertyValue() Message {
 }
 
 // NewMessageInternalError returns a message that means there is a internal error happened.
-func NewMessageInternalError() Message {
+func NewMessageInternalError() *Message {
 	ret := NewMessage()
 	ret.ID = MessageInternalError
 	ret.Severity = SeverityNormal
@@ -198,7 +150,7 @@ func NewMessageInternalError() Message {
 }
 
 // NewMessageTimeout returns a message that means there is a timeout happend.
-func NewMessageTimeout() Message {
+func NewMessageTimeout() *Message {
 	ret := NewMessage()
 	ret.ID = MessageTimeout
 	ret.Severity = SeverityNormal
@@ -210,7 +162,7 @@ func NewMessageTimeout() Message {
 }
 
 // NewMessageTransactionError returns a message that means transaction error.
-func NewMessageTransactionError() Message {
+func NewMessageTransactionError() *Message {
 	ret := NewMessage()
 	ret.ID = MessageTransactionError
 	ret.Severity = SeverityNormal
@@ -222,141 +174,12 @@ func NewMessageTransactionError() Message {
 }
 
 // NewMessageUnknownFilterName returns a new message.
-func NewMessageUnknownFilterName() Message {
+func NewMessageUnknownFilterName() *Message {
 	ret := NewMessage()
 	ret.ID = MessageUnknownFilterName
 	ret.Severity = SeverityNormal
 	ret.Description = "Unknown filter name."
 	ret.Supports = []Support{}
-	return ret
-}
-
-// NewMessageTaskNoStep returns a new message.
-func NewMessageTaskNoStep() Message {
-	ret := NewMessage()
-	ret.ID = MessageTaskNoStep
-	ret.Severity = SeverityNormal
-	ret.Description = "No task steps included.."
-	ret.Supports = []Support{}
-	return ret
-}
-
-// --- Auth ---
-
-// NewMessageAuthInternalError Internel error
-func NewMessageAuthInternalError() Message {
-	ret := NewMessage()
-	ret.ID = MessageAuthInternalError
-	ret.StatusCode = http.StatusInternalServerError
-	ret.Severity = SeverityCritical
-	ret.Description = "Internal error."
-	ret.Supports = []Support{
-		NewSupportAuthInternalError(),
-	}
-	return ret
-}
-
-// NewMessageAuthBadRequest Bad request
-func NewMessageAuthBadRequest() Message {
-	m := NewMessage()
-	m.ID = MessageAuthBadRequest
-	m.StatusCode = http.StatusBadRequest
-	m.Severity = SeverityNormal
-	m.Description = "Bad request."
-	m.Supports = []Support{
-		NewSupportAuthBadRequest(),
-	}
-	return m
-}
-
-// NewMessageAuthIncorrectCredential Incorrect credential
-func NewMessageAuthIncorrectCredential() Message {
-	m := NewMessage()
-	m.ID = MessageAuthIncorrectCredential
-	m.StatusCode = http.StatusBadRequest
-	m.Severity = SeverityNormal
-	m.Description = "Incorrect credential."
-	m.Supports = []Support{
-		NewSupportAuthIncorrectCredential(),
-	}
-	return m
-}
-
-// NewMessageAuthNotFoundSession Session not found
-func NewMessageAuthNotFoundSession() Message {
-	m := NewMessage()
-	m.ID = MessageAuthNotFoundSession
-	m.StatusCode = http.StatusBadRequest
-	m.Severity = SeverityNormal
-	m.Description = "Session not found."
-	m.Supports = []Support{
-		NewSupportAuthNotFoundSession(),
-	}
-	return m
-}
-
-// --- IPv4 ---
-
-// NewMessageIPv4PoolEmpty will return a message.
-func NewMessageIPv4PoolEmpty() Message {
-	ret := NewMessage()
-	ret.ID = MessageIPv4PoolEmpty
-	ret.Severity = SeverityWarning
-	ret.Description = "No more IPv4 address can be allocated."
-	return ret
-}
-
-// NewMessageIPv4AddressNotExistError will return a message.
-func NewMessageIPv4AddressNotExistError() Message {
-	ret := NewMessage()
-	ret.ID = MessageIPv4AddressNotExist
-	ret.Severity = SeverityWarning
-	ret.Description = "The address does not exist in this pool."
-	return ret
-}
-
-// NewMessageIPv4FormatError will return a message.
-func NewMessageIPv4FormatError() Message {
-	ret := NewMessage()
-	ret.ID = MessageIPv4FormateError
-	ret.Severity = SeverityWarning
-	ret.Description = "Unknown IPv4 format."
-	return ret
-}
-
-// NewMessageIPv4RangeEndAddressError will return a message.
-func NewMessageIPv4RangeEndAddressError() Message {
-	ret := NewMessage()
-	ret.ID = MessageIPv4RangeEndAddressError
-	ret.Severity = SeverityWarning
-	ret.Description = "The end address in a range should equal or big then start address"
-	return ret
-}
-
-// NewMessageIPv4RangeSizeError will return a message.
-func NewMessageIPv4RangeSizeError() Message {
-	ret := NewMessage()
-	ret.ID = MessageIPv4RangeSizeError
-	ret.Severity = SeverityWarning
-	ret.Description = "The number of addresses in a range should not more than 256."
-	return ret
-}
-
-// NewMessageIPv4RangeCountError will return a message.
-func NewMessageIPv4RangeCountError() Message {
-	ret := NewMessage()
-	ret.ID = MessageIPv4RangeCountError
-	ret.Severity = SeverityWarning
-	ret.Description = "IPv4 pool should contain one range at least."
-	return ret
-}
-
-// NewMessageIPv4NotAllocatedError will return a message.
-func NewMessageIPv4NotAllocatedError() Message {
-	ret := NewMessage()
-	ret.ID = MessageIPv4NotAllocatedError
-	ret.Severity = SeverityWarning
-	ret.Description = "IP is not allocated before."
 	return ret
 }
 
@@ -422,40 +245,4 @@ func NewSupportTransactionError() Support {
 	return ret
 }
 
-// --- Auth ---
 
-// NewSupportAuthInternalError Internel error
-func NewSupportAuthInternalError() Support {
-	ret := NewSupport()
-	ret.ID = SupportAuthInternalError
-	ret.Reason = "An internal error happened."
-	ret.Solution = "Contact Support."
-	return ret
-}
-
-// NewSupportAuthBadRequest Bad request
-func NewSupportAuthBadRequest() Support {
-	ret := NewSupport()
-	ret.ID = SupportAuthBadRequest
-	ret.Reason = "Invalid request."
-	ret.Solution = "Check the request and correct it."
-	return ret
-}
-
-// NewSupportAuthIncorrectCredential Incorrect credential
-func NewSupportAuthIncorrectCredential() Support {
-	ret := NewSupport()
-	ret.ID = SupportAuthIncorrectCredential
-	ret.Reason = "Incorrect credential."
-	ret.Solution = "Correct the credential and try again."
-	return ret
-}
-
-// NewSupportAuthNotFoundSession Session not found
-func NewSupportAuthNotFoundSession() Support {
-	ret := NewSupport()
-	ret.ID = SupportAuthNotFoundSession
-	ret.Reason = "Session not found."
-	ret.Solution = "Provide the right key."
-	return ret
-}

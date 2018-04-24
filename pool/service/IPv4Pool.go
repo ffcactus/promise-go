@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	ipv4PoolDB = &db.IPv4PoolDB{
+	ipv4PoolDB = &db.IPv4Pool{
 		DB: base.DB{
-			TemplateImpl: new(db.IPv4PoolDB),
+			TemplateImpl: new(db.IPv4Pool),
 		},
 	}
 

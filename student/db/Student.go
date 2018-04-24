@@ -7,44 +7,43 @@ import (
 	"promise/student/object/entity"
 )
 
-// StudentDB is the DB implementation for student.
-type StudentDB struct {
+// Student is the DB implementation for student.
+type Student struct {
 }
 
 // ResourceName get the resource name.
-func (impl *StudentDB) ResourceName() string {
+func (impl *Student) ResourceName() string {
 	return "student"
 }
 
 // NewEntity return the a new entity.
-func (impl *StudentDB) NewEntity() base.EntityInterface {
+func (impl *Student) NewEntity() base.EntityInterface {
 	e := new(entity.Student)
 	e.Entity.TemplateImpl = e
 	return e
 }
 
 // NewEntityCollection return a collection of entity.
-func (impl *StudentDB) NewEntityCollection() interface{} {
+func (impl *Student) NewEntityCollection() interface{} {
 	return new([]entity.Student)
 }
 
 // GetConnection return the DB connection.
-func (impl *StudentDB) GetConnection() *gorm.DB {
+func (impl *Student) GetConnection() *gorm.DB {
 	return base.GetConnection()
 }
 
 // NeedCheckDuplication return if need check duplication for entity.
-func (impl *StudentDB) NeedCheckDuplication() bool {
+func (impl *Student) NeedCheckDuplication() bool {
 	return true
 }
 
 // ConvertFindResultToCollection convert the Find() result to collection mode.
-func (impl *StudentDB) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.Message) {
+func (impl *Student) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.Message) {
 	collection, ok := result.(*[]entity.Student)
 	if !ok {
-		log.Error("StudentDB.ConvertFindResult() failed.")
-		message := base.NewMessageInternalError()
-		return nil, &message
+		log.Error("Student.ConvertFindResult() failed.")
+		return nil, base.NewMessageInternalError()
 	}
 	ret := base.CollectionModel{}
 	ret.Start = start
@@ -57,12 +56,11 @@ func (impl *StudentDB) ConvertFindResultToCollection(start int64, total int64, r
 }
 
 // ConvertFindResultToModel convert the Find() result to model slice
-func (impl *StudentDB) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.Message) {
+func (impl *Student) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.Message) {
 	collection, ok := result.(*[]entity.Student)
 	if !ok {
-		log.Error("StudentDB.ConvertFindResult() failed.")
-		message := base.NewMessageInternalError()
-		return nil, &message
+		log.Error("Student.ConvertFindResult() failed.")
+		return nil, base.NewMessageInternalError()
 	}
 	ret := make([]base.ModelInterface, 0)
 	for _, v := range *collection {

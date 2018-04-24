@@ -62,7 +62,7 @@ func (c *ActionController) Post() {
 		}
 	}
 	if service == nil {
-		messages = append(messages, NewMessageInvalidRequest())
+		messages = append(messages, *NewMessageInvalidRequest())
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),
 			"action":   action,
@@ -79,7 +79,7 @@ func (c *ActionController) Post() {
 	if request != nil {
 		// Unmarshal the request.
 		if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
-			messages = append(messages, NewMessageInvalidRequest())
+			messages = append(messages, *NewMessageInvalidRequest())
 			log.WithFields(log.Fields{
 				"resource": c.TemplateImpl.ResourceName(),
 				"action":   action,
@@ -148,7 +148,7 @@ func (c *ActionController) Post() {
 		ok = false
 	}
 	if !ok {
-		messages = []Message{NewMessageInternalError()}
+		messages = []Message{*NewMessageInternalError()}
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),
 			"action":   action,

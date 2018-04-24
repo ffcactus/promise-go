@@ -18,7 +18,7 @@ func (s *Discover) Perform(id string, request base.ActionRequestInterface) (base
 	discoverRequest, ok := request.(*dto.DiscoverServerRequest)
 	if !ok {
 		log.Error("Perform discover server failed, convert request failed.")
-		return nil, []base.Message{base.NewMessageInternalError()}
+		return nil, []base.Message{*base.NewMessageInternalError()}
 	}
 	serverBasicInfo, err := Probe(discoverRequest)
 	server := serverBasicInfo.CreateServer()
@@ -26,12 +26,12 @@ func (s *Discover) Perform(id string, request base.ActionRequestInterface) (base
 	st := strategy.CreateDiscoverServerStrategy(server)
 	response, err := st.Execute(ctx, server)
 	if err != nil {
-		return nil, []base.Message{message.NewMessageServerDiscoverFailed()}
+		return nil, []base.Message{*message.NewMessageServerDiscoverFailed()}
 	}
 	getResponse, ok := response.(base.GetResponseInterface)
 	if !ok {
 		log.Error("Perform discover server failed, convert response failed.")
-		return nil, []base.Message{base.NewMessageInternalError()}
+		return nil, []base.Message{*base.NewMessageInternalError()}
 	}
 	eventService.DispatchCreateEvent(getResponse)
 	return getResponse, nil

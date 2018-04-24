@@ -25,7 +25,7 @@ func (s *DiscoverRackServer) getManagementAccount(c *context.DiscoverServer) (st
 func (s *DiscoverRackServer) CreateManagementAccount(c *context.DiscoverServer, server *model.Server) error {
 	username, password := s.getManagementAccount(c)
 	if err := c.ServerClient.CreateManagementAccount(username, password); err != nil {
-		c.AppendMessage(message.NewMessageServerAccountExist(server))
+		c.AppendMessage(*message.NewMessageServerAccountExist(server))
 		return err
 	}
 	// After the management account created on the server, update it in the context.
@@ -55,7 +55,7 @@ func (s *DiscoverRackServer) Execute(c *context.DiscoverServer, tempServer *mode
 	tempServer.Health = constvalue.ServerHealthOK
 	server, ssg, err := c.DB.CreateServer(tempServer)
 	if err != nil {
-		c.AppendMessage(base.NewMessageTransactionError())
+		c.AppendMessage(*base.NewMessageTransactionError())
 		return nil, err
 	}
 	// tempServer = server

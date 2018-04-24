@@ -107,7 +107,7 @@ func (s *CRUDService) Update(id string, request UpdateRequestInterface) (GetResp
 
 	updateAction, ok := request.(UpdateRequestInterface)
 	if !ok {
-		return nil, []Message{NewMessageInternalError()}
+		return nil, []Message{*NewMessageInternalError()}
 	}
 
 	updatedTask, message := db.Update(id, updateAction)

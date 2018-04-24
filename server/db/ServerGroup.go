@@ -51,8 +51,7 @@ func (impl *ServerGroup) ConvertFindResultToCollection(start int64, total int64,
 	collection, ok := result.(*[]entity.ServerGroup)
 	if !ok {
 		log.Error("ServerGroup.ConvertFindResult() failed, convert data failed.")
-		m := base.NewMessageInternalError()
-		return nil, &m
+		return nil, base.NewMessageInternalError()
 	}
 	ret := base.CollectionModel{}
 	ret.Start = start
@@ -69,8 +68,7 @@ func (impl *ServerGroup) ConvertFindResultToModel(result interface{}) ([]base.Mo
 	collection, ok := result.(*[]entity.ServerGroup)
 	if !ok {
 		log.Error("ServerGroup.ConvertFindResult() failed, convert data failed.")
-		m := base.NewMessageInternalError()
-		return nil, &m
+		return nil, base.NewMessageInternalError()
 	}
 	ret := make([]base.ModelInterface, 0)
 	for _, v := range *collection {
@@ -84,8 +82,7 @@ func (impl *ServerGroup) ConvertFindResultToModel(result interface{}) ([]base.Mo
 // We should not delete the default servergroup.
 func (impl *ServerGroup) Delete(id string) (base.ModelInterface, *base.Message) {
 	if id == DefaultServerGroupID {
-		m := message.NewMessageServerGroupDeleteDefault()
-		return nil, &m
+		return nil, message.NewMessageServerGroupDeleteDefault()
 	}
 	return impl.DB.Delete(id)
 }
@@ -106,7 +103,7 @@ func (impl *ServerGroup) DeleteCollection() ([]base.ModelInterface, *base.Messag
 			"resource": name,
 			"error":    err,
 		}).Warn("Get collection in DB failed, start transaction failed.")
-		return nil, &messageTransactionError
+		return nil, base.NewMessageTransactionError()
 	}
 
 	if err := tx.Where("\"Name\" <> ?", "all").Find(recordCollection).Error; err != nil {
@@ -114,14 +111,14 @@ func (impl *ServerGroup) DeleteCollection() ([]base.ModelInterface, *base.Messag
 			"resource": name,
 			"error":    err,
 		}).Warn("Delete collection in DB failed, find resource failed.")
-		return nil, &messageTransactionError
+		return nil, base.NewMessageTransactionError()
 	}
 	if err := tx.Where("\"Name\" <> ?", "all").Delete(entity.ServerGroup{}).Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
 			"error":    err,
 		}).Warn("Delete collection in DB failed.")
-		return nil, &messageTransactionError		
+		return nil, base.NewMessageTransactionError()		
 	}
 	ret, message := impl.TemplateImpl.ConvertFindResultToModel(recordCollection)
 	if message != nil {
@@ -137,7 +134,7 @@ func (impl *ServerGroup) DeleteCollection() ([]base.ModelInterface, *base.Messag
 			"resource": name,
 			"error":    err,
 		}).Warn("Delete collection in DB failed, commit failed.")
-		return nil, &messageTransactionError
+		return nil, base.NewMessageTransactionError()
 	}
 	return ret, nil	
 }

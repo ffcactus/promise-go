@@ -32,7 +32,7 @@ func (c *RootController) Post() {
 		messages []Message
 	)
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
-		messages = append(messages, NewMessageInvalidRequest())
+		messages = append(messages, *NewMessageInvalidRequest())
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),
 			"error":    err,
@@ -115,7 +115,7 @@ func (c *RootController) Get() {
 	}
 
 	if parameterError {
-		messages := []Message{NewMessageInvalidRequest()}
+		messages := []Message{*NewMessageInvalidRequest()}
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),
 			"message":  messages[0].ID,
@@ -138,7 +138,7 @@ func (c *RootController) Get() {
 	}
 	response, err := c.TemplateImpl.ConvertCollectionModel(collection)
 	if err != nil {
-		messages := []Message{NewMessageTransactionError()}
+		messages := []Message{*NewMessageTransactionError()}
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),
 			"message":  messages[0].ID,

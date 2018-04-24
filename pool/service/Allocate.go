@@ -17,7 +17,7 @@ func (s *Allocate) Perform(id string, request base.ActionRequestInterface) (base
 
 	allocateRequest, ok := request.(*dto.AllocateIPv4Request)
 	if !ok {
-		return nil, []base.Message{base.NewMessageInternalError()}
+		return nil, []base.Message{*base.NewMessageInternalError()}
 	}
 	key := ""
 	if allocateRequest.Key != nil {
@@ -29,7 +29,7 @@ func (s *Allocate) Perform(id string, request base.ActionRequestInterface) (base
 	}
 	response.Address = address
 	if err := response.Pool.Load(updatedPool); err != nil {
-		return nil, []base.Message{base.NewMessageInternalError()}
+		return nil, []base.Message{*base.NewMessageInternalError()}
 	}
 	eventService.DispatchUpdateEvent(&response.Pool)
 	return &response, nil

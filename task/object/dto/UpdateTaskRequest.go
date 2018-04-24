@@ -25,13 +25,13 @@ func (dto *UpdateTaskRequest) NewInstance() base.RequestInterface {
 func (dto *UpdateTaskRequest) IsValid() *base.Message {
 	message := base.NewMessageUnknownPropertyValue()
 	if dto.Percentage != nil && *dto.Percentage > 100 {
-		return &message
+		return message
 	}
 	if dto.ExecutionState != nil && !model.IsValidExecutionState(*dto.ExecutionState) {
-		return &message
+		return message
 	}
 	if dto.ExecutionResult != nil && dto.ExecutionResult.State != nil && !model.IsValidExecutionResultState(*dto.ExecutionResult.State) {
-		return &message
+		return message
 	}
 	return nil
 }

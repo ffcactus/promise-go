@@ -48,8 +48,7 @@ func (impl *Server) ConvertFindResultToCollection(start int64, total int64, resu
 	collection, ok := result.(*[]entity.Server)
 	if !ok {
 		log.Error("Server.ConvertFindResult() failed, convert data failed.")
-		message := base.NewMessageInternalError()
-		return nil, &message
+		return nil, base.NewMessageInternalError()
 	}
 	ret := base.CollectionModel{}
 	ret.Start = start
@@ -66,8 +65,7 @@ func (impl *Server) ConvertFindResultToModel(result interface{}) ([]base.ModelIn
 	collection, ok := result.(*[]entity.Server)
 	if !ok {
 		log.Error("Server.ConvertFindResult() failed, convert data failed.")
-		message := base.NewMessageInternalError()
-		return nil, &message
+		return nil, base.NewMessageInternalError()
 	}
 	ret := make([]base.ModelInterface, 0)
 	for _, v := range *collection {

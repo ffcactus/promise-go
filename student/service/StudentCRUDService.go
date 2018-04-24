@@ -10,7 +10,7 @@ import (
 var (
 	// TODO should I put it inside the struct?
 	studentDB = &base.DB{
-		TemplateImpl: new(db.StudentDB),
+		TemplateImpl: new(db.Student),
 	}
 )
 

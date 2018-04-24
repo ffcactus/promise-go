@@ -10,7 +10,7 @@ const (
 )
 
 // NewMessageServerGroupDeleteDefault will return a message.
-func NewMessageServerGroupDeleteDefault() base.Message {
+func NewMessageServerGroupDeleteDefault() *base.Message {
 	ret := base.NewMessage()
 	ret.ID = MessageServerGroupDeleteDefault
 	ret.Severity = base.SeverityWarning
