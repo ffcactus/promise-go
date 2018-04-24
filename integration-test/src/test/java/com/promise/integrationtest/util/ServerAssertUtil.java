@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.promise.integrationtest.base.PromiseIntegrationTest;
-import com.promise.integrationtest.server.dto.PostServerRequest;
 import com.promise.integrationtest.server.dto.GetServerResponse;
+import com.promise.integrationtest.server.dto.PostServerRequest;
 
 public class ServerAssertUtil
 {
@@ -18,10 +18,10 @@ public class ServerAssertUtil
         final PostServerRequest request = new PostServerRequest(hostname, username, password);
         // Create a server group.
         final ResponseEntity<GetServerResponse> response = RestClient.post(
-                PromiseIntegrationTest.getRootURL() + "/promise/v1/server/",
+                PromiseIntegrationTest.getRootURL() + "/promise/v1/server/action/discover",
                 request,
                 GetServerResponse.class);
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        Assert.assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
         PromiseAssertUtil.isResourceResponse(response.getBody());
         return response.getBody();
     }

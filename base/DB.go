@@ -49,7 +49,7 @@ func (impl *DB) GetInternal(tx *gorm.DB, id string, record EntityInterface) (boo
 		log.WithFields(log.Fields{
 			"resource": name,
 			"id":       id,
-		}).Warn("Get resource in DB failed, resource does not exist, transaction rollback.")
+		}).Warn("DB get resource failed, resource does not exist, transaction rollback.")
 		return false, ErrorResourceNotExist
 	}
 	if err := tx.Error; err != nil {
@@ -57,7 +57,7 @@ func (impl *DB) GetInternal(tx *gorm.DB, id string, record EntityInterface) (boo
 		log.WithFields(log.Fields{
 			"resource": name,
 			"id":       id,
-		}).Warn("Get resource in DB failed, find first record failed, transaction rollback.")
+		}).Warn("DB get resource failed, find first record failed, transaction rollback.")
 		return false, ErrorResourceNotExist
 	}
 
@@ -71,7 +71,7 @@ func (impl *DB) GetInternal(tx *gorm.DB, id string, record EntityInterface) (boo
 			"resource": name,
 			"id":       id,
 			"error":    err,
-		}).Warn("Get resource in DB failed, fatch failed, transaction rollback.")
+		}).Warn("DB get resource failed, fatch failed, transaction rollback.")
 		return true, err
 	}
 	return true, nil
@@ -91,7 +91,7 @@ func (impl *DB) SaveAndCommit(tx *gorm.DB, record EntityInterface) (bool, error)
 			"resource": name,
 			"id":       record.GetID(),
 			"error":    err,
-		}).Warn("Save and commit operation failed, save failed, transaction rollback.")
+		}).Warn("DB save and commit operation failed, save failed, transaction rollback.")
 		return false, err
 	}
 	if err := tx.Commit().Error; err != nil {
@@ -99,7 +99,7 @@ func (impl *DB) SaveAndCommit(tx *gorm.DB, record EntityInterface) (bool, error)
 			"resource": name,
 			"id":       record.GetID(),
 			"error":    err,
-		}).Warn("Save and commit operation failed, commit failed.")
+		}).Warn("DB save and commit operation failed, commit failed.")
 		return false, err
 	}
 	return true, nil
@@ -119,7 +119,7 @@ func (impl *DB) Create(m ModelInterface) (ModelInterface, *Message) {
 		log.WithFields(log.Fields{
 			"resource": name,
 			"error":    err,
-		}).Warn("Post resource in DB failed, start transaction failed.")
+		}).Warn("DB create resource failed, start transaction failed.")
 		return nil, NewMessageTransactionError()
 	}
 	if impl.TemplateImpl.NeedCheckDuplication() {
@@ -130,7 +130,7 @@ func (impl *DB) Create(m ModelInterface) (ModelInterface, *Message) {
 				"resource": name,
 				"id":       record.GetID(),
 				"name":     record.DebugInfo(),
-			}).Warn("Post resource in DB failed, duplicated resource, transaction rollback.")
+			}).Warn("DB create resource failed, duplicated resource, transaction rollback.")
 			return nil, NewMessageDuplicate()
 		}
 	}
@@ -143,7 +143,7 @@ func (impl *DB) Create(m ModelInterface) (ModelInterface, *Message) {
 			"resource": name,
 			"name":     m.DebugInfo(),
 			"error":    err,
-		}).Warn("Post resource in DB failed, create resource failed, transaction rollback.")
+		}).Warn("DB create resource failed, create resource failed, transaction rollback.")
 		return nil, NewMessageTransactionError()
 	}
 	committed, err := impl.SaveAndCommit(tx, record)
@@ -167,7 +167,7 @@ func (impl *DB) Get(id string) (ModelInterface, *Message) {
 			"resource": name,
 			"id":       id,
 			"error":    err,
-		}).Warn("Get resource in DB failed, start transaction failed.")
+		}).Warn("DB get resource failed, start transaction failed.")
 		return nil, NewMessageTransactionError()
 	}
 	exist, err := impl.GetInternal(tx, id, record)
@@ -182,7 +182,7 @@ func (impl *DB) Get(id string) (ModelInterface, *Message) {
 			"resource": name,
 			"id":       id,
 			"error":    err,
-		}).Warn("Get resource in DB failed, commit transaction failed.")
+		}).Warn("DB get resource failed, commit transaction failed.")
 		return nil, NewMessageTransactionError()
 	}
 	return record.ToModel(), nil
@@ -250,7 +250,7 @@ func (impl *DB) Delete(id string) (ModelInterface, *Message) {
 			"resource": name,
 			"id":       id,
 			"error":    err,
-		}).Warn("Delete resource from DB failed, start transaction failed.")
+		}).Warn("DB delete resource failed, start transaction failed.")
 		return nil, NewMessageTransactionError()
 	}
 	exist, err := impl.GetInternal(tx, id, previous)
@@ -270,7 +270,7 @@ func (impl *DB) Delete(id string) (ModelInterface, *Message) {
 				"resource": name,
 				"id":       id,
 				"error":    err,
-			}).Warn("Delete resource from DB failed, delete association failed, transaction rollback.")
+			}).Warn("DB delete resource failed, delete association failed, transaction rollback.")
 			return nil, NewMessageTransactionError()
 		}
 	}
@@ -280,7 +280,7 @@ func (impl *DB) Delete(id string) (ModelInterface, *Message) {
 			"resource": name,
 			"id":       id,
 			"error":    err,
-		}).Warn("Delete resource from DB failed, delete resource failed, transaction rollback.")
+		}).Warn("DB delete resource failed, delete resource failed, transaction rollback.")
 		return nil, NewMessageTransactionError()
 	}
 	if err := tx.Commit().Error; err != nil {
@@ -288,7 +288,7 @@ func (impl *DB) Delete(id string) (ModelInterface, *Message) {
 			"resource": name,
 			"id":       id,
 			"error":    err,
-		}).Warn("Delete resource from DB failed, commit failed.")
+		}).Warn("DB delete resource failed, commit failed.")
 		return nil, NewMessageTransactionError()
 	}
 	return previous.ToModel(), nil
@@ -334,13 +334,13 @@ func (impl *DB) GetCollection(start int64, count int64, filter string) (*Collect
 			"resource": name,
 			"filter":   filter,
 			"error":    err,
-		}).Warn("Get collection in DB failed, convert filter failed.")
+		}).Warn("DB get collection failed, convert filter failed.")
 		return nil, NewMessageUnknownFilterName()
 	}
 	log.WithFields(log.Fields{
 		"resource": name,
 		"where":    where,
-	}).Debug("Convert filter success.")
+	}).Debug("DB convert filter success.")
 
 	// We need transaction to ensure the total and the query count is consistent.
 	tx := c.Begin()
@@ -348,7 +348,7 @@ func (impl *DB) GetCollection(start int64, count int64, filter string) (*Collect
 		log.WithFields(log.Fields{
 			"resource": name,
 			"error":    err,
-		}).Warn("Get collection in DB failed, start transaction failed.")
+		}).Warn("DB get collection failed, start transaction failed.")
 		return nil, NewMessageTransactionError()
 	}
 
@@ -358,7 +358,7 @@ func (impl *DB) GetCollection(start int64, count int64, filter string) (*Collect
 		log.WithFields(log.Fields{
 			"resource": name,
 			"error":    err,
-		}).Warn("Get collection in DB failed, get count failed.")
+		}).Warn("DB get collection failed, get count failed.")
 		return nil, NewMessageTransactionError()
 	}
 
@@ -368,14 +368,14 @@ func (impl *DB) GetCollection(start int64, count int64, filter string) (*Collect
 		log.WithFields(log.Fields{
 			"resource": name,
 			"error":    err,
-		}).Warn("Get collection in DB failed, find resource failed.")
+		}).Warn("DB get collection failed, find resource failed.")
 		return nil, NewMessageTransactionError()
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
 			"error":    err,
-		}).Warn("Get collection in DB failed, commit failed.")
+		}).Warn("DB get collection failed, commit failed.")
 		return nil, NewMessageTransactionError()
 	}
 	return impl.TemplateImpl.ConvertFindResultToCollection(start, total, recordCollection)
@@ -399,7 +399,7 @@ func (impl *DB) DeleteCollection() ([]ModelInterface, *Message) {
 		log.WithFields(log.Fields{
 			"resource": name,
 			"error":    err,
-		}).Warn("Delete collection in DB failed, start transaction failed.")
+		}).Warn("DB delete collection failed, start transaction failed.")
 		return nil, NewMessageTransactionError()
 	}
 
@@ -407,7 +407,7 @@ func (impl *DB) DeleteCollection() ([]ModelInterface, *Message) {
 		log.WithFields(log.Fields{
 			"resource": name,
 			"error":    err,
-		}).Warn("Delete collection in DB failed, find resource failed.")
+		}).Warn("DB delete collection failed, find resource failed.")
 		return nil, NewMessageTransactionError()
 	}
 	for _, v := range tables {
@@ -416,7 +416,7 @@ func (impl *DB) DeleteCollection() ([]ModelInterface, *Message) {
 			log.WithFields(log.Fields{
 				"resource": name,
 				"error":    err,
-			}).Warn("Delete collection in DB failed, delete resources failed, transaction rollback.")
+			}).Warn("DB delete collection failed, delete resources failed, transaction rollback.")
 			return nil, NewMessageTransactionError()
 		}
 	}
@@ -426,14 +426,14 @@ func (impl *DB) DeleteCollection() ([]ModelInterface, *Message) {
 		log.WithFields(log.Fields{
 			"resource": name,
 			"message":  message.ID,
-		}).Warn("Delete collection in DB failed, convert find result failed, transaction rollback.")
+		}).Warn("DB delete collection failed, convert find result failed, transaction rollback.")
 		return nil, message
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
 			"error":    err,
-		}).Warn("Delete collection in DB failed, commit failed.")
+		}).Warn("DB delete collection failed, commit failed.")
 		return nil, NewMessageTransactionError()
 	}
 	return ret, nil
@@ -451,12 +451,14 @@ var connection *gorm.DB
 func InitConnection() error {
 	if connection == nil {
 		log.Info("Init DB connection.")
-		args := "host=10.93.81.79 port=5432 user=postgres dbname=promise sslmode=disable password=iforgot"
+		args := "host=localhost port=5432 user=postgres dbname=promise sslmode=disable password=iforgot"
 		db, err := gorm.Open("postgres", args)
 		// args := "host=100.100.194.103 port=5432 user=gaussdba dbname=NETADAPTOR sslmode=disable password=Huawei12#$"
 		// db, err := gorm.Open("gauss", args)
 		if err != nil {
-			log.Info("gorm.Open() failed, error = ", err)
+			log.WithFields(log.Fields{
+				"error": err,
+			}).Error("DB open failed.")
 			return err
 		}
 		db.LogMode(true)
@@ -480,7 +482,10 @@ func CreateTables(tables []TableInfo) bool {
 	for i := range tables {
 		if err := c.CreateTable(tables[i].Info).Error; err != nil {
 			success = false
-			log.Error("Failed to create table", tables[i].Name, err)
+			log.WithFields(log.Fields{
+				"Table": tables[i].Name,
+				"error": err,
+			}).Error("DB create table failed.")
 		}
 	}
 	return success
@@ -493,7 +498,10 @@ func RemoveTables(tables []TableInfo) bool {
 	for i := range tables {
 		if err := c.DropTableIfExists(tables[i].Info).Error; err != nil {
 			success = false
-			log.Error("Failed to remove table", tables[i].Name, err)
+			log.WithFields(log.Fields{
+				"Table": tables[i].Name,
+				"error": err,
+			}).Error("DB remove table failed.")
 		}
 	}
 	return success

@@ -83,8 +83,79 @@ func (e *Server) Preload() []string {
 
 // Association return all the assocations that need to delete when deleting a resource.
 func (e *Server) Association() []interface{} {
-	ret := []interface{}{
-		// TODO
+	ret := []interface{}{}
+	for _, x := range e.Processors {
+		ret = append(ret, &x)
+	}
+	for _, x := range e.Memory {
+		ret = append(ret, &x)
+	}
+	for _, x := range e.EthernetInterfaces {
+		for _, y := range x.IPv4Addresses {
+			ret = append(ret, &y)
+		}
+		for _, y := range x.IPv6Addresses {
+			ret = append(ret, &y)
+		}
+		for _, y := range x.VLANs {
+			ret = append(ret, &y)
+		}
+		ret = append(ret, &x)
+	}
+	for _, x := range e.NetworkInterfaces {
+		ret = append(ret, &x)
+	}
+	for _, x := range e.Storages {
+		for _, y := range x.StorageControllers {
+			ret = append(ret, &y)
+		}
+		ret = append(ret, &x)
+	}
+	for _, x := range e.Power.PowerControl {
+		ret = append(ret, &x)
+	}
+	for _, x := range e.Power.Voltages {
+		ret = append(ret, &x)
+	}
+	for _, x := range e.Power.PowerSupplies {
+		ret = append(ret, &x)
+	}
+	for _, x := range e.Power.Redundancy {
+		ret = append(ret, &x)
+	}
+	ret = append(ret, &e.Power)
+	for _, x := range e.Thermal.Temperatures {
+		ret = append(ret, &x)
+	}
+	for _, x := range e.Thermal.Fans {
+		ret = append(ret, &x)
+	}
+	ret = append(ret, &e.Thermal)
+	for _, x := range e.OemHuaweiBoards {
+		ret = append(ret, &x)
+	}
+	for _, x := range e.NetworkAdapters {
+		for _, y := range x.Controllers {
+			for _, z := range y.NetworkPorts {
+				ret = append(ret, &z)
+			}
+			ret = append(ret, &y)
+		}
+		ret = append(ret, &x)
+	}
+	for _, x := range e.Drives {
+		for _, y := range x.Location {
+			ret = append(ret, y.PostalAddress)
+			ret = append(ret, y.Placement)
+			ret = append(ret, &y)
+		}
+		ret = append(ret, &x)
+	}
+	for _, x := range e.PCIeDevices {
+		for _, y := range x.PCIeFunctions {
+			ret = append(ret, &y)
+		}
+		ret = append(ret, &x)
 	}
 	return ret
 }
@@ -92,7 +163,34 @@ func (e *Server) Association() []interface{} {
 // Tables returns the tables to delete when you want delete all the resources.
 func (e *Server) Tables() []interface{} {
 	return []interface{}{
-		// TODO
+		new(Location),
+		new(PostalAddress),
+		new(Placement),
+		new(Server),
+		new(Processor),
+		new(Memory),
+		new(EthernetInterface),
+		new(IPv4Address),
+		new(IPv6Address),
+		new(VLanNetworkInterface),
+		new(NetworkInterface),
+		new(Storage),
+		new(StorageController),
+		new(Power),
+		new(Thermal),
+		new(Temperature),
+		new(Fan),
+		new(PowerControl),
+		new(Voltage),
+		new(PowerSupply),
+		new(Redundancy),
+		new(OemHuaweiBoard),
+		new(NetworkAdapter),
+		new(Controller),
+		new(Drive),
+		new(PCIeDevice),
+		new(PCIeFunction),
+		new(NetworkPort),
 	}
 }
 

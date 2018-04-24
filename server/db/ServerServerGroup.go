@@ -35,7 +35,7 @@ func (impl *ServerServerGroup) GetConnection() *gorm.DB {
 
 // NeedCheckDuplication return if need check duplication for entity.
 func (impl *ServerServerGroup) NeedCheckDuplication() bool {
-	return true
+	return false
 }
 
 // ConvertFindResultToCollection convert the Find() result to collection mode.
@@ -76,7 +76,7 @@ func (impl *ServerServerGroup) ConvertFindResultToModel(result interface{}) ([]b
 func (impl *ServerServerGroup) Delete(id string) (base.ModelInterface, *base.Message) {
 	var (
 		ssg, previous entity.ServerServerGroup
-		c                = impl.GetConnection()
+		c             = impl.GetConnection()
 	)
 
 	tx := c.Begin()
@@ -106,7 +106,7 @@ func (impl *ServerServerGroup) Delete(id string) (base.ModelInterface, *base.Mes
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": id}).
-			Warn("Delete server-servergroup in DB failed, delete resource failed, transaction rollback.")		
+			Warn("Delete server-servergroup in DB failed, delete resource failed, transaction rollback.")
 		return nil, base.NewMessageTransactionError()
 	}
 	if err := tx.Commit().Error; err != nil {
@@ -160,7 +160,7 @@ func (impl *ServerServerGroup) DeleteCollection() ([]base.ModelInterface, *base.
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
-			"message":    message.ID,
+			"message":  message.ID,
 		}).Warn("Delete collection in DB failed, convert find result failed, transaction rollback.")
 		return nil, message
 	}

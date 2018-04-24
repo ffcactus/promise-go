@@ -45,7 +45,7 @@ func (e *ServerServerGroup) Tables() []interface{} {
 
 // FilterNameList return all the property name that can be used in filter.
 func (e *ServerServerGroup) FilterNameList() []string {
-	return []string{}
+	return []string{"ServerID", "ServerGroupID"}
 }
 
 // Load will load data from model. this function is used on POST.

@@ -12,13 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.promise.integrationtest.base.MessageEnum;
 import com.promise.integrationtest.base.PromiseIntegrationTest;
 import com.promise.integrationtest.dto.DeleteResourceResponse;
 import com.promise.integrationtest.dto.MemberResponse;
 import com.promise.integrationtest.dto.ResourceCollectionResponse;
 import com.promise.integrationtest.server.dto.PostServerServerGroupRequest;
 import com.promise.integrationtest.server.dto.PostServerServerGroupResponse;
-import com.promise.integrationtest.server.message.ServerServerGroupMessage;
 import com.promise.integrationtest.util.PromiseAssertUtil;
 import com.promise.integrationtest.util.RestClient;
 import com.promise.integrationtest.util.ServerAssertUtil;
@@ -161,9 +161,9 @@ public class ServerServerGroupTest extends PromiseIntegrationTest
 
     /**
      * You can't delete the default server-servergroup relationship.
-     * 
+     *
      * @throws UnsupportedEncodingException
-     * 
+     *
      */
     @Test
     public void testDeleteServerServerGroup()
@@ -180,7 +180,9 @@ public class ServerServerGroupTest extends PromiseIntegrationTest
         Assert.assertEquals(1, ssgResponse.getBody().getMember().size());
         final String ssgUrl = ssgResponse.getBody().getMember().get(0).getUri();
         PromiseAssertUtil
-                .assertDeleteMessage(PromiseIntegrationTest.getRootURL() + ssgUrl, ServerServerGroupMessage.DeleteDefault.getId());
+                .assertDeleteMessage(
+                        PromiseIntegrationTest.getRootURL() + ssgUrl,
+                        MessageEnum.ServerServerGroupDeleteDefault.getId());
 
     }
 }

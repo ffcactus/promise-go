@@ -10,8 +10,10 @@ import (
 // Should not support Post().
 
 var (
-	serverService = &base.CRUDService{
-		TemplateImpl: new(service.Server),
+	serverService = &service.Server{
+		CRUDService: base.CRUDService{
+			TemplateImpl: new(service.Server),
+		},
 	}
 )
 
