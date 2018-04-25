@@ -22,7 +22,7 @@ func (dto *GetServerGroupResponse) DebugInfo() string {
 func (dto *GetServerGroupResponse) Load(data base.ModelInterface) error {
 	m, ok := data.(*model.ServerGroup)
 	if !ok {
-		log.Warn("GetServerGroupResponse.Load() failed, convert interface failed.")
+		log.Error("GetServerGroupResponse.Load() failed, convert interface failed.")
 		return base.ErrorDataConvert
 	}
 	dto.GetResponse.Load(&m.Model)

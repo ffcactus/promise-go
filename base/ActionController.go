@@ -128,7 +128,7 @@ func (c *ActionController) Post() {
 		"action":   action,
 		"request":  requestDebugInfo,
 		"id":       id,
-	}).Info("ActionController perform action.")
+	}).Debug("ActionController perform action.")
 	// Now the request is correct, select the right runtine by action type.
 	ok := true
 	switch actionType {
@@ -194,7 +194,7 @@ func (c *ActionController) Post() {
 		"id":       id,
 		"response": responseDebugInfo,
 		"task":     taskURI,
-	}).Info("ActionController perform action done.")
+	}).Info("Perform action done.")
 	if taskURI != nil {
 		c.Ctx.Output.Header("Location", *taskURI)
 	}

@@ -76,7 +76,7 @@ func (s *Server) DeleteCollection() []base.Message {
 		s.TemplateImpl.EventService().DispatchDeleteEvent(response)
 	}
 	for _, v := range ssg {
-		ssgResponse := dto.GetServerGroupResponse{}
+		ssgResponse := dto.GetServerServerGroupResponse{}
 		ssgResponse.Load(v)
 		s.EventService().DispatchDeleteEvent(&ssgResponse)
 	}

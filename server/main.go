@@ -32,7 +32,9 @@ func initDB() {
 func main() {
 	base.Init("ServerApp")
 	initDB()
-	// go service.FindServerStateAdded()
+	// bgRefresh := service.Refresh{}
+	// bgRefresh.StartBackgroundRefresh()
+
 	serverNS := beego.NewNamespace(
 		base.RootURL+base.ServerBaseURI,
 		beego.NSRouter("/", &base.RootController{

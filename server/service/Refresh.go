@@ -12,6 +12,11 @@ import (
 type Refresh struct {
 }
 
+// StartBackgroundRefresh do the auto-refresh job.
+func (s *Refresh) StartBackgroundRefresh() {
+	go s.FindServerStateAdded()
+}
+
 // FindServerStateAdded will find the server with state added.
 func (s *Refresh) FindServerStateAdded() {
 	for {

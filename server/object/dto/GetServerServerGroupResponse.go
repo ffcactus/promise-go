@@ -24,7 +24,7 @@ func (dto *GetServerServerGroupResponse) DebugInfo() string {
 func (dto *GetServerServerGroupResponse) Load(data base.ModelInterface) error {
 	m, ok := data.(*model.ServerServerGroup)
 	if !ok {
-		log.Error("GetIPv4PoolResponse.Load() failed, convert interface failed.")
+		log.Error("GetServerServerGroupResponse.Load() failed, convert interface failed.")
 		return base.ErrorDataConvert
 	}
 	dto.GetResponse.Load(&m.Model)

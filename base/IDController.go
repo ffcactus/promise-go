@@ -67,7 +67,7 @@ func (c *IDController) Delete() {
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.ResourceName(),
 		"id":       id,
-	}).Info("IDController delete resource done.")
+	}).Info("Delete resource done.")
 	c.Ctx.Output.SetStatus(http.StatusAccepted)
 	c.ServeJSON()
 }

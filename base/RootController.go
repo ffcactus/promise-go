@@ -58,7 +58,7 @@ func (c *RootController) Post() {
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.ResourceName(),
 		"request":  request.DebugInfo(),
-	}).Info("RootController post resource.")
+	}).Debug("RootController post resource.")
 	model, messages := c.TemplateImpl.Service().Create(request)
 	if messages != nil {
 		log.WithFields(log.Fields{
@@ -74,7 +74,7 @@ func (c *RootController) Post() {
 		"resource": c.TemplateImpl.ResourceName(),
 		"request":  request.DebugInfo(),
 		"ID":       response.GetID(),
-	}).Info("RootController post resource done.")
+	}).Info("Post resource done.")
 	c.Data["json"] = response
 	c.Ctx.Output.SetStatus(http.StatusCreated)
 	c.ServeJSON()
@@ -91,7 +91,7 @@ func (c *RootController) Get() {
 		"resource": c.TemplateImpl.ResourceName(),
 		"start":    start,
 		"count":    count,
-	}).Info("RootController get resource collection.")
+	}).Debug("RootController get resource collection.")
 	if start != "" {
 		_startInt, err := strconv.ParseInt(start, 10, 64)
 		if err != nil || _startInt < 0 {
@@ -154,7 +154,7 @@ func (c *RootController) Get() {
 		"count":    countInt,
 		"filter":   filter,
 		"resource": c.TemplateImpl.ResourceName(),
-	}).Info("RootController get resource collection done.")
+	}).Info("Get resource collection done.")
 	c.Data["json"] = response
 	c.Ctx.Output.SetStatus(http.StatusOK)
 	c.ServeJSON()
@@ -172,7 +172,7 @@ func (c *RootController) Delete() {
 	c.Ctx.Output.SetStatus(http.StatusAccepted)
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.ResourceName(),
-	}).Info("RootController delete resource collection done.")
+	}).Info("Delete resource collection done.")
 	c.ServeJSON()
 }
 
