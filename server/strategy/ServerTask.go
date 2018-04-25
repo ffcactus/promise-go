@@ -3,8 +3,7 @@ package strategy
 import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
-	"promise/common/object/constvalue"
-	commonDTO "promise/common/object/dto"
+	"promise/base"
 	taskSDK "promise/sdk/task"
 	"promise/server/context"
 	"promise/server/object/model"
@@ -174,11 +173,12 @@ func createRefreshTaskRequest(server *model.Server) *taskDTO.PostTaskRequest {
 
 	request.MessageID = &ServerTaskRefresh
 	request.Name = "Refresh Server"
-	*request.Description = "Refresh server resources and re-configure it."
+	description := "Refresh server resources and re-configure it."
+	request.Description = &description
 	request.CreatedByName = "CreatedByName???"
 	request.CreatedByURI = "CreatedByURI???"
 	request.TargetName = server.Name
-	request.TargetURI = constvalue.ToServerURI(server.ID)
+	request.TargetURI = base.ToServerURI(server.ID)
 	request.TaskSteps = ServerTaskRefreshStepLIST
 	return &request
 }
@@ -286,22 +286,22 @@ func (s *ServerTask) SetTaskStepRunning(c *context.Base, id string, stepName str
 	}
 }
 
-func (s *ServerTask) logUpdateStepResult(c *context.Base, id string, stepName string, server *model.Server, err error, message []commonDTO.Message) {
+func (s *ServerTask) logUpdateStepResult(c *context.Base, id string, stepName string, server *model.Server, err error, message []base.Message) {
 	if err != nil {
 		log.WithFields(log.Fields{
 			"server": server.ID,
 			"task":   id,
 			"step":   stepName,
-			"error":  err}).
-			Warn("Set task step to finished failed.")
+			"error":  err,
+		}).Warn("Set task step to finished failed.")
 	}
 	if message != nil {
 		log.WithFields(log.Fields{
 			"server":  server.ID,
 			"task":    id,
 			"step":    stepName,
-			"message": message[0].ID}).
-			Warn("Set task step to finished failed.")
+			"message": message[0].ID,
+		}).Warn("Set task step to finished failed.")
 	}
 }
 
