@@ -13,13 +13,13 @@ class ServerGroupElement extends React.Component {
 
   componentDidMount() {
     if (this.props.serverApp.currentServerGroup.ID === this.props.servergroup.ID) {
-      this.props.dispatch(ServerGroupAction.onServerGroupSelected(this.props.servergroup));
+      this.props.dispatch(ServerGroupAction.selectServerGroup(this.props.servergroup));
     }
   }
 
   onClick(event) {
     event.preventDefault();
-    this.props.dispatch(ServerGroupAction.onServerGroupSelected(this.props.servergroup));
+    this.props.dispatch(ServerGroupAction.selectServerGroup(this.props.servergroup));
   }
 
   render() {

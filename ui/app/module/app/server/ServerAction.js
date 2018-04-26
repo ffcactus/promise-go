@@ -54,6 +54,13 @@ export function onServerMessage(message) {
   }
 }
 
+export function selectServer(uri) {
+  return {
+    type: ActionType.SELECT_SERVER,
+    info: uri
+  };
+}
+
 export function openAddServerDialog() {
   return {
     type: ActionType.OPEN_ADD_SERVER_DIALOG

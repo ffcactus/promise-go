@@ -115,12 +115,12 @@ export function createServerGroup(servergroup) {
  * This action will be called when user clicks on a servergroup.
  * @param {string} id The ID of the group been selected.
  */
-export function onServerGroupSelected(servergroup) {
+export function selectServerGroup(servergroup) {
   return (dispatch, getState) => {
     const hostname = getState().session.hostname;
 
     dispatch({
-      type: ActionType.ON_SERVERGROUP_SELECTED,
+      type: ActionType.SELECT_SERVERGROUP,
       info: servergroup
     });
     dispatch({

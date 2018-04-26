@@ -14,23 +14,27 @@ class ServerListElement extends React.Component {
     };
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   return this.state.selected !== nextState.selected;
-  // }
+  // on mounting we need send REST to get server to display some basic info.
+  // TODO: should get collection operation return such info?
   componentDidMount() {
     this.props.dispatch(ServerAction.getServer(this.props.serverUri));
   }
 
+  // On selecting we need display the detail infomation.
   onSelect(event) {
     event.preventDefault();
-    // this.props.dispatch(Action.loadServer(this.props.serverUri));
+    this.props.dispatch(ServerAction.selectServer(this.props.serverUri));
   }
 
   render() {
+    const currentStyle = 'ServerListElement ' + (
+      this.props.serverApp.currentServer.URI === this.props.serverUri ?
+        'Selected' : 'NotSelected'
+    );
     const server = this.props.serverApp.serverList.get(this.props.serverUri);
 
     return (
-      <div styleName="ServerListElement" onClick={this.onSelect}>{server.Name}</div>
+      <div styleName={currentStyle} onClick={this.onSelect}>{server.Name}</div>
     );
   }
 }

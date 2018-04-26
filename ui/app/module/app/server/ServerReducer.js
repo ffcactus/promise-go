@@ -6,6 +6,7 @@ const defaultState = {
   // We need record the default servergroup because of it's special role.
   defaultServerGroup: {},
   currentServerGroup: {},
+  currentServer: {},
   serverGroupList: [],
   serverList: new Map(),
   openCreateServerGroupDialog: false,
@@ -37,6 +38,7 @@ const serverApp = (state = defaultState, action) => {
     case ActionType.GET_SERVER_LIST_SUCCESS:
       return {
         ...state,
+        // create a map for server list, the key is URI, the value is empty.
         serverList: new Map(action.info.Members.map((each) => {
           return [
             each.ServerURI,
@@ -84,14 +86,36 @@ const serverApp = (state = defaultState, action) => {
       return state;
     case ActionType.CREATE_SERVERGROUP_FAILURE:
       return state;
-    // server event.
+    // server WS event.
     case ActionType.ON_SERVER_CREATE:
       return state;
     case ActionType.ON_SERVER_UPDATE:
       return state;
     case ActionType.ON_SERVER_DELETE:
       return state;
-    // servergroup event.
+    case ActionType.ON_UI_SERVER_SELECTED:
+      return state;
+    // server UI event.
+    // select server in list.
+    case ActionType.SELECT_SERVER:
+      return {
+        ...state,
+        currentServer: action.info,
+      };
+    // open adding server dialog.
+    case ActionType.OPEN_ADD_SERVER_DIALOG:
+      return {
+        ...state,
+        openAddServerDialog: true,
+        openCreateServerGroupDialog: false,
+      };
+    // close adding server dialog.
+    case ActionType.CLOSE_ADD_SERVER_DIALOG:
+      return {
+        ...state,
+        openAddServerDialog: false,
+      };
+    // servergroup WS event.
     case ActionType.ON_SERVERGROUP_CREATE:
       return {
         ...state,
@@ -117,10 +141,24 @@ const serverApp = (state = defaultState, action) => {
         ...state,
         serverGroupList: [state.defaultServerGroup]
       };
-    case ActionType.ON_SERVERGROUP_SELECTED:
+    // servergroup UI event.
+    // select servergroup in list.
+    case ActionType.SELECT_SERVERGROUP:
       return {
         ...state,
         currentServerGroup: action.info,
+      };
+    // create servergroup dialog.
+    case ActionType.OPEN_CREATE_SERVERGROUP_DIALOG:
+      return {
+        ...state,
+        openCreateServerGroupDialog: true,
+        openAddServerDialog: false
+      };
+    case ActionType.CLOSE_CREATE_SERVERGROUP_DIALOG:
+      return {
+        ...state,
+        openCreateServerGroupDialog: false,
       };
     // Server-servergroup event.
     // We need check if the server belongs to the group selected.
@@ -142,30 +180,6 @@ const serverApp = (state = defaultState, action) => {
         };
       }
       return state;
-    // create server group dialog.
-    case ActionType.OPEN_CREATE_SERVERGROUP_DIALOG:
-      return {
-        ...state,
-        openCreateServerGroupDialog: true,
-        openAddServerDialog: false
-      };
-    case ActionType.CLOSE_CREATE_SERVERGROUP_DIALOG:
-      return {
-        ...state,
-        openCreateServerGroupDialog: false,
-      };
-    // add server dialog.
-    case ActionType.OPEN_ADD_SERVER_DIALOG:
-      return {
-        ...state,
-        openAddServerDialog: true,
-        openCreateServerGroupDialog: false,
-      };
-    case ActionType.CLOSE_ADD_SERVER_DIALOG:
-      return {
-        ...state,
-        openAddServerDialog: false,
-      };
     default:
       return state;
   }
