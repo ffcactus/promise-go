@@ -44,7 +44,7 @@ public class TaskTest extends PromiseIntegrationTest
     {
         // Remove all the server group.
         final ResponseEntity<DeleteResourceResponse> response = RestClient.delete(
-                getRootURL() + "/promise/v1/task",
+                "/promise/v1/task",
                 DeleteResourceResponse.class);
         Assert.assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
     }
@@ -55,7 +55,7 @@ public class TaskTest extends PromiseIntegrationTest
     {
         // Remove all the server group.
         final ResponseEntity<DeleteResourceResponse> response = RestClient.delete(
-                getRootURL() + "/promise/v1/task",
+                "/promise/v1/task",
                 DeleteResourceResponse.class);
         Assert.assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
     }
@@ -79,19 +79,19 @@ public class TaskTest extends PromiseIntegrationTest
 
         // Create a task.
         final GetTaskResponse response1 = PromiseAssertUtil.assertPostResponse(
-                getRootURL() + "/promise/v1/task/",
+                "/promise/v1/task/",
                 request,
                 GetTaskResponse.class);
 
         // Get it.
         final GetTaskResponse response2 = PromiseAssertUtil.assertGetResponse(
-                getRootURL() + response1.getUri(),
+                response1.getUri(),
                 GetTaskResponse.class);
         Assert.assertEquals(name, response2.getName());
         Assert.assertEquals(description, response2.getDescription());
 
         // Delete it.
-        PromiseAssertUtil.assertDeleteResource(getRootURL() + response1.getUri());
+        PromiseAssertUtil.assertDeleteResource(response1.getUri());
     }
 
     /**
@@ -101,19 +101,19 @@ public class TaskTest extends PromiseIntegrationTest
     public void testNotExist()
     {
         // Get
-        PromiseAssertUtil.assertGetMessage(getRootURL() + "/promise/v1/task/not_exist", MessageEnum.NotExist.getId());
+        PromiseAssertUtil.assertGetMessage("/promise/v1/task/not_exist", MessageEnum.NotExist.getId());
         // Delete
-        PromiseAssertUtil.assertDeleteMessage(getRootURL() + "/promise/v1/task/not_exist", MessageEnum.NotExist.getId());
+        PromiseAssertUtil.assertDeleteMessage("/promise/v1/task/not_exist", MessageEnum.NotExist.getId());
         // Update task step action.
         UpdateTaskStepRequest request1 = new UpdateTaskStepRequest();
         PromiseAssertUtil.assertActionMessage(
-                getRootURL() + "/promise/v1/task/not_exist/action/updateTaskStep",
+                "/promise/v1/task/not_exist/action/updateTaskStep",
                 MessageEnum.NotExist.getId(),
                 request1);
         // Update task action.
         UpdateTaskRequest request2 = new UpdateTaskRequest();
         PromiseAssertUtil.assertActionMessage(
-                getRootURL() + "/promise/v1/task/not_exist/action/updateTask",
+                "/promise/v1/task/not_exist/action/updateTask",
                 MessageEnum.NotExist.getId(),
                 request2);
     }
@@ -132,7 +132,7 @@ public class TaskTest extends PromiseIntegrationTest
         request.setDescription(description);
 
         PromiseAssertUtil.assertPostMessage(
-                getRootURL() + "/promise/v1/task/",
+                "/promise/v1/task/",
                 MessageEnum.TaskNoStep.getId(),
                 request);
     }
@@ -173,7 +173,7 @@ public class TaskTest extends PromiseIntegrationTest
 
         // Create a task.
         final GetTaskResponse response1 = PromiseAssertUtil.assertPostResponse(
-                getRootURL() + "/promise/v1/task/",
+                "/promise/v1/task/",
                 request1,
                 GetTaskResponse.class);
         Assert.assertEquals(messageID, response1.getMessageID());
@@ -228,20 +228,20 @@ public class TaskTest extends PromiseIntegrationTest
 
         // Create a task.
         final GetTaskResponse response1 = PromiseAssertUtil.assertPostResponse(
-                getRootURL() + "/promise/v1/task/",
+                "/promise/v1/task/",
                 request,
                 GetTaskResponse.class);
 
         // Create a task.
         request.setName("MyTask2");
         final GetTaskResponse response2 = PromiseAssertUtil.assertPostResponse(
-                getRootURL() + "/promise/v1/task/",
+                "/promise/v1/task/",
                 request,
                 GetTaskResponse.class);
 
         // Test the collection is right.
         final List<TaskCollectionMemberResponse> members1 = PromiseAssertUtil
-                .assertGetCollection(getRootURL() + "/promise/v1/task", 2, 2, TaskCollectionMemberResponse.class);
+                .assertGetCollection("/promise/v1/task", 2, 2, TaskCollectionMemberResponse.class);
         Assert.assertTrue(members1.contains(response1));
         Assert.assertTrue(members1.contains(response2));
 
@@ -249,19 +249,19 @@ public class TaskTest extends PromiseIntegrationTest
         final String filter1 = URLEncoder.encode("Name eq 'MyTask1'", "UTF-8");
         final List<TaskCollectionMemberResponse> members2 = PromiseAssertUtil
                 .assertGetCollection(
-                        getRootURL() + "/promise/v1/task?$filter=" + filter1,
+                        "/promise/v1/task?$filter=" + filter1,
                         2,
                         1,
                         TaskCollectionMemberResponse.class);
         Assert.assertTrue(members2.contains(response1));
 
-        PromiseAssertUtil.assertUnknownFilter(getRootURL() + "/promise/v1/task", "xxx", "yyy");
+        PromiseAssertUtil.assertUnknownFilter("/promise/v1/task", "xxx", "yyy");
 
         // Delete a task.
-        PromiseAssertUtil.assertDeleteResource(getRootURL() + response1.getUri());
+        PromiseAssertUtil.assertDeleteResource(response1.getUri());
 
         // Test start and count.
-        PromiseAssertUtil.assertGetColletcionWithStartCount(getRootURL() + "/promise/v1/task", 1);
+        PromiseAssertUtil.assertGetColletcionWithStartCount("/promise/v1/task", 1);
     }
 
     /**
@@ -279,21 +279,21 @@ public class TaskTest extends PromiseIntegrationTest
 
         // Create a task.
         final GetTaskResponse response1 = PromiseAssertUtil.assertPostResponse(
-                getRootURL() + "/promise/v1/task/",
+                "/promise/v1/task/",
                 request1,
                 GetTaskResponse.class);
         UpdateTaskRequest updateTaskRequest = new UpdateTaskRequest();
         // Validate execution state.
         updateTaskRequest.setExecutionState("xxxx");
         PromiseAssertUtil.assertPostMessage(
-                getRootURL() + response1.getUri() + "/action/updateTask",
+                response1.getUri() + "/action/updateTask",
                 MessageEnum.UnknownPropertyValue.getId(),
                 updateTaskRequest);
         // Validate percentage.
         updateTaskRequest.setExecutionState(TaskExecutionStateEnum.Running.getId());
         updateTaskRequest.setPercentage(100 + 1);
         PromiseAssertUtil.assertPostMessage(
-                getRootURL() + response1.getUri() + "/action/updateTask",
+                response1.getUri() + "/action/updateTask",
                 MessageEnum.UnknownPropertyValue.getId(),
                 updateTaskRequest);
         // Validate execution result state.
@@ -302,7 +302,7 @@ public class TaskTest extends PromiseIntegrationTest
         updateExecutionResultRequest.setState("xxxx");
         updateTaskRequest.setExecutionResult(updateExecutionResultRequest);
         PromiseAssertUtil.assertPostMessage(
-                getRootURL() + response1.getUri() + "/action/updateTask",
+                response1.getUri() + "/action/updateTask",
                 MessageEnum.UnknownPropertyValue.getId(),
                 updateTaskRequest);
     }
@@ -323,7 +323,7 @@ public class TaskTest extends PromiseIntegrationTest
 
         // Create a task.
         final GetTaskResponse createdTask = PromiseAssertUtil.assertPostResponse(
-                getRootURL() + "/promise/v1/task/",
+                "/promise/v1/task/",
                 request1,
                 GetTaskResponse.class);
         UpdateTaskRequest updateTaskRequest = new UpdateTaskRequest();
@@ -338,7 +338,7 @@ public class TaskTest extends PromiseIntegrationTest
         updateTaskRequest.setExecutionResult(executionResult);
 
         final GetTaskResponse updatedTask = PromiseAssertUtil.assertActionResponse(
-                getRootURL() + createdTask.getUri() + "/action/updateTask",
+                createdTask.getUri() + "/action/updateTask",
                 updateTaskRequest,
                 GetTaskResponse.class);
 
@@ -366,7 +366,7 @@ public class TaskTest extends PromiseIntegrationTest
 
         // Create a task.
         final GetTaskResponse response1 = PromiseAssertUtil.assertPostResponse(
-                getRootURL() + "/promise/v1/task/",
+                "/promise/v1/task/",
                 request1,
                 GetTaskResponse.class);
 
@@ -374,7 +374,7 @@ public class TaskTest extends PromiseIntegrationTest
         UpdateTaskStepRequest request2 = new UpdateTaskStepRequest();
         request2.setName("xxxx");
         PromiseAssertUtil.assertPostMessage(
-                getRootURL() + response1.getUri() + "/action/updateTaskStep",
+                response1.getUri() + "/action/updateTaskStep",
                 MessageEnum.UnknownPropertyValue.getId(),
                 request2);
 
@@ -382,7 +382,7 @@ public class TaskTest extends PromiseIntegrationTest
         request2.setName("Step1");
         request2.setExecutionState("xxxx");
         PromiseAssertUtil.assertPostMessage(
-                getRootURL() + response1.getUri() + "/action/updateTaskStep",
+                response1.getUri() + "/action/updateTaskStep",
                 MessageEnum.UnknownPropertyValue.getId(),
                 request2);
 
@@ -392,7 +392,7 @@ public class TaskTest extends PromiseIntegrationTest
         updateExecutionResultRequest.setState("xxxx");
         request2.setExecutionResult(updateExecutionResultRequest);
         PromiseAssertUtil.assertPostMessage(
-                getRootURL() + response1.getUri() + "/action/updateTaskStep",
+                response1.getUri() + "/action/updateTaskStep",
                 MessageEnum.UnknownPropertyValue.getId(),
                 request2);
     }
@@ -413,7 +413,7 @@ public class TaskTest extends PromiseIntegrationTest
 
         // Create a task.
         final GetTaskResponse createdTask = PromiseAssertUtil.assertPostResponse(
-                getRootURL() + "/promise/v1/task/",
+                "/promise/v1/task/",
                 request1,
                 GetTaskResponse.class);
 
@@ -428,7 +428,7 @@ public class TaskTest extends PromiseIntegrationTest
 
         taskStepRequest.setExecutionResult(executionResult);
         final GetTaskResponse updatedTask = PromiseAssertUtil.assertActionResponse(
-                getRootURL() + createdTask.getUri() + "/action/updateTaskStep",
+                createdTask.getUri() + "/action/updateTaskStep",
                 taskStepRequest,
                 GetTaskResponse.class);
         Assert.assertEquals(1, updatedTask.getTaskSteps().size());
@@ -457,7 +457,7 @@ public class TaskTest extends PromiseIntegrationTest
 
         // Create a task.
         final GetTaskResponse createdTask = PromiseAssertUtil.assertPostResponse(
-                getRootURL() + "/promise/v1/task/",
+                "/promise/v1/task/",
                 request1,
                 GetTaskResponse.class);
 
@@ -466,7 +466,7 @@ public class TaskTest extends PromiseIntegrationTest
         taskStepRequest.setName("Step1");
         taskStepRequest.setExecutionState(TaskExecutionStateEnum.Running.getId());
         final GetTaskResponse response2 = PromiseAssertUtil.assertActionResponse(
-                getRootURL() + createdTask.getUri() + "/action/updateTaskStep",
+                createdTask.getUri() + "/action/updateTaskStep",
                 taskStepRequest,
                 GetTaskResponse.class);
         Assert.assertEquals(0, response2.getPercentage());
@@ -475,7 +475,7 @@ public class TaskTest extends PromiseIntegrationTest
         // Set step1 to terminated, percentage should increase.
         taskStepRequest.setExecutionState(TaskExecutionStateEnum.Terminated.getId());
         final GetTaskResponse response3 = PromiseAssertUtil.assertActionResponse(
-                getRootURL() + createdTask.getUri() + "/action/updateTaskStep",
+                createdTask.getUri() + "/action/updateTaskStep",
                 taskStepRequest,
                 GetTaskResponse.class);
         Assert.assertEquals(33, response3.getPercentage());
@@ -485,7 +485,7 @@ public class TaskTest extends PromiseIntegrationTest
         taskStepRequest.setName("Step2");
         taskStepRequest.setExecutionState(TaskExecutionStateEnum.Terminated.getId());
         final GetTaskResponse response4 = PromiseAssertUtil.assertActionResponse(
-                getRootURL() + createdTask.getUri() + "/action/updateTaskStep",
+                createdTask.getUri() + "/action/updateTaskStep",
                 taskStepRequest,
                 GetTaskResponse.class);
         Assert.assertEquals(67, response4.getPercentage());
@@ -495,7 +495,7 @@ public class TaskTest extends PromiseIntegrationTest
         taskStepRequest.setName("Step3");
         taskStepRequest.setExecutionState(TaskExecutionStateEnum.Terminated.getId());
         final GetTaskResponse response5 = PromiseAssertUtil.assertActionResponse(
-                getRootURL() + createdTask.getUri() + "/action/updateTaskStep",
+                createdTask.getUri() + "/action/updateTaskStep",
                 taskStepRequest,
                 GetTaskResponse.class);
         Assert.assertEquals(100, response5.getPercentage());

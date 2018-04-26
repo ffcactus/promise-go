@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.promise.integrationtest.Environment;
 
 public class RestClient
 {
@@ -25,6 +26,7 @@ public class RestClient
      */
     public static <T> ResponseEntity<T> get(String url, Class<T> responseClass)
     {
+        url = "http://" + Environment.getHostname() + url;
         HttpURLConnection c = null;
         try
         {
@@ -95,6 +97,7 @@ public class RestClient
      */
     public static <T> ResponseEntity<T> get(String url, TypeReference<T> responseClass)
     {
+        url = "http://" + Environment.getHostname() + url;
         HttpURLConnection c = null;
         try
         {
@@ -163,6 +166,7 @@ public class RestClient
 
     public static <R, T> ResponseEntity<T> post(String url, R request, Class<T> responseClass)
     {
+        url = "http://" + Environment.getHostname() + url;
         HttpURLConnection c = null;
         try
         {
@@ -234,6 +238,7 @@ public class RestClient
 
     public static <R, T> ResponseEntity<T> post(String url, R request, TypeReference<T> responseClass)
     {
+        url = "http://" + Environment.getHostname() + url;
         HttpURLConnection c = null;
         try
         {
@@ -306,6 +311,7 @@ public class RestClient
 
     public static <T> ResponseEntity<T> delete(String url, Class<T> responseClass)
     {
+        url = "http://" + Environment.getHostname() + url;
         HttpURLConnection c = null;
         try
         {
@@ -372,6 +378,7 @@ public class RestClient
 
     public static <T> ResponseEntity<T> delete(String url, TypeReference<T> responseClass)
     {
+        url = "http://" + Environment.getHostname() + url;
         HttpURLConnection c = null;
         try
         {

@@ -18,6 +18,6 @@ public class PromiseIntegrationTest
 
     public static String getRootURL()
     {
-        return "http://" + environment.getHostname();
+        return "http://" + Environment.getHostname();
     }
 }

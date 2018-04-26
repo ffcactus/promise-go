@@ -36,7 +36,7 @@ public class WsTest extends PromiseIntegrationTest
     {
         // Remove all the server group.
         final ResponseEntity<DeleteResourceResponse> response = RestClient.delete(
-                getRootURL() + "/promise/v1/servergroup",
+                "/promise/v1/servergroup",
                 DeleteResourceResponse.class);
         Assert.assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
     }
@@ -47,7 +47,7 @@ public class WsTest extends PromiseIntegrationTest
     {
         // Remove all the server group.
         final ResponseEntity<DeleteResourceResponse> response = RestClient.delete(
-                getRootURL() + "/promise/v1/servergroup",
+                "/promise/v1/servergroup",
                 DeleteResourceResponse.class);
         Assert.assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
     }
@@ -69,13 +69,13 @@ public class WsTest extends PromiseIntegrationTest
 
         // Create a server group.
         final GetServerGroupResponse response1 = PromiseAssertUtil.assertPostResponse(
-                getRootURL() + "/promise/v1/servergroup/",
+                "/promise/v1/servergroup/",
                 request1,
                 GetServerGroupResponse.class);
 
         // Get it.
         final GetServerGroupResponse response2 = PromiseAssertUtil.assertGetResponse(
-                getRootURL() + "/promise/v1/servergroup/" + response1.getId(),
+                "/promise/v1/servergroup/" + response1.getId(),
                 GetServerGroupResponse.class);
         Assert.assertEquals(name, response2.getName());
         Assert.assertEquals(description, response2.getDescription());
@@ -91,7 +91,7 @@ public class WsTest extends PromiseIntegrationTest
 
         // Test create event.
         final ResponseEntity<EmptyResponse> response3 = RestClient.post(
-                getRootURL() + "/promise/v1/ws-sender",
+                "/promise/v1/ws-sender",
                 request2,
                 EmptyResponse.class);
         Assert.assertEquals(HttpStatus.CREATED, response3.getStatusCode());
@@ -99,7 +99,7 @@ public class WsTest extends PromiseIntegrationTest
         // Test update event.
         request2.setType(EventType.Update.getId());
         final ResponseEntity<EmptyResponse> response4 = RestClient.post(
-                getRootURL() + "/promise/v1/ws-sender",
+                "/promise/v1/ws-sender",
                 request2,
                 EmptyResponse.class);
         Assert.assertEquals(HttpStatus.CREATED, response4.getStatusCode());
@@ -108,7 +108,7 @@ public class WsTest extends PromiseIntegrationTest
         request2.setData(null);
         request2.setType(EventType.Delete.getId());
         final ResponseEntity<EmptyResponse> response5 = RestClient.post(
-                getRootURL() + "/promise/v1/ws-sender",
+                "/promise/v1/ws-sender",
                 request2,
                 EmptyResponse.class);
         Assert.assertEquals(HttpStatus.CREATED, response5.getStatusCode());

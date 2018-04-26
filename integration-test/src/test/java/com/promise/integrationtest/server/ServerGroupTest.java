@@ -37,7 +37,7 @@ public class ServerGroupTest extends PromiseIntegrationTest
     {
         // Remove all the server group.
         final ResponseEntity<DeleteResourceResponse> response = RestClient.delete(
-                getRootURL() + "/promise/v1/servergroup",
+                "/promise/v1/servergroup",
                 DeleteResourceResponse.class);
         Assert.assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
     }
@@ -48,7 +48,7 @@ public class ServerGroupTest extends PromiseIntegrationTest
     {
         // Remove all the server group.
         final ResponseEntity<DeleteResourceResponse> response = RestClient.delete(
-                getRootURL() + "/promise/v1/servergroup",
+                "/promise/v1/servergroup",
                 DeleteResourceResponse.class);
         Assert.assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
     }
@@ -70,19 +70,19 @@ public class ServerGroupTest extends PromiseIntegrationTest
 
         // Create a server group.
         final GetServerGroupResponse response1 = PromiseAssertUtil.assertPostResponse(
-                getRootURL() + "/promise/v1/servergroup/",
+                "/promise/v1/servergroup/",
                 request,
                 GetServerGroupResponse.class);
 
         // Get it.
         final GetServerGroupResponse response2 = PromiseAssertUtil.assertGetResponse(
-                getRootURL() + response1.getUri(),
+                response1.getUri(),
                 GetServerGroupResponse.class);
         Assert.assertEquals(name, response2.getName());
         Assert.assertEquals(description, response2.getDescription());
 
         // Delete it.
-        PromiseAssertUtil.assertDeleteResource(getRootURL() + response1.getUri());
+        PromiseAssertUtil.assertDeleteResource(response1.getUri());
     }
 
     /**
@@ -106,7 +106,7 @@ public class ServerGroupTest extends PromiseIntegrationTest
         // Create the default "all" server group should fail.
         final PostServerGroupRequest request = new PostServerGroupRequest("all", "default server group");
         PromiseAssertUtil
-                .assertPostMessage(getRootURL() + "/promise/v1/servergroup/", MessageEnum.Duplicate.getId(), request);
+                .assertPostMessage("/promise/v1/servergroup/", MessageEnum.Duplicate.getId(), request);
     }
 
     /**
@@ -116,7 +116,7 @@ public class ServerGroupTest extends PromiseIntegrationTest
     public void testDeleteNotExist()
     {
         PromiseAssertUtil.assertDeleteMessage(
-                getRootURL() + "/promise/v1/servergroup/i_am_not_exist",
+                "/promise/v1/servergroup/i_am_not_exist",
                 MessageEnum.NotExist.getId());
     }
 
@@ -130,7 +130,7 @@ public class ServerGroupTest extends PromiseIntegrationTest
             throws UnsupportedEncodingException
     {
         GetServerGroupResponse response = ServerGroupAssertUtil.assertGetServerGroupByName("all");
-        PromiseAssertUtil.assertDeleteMessage(getRootURL() + response.getUri(), MessageEnum.ServerGroupDeleteDefault.getId());
+        PromiseAssertUtil.assertDeleteMessage(response.getUri(), MessageEnum.ServerGroupDeleteDefault.getId());
     }
 
     /**
@@ -147,7 +147,7 @@ public class ServerGroupTest extends PromiseIntegrationTest
         GetServerGroupResponse r3 = ServerGroupAssertUtil.assertGetServerGroupByName("all");
 
         List<ServerGroupMemberResponse> members = PromiseAssertUtil
-                .assertGetCollection(getRootURL() + "/promise/v1/servergroup", 3, 3, ServerGroupMemberResponse.class);
+                .assertGetCollection("/promise/v1/servergroup", 3, 3, ServerGroupMemberResponse.class);
         Assert.assertTrue(members.contains(r1));
         Assert.assertTrue(members.contains(r2));
         Assert.assertTrue(members.contains(r3));

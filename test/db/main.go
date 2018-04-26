@@ -12,6 +12,12 @@ var (
 	done = make(chan bool)
 )
 
+// SubTestTable is the sub tables in TestTable.
+type SubTestTable struct {
+	ID uint64 `gorm:"column:ID;primary_key"`
+	MainValueRef string `gorm:"column:MainValueRef"`
+	Value int `gorm:"column:Value"`
+}
 
 // TestTable is the table in DB for this test.
 type TestTable struct {
@@ -19,12 +25,18 @@ type TestTable struct {
 	Category  string    `gorm:"column:Category"`
 	CreatedAt time.Time `gorm:"column:CreatedAt"`
 	UpdatedAt time.Time `gorm:"column:UpdatedAt"`
-	Value int
+	Value int           `gorm:"column:Value"`
+	SubValue []SubTestTable `gorm:"column:SubValue;ForeignKey:MainValueRef"`
 }
 
 // TableName returns the table name.
 func (TestTable) TableName() string {
 	return "TestTable"
+}
+
+// TableName returns the table name.
+func (SubTestTable) TableName() string {
+	return "SubTestTable"
 }
 
 // InitConnection Init the DB connection. Each service have to call the method first.
@@ -36,7 +48,7 @@ func InitConnection() {
 		if err != nil {
 			fmt.Println("Open", err)
 		}
-		// db.LogMode(true)
+		db.LogMode(true)
 		db.SingularTable(true)
 		connection = db
 	} else {
@@ -57,7 +69,7 @@ func NewConnection() *gorm.DB {
 	if err != nil {
 		fmt.Printf("NewConnection failed, err = %v\n", err)
 	}
-	// db.LogMode(true)
+	db.LogMode(true)
 	return db
 }
 
@@ -107,15 +119,50 @@ func main() {
 	table := new(TestTable)
 	table.Value = 0
 
-	if err := c.DropTableIfExists(table).Error; err != nil {
+	subValue := make([]SubTestTable, 0)
+	subValue = append(subValue, SubTestTable{Value: 1})
+	subValue = append(subValue, SubTestTable{Value: 2})
+	table.SubValue = subValue
+
+	if err := c.DropTableIfExists(new(TestTable)).Error; err != nil {
 		fmt.Println("DropTableIfExists()", err)
 	}
-	if err := c.CreateTable(table).Error; err != nil {
+	if err := c.DropTableIfExists(new(SubTestTable)).Error; err != nil {
+		fmt.Println("DropTableIfExists()", err)
+	}
+	if err := c.CreateTable(new(TestTable)).Error; err != nil {
 		fmt.Println("CreateTable()", err)
 	}
+	if err := c.CreateTable(new(SubTestTable)).Error; err != nil {
+		fmt.Println("CreateTable()", err)
+	}
+
+	// Start transaction to save main value.
 	table.ID = "UUID"
-	if err := c.Create(table).Error; err != nil {
-		fmt.Println("Create", err)
+	tx := c.Begin()
+	if err := tx.Error; err != nil {
+		fmt.Printf("Begin() failed.\n")
+		return
+	}
+	if !tx.Where("\"Value\" = ?", 100).First(table).RecordNotFound() {
+		fmt.Printf("Duplicated.\n")
+		tx.Rollback()
+		return
+	}
+	if err := tx.Create(table).Error; err != nil {
+		fmt.Printf("Create() failed.\n")
+		tx.Rollback()
+		return
+	}
+	if err := tx.Save(table).Error; err != nil {
+		fmt.Printf("Save() failed\n")
+		tx.Rollback()
+		return
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		fmt.Printf("Commit() failed.\n")
+		return
 	}
 
 	if c.First(table).RecordNotFound() {
@@ -125,7 +172,7 @@ func main() {
 	fmt.Printf("Value = %d\n", table.Value)
 
 	fmt.Printf("--- Start Test ---\n")
-	instance := 40
+	instance := 0
 	for i := 0; i < instance; i++ {
 		go Increase(fmt.Sprintf("Instance %d", i))
 		// time.Sleep(time.Duration(1) * time.Second)

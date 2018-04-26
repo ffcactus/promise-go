@@ -6,10 +6,10 @@ package com.promise.integrationtest;
  */
 public class Environment
 {
-    private String hostname = "10.93.81.79";
+    private static String hostname = "10.93.81.79";
 
-    public String getHostname()
+    public static String getHostname()
     {
-        return this.hostname;
+        return hostname;
     }
 }

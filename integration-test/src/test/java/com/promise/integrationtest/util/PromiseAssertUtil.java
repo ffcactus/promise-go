@@ -27,6 +27,9 @@ public class PromiseAssertUtil
     {
         Assert.assertNotNull(resp.getId());
         Assert.assertNotNull(resp.getUri());
+        Assert.assertNotNull(resp.getCategory());
+        Assert.assertNotNull(resp.getUpdatedAt());
+        Assert.assertNotNull(resp.getUpdatedAt());
         Assert.assertTrue(resp.getUri().contains(resp.getId()));
     }
 

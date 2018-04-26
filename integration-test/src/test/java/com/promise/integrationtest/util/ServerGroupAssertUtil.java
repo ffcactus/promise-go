@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.promise.integrationtest.base.PromiseIntegrationTest;
 import com.promise.integrationtest.dto.MemberResponse;
 import com.promise.integrationtest.dto.ResourceCollectionResponse;
 import com.promise.integrationtest.server.dto.GetServerGroupResponse;
@@ -25,7 +24,7 @@ public class ServerGroupAssertUtil
         final PostServerGroupRequest request = new PostServerGroupRequest(name, description);
         // Create a servergroup.
         GetServerGroupResponse response = PromiseAssertUtil.assertPostResponse(
-                PromiseIntegrationTest.getRootURL() + "/promise/v1/servergroup",
+                "/promise/v1/servergroup",
                 request,
                 GetServerGroupResponse.class);
         Assert.assertEquals(name, response.getName());
@@ -41,14 +40,14 @@ public class ServerGroupAssertUtil
     {
         final String filter = URLEncoder.encode("Name eq '" + name + "'", "UTF-8");
         final ResponseEntity<ResourceCollectionResponse<MemberResponse>> response1 = RestClient.get(
-                PromiseIntegrationTest.getRootURL() + "/promise/v1/servergroup?$filter=" + filter,
+                "/promise/v1/servergroup?$filter=" + filter,
                 new TypeReference<ResourceCollectionResponse<MemberResponse>>()
                 {
                 });
         Assert.assertEquals(HttpStatus.OK, response1.getStatusCode());
         Assert.assertEquals(1, response1.getBody().getMember().size());
         final ResponseEntity<GetServerGroupResponse> response2 = RestClient.get(
-                PromiseIntegrationTest.getRootURL() + response1.getBody().getMember().get(0).getUri(),
+                response1.getBody().getMember().get(0).getUri(),
                 GetServerGroupResponse.class);
         Assert.assertEquals(HttpStatus.OK, response2.getStatusCode());
         PromiseAssertUtil.isResourceResponse(response2.getBody());

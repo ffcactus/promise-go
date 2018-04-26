@@ -40,19 +40,19 @@ public class ServerServerGroupTest extends PromiseIntegrationTest
     {
         // Remove all the server.
         final ResponseEntity<DeleteResourceResponse> response1 = RestClient.delete(
-                getRootURL() + "/promise/v1/server",
+                "/promise/v1/server",
                 DeleteResourceResponse.class);
         Assert.assertEquals(HttpStatus.ACCEPTED, response1.getStatusCode());
 
         // Remove all the server group.
         final ResponseEntity<DeleteResourceResponse> response2 = RestClient.delete(
-                getRootURL() + "/promise/v1/servergroup",
+                "/promise/v1/servergroup",
                 DeleteResourceResponse.class);
         Assert.assertEquals(HttpStatus.ACCEPTED, response2.getStatusCode());
 
         // Remove all the server-servergroup.
         final ResponseEntity<DeleteResourceResponse> response3 = RestClient.delete(
-                getRootURL() + "/promise/v1/server-servergroup",
+                "/promise/v1/server-servergroup",
                 DeleteResourceResponse.class);
         Assert.assertEquals(HttpStatus.ACCEPTED, response3.getStatusCode());
     }
@@ -63,19 +63,19 @@ public class ServerServerGroupTest extends PromiseIntegrationTest
     {
         // Remove all the server.
         final ResponseEntity<DeleteResourceResponse> response1 = RestClient.delete(
-                getRootURL() + "/promise/v1/server",
+                "/promise/v1/server",
                 DeleteResourceResponse.class);
         Assert.assertEquals(HttpStatus.ACCEPTED, response1.getStatusCode());
 
         // Remove all the server group.
         final ResponseEntity<DeleteResourceResponse> response2 = RestClient.delete(
-                getRootURL() + "/promise/v1/servergroup",
+                "/promise/v1/servergroup",
                 DeleteResourceResponse.class);
         Assert.assertEquals(HttpStatus.ACCEPTED, response2.getStatusCode());
 
         // Remove all the server-servergroup.
         final ResponseEntity<DeleteResourceResponse> response3 = RestClient.delete(
-                getRootURL() + "/promise/v1/server-servergroup",
+                "/promise/v1/server-servergroup",
                 DeleteResourceResponse.class);
         Assert.assertEquals(HttpStatus.ACCEPTED, response3.getStatusCode());
     }
@@ -94,7 +94,7 @@ public class ServerServerGroupTest extends PromiseIntegrationTest
 
         final String filter1 = URLEncoder.encode("ServerGroupID eq '" + defaultServerGroupID + "'", "UTF-8");
         final ResponseEntity<ResourceCollectionResponse<MemberResponse>> response1 = RestClient.get(
-                PromiseIntegrationTest.getRootURL() + "/promise/v1/server-servergroup?$filter=" + filter1,
+                "/promise/v1/server-servergroup?$filter=" + filter1,
                 new TypeReference<ResourceCollectionResponse<MemberResponse>>()
                 {
                 });
@@ -108,7 +108,7 @@ public class ServerServerGroupTest extends PromiseIntegrationTest
         // Put server1 in group1
         final PostServerServerGroupRequest ssgRequest1 = new PostServerServerGroupRequest(server1_ID, group1_ID);
         final ResponseEntity<PostServerServerGroupResponse> ssgResponse1 = RestClient.post(
-                PromiseIntegrationTest.getRootURL() + "/promise/v1/server-servergroup",
+                "/promise/v1/server-servergroup",
                 ssgRequest1,
                 PostServerServerGroupResponse.class);
         Assert.assertEquals(HttpStatus.CREATED, ssgResponse1.getStatusCode());
@@ -116,14 +116,14 @@ public class ServerServerGroupTest extends PromiseIntegrationTest
         // Put server2 and server 3 in group2
         final PostServerServerGroupRequest ssgRequest2 = new PostServerServerGroupRequest(server2_ID, group2_ID);
         final ResponseEntity<PostServerServerGroupResponse> ssgResponse2 = RestClient.post(
-                PromiseIntegrationTest.getRootURL() + "/promise/v1/server-servergroup",
+                "/promise/v1/server-servergroup",
                 ssgRequest2,
                 PostServerServerGroupResponse.class);
         Assert.assertEquals(HttpStatus.CREATED, ssgResponse2.getStatusCode());
 
         final PostServerServerGroupRequest ssgRequest3 = new PostServerServerGroupRequest(server3_ID, group2_ID);
         final ResponseEntity<PostServerServerGroupResponse> ssgResponse3 = RestClient.post(
-                PromiseIntegrationTest.getRootURL() + "/promise/v1/server-servergroup",
+                "/promise/v1/server-servergroup",
                 ssgRequest3,
                 PostServerServerGroupResponse.class);
         Assert.assertEquals(HttpStatus.CREATED, ssgResponse3.getStatusCode());
@@ -131,7 +131,7 @@ public class ServerServerGroupTest extends PromiseIntegrationTest
         // group 1 should have 1 server.
         final String filter2 = URLEncoder.encode("ServerGroupID eq '" + group1_ID + "'", "UTF-8");
         final ResponseEntity<ResourceCollectionResponse<MemberResponse>> ssgResponse4 = RestClient.get(
-                PromiseIntegrationTest.getRootURL() + "/promise/v1/server-servergroup?$filter=" + filter2,
+                "/promise/v1/server-servergroup?$filter=" + filter2,
                 new TypeReference<ResourceCollectionResponse<MemberResponse>>()
                 {
                 });
@@ -141,7 +141,7 @@ public class ServerServerGroupTest extends PromiseIntegrationTest
         // group 2 should have 2 server.
         final String filter3 = URLEncoder.encode("ServerGroupID eq '" + group2_ID + "'", "UTF-8");
         final ResponseEntity<ResourceCollectionResponse<MemberResponse>> ssgResponse5 = RestClient.get(
-                PromiseIntegrationTest.getRootURL() + "/promise/v1/server-servergroup?$filter=" + filter3,
+                "/promise/v1/server-servergroup?$filter=" + filter3,
                 new TypeReference<ResourceCollectionResponse<MemberResponse>>()
                 {
                 });
@@ -151,7 +151,7 @@ public class ServerServerGroupTest extends PromiseIntegrationTest
         // server 1 should belong to 2 groups.
         final String filter4 = URLEncoder.encode("ServerID eq '" + server1_ID + "'", "UTF-8");
         final ResponseEntity<ResourceCollectionResponse<MemberResponse>> ssgResponse6 = RestClient.get(
-                PromiseIntegrationTest.getRootURL() + "/promise/v1/server-servergroup?$filter=" + filter4,
+                "/promise/v1/server-servergroup?$filter=" + filter4,
                 new TypeReference<ResourceCollectionResponse<MemberResponse>>()
                 {
                 });
@@ -172,17 +172,14 @@ public class ServerServerGroupTest extends PromiseIntegrationTest
         final String serverID = ServerAssertUtil.assertServerPosted("Mock_Hostname_1", "Username", "Password").getId();
         final String filter = URLEncoder.encode("ServerID eq '" + serverID + "'", "UTF-8");
         final ResponseEntity<ResourceCollectionResponse<MemberResponse>> ssgResponse = RestClient.get(
-                PromiseIntegrationTest.getRootURL() + "/promise/v1/server-servergroup?$filter=" + filter,
+                "/promise/v1/server-servergroup?$filter=" + filter,
                 new TypeReference<ResourceCollectionResponse<MemberResponse>>()
                 {
                 });
         Assert.assertEquals(HttpStatus.OK, ssgResponse.getStatusCode());
         Assert.assertEquals(1, ssgResponse.getBody().getMember().size());
         final String ssgUrl = ssgResponse.getBody().getMember().get(0).getUri();
-        PromiseAssertUtil
-                .assertDeleteMessage(
-                        PromiseIntegrationTest.getRootURL() + ssgUrl,
-                        MessageEnum.ServerServerGroupDeleteDefault.getId());
+        PromiseAssertUtil.assertDeleteMessage(ssgUrl, MessageEnum.ServerServerGroupDeleteDefault.getId());
 
     }
 }
