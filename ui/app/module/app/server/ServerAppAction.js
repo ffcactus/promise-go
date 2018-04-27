@@ -17,21 +17,22 @@ export function appInit() {
     dispatch({
       type: ActionType.APP_INIT_START,
     });
-    const uri = getState().session.hostname + '/promise/v1/servergroup?/$filter=Name eq \'all\'';
+    const uri = 'http://' + getState().session.hostname + '/promise/v1/servergroup?$filter=Name eq \'all\'';
     doGet(uri).then((resp)=> {
       if (resp.status === 200) {
         dispatch({
           type: ActionType.APP_INIT_SUCCESS,
-          info: resp.Members[0].URI,
+          info: resp.response.Members[0].URI,
         });
         return;
       }
       dispatch({
         type: ActionType.APP_INIT_FAILURE,
       });
-    }).catch(() => {
+    }).catch((e) => {
       dispatch({
         type: ActionType.APP_INIT_FAILURE,
+        info: e,
       });
     });
   };

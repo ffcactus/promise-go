@@ -74,7 +74,7 @@ export function onElementDidMount(uri) {
  */
 export function onListDidMount() {
   return (dispatch, getState) => {
-    const uri = '/promise/v1/server-servergroup?$filter=ServerGroupID eq \'' + getState().serverApp.currentServerGroup + '\'';
+    const uri = '/promise/v1/server-servergroup?$filter=ServerGroupID eq \'' + getState().serverApp.currentServerGroup.split('/').pop() + '\'';
     createGetAction(
       uri,
       ActionType.SSG_REST_GETLIST_START,

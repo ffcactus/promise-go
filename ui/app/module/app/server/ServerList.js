@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
-import * as ServerAction from './ServerGroupAction';
+import * as ServerAction from './ServerAction';
 import ServerListElement from './ServerListElement';
 import styles from './Server.css';
 

@@ -17,7 +17,7 @@ class ServerContainer extends React.Component {
   }
 
   render() {
-    switch (this.props.serverApp.state) {
+    switch (this.props.serverApp.appState) {
       case ServerAppState.APP_INIT_START:
         return <CenterDiv><LoadingIcon /></CenterDiv>;
       case ServerAppState.APP_INIT_SUCCESS:

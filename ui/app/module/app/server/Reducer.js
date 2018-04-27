@@ -48,6 +48,7 @@ const serverApp = (state = defaultState, action) => {
         ...state,
         appState: ServerAppState.APP_INIT_SUCCESS,
         defaultServerGroup: action.info,
+        currentServerGroup: action.info,
       };
     case ActionType.APP_INIT_FAILURE:
       return{
