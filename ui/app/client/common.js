@@ -85,3 +85,29 @@ export function doGet(url, request) {
     xhr.send(JSON.stringify(request));
   });
 }
+
+/**
+ * GetAction is the common get action template.
+ * @param {string} uri The URI to perform GET method.
+ * @param {ActionType} start The ActionType when start.
+ * @param {ActionType} success The ActionType when success.
+ * @param {ActionType} message The ActionType when message returned.
+ * @param {ActionType} exception The ActionType when exception returned.
+ */
+export function createGetAction(uri, start, success, message, exception) {
+  return (dispatch, getState) => {
+    dispatch({ type: start });
+    doGet('http://' + getState().session.hostname + uri).then((resp) => {
+      if (resp.status === 200) {
+        dispatch({ type: success, info: resp.response });
+        return;
+      }
+      if (resp.status === 400) {
+        dispatch({ type: message, info: resp.response });
+        return;
+      }
+    }).catch((e) => {
+      dispatch({ type: exception, info: e });
+    });
+  };
+}

@@ -2,21 +2,21 @@ import { ActionType } from './ConstValue';
 
 function onServerServerGroupCreate(ssg) {
   return {
-    type: ActionType.ON_SERVER_SERVERGROUP_CREATE,
+    type: ActionType.SSG_WS_CREATE,
     info: ssg
   };
 }
 
 function onServerServerGroupUpdate(ssg) {
   return {
-    type: ActionType.ON_SERVER_SERVERGROUP_UPDATE,
+    type: ActionType.SSG_WS_UPDATE,
     info: ssg
   };
 }
 
 function onServerServerGroupDelete(ssg) {
   return {
-    type: ActionType.ON_SERVER_SERVERGROUP_DELETE,
+    type: ActionType.SSG_WS_DELETE,
     info: ssg
   };
 }

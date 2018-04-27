@@ -1,4 +1,3 @@
-import * as Client from './Client';
 import { ActionType } from './ConstValue';
 import * as WsAction from '../../promise/ws/WsAction';
 import * as ServerAction from './ServerAction';
@@ -17,34 +16,48 @@ function appInitSuccess() {
   };
 }
 
-function appInitFailure() {
-  return {
-    type: ActionType.APP_INIT_FAILURE,
-  };
-}
+// function appInitFailure() {
+//   return {
+//     type: ActionType.APP_INIT_FAILURE,
+//   };
+// }
 
+// export function appInit() {
+//   WsAction.registerMessageAction('Server', ServerAction.onServerMessage);
+//   WsAction.registerMessageAction('ServerGroup', ServerGroupAction.onServerGroupMessage);
+//   WsAction.registerMessageAction('ServerServerGroup', ServerServerGroupAction.onServerServerGroupMessage);
+//   return (dispatch, getState) => {
+//     const hostname = getState().session.hostname;
+//     dispatch(appInitStart());
+//     // First, we need get all the servergroup.
+//     dispatch(ServerGroupAction.getServerGroupListStart());
+//     Client.getServerGroupList(hostname).then((sgResp) => {
+//       if (sgResp.status === 200) {
+//         dispatch(ServerGroupAction.getServerGroupListSuccess(sgResp.response));
+//         dispatch(appInitSuccess());
+//         return;
+//       }
+//       // if status code error in getting servergroup list, init fails.
+//       dispatch(ServerGroupAction.getServerGroupListFailure());
+//       dispatch(appInitFailure());
+//     }).catch((e) => {
+//       // if exception raised in getting servergroup list, init fails.
+//       dispatch(ServerGroupAction.getServerGroupListFailure(e));
+//       dispatch(appInitFailure(e));
+//     });
+//   };
+// }
+
+/**
+ * Init the server App.
+ *
+ */
 export function appInit() {
   WsAction.registerMessageAction('Server', ServerAction.onServerMessage);
   WsAction.registerMessageAction('ServerGroup', ServerGroupAction.onServerGroupMessage);
   WsAction.registerMessageAction('ServerServerGroup', ServerServerGroupAction.onServerServerGroupMessage);
-  return (dispatch, getState) => {
-    const hostname = getState().session.hostname;
+  return (dispatch) => {
     dispatch(appInitStart());
-    // First, we need get all the servergroup.
-    dispatch(ServerGroupAction.getServerGroupListStart());
-    Client.getServerGroupList(hostname).then((sgResp) => {
-      if (sgResp.status === 200) {
-        dispatch(ServerGroupAction.getServerGroupListSuccess(sgResp.response));
-        dispatch(appInitSuccess());
-        return;
-      }
-      // if status code error in getting servergroup list, init fails.
-      dispatch(ServerGroupAction.getServerGroupListFailure());
-      dispatch(appInitFailure());
-    }).catch((e) => {
-      // if exception raised in getting servergroup list, init fails.
-      dispatch(ServerGroupAction.getServerGroupListFailure(e));
-      dispatch(appInitFailure(e));
-    });
+    dispatch(appInitSuccess());
   };
 }

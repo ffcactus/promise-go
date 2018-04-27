@@ -1,12 +1,30 @@
 import { ActionType, ServerAppState } from './ConstValue';
 import { Map } from 'immutable';
 
+/**
+ * The store updated in the this way:
+ * When the App will mount, get all the servergroups.
+ * When the App is mount, set the selected servergroup to be the default one.
+ * When the a servergroup is selected, get all the servers belong to this servergroup.
+ * The servers will be put into a Map, the URI will be the key and the value will be the GetServerResponse.
+ * After the server list is loaded, set the selected server to be the one on the top.
+ * When an server element in the list is mounted, get the server and put the response as the value to the server map.
+ * When a servergroup is added, we add it to servergroup list.
+ * When a servergroup is removed, we remove it from servergroup list, and if it's the one been selected,
+ * we selected the default one.
+ * When a server is added to a servergroup and the servergroup is the one been selected, we add it to server map.
+ * When a server is removed from a servergroup and the servergroup is the one been selected, we remove it from server map,
+ * and if it's the server been selected, we choose another one unless it's empty.
+ *
+ */
+
 const defaultState = {
   state: ServerAppState.UNKNOWN,
   // We need record the default servergroup because of it's special role.
   defaultServerGroup: {},
   currentServerGroup: {},
   currentServer: {},
+  serverDetail: {},
   serverGroupList: [],
   serverList: new Map(),
   openCreateServerGroupDialog: false,
@@ -16,6 +34,7 @@ const defaultState = {
 const serverApp = (state = defaultState, action) => {
   let tempDefaultServerGroup;
   switch (action.type) {
+    // App
     case ActionType.APP_INIT_START:
       return Object.assign({}, state, {
         state: ServerAppState.APP_INIT_START,
@@ -32,10 +51,23 @@ const serverApp = (state = defaultState, action) => {
       });
     case ActionType.APP_EXIT:
       return defaultState;
-    // Get server list.
-    case ActionType.GET_SERVER_LIST_START:
+    // Server
+    // Server.REST.Get
+    case ActionType.SERVER_REST_GET_START:
       return state;
-    case ActionType.GET_SERVER_LIST_SUCCESS:
+    case ActionType.SERVER_REST_GET_SUCCESS:
+      return {
+        ...state,
+        serverList: state.serverList.set(action.info.URI, action.info),
+      };
+    case ActionType.SERVER_REST_GET_MESSAGE:
+      return state;
+    case ActionType.SERVER_REST_GET_EXCEPTION:
+      return state;
+    // Server.REST.GetList
+    case ActionType.SERVER_REST_GETLIST_START:
+      return state;
+    case ActionType.SERVER_REST_GETLIST_SUCCESS:
       return {
         ...state,
         // create a map for server list, the key is URI, the value is empty.
@@ -46,25 +78,43 @@ const serverApp = (state = defaultState, action) => {
           ];
         }))
       };
-    case ActionType.GET_SERVER_LIST_FAILURE:
+    case ActionType.SERVER_REST_GETLIST_MESSAGE:
+    case ActionType.SERVER_REST_GETLIST_EXCEPTION:
       return {
         ...state,
         serverList: new Map(),
       };
-    // Get server.
-    case ActionType.GET_SERVER_START:
+    // Server.WS
+    case ActionType.SERVER_WS_CREATE:
+    case ActionType.SERVER_WS_UPDATE:
+    case ActionType.SERVER_WS_DELETE:
+    case ActionType.SERVER_WS_DELETE_LIST:
       return state;
-    case ActionType.GET_SERVER_SUCCESS:
+    // Server.UI
+    // Server.UI.List
+    case ActionType.SERVER_UI_LIST_SELECT:
       return {
         ...state,
-        serverList: state.serverList.set(action.info.URI, action.info),
+        currentServer: action.info,
       };
-    case ActionType.GET_SERVER_FAILURE:
+    // Server.UI.Dialog
+    case ActionType.SERVER_UI_DIALOG_ADD_OPEN:
+    case ActionType.SERVER_UI_DIALOG_ADD_CLOSE:
       return state;
-    // servergroup REST.
-    case ActionType.GET_SERVERGROUP_LIST_START:
+
+    // ServerGroup
+    // ServerGroup.REST.Create
+    case ActionType.SG_REST_CREATE_START:
       return state;
-    case ActionType.GET_SERVERGROUP_LIST_SUCCESS:
+    case ActionType.SG_REST_CREATE_SUCCESS:
+      return state;
+    case ActionType.SG_REST_CREATE_MESSAGE:
+    case ActionType.SG_REST_CREATE_EXCEPTION:
+      return state;
+    // ServerGroup.REST.GetList
+    case ActionType.SG_REST_GETLIST_START:
+      return state;
+    case ActionType.SG_REST_GETLIST_SUCCESS:
       for (const each of action.info.Members) {
         if (each.Name === 'all') {
           tempDefaultServerGroup = each;
@@ -76,52 +126,18 @@ const serverApp = (state = defaultState, action) => {
         defaultServerGroup: tempDefaultServerGroup,
         currentServerGroup: tempDefaultServerGroup
       };
-    case ActionType.GET_SERVERGROUP_LIST_FAILURE:
+    case ActionType.SG_REST_GETLIST_MESSAGE:
+    case ActionType.SG_REST_GETLIST_EXCEPTION:
       return Object.assign({}, state, {
         serverGroupList: [],
       });
-    case ActionType.CREATE_SERVERGROUP_START:
-      return state;
-    case ActionType.CREATE_SERVERGROUP_SUCCESS:
-      return state;
-    case ActionType.CREATE_SERVERGROUP_FAILURE:
-      return state;
-    // server WS event.
-    case ActionType.ON_SERVER_CREATE:
-      return state;
-    case ActionType.ON_SERVER_UPDATE:
-      return state;
-    case ActionType.ON_SERVER_DELETE:
-      return state;
-    case ActionType.ON_UI_SERVER_SELECTED:
-      return state;
-    // server UI event.
-    // select server in list.
-    case ActionType.SELECT_SERVER:
-      return {
-        ...state,
-        currentServer: action.info,
-      };
-    // open adding server dialog.
-    case ActionType.OPEN_ADD_SERVER_DIALOG:
-      return {
-        ...state,
-        openAddServerDialog: true,
-        openCreateServerGroupDialog: false,
-      };
-    // close adding server dialog.
-    case ActionType.CLOSE_ADD_SERVER_DIALOG:
-      return {
-        ...state,
-        openAddServerDialog: false,
-      };
-    // servergroup WS event.
-    case ActionType.ON_SERVERGROUP_CREATE:
+    // ServerGroup.WS
+    case ActionType.SG_WS_CREATE:
       return {
         ...state,
         serverGroupList: state.serverGroupList.concat(action.info)
       };
-    case ActionType.ON_SERVERGROUP_UPDATE:
+    case ActionType.SG_WS_UPDATE:
       return {
         ...state,
         serverGroupList: state.serverGroupList.map((each) => {
@@ -131,38 +147,40 @@ const serverApp = (state = defaultState, action) => {
           return each;
         })
       };
-    case ActionType.ON_SERVERGROUP_DELETE:
+    case ActionType.SG_WS_DELETE:
       return {
         ...state,
         serverGroupList: state.serverGroupList.filter(each => each.ID !== action.info.ID)
       };
-    case ActionType.ON_SERVERGROUP_DELETE_COLLECTION:
+    case ActionType.SG_WS_DELETE_LIST:
       return {
         ...state,
         serverGroupList: [state.defaultServerGroup]
       };
-    // servergroup UI event.
-    // select servergroup in list.
-    case ActionType.SELECT_SERVERGROUP:
+    // ServerGroup.UI
+    // ServerGroup.UI.List
+    case ActionType.SG_UI_LIST_SELECT:
       return {
         ...state,
         currentServerGroup: action.info,
       };
-    // create servergroup dialog.
-    case ActionType.OPEN_CREATE_SERVERGROUP_DIALOG:
+    // ServerGroup.UI.Dialog
+    case ActionType.SG_UI_DIALOG_ADD_OPEN:
       return {
         ...state,
         openCreateServerGroupDialog: true,
         openAddServerDialog: false
       };
-    case ActionType.CLOSE_CREATE_SERVERGROUP_DIALOG:
+    case ActionType.SG_UI_DIALOG_ADD_CLOSE:
       return {
         ...state,
         openCreateServerGroupDialog: false,
       };
-    // Server-servergroup event.
+
+
+    // Server-ServerGroup.WS
     // We need check if the server belongs to the group selected.
-    case ActionType.ON_SERVER_SERVERGROUP_CREATE:
+    case ActionType.SSG_WS_CREATE:
       if (action.info.ServerGroupID === state.currentServerGroup.ID) {
         return {
           ...state,
@@ -170,9 +188,9 @@ const serverApp = (state = defaultState, action) => {
         };
       }
       return state;
-    case ActionType.ON_SERVER_SERVERGROUP_UPDATE:
+    case ActionType.SSG_WS_UPDATE:
       return state;
-    case ActionType.ON_SERVER_SERVERGROUP_DELETE:
+    case ActionType.SSG_WS_DELETE:
       if (action.info.ServerGroupID === state.currentServerGroup.ID) {
         return {
           ...state,
@@ -180,6 +198,7 @@ const serverApp = (state = defaultState, action) => {
         };
       }
       return state;
+    // Others
     default:
       return state;
   }

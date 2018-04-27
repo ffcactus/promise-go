@@ -1,9 +1,5 @@
 import { doGet, doPost } from '../../../client/common';
 
-export function getServerGroupList(hostname) {
-  return doGet('http://' + hostname + '/promise/v1/servergroup');
-}
-
 export function getServerListByGroup(hostname, id) {
   return doGet('http://' + hostname + '/promise/v1/server-servergroup?$filter=ServerGroupID eq \'' + id + '\'');
 }

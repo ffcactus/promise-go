@@ -17,13 +17,13 @@ class ServerListElement extends React.Component {
   // on mounting we need send REST to get server to display some basic info.
   // TODO: should get collection operation return such info?
   componentDidMount() {
-    this.props.dispatch(ServerAction.getServer(this.props.serverUri));
+    this.props.dispatch(ServerAction.restGet(this.props.serverUri));
   }
 
   // On selecting we need display the detail infomation.
   onSelect(event) {
     event.preventDefault();
-    this.props.dispatch(ServerAction.selectServer(this.props.serverUri));
+    this.props.dispatch(ServerAction.uiListSelect(this.props.serverUri));
   }
 
   render() {

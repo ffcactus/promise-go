@@ -1,24 +1,5 @@
-import * as Client from './Client';
 import { ActionType } from './ConstValue';
-
-export function getServerListStart() {
-  return {
-    type: ActionType.GET_SERVER_LIST_START
-  };
-}
-
-export function getServerListSuccess(resp) {
-  return {
-    type: ActionType.GET_SERVER_LIST_SUCCESS,
-    info: resp
-  };
-}
-
-export function getServerListFailure() {
-  return {
-    type: ActionType.GET_SERVER_LIST_FAILURE
-  };
-}
+import { createGetAction } from '../../../client/common';
 
 function onServerCreate(server) {
   return {
@@ -54,55 +35,35 @@ export function onServerMessage(message) {
   }
 }
 
-export function selectServer(uri) {
+export function uiListSelect(uri) {
   return {
-    type: ActionType.SELECT_SERVER,
+    type: ActionType.SERVER_UI_LIST_SELECT,
     info: uri
   };
 }
 
 export function openAddServerDialog() {
   return {
-    type: ActionType.OPEN_ADD_SERVER_DIALOG
+    type: ActionType.SERVER_UI_DIALOG_ADD_OPEN
   };
 }
 
 export function closeAddServerDialog() {
   return {
-    type: ActionType.CLOSE_ADD_SERVER_DIALOG
+    type: ActionType.SERVER_UI_DIALOG_ADD_CLOSE
   };
 }
 
-function getServerStart() {
-  return {
-    type: ActionType.GET_SERVER_START
-  };
-}
-
-function getServerSuccess(resp) {
-  return {
-    type: ActionType.GET_SERVER_SUCCESS,
-    info: resp
-  };
-}
-
-function getServerFailure() {
-  return {
-    type: ActionType.GET_SERVER_FAILURE
-  };
-}
-
-export function getServer(uri) {
-  return (dispatch, getState) => {
-    dispatch(getServerStart());
-    Client.getServer(getState().session.hostname, uri).then((resp) => {
-      if (resp.status === 200) {
-        dispatch(getServerSuccess(resp.response));
-        return;
-      }
-      dispatch(getServerFailure());
-    }).catch((e) => {
-      dispatch(getServerFailure(e));
-    });
-  };
+/**
+ *
+ * @param {string} uri The URI to get the server.
+ */
+export function restGet(uri) {
+  return createGetAction(
+    uri,
+    ActionType.SERVER_REST_GET_START,
+    ActionType.SERVER_REST_GET_SUCCESS,
+    ActionType.SERVER_REST_GET_MESSAGE,
+    ActionType.SERVER_REST_GET_EXCEPTION,
+  );
 }

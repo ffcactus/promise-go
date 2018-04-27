@@ -1,20 +1,21 @@
 import * as Client from './Client';
 import { ActionType } from './ConstValue';
+import { createGetAction } from '../../../client/common';
 
-export function getServerGroupListStart() {
+export function getCollectionStart() {
   return {
     type: ActionType.GET_SERVERGROUP_LIST_START
   };
 }
 
-export function getServerGroupListSuccess(resp) {
+export function getCollectionSuccess(resp) {
   return {
     type: ActionType.GET_SERVERGROUP_LIST_SUCCESS,
     info: resp,
   };
 }
 
-export function getServerGroupListFailure() {
+export function getCollectionFailure() {
   return {
     type: ActionType.GET_SERVERGROUP_LIST_FAILURE,
   };
@@ -22,28 +23,28 @@ export function getServerGroupListFailure() {
 
 function onServerGroupCreate(sg) {
   return {
-    type: ActionType.ON_SERVERGROUP_CREATE,
+    type: ActionType.SG_WS_CREATE,
     info: sg
   };
 }
 
 function onServerGroupUpdate(sg) {
   return {
-    type: ActionType.ON_SERVERGROUP_UPDATE,
+    type: ActionType.SG_WS_UPDATE,
     info: sg
   };
 }
 
 function onServerGroupDelete(sg) {
   return {
-    type: ActionType.ON_SERVERGROUP_DELETE,
+    type: ActionType.SG_WS_DELETE,
     info: sg
   };
 }
 
 function onServerGroupDeleteCollection() {
   return {
-    type: ActionType.ON_SERVERGROUP_DELETE_COLLECTION
+    type: ActionType.SG_WS_DELETE_LIST
   };
 }
 
@@ -112,40 +113,38 @@ export function createServerGroup(servergroup) {
 }
 
 /**
- * This action will be called when user clicks on a servergroup.
- * @param {string} id The ID of the group been selected.
+ *
+ * @param {int} top How much you would like to get.
+ * @param {int} skip From where you would like to get.
+ * @param {string} filter The filter you would like to use.
  */
-export function selectServerGroup(servergroup) {
-  return (dispatch, getState) => {
-    const hostname = getState().session.hostname;
+export function getCollection() {
+  return createGetAction(
+    '/promise/v1/servergroup',
+    ActionType.SG_REST_GETLIST_START,
+    ActionType.SG_REST_GETLIST_SUCCESS,
+    ActionType.SG_REST_GETLIST_MESSAGE,
+    ActionType.SG_REST_GETLIST_EXCEPTION,
+  );
+}
 
+/**
+ * This action will be called when user selects a servergroup from list.
+ * @param {string} uri The URI of the servergroup been selected.
+ */
+export function UiListSelect(uri) {
+  return (dispatch, getState) => {
     dispatch({
-      type: ActionType.SELECT_SERVERGROUP,
-      info: servergroup
+      type: ActionType.SG_UI_LIST_SELECT,
+      info: uri
     });
-    dispatch({
-      type: ActionType.GET_SERVER_LIST_START
-    });
-    // Get server list start.
-    Client.getServerListByGroup(hostname, servergroup.ID).then((resp) => {
-      if (resp.status === 200) {
-        // Get server list success.
-        dispatch({
-          type: ActionType.GET_SERVER_LIST_SUCCESS,
-          info: resp.response
-        });
-        return;
-      }
-      // Get server list failure.
-      dispatch({
-        type: ActionType.GET_SERVER_LIST_FAILURE,
-        info: resp.response
-      });
-    }).catch(() => {
-      // Get server list failure.
-      createServerGroupFailure({
-        type: ActionType.GET_SERVER_LIST_FAILURE,
-      });
-    });
+    // return an action and call it.
+    createGetAction(
+      '/promise/v1/server-servergroup?$filter=ServerGroupID eq \'' + uri.split('/').pop() + '\'',
+      ActionType.SERVER_REST_GETLIST_START,
+      ActionType.SERVER_REST_GETLIST_SUCCESS,
+      ActionType.SERVER_REST_GETLIST_MESSAGE,
+      ActionType.SERVER_REST_GETLIST_EXCEPTION,
+    )(dispatch, getState);
   };
 }
