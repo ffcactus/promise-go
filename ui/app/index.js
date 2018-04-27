@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 import React from 'react';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { Route, Switch } from 'react-router';
 import { Provider } from 'react-redux';
@@ -8,16 +8,18 @@ import { ConnectedRouter } from 'react-router-redux';
 import { render } from 'react-dom';
 import createHistory from 'history/createBrowserHistory';
 import { routerMiddleware } from 'react-router-redux';
-import rootReducer from './reducer/RootReducer';
+import rootReducer from './RootReducer';
 import Login from './module/promise/login/Login';
 import PrivateRoute from './module/promise/common/PrivateRoute';
 import DesktopContainer from './module/promise/desktop/DesktopContainer';
 import Settings from './module/app/settings/Settings';
 import Phone from './module/app/phone/Phone';
 import ServerContainer from './module/app/server/ServerContainer';
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const history = createHistory();
 const router = routerMiddleware(history);
-const store = createStore(rootReducer, applyMiddleware(router, thunk));
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(router, thunk)));
 
 render(
   <Provider store={store}>

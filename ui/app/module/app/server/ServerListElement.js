@@ -15,9 +15,8 @@ class ServerListElement extends React.Component {
   }
 
   // on mounting we need send REST to get server to display some basic info.
-  // TODO: should get collection operation return such info?
   componentDidMount() {
-    this.props.dispatch(ServerAction.restGet(this.props.serverUri));
+    this.props.dispatch(ServerAction.onElementDidMount(this.props.serverUri));
   }
 
   // On selecting we need display the detail infomation.
@@ -28,7 +27,7 @@ class ServerListElement extends React.Component {
 
   render() {
     const currentStyle = 'ServerListElement ' + (
-      this.props.serverApp.currentServer.URI === this.props.serverUri ?
+      this.props.serverApp.currentServer === this.props.serverUri ?
         'Selected' : 'NotSelected'
     );
     const server = this.props.serverApp.serverList.get(this.props.serverUri);

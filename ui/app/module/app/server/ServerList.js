@@ -2,12 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
+import * as ServerAction from './ServerGroupAction';
 import ServerListElement from './ServerListElement';
 import styles from './Server.css';
 
 class ServerList extends React.Component {
   constructor(props) {
     super(props);
+  }
+
+  componentDidMount() {
+    // At this point, the servergroup hasn't been clicked yet, so let's do a auto get collection.
+    this.props.dispatch(ServerAction.onListDidMount());
   }
 
   render() {

@@ -1,7 +1,6 @@
 import { DesktopAction, DesktopState } from './ConstValue';
 
 const defaultState = {
-  hostname: null,
   state: DesktopState.UNKNOWN,
   serviceState: null
 };
@@ -10,7 +9,6 @@ const desktop = (state = defaultState, action) => {
   switch (action.type) {
     case DesktopAction.SET_INIT_START:
       return Object.assign({}, state, {
-        hostname: action.info.hostname,
         state: DesktopState.INIT_START
       });
     case DesktopAction.SET_INIT_FAILURE:

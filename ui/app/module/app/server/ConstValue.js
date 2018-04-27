@@ -64,6 +64,12 @@ export const ActionType = Object.freeze(
     'SG_UI_DIALOG_ADD_CLOSE': 'SG_UI_DIALOG_ADD_CLOSE',
 
     // Server-ServerGroup
+    // Server-ServerGroup.REST
+    // Server-ServerGroup.REST.GetList
+    'SSG_REST_GETLIST_START': 'SSG_REST_GETLIST_START',
+    'SSG_REST_GETLIST_SUCCESS': 'SSG_REST_GETLIST_SUCCESS',
+    'SSG_REST_GETLIST_MESSAGE': 'SSG_REST_GETLIST_MESSAGE',
+    'SSG_REST_GETLIST_EXCEPTION': 'SSG_REST_GETLIST_EXCEPTION',
     // Server-ServerGroup.WS
     'SSG_WS_CREATE': 'SSG_WS_CREATE',
     'SSG_WS_UPDATE': 'SSG_WS_UPDATE',

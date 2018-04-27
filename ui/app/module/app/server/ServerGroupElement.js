@@ -23,7 +23,7 @@ class ServerGroupElement extends React.Component {
   }
 
   render() {
-    const currentStyle = 'ServerGroupElement ' + (this.props.serverApp.currentServerGroup.ID === this.props.servergroup.ID ? 'Selected' : 'NotSelected');
+    const currentStyle = 'ServerGroupElement ' + (this.props.serverApp.currentServerGroup === this.props.servergroup.URI ? 'Selected' : 'NotSelected');
     return (
       <div styleName={currentStyle} onClick={this.onClick}>
         <p styleName="ServerGroupElementText">{this.props.servergroup.Name}</p>

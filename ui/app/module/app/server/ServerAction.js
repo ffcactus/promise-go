@@ -3,21 +3,21 @@ import { createGetAction } from '../../../client/common';
 
 function onServerCreate(server) {
   return {
-    type: ActionType.ON_SERVER_CREATE,
+    type: ActionType.SERVER_WS_CREATE,
     info: server
   };
 }
 
 function onServerUpdate(server) {
   return {
-    type: ActionType.ON_SERVER_UPDATE,
+    type: ActionType.SERVER_WS_UPDATE,
     info: server
   };
 }
 
 function onServerDelete(server) {
   return {
-    type: ActionType.ON_SERVER_DELETE,
+    type: ActionType.SERVER_WS_DELETE,
     info: server
   };
 }
@@ -55,10 +55,10 @@ export function closeAddServerDialog() {
 }
 
 /**
- *
+ * When the server element did mount we get the server details.
  * @param {string} uri The URI to get the server.
  */
-export function restGet(uri) {
+export function onElementDidMount(uri) {
   return createGetAction(
     uri,
     ActionType.SERVER_REST_GET_START,
@@ -67,3 +67,21 @@ export function restGet(uri) {
     ActionType.SERVER_REST_GET_EXCEPTION,
   );
 }
+
+/**
+ * When server list did mount, we need load all the server-servergroup depends on the selected servergroup.
+ * @param {string} uri The URI to get the server.
+ */
+export function onListDidMount() {
+  return (dispatch, getState) => {
+    const uri = '/promise/v1/server-servergroup?$filter=ServerGroupID eq \'' + getState().serverApp.currentServerGroup + '\'';
+    createGetAction(
+      uri,
+      ActionType.SSG_REST_GETLIST_START,
+      ActionType.SSG_REST_GETLIST_SUCCESS,
+      ActionType.SSG_REST_GETLIST_MESSAGE,
+      ActionType.SSG_REST_GETLIST_EXCEPTION
+    )(dispatch, getState);
+  };
+}
+
