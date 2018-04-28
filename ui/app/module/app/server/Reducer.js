@@ -38,17 +38,40 @@ const defaultState = {
 
 const serverApp = (state = defaultState, action) => {
   let tempDefaultServerGroup;
-  let tempSelectedServer;
+  let tempCurrentServerGroup;
+  let tempCurrentServer;
   switch (action.type) {
     // App
     case ActionType.APP_INIT_START:
-      return defaultState;
+      return {
+        ...state,
+        currentServer: action.info.currentServer,
+        currentServerGroup: action.info.currentServerGroup,
+      };
     case ActionType.APP_INIT_SUCCESS:
+      // Find the default servergroup.
+      for (const each of action.info.serverGroupList.Members) {
+        if (each.Name === 'all') {
+          tempDefaultServerGroup = each.URI;
+        }
+      }
+      // Set the current servergroup.
+      if (state.currentServerGroup === null) {
+        tempCurrentServerGroup = tempDefaultServerGroup;
+      }
+      if (state.currentServer === null) {
+        tempCurrentServer = action.info.serverServerGroupList.Members.length === 0 ? null : action.info.serverServerGroupList.Members[0].ServerURI;
+      }
       return {
         ...state,
         appState: ServerAppState.APP_INIT_SUCCESS,
-        defaultServerGroup: action.info,
-        currentServerGroup: action.info,
+        serverGroupList: action.info.serverGroupList.Members,
+        serverList: new Map(action.info.serverServerGroupList.Members.filter((each) => {
+          return each.ServerGroupURI === state.currentServerGroup;
+        })),
+        defaultServerGroup: tempDefaultServerGroup,
+        currentServerGroup: tempCurrentServerGroup,
+        currentServer: tempCurrentServer,
       };
     case ActionType.APP_INIT_FAILURE:
       return{
@@ -109,17 +132,9 @@ const serverApp = (state = defaultState, action) => {
     case ActionType.SG_REST_GETLIST_START:
       return state;
     case ActionType.SG_REST_GETLIST_SUCCESS:
-      for (const each of action.info.Members) {
-        if (each.Name === 'all') {
-          tempDefaultServerGroup = each.URI;
-        }
-      }
       return {
         ...state,
         serverGroupList: action.info.Members,
-        defaultServerGroup: tempDefaultServerGroup,
-        // If no servergroup is selected, select the default one.
-        currentServerGroup: (state.currentServerGroup === null) ? tempDefaultServerGroup : state.currentServerGroup,
       };
     case ActionType.SG_REST_GETLIST_MESSAGE:
     case ActionType.SG_REST_GETLIST_EXCEPTION:
@@ -182,14 +197,12 @@ const serverApp = (state = defaultState, action) => {
       };
     case ActionType.SSG_REST_GETLIST_SUCCESS:
     // create the server list.
-      tempSelectedServer = action.info.Members.length === 0 ? null : action.info.Members[0].ServerURI;
       return {
         ...state,
         // create a map for server list, the key is URI, the value is empty.
         serverList: new Map(action.info.Members.map((each) => {
           return [each.ServerURI, {}];
         })),
-        currentServer: state.currentServer === null ? tempSelectedServer : state.currentServer,
       };
     case ActionType.SSG_REST_GETLIST_MESSAGE:
     case ActionType.SSG_REST_GETLIST_EXCEPTION:

@@ -13,6 +13,7 @@ class AppCollectionMenu extends React.Component {
 
   handleClick(event) {
     event.preventDefault();
+    this.props.dispatch(this.props.action);
     this.props.dispatch(push('/'));
   }
 
@@ -27,7 +28,8 @@ class AppCollectionMenu extends React.Component {
 }
 
 AppCollectionMenu.propTypes = {
-  dispatch: PropTypes.func
+  dispatch: PropTypes.func,
+  action: PropTypes.object,
 };
 
 

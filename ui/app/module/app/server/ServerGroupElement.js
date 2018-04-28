@@ -12,7 +12,7 @@ class ServerGroupElement extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.serverApp.currentServerGroup.ID === this.props.servergroup.ID) {
+    if (this.props.serverApp.currentServerGroup && this.props.serverApp.currentServerGroup === this.props.servergroup.URI) {
       this.props.dispatch(ServerGroupAction.UiListSelect(this.props.servergroup.URI));
     }
   }
