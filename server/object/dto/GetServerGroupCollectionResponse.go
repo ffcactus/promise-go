@@ -34,6 +34,7 @@ func (dto *GetServerGroupCollectionResponse) Load(m *base.CollectionModel) error
 	dto.Start = m.Start
 	dto.Count = m.Count
 	dto.Total = m.Total
+	dto.Members = make([]base.CollectionMemberResponseInterface, 0)
 	for _, v := range m.Members {
 		member := ServerGroupCollectionMember{}
 		if err := member.Load(v); err != nil {
