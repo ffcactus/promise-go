@@ -1,7 +1,7 @@
 package entity
 
 import (
-	commonUtil "promise/common/util"
+	"promise/base"
 	"promise/server/object/model"
 )
 
@@ -28,7 +28,7 @@ func (e *Storage) ToModel() *model.Storage {
 	m := model.Storage{}
 	createResourceModel(&e.EmbeddedResource, &m.Resource)
 	a := []string{}
-	commonUtil.StringToStruct(e.DriveURIs, &a)
+	base.StringToStruct(e.DriveURIs, &a)
 	m.DriveURIs = a
 	for i := range e.StorageControllers {
 		eachM := model.StorageController{}
@@ -38,7 +38,7 @@ func (e *Storage) ToModel() *model.Storage {
 		eachM.SpeedGbps = eachE.SpeedGbps
 		eachM.FirmwareVersion = eachE.FirmwareVersion
 		a := []string{}
-		commonUtil.StringToStruct(eachE.SupportedDeviceProtocols, &a)
+		base.StringToStruct(eachE.SupportedDeviceProtocols, &a)
 		eachM.SupportedDeviceProtocols = a
 		m.StorageControllers = append(m.StorageControllers, eachM)
 	}
@@ -48,7 +48,7 @@ func (e *Storage) ToModel() *model.Storage {
 // Load will load data from model.
 func (e *Storage) Load(m *model.Storage) {
 	updateResourceEntity(&e.EmbeddedResource, &m.Resource)
-	s := commonUtil.StructToString(m.DriveURIs)
+	s := base.StructToString(m.DriveURIs)
 	e.DriveURIs = s
 	for i := range m.StorageControllers {
 		each := StorageController{}
@@ -56,7 +56,7 @@ func (e *Storage) Load(m *model.Storage) {
 		updateProductInfoEntity(&each.ProductInfo, &m.StorageControllers[i].ProductInfo)
 		each.SpeedGbps = m.StorageControllers[i].SpeedGbps
 		each.FirmwareVersion = m.StorageControllers[i].FirmwareVersion
-		s := commonUtil.StructToString(m.StorageControllers[i].SupportedDeviceProtocols)
+		s := base.StructToString(m.StorageControllers[i].SupportedDeviceProtocols)
 		each.SupportedDeviceProtocols = s
 		e.StorageControllers = append(e.StorageControllers, each)
 	}

@@ -24,7 +24,7 @@ import {
  */
 
 const defaultState = {
-  appState: ServerAppState.APP_INIT_START,
+  appState: ServerAppState.LOADING,
   // We need record the default servergroup because of it's special role.
   defaultServerGroup: null,
   currentServerGroup: null,
@@ -45,6 +45,7 @@ const serverApp = (state = defaultState, action) => {
     case ActionType.APP_INIT_START:
       return {
         ...state,
+        appState: ServerAppState.LOADING,
         currentServer: action.info.currentServer,
         currentServerGroup: action.info.currentServerGroup,
       };
@@ -64,7 +65,7 @@ const serverApp = (state = defaultState, action) => {
       }
       return {
         ...state,
-        appState: ServerAppState.APP_INIT_SUCCESS,
+        appState: ServerAppState.NORMAL,
         serverGroupList: action.info.serverGroupList.Members,
         serverList: new Map(action.info.serverServerGroupList.Members.filter((each) => {
           return each.ServerGroupURI === state.currentServerGroup;
@@ -76,7 +77,7 @@ const serverApp = (state = defaultState, action) => {
     case ActionType.APP_INIT_FAILURE:
       return{
         ...state,
-        appState: ServerAppState.APP_INIT_FAILURE,
+        appState: ServerAppState.FAILURE,
         serverGroupList: [],
         serverList: new Map(),
       };

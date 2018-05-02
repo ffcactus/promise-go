@@ -3,27 +3,26 @@ package main
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
-	"promise/common/app"
-	"promise/common/object/constvalue"
+	"promise/base"
 	"promise/ws/controller"
 	"promise/ws/service"
 )
 
 func main() {
-	app.Init("WSApp")
+	base.Init("WSApp")
 
 	go service.StartEventDispatcher()
 
 	// ws namesapce.
 	wsNS := beego.NewNamespace(
-		app.RootURL+constvalue.WSBaseURI,
+		base.RootURL+base.WSBaseURI,
 		beego.NSRouter("/", &controller.RootController{}),
 	)
 	beego.AddNamespace(wsNS)
 
 	// ws-sender namespace.
 	wsSenderNS := beego.NewNamespace(
-		app.RootURL+constvalue.WSSenderBaseURI,
+		base.RootURL+base.WSSenderBaseURI,
 		beego.NSRouter("/", &controller.WsSenderRootController{}),
 	)
 	beego.AddNamespace(wsSenderNS)

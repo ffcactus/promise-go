@@ -1,7 +1,7 @@
 package entity
 
 import (
-	commonUtil "promise/common/util"
+	"promise/base"
 	"promise/server/object/model"
 )
 
@@ -25,7 +25,7 @@ func (e *Redundancy) ToModel() *model.Redundancy {
 	m.MinNumNeeded = e.MinNumNeeded
 	m.RedundancyEnabled = e.RedundancyEnabled
 	a := []string{}
-	commonUtil.StringToStruct(*e.RedundancySet, &a)
+	base.StringToStruct(*e.RedundancySet, &a)
 	m.RedundancySet = &a
 	return &m
 }

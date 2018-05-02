@@ -12,17 +12,17 @@ class ServerContainer extends React.Component {
     super(props);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.dispatch(ServerAppAction.appInit());
   }
 
   render() {
     switch (this.props.serverApp.appState) {
-      case ServerAppState.APP_INIT_START:
+      case ServerAppState.LOADING:
         return <CenterDiv><LoadingIcon /></CenterDiv>;
-      case ServerAppState.APP_INIT_SUCCESS:
+      case ServerAppState.NORMAL:
         return <Server />;
-      case ServerAppState.APP_INIT_FAILURE:
+      case ServerAppState.FAILURE:
         return <CenterDiv><p>App initialization failure.</p></CenterDiv>;
       default:
         return <CenterDiv><LoadingIcon /></CenterDiv>;

@@ -1,8 +1,8 @@
 export const ServerAppState = Object.freeze(
   {
-    'APP_INIT_START': 'APP_INIT_START',
-    'APP_INIT_SUCCESS': 'APP_INIT_SUCCESS',
-    'APP_INIT_FAILURE': 'APP_INIT_FAILURE',
+    'LOADING': 'LOADING',
+    'NORMAL': 'NORMAL',
+    'FAILURE': 'FAILURE',
   }
 );
 

@@ -1,7 +1,7 @@
 package entity
 
 import (
-	commonUtil "promise/common/util"
+	"promise/base"
 	"promise/server/object/model"
 )
 
@@ -38,7 +38,7 @@ func (e *NetworkAdapter) ToModel() *model.NetworkAdapter {
 			portM.PhysicalPortNumber = portE.PhysicalPortNumber
 			portM.LinkStatus = portE.LinkStatus
 			a := []string{}
-			commonUtil.StringToStruct(portE.AssociatedNetworkAddresses, &a)
+			base.StringToStruct(portE.AssociatedNetworkAddresses, &a)
 			portM.AssociatedNetworkAddresses = a
 			controllerM.NetworkPorts = append(controllerM.NetworkPorts, portM)
 		}
@@ -64,7 +64,7 @@ func (e *NetworkAdapter) Load(m *model.NetworkAdapter) {
 			updateResourceEntity(&portE.EmbeddedResource, &portM.Resource)
 			portE.PhysicalPortNumber = portM.PhysicalPortNumber
 			portE.LinkStatus = portM.LinkStatus
-			s := commonUtil.StructToString(portM.AssociatedNetworkAddresses)
+			s := base.StructToString(portM.AssociatedNetworkAddresses)
 			portE.AssociatedNetworkAddresses = s
 			ports = append(ports, portE)
 		}

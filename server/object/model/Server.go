@@ -2,7 +2,6 @@ package model
 
 import (
 	"promise/base"
-	"promise/common/category"
 )
 
 // OriginURIs The
@@ -93,7 +92,7 @@ func (m *ServerCollection) NewModelMember() interface{} {
 // CreateServer Create servr object.
 func (o *ServerBasicInfo) CreateServer() *Server {
 	server := new(Server)
-	server.Category = category.Server
+	server.Category = base.CategoryServer
 	server.Name = o.Name
 	server.Description = o.Description
 	server.State = "State???"
