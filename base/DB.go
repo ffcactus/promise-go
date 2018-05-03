@@ -465,7 +465,7 @@ func InitConnection() error {
 			}).Error("DB open failed.")
 			return err
 		}
-		// db.LogMode(true)
+		db.LogMode(true)
 		db.SingularTable(true)
 		connection = db
 	} else {

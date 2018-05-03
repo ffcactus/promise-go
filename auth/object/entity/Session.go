@@ -6,10 +6,15 @@ import (
 
 // Session The Session object in DB.
 type Session struct {
-	ID        string `gorm:"primary_key"`
-	AccountID string
-	Token     string
-	Expire    int64
+	ID        string `gorm:"column:ID;primary_key"`
+	AccountID string `gorm:"column:AccountID"`
+	Token     string `gorm:"column:Token"`
+	Expire    int64 `gorm:"column:Expire"`
+}
+
+// TableName will set the table name.
+func (Session) TableName() string {
+	return "Session"
 }
 
 // Load Load model to entity.

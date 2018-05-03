@@ -6,10 +6,16 @@ import (
 
 // The Account object in DB.
 type Account struct {
-	ID           string `gorm:"primary_key"`
-	Name         string
-	PasswordHash string
+	ID           string `gorm:"column:ID;primary_key"`
+	Name         string `gorm:"column:Name"`
+	PasswordHash string `gorm:"column:PasswordHash"`
 }
+
+// TableName will set the table name.
+func (Account) TableName() string {
+	return "Account"
+}
+
 
 // Load Load model to entity.
 func (e *Account) Load(user *model.Account) {

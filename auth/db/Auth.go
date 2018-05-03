@@ -21,7 +21,7 @@ func GetDBInstance() *Auth {
 func (impl *Auth) GetAccountByName(username string) *model.Account {
 	c := base.GetConnection()
 	account := new(entity.Account)
-	if c.Where("Name = ?", username).First(account).RecordNotFound() {
+	if c.Where("\"Name\" = ?", username).First(account).RecordNotFound() {
 		return nil
 	}
 	return account.Model()
@@ -43,6 +43,7 @@ func (impl *Auth) PostSession(session *model.Session) *model.Session {
 	c := base.GetConnection()
 	e := new(entity.Session)
 	e.Load(session)
+	e.ID = uuid.New().String()
 	c.Create(e)
 	return e.Model()
 }
@@ -51,7 +52,7 @@ func (impl *Auth) PostSession(session *model.Session) *model.Session {
 func (impl *Auth) GetSessionByToken(token string) *model.Session {
 	c := base.GetConnection()
 	session := new(entity.Session)
-	if c.Where("Token = ?", token).First(session).RecordNotFound() {
+	if c.Where("\"Token\" = ?", token).First(session).RecordNotFound() {
 		return nil
 	}
 	return session.Model()
