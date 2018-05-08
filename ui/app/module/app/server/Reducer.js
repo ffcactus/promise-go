@@ -1,6 +1,6 @@
 import {
   ActionType,
-  ServerAppState
+  ServerAppState,
 } from './ConstValue';
 import {
   Map
@@ -36,7 +36,7 @@ const defaultState = {
   openAddServerDialog: false,
 };
 
-const serverApp = (state = defaultState, action) => {
+export const serverApp = (state = defaultState, action) => {
   let tempDefaultServerGroup;
   let tempCurrentServerGroup;
   let tempCurrentServer;
@@ -75,7 +75,7 @@ const serverApp = (state = defaultState, action) => {
         currentServer: tempCurrentServer,
       };
     case ActionType.APP_INIT_FAILURE:
-      return{
+      return {
         ...state,
         appState: ServerAppState.FAILURE,
         serverGroupList: [],
@@ -197,7 +197,7 @@ const serverApp = (state = defaultState, action) => {
         serverList: new Map(),
       };
     case ActionType.SSG_REST_GETLIST_SUCCESS:
-    // create the server list.
+      // create the server list.
       return {
         ...state,
         // create a map for server list, the key is URI, the value is empty.
@@ -211,7 +211,7 @@ const serverApp = (state = defaultState, action) => {
       // TODO
       return state;
     // Server-ServerGroup.WS
-      // We need check if the server belongs to the group selected.
+    // We need check if the server belongs to the group selected.
     case ActionType.SSG_WS_CREATE:
       if (action.info.ServerGroupID === state.currentServerGroup.ID) {
         return {
@@ -235,5 +235,3 @@ const serverApp = (state = defaultState, action) => {
       return state;
   }
 };
-
-export default serverApp;

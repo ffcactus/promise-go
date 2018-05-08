@@ -35,12 +35,12 @@ export function onServerMessage(message) {
   }
 }
 
-export function uiListSelect(uri) {
-  return {
-    type: ActionType.SERVER_UI_LIST_SELECT,
-    info: uri
-  };
-}
+// export function uiListSelect(uri) {
+//   return {
+//     type: ActionType.SERVER_UI_LIST_SELECT,
+//     info: uri
+//   };
+// }
 
 export function openAddServerDialog() {
   return {
@@ -70,7 +70,6 @@ export function onElementDidMount(uri) {
 
 /**
  * When server list did mount, we need load all the server-servergroup depends on the selected servergroup.
- * @param {string} uri The URI to get the server.
  */
 export function onListDidMount() {
   return (dispatch, getState) => {
@@ -85,3 +84,22 @@ export function onListDidMount() {
   };
 }
 
+/**
+ * When user clicks a differenct server, we need load the new server.
+ * @param {string} uri The URI to get the server.
+ */
+export function uiListSelect(uri) {
+  return (dispatch, getState) => {
+    dispatch({
+      type: ActionType.SERVER_UI_LIST_SELECT,
+      info: uri
+    });
+    createGetAction(
+      uri,
+      ActionType.SERVER_REST_GET_START,
+      ActionType.SERVER_REST_GET_SUCCESS,
+      ActionType.SERVER_REST_GET_MESSAGE,
+      ActionType.SERVER_REST_GET_EXCEPTION,
+    )(dispatch, getState);
+  };
+}

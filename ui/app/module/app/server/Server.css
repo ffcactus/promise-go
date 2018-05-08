@@ -165,3 +165,41 @@
     flex: 0 1 auto;
     position: relative;
 }
+
+/* Used by server detail area */
+
+.ServerDetailSectionDiv {
+    margin-bottom: 50px;
+}
+
+.ServerDetailSectionHeader {
+    font-size: 40px;
+}
+
+.ServerDetailSectionHeaderIcon {
+    max-height: 50px;
+    margin: 0 auto;
+    margin-right: 50px;
+    float: left;
+    vertical-align: middle;
+}
+
+table
+{
+    border-collapse: collapse;
+    border-spacing: 0px;
+    margin: 10px;
+}
+table, th, td
+{
+    padding: 5px;
+    border: 1px solid black;
+}
+
+th.level1 {
+    background-color: lightblue
+}
+
+th.level2 {
+    background-color: lightgreen
+}

@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import CSSModules from 'react-css-modules';
 import SectionHeader from './SectionHeader';
 import TableVoltages from './TableVoltages';
-import styles from '../../styles/ServerFrame.css';
+import styles from './Server.css';
 
 function SectionPower(props) {
-  const iconImage = require('../../img/icon/Power.png');
-  return (<div styleName="sectionDiv">
+  const iconImage = require('./img/icon/Power.png');
+  return (<div styleName="ServerDetailSectionDiv">
     <SectionHeader name="Power" image={iconImage} />
     <TableVoltages voltages={props.power.Voltages} />
     <table>
