@@ -26,8 +26,9 @@ import {
 const defaultState = {
   appState: ServerAppState.LOADING,
   // We need record the default servergroup because of it's special role.
-  defaultServerGroup: null,
-  currentServerGroup: null,
+  defaultServerGroupUri: null,
+  currentServerGroupUri: null,
+  currentServerUri: null,
   currentServer: null,
   serverDetail: {},
   serverGroupList: [],
@@ -38,42 +39,42 @@ const defaultState = {
 };
 
 export const serverApp = (state = defaultState, action) => {
-  let tempDefaultServerGroup;
-  let tempCurrentServerGroup;
-  let tempCurrentServer;
+  let tempDefaultServerGroupUri;
+  let tempCurrentServerUriGroupUri;
+  let tempCurrentServerUri;
   switch (action.type) {
     // App
     case ActionType.APP_INIT_START:
       return {
         ...state,
         appState: ServerAppState.LOADING,
-        currentServer: action.info.currentServer,
-        currentServerGroup: action.info.currentServerGroup,
+        currentServerUri: action.info.currentServerUri,
+        currentServerGroupUri: action.info.currentServerGroupUri,
       };
     case ActionType.APP_INIT_SUCCESS:
       // Find the default servergroup.
       for (const each of action.info.serverGroupList.Members) {
         if (each.Name === 'all') {
-          tempDefaultServerGroup = each.URI;
+          tempDefaultServerGroupUri = each.URI;
         }
       }
       // Set the current servergroup.
-      if (state.currentServerGroup === null) {
-        tempCurrentServerGroup = tempDefaultServerGroup;
+      if (state.currentServerGroupUri === null) {
+        tempCurrentServerUriGroupUri = tempDefaultServerGroupUri;
       }
-      if (state.currentServer === null) {
-        tempCurrentServer = action.info.serverServerGroupList.Members.length === 0 ? null : action.info.serverServerGroupList.Members[0].ServerURI;
+      if (state.currentServerUri === null) {
+        tempCurrentServerUri = action.info.serverServerGroupList.Members.length === 0 ? null : action.info.serverServerGroupList.Members[0].ServerURI;
       }
       return {
         ...state,
         appState: ServerAppState.NORMAL,
         serverGroupList: action.info.serverGroupList.Members,
         serverList: new Map(action.info.serverServerGroupList.Members.filter((each) => {
-          return each.ServerGroupURI === state.currentServerGroup;
+          return each.ServerGroupURI === state.currentServerGroupUri;
         })),
-        defaultServerGroup: tempDefaultServerGroup,
-        currentServerGroup: tempCurrentServerGroup,
-        currentServer: tempCurrentServer,
+        defaultServerGroupUri: tempDefaultServerGroupUri,
+        currentServerGroupUri: tempCurrentServerUriGroupUri,
+        currentServerUri: tempCurrentServerUri,
       };
     case ActionType.APP_INIT_FAILURE:
       return {
@@ -92,6 +93,7 @@ export const serverApp = (state = defaultState, action) => {
       return {
         ...state,
         serverList: state.serverList.set(action.info.URI, action.info),
+        currentServer: action.info.URI === state.currentServerUri ? action.info : state.currentServer,
       };
     case ActionType.SERVER_REST_GET_MESSAGE:
       return state;
@@ -105,7 +107,14 @@ export const serverApp = (state = defaultState, action) => {
       return state;
     // Server.WS
     case ActionType.SERVER_WS_CREATE:
+      return state;
     case ActionType.SERVER_WS_UPDATE:
+      // If the server in the list.
+      return {
+        ...state,
+        serverList: state.serverList.set(action.info.URI, action.info),
+        currentServer: action.info.URI === state.currentServerUri ? action.info : state.currentServer,
+      };
     case ActionType.SERVER_WS_DELETE:
     case ActionType.SERVER_WS_DELETE_LIST:
       return state;
@@ -114,7 +123,7 @@ export const serverApp = (state = defaultState, action) => {
     case ActionType.SERVER_UI_LIST_SELECT:
       return {
         ...state,
-        currentServer: action.info,
+        currentServerUri: action.info,
       };
     // Server.UI.Dialog
     case ActionType.SERVER_UI_DIALOG_ADD_OPEN:
@@ -167,14 +176,14 @@ export const serverApp = (state = defaultState, action) => {
     case ActionType.SG_WS_DELETE_LIST:
       return {
         ...state,
-        serverGroupList: [state.defaultServerGroup]
+        serverGroupList: [state.defaultServerGroupUri]
       };
     // ServerGroup.UI
     // ServerGroup.UI.List
     case ActionType.SG_UI_LIST_SELECT:
       return {
         ...state,
-        currentServerGroup: action.info,
+        currentServerGroupUri: action.info,
       };
     // ServerGroup.UI.Dialog
     case ActionType.SG_UI_DIALOG_ADD_OPEN:
@@ -214,7 +223,7 @@ export const serverApp = (state = defaultState, action) => {
     // Server-ServerGroup.WS
     // We need check if the server belongs to the group selected.
     case ActionType.SSG_WS_CREATE:
-      if (action.info.ServerGroupURI === state.currentServerGroup) {
+      if (action.info.ServerGroupURI === state.currentServerGroupUri) {
         return {
           ...state,
           serverList: state.serverList.set(action.info.ServerURI, {})
@@ -224,7 +233,7 @@ export const serverApp = (state = defaultState, action) => {
     case ActionType.SSG_WS_UPDATE:
       return state;
     case ActionType.SSG_WS_DELETE:
-      if (action.info.ServerGroupURI === state.currentServerGroup) {
+      if (action.info.ServerGroupURI === state.currentServerGroupUri) {
         return {
           ...state,
           serverList: state.serverList.delete(action.info.ServerURI)
@@ -235,8 +244,8 @@ export const serverApp = (state = defaultState, action) => {
     case ActionType.TASK_WS_CREATE:
     case ActionType.TASK_WS_UPDATE:
       // If the task is created by the server in the list.
-      tempCurrentServer = state.serverList.get(action.info.TargetURI);
-      if (tempCurrentServer && tempCurrentServer.URI) {
+      tempCurrentServerUri = state.serverList.get(action.info.TargetURI);
+      if (tempCurrentServerUri && tempCurrentServerUri.URI) {
         return {
           ...state,
           serverTask: state.serverTask.set(action.info.TargetURI, action.info),

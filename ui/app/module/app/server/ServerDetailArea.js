@@ -9,22 +9,21 @@ import ServerDetailTabChassis from './ServerDetailTabChassis';
 import ServerDetailTabBasic from './ServerDetailTabBasic';
 
 function ServerDetailArea(props) {
-  const server = props.serverApp.serverList.get(props.serverApp.currentServer);
-  if (!server || !server.URI) {
+  if (!props.currentServer) {
     return <div />;
   }
   const pages = [
     {
       'title': 'Basic',
-      'content': <ServerDetailTabBasic server={server} />
+      'content': <ServerDetailTabBasic server={props.currentServer} />
     },
     {
       'title': 'System',
-      'content': <ServerDetailTabSystem computerSystem={server.ComputerSystem}/>
+      'content': <ServerDetailTabSystem computerSystem={props.currentServer.ComputerSystem}/>
     },
     {
       'title': 'Chassis',
-      'content': <ServerDetailTabChassis chassis={server.Chassis}/>
+      'content': <ServerDetailTabChassis chassis={props.currentServer.Chassis}/>
     }
   ];
   return (
@@ -33,12 +32,11 @@ function ServerDetailArea(props) {
 }
 
 ServerDetailArea.propTypes = {
-  serverApp: PropTypes.object,
+  currentServer: PropTypes.object,
 };
 
 function mapStateToProps(state) {
-  const { serverApp } = state;
-  return { serverApp };
+  return { currentServer: state.serverApp.currentServer };
 }
 
 export default connect(mapStateToProps)(CSSModules(ServerDetailArea, styles, {allowMultiple: true}));

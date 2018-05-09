@@ -24,8 +24,8 @@ export function appInit(currentServerGroup, currentServer) {
     dispatch({
       type: ActionType.APP_INIT_START,
       info: {
-        currentServer: null,
-        currentServerGroup: null,
+        currentServerUri: null,
+        currentServerGroupUri: null,
       }
     });
     const prefix = 'http://' + getState().session.hostname;

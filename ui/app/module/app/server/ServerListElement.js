@@ -28,10 +28,10 @@ class ServerListElement extends React.Component {
 
   render() {
     const currentStyle = 'ServerListElement ' + (
-      this.props.serverApp.currentServer === this.props.serverUri ?
+      this.props.currentServerUri === this.props.serverUri ?
         'Selected' : 'NotSelected'
     );
-    const server = this.props.serverApp.serverList.get(this.props.serverUri);
+    const server = this.props.serverList.get(this.props.serverUri);
 
     return (
       <div styleName={currentStyle} onClick={this.onSelect}>
@@ -43,12 +43,15 @@ class ServerListElement extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { serverApp } = state;
-  return { serverApp };
+  return {
+    serverList: state.serverApp.serverList,
+    currentServerUri: state.serverApp.currentServerUri,
+  };
 }
 
 ServerListElement.propTypes = {
-  serverApp: PropTypes.object,
+  currentServerUri: PropTypes.string,
+  serverList: PropTypes.object,
   serverUri: PropTypes.string,
   children: PropTypes.string,
   dispatch: PropTypes.func
