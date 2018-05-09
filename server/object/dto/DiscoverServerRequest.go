@@ -6,9 +6,11 @@ import (
 
 // DiscoverServerRequest The request body of POST server.
 type DiscoverServerRequest struct {
-	Hostname string `json:"Hostname"`
-	Username string `json:"Username"`
-	Password string `json:"Password"`
+	Name        *string `json:"Name"`
+	Description *string `json:"Description"`
+	Hostname    string  `json:"Hostname"`
+	Username    string  `json:"Username"`
+	Password    string  `json:"Password"`
 }
 
 // NewInstance returns a new instance.

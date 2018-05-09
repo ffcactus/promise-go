@@ -29,7 +29,15 @@ func Probe(request *dto.DiscoverServerRequest) (*model.ServerBasicInfo, error) {
 	serverBasicInfo.Hostname = request.Hostname
 	serverBasicInfo.OriginUsername = &request.Username
 	serverBasicInfo.OriginPassword = &request.Password
-	serverBasicInfo.Name = "Name???"
-	serverBasicInfo.Description = "Description???"
+	if request.Name != nil {
+		serverBasicInfo.Name = *request.Name
+	} else {
+		serverBasicInfo.Name = request.Hostname
+	}
+	if request.Description != nil {
+		serverBasicInfo.Description = *request.Description
+	} else {
+		serverBasicInfo.Description = ""
+	}
 	return serverBasicInfo, nil
 }
