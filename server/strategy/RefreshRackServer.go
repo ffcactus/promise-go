@@ -110,11 +110,12 @@ func (s *RefreshRackServer) RefreshProcessors(c *context.RefreshServer, server *
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
-	if err := c.DB.UpdateProcessors(server.ID, processors); err != nil {
+	updatedServer, err := c.DB.UpdateProcessors(server.ID, processors)
+	if err != nil {
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 		return err
 	}
-	s.DispatchServerUpdate(&c.Base, server)
+	s.DispatchServerUpdate(&c.Base, updatedServer)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
@@ -127,10 +128,11 @@ func (s *RefreshRackServer) RefreshMemory(c *context.RefreshServer, server *mode
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
-	if err := c.DB.UpdateMemory(server.ID, memory); err != nil {
+	updatedServer, err := c.DB.UpdateMemory(server.ID, memory)
+	if err != nil {
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
-	s.DispatchServerUpdate(&c.Base, server)
+	s.DispatchServerUpdate(&c.Base, updatedServer)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
@@ -143,10 +145,11 @@ func (s *RefreshRackServer) RefreshEthernetInterfaces(c *context.RefreshServer, 
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
-	if err := c.DB.UpdateEthernetInterfaces(server.ID, ethernet); err != nil {
+	updatedServer, err := c.DB.UpdateEthernetInterfaces(server.ID, ethernet)
+	if err != nil {
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
-	s.DispatchServerUpdate(&c.Base, server)
+	s.DispatchServerUpdate(&c.Base, updatedServer)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
@@ -159,10 +162,11 @@ func (s *RefreshRackServer) RefreshNetworkInterfaces(c *context.RefreshServer, s
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
-	if err := c.DB.UpdateNetworkInterfaces(server.ID, networks); err != nil {
+	updatedServer, err := c.DB.UpdateNetworkInterfaces(server.ID, networks)
+	if err != nil {
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
-	s.DispatchServerUpdate(&c.Base, server)
+	s.DispatchServerUpdate(&c.Base, updatedServer)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
@@ -175,10 +179,11 @@ func (s *RefreshRackServer) RefreshStorages(c *context.RefreshServer, server *mo
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
-	if err := c.DB.UpdateStorages(server.ID, storages); err != nil {
+	updatedServer, err := c.DB.UpdateStorages(server.ID, storages)
+	if err != nil {
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
-	s.DispatchServerUpdate(&c.Base, server)
+	s.DispatchServerUpdate(&c.Base, updatedServer)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
@@ -191,10 +196,11 @@ func (s *RefreshRackServer) RefreshPower(c *context.RefreshServer, server *model
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
-	if err := c.DB.UpdatePower(server.ID, power); err != nil {
+	updatedServer, err := c.DB.UpdatePower(server.ID, power)
+	if err != nil {
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
-	s.DispatchServerUpdate(&c.Base, server)
+	s.DispatchServerUpdate(&c.Base, updatedServer)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
@@ -207,10 +213,11 @@ func (s *RefreshRackServer) RefreshThermal(c *context.RefreshServer, server *mod
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
-	if err := c.DB.UpdateThermal(server.ID, thermal); err != nil {
+	updatedServer, err := c.DB.UpdateThermal(server.ID, thermal)
+	if err != nil {
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
-	s.DispatchServerUpdate(&c.Base, server)
+	s.DispatchServerUpdate(&c.Base, updatedServer)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
@@ -223,10 +230,11 @@ func (s *RefreshRackServer) RefreshOemHuaweiBoards(c *context.RefreshServer, ser
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
-	if err := c.DB.UpdateOemHuaweiBoards(server.ID, boards); err != nil {
+	updatedServer, err := c.DB.UpdateOemHuaweiBoards(server.ID, boards)
+	if err != nil {
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
-	s.DispatchServerUpdate(&c.Base, server)
+	s.DispatchServerUpdate(&c.Base, updatedServer)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
@@ -239,10 +247,11 @@ func (s *RefreshRackServer) RefreshNetworkAdapters(c *context.RefreshServer, ser
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
-	if err := c.DB.UpdateNetworkAdapters(server.ID, networkAdapters); err != nil {
+	updatedServer, err := c.DB.UpdateNetworkAdapters(server.ID, networkAdapters)
+	if err != nil {
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
-	s.DispatchServerUpdate(&c.Base, server)
+	s.DispatchServerUpdate(&c.Base, updatedServer)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
@@ -255,10 +264,11 @@ func (s *RefreshRackServer) RefreshDrives(c *context.RefreshServer, server *mode
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
-	if err := c.DB.UpdateDrives(server.ID, drives); err != nil {
+	updatedServer, err := c.DB.UpdateDrives(server.ID, drives)
+	if err != nil {
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
-	s.DispatchServerUpdate(&c.Base, server)
+	s.DispatchServerUpdate(&c.Base, updatedServer)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }
@@ -271,10 +281,11 @@ func (s *RefreshRackServer) RefreshPCIeDevices(c *context.RefreshServer, server 
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Get server component failed.")
 		return err
 	}
-	if err := c.DB.UpdatePCIeDevices(server.ID, pcieDevice); err != nil {
+	updatedServer, err := c.DB.UpdatePCIeDevices(server.ID, pcieDevice)
+	if err != nil {
 		log.WithFields(log.Fields{"id": server.ID, "component": component, "error": err}).Warn("Update server component failed.")
 	}
-	s.DispatchServerUpdate(&c.Base, server)
+	s.DispatchServerUpdate(&c.Base, updatedServer)
 	log.WithFields(log.Fields{"id": server.ID, "component": component}).Info("Refresh server component done.")
 	return nil
 }

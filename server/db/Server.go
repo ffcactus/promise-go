@@ -242,7 +242,7 @@ func (impl *Server) deleteProcessors(c *gorm.DB, server *entity.Server) error {
 }
 
 // UpdateProcessors Update processors info.
-func (impl *Server) UpdateProcessors(ID string, processors []model.Processor) error {
+func (impl *Server) UpdateProcessors(ID string, processors []model.Processor) (base.ModelInterface, error) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
@@ -253,7 +253,7 @@ func (impl *Server) UpdateProcessors(ID string, processors []model.Processor) er
 		First(server).
 		RecordNotFound()
 	if notFound {
-		return fmt.Errorf("can not find server %s", ID)
+		return nil, fmt.Errorf("can not find server %s", ID)
 	}
 	impl.deleteProcessors(c, server)
 	server.Processors = []entity.Processor{}
@@ -264,9 +264,9 @@ func (impl *Server) UpdateProcessors(ID string, processors []model.Processor) er
 	}
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdateProcessors", "error": err}).Warn("DB opertion failed.")
-		return err
+		return nil, err
 	}
-	return nil
+	return server.ToModel(), nil
 }
 
 func (impl *Server) deleteMemory(c *gorm.DB, server *entity.Server) error {
@@ -277,7 +277,7 @@ func (impl *Server) deleteMemory(c *gorm.DB, server *entity.Server) error {
 }
 
 // UpdateMemory Update server memory
-func (impl *Server) UpdateMemory(ID string, memory []model.Memory) error {
+func (impl *Server) UpdateMemory(ID string, memory []model.Memory) (base.ModelInterface, error) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
@@ -288,7 +288,7 @@ func (impl *Server) UpdateMemory(ID string, memory []model.Memory) error {
 		First(server).
 		RecordNotFound()
 	if notFound {
-		return fmt.Errorf("Can't find server %s", ID)
+		return nil, fmt.Errorf("Can't find server %s", ID)
 	}
 	impl.deleteMemory(c, server)
 	server.Memory = []entity.Memory{}
@@ -299,9 +299,9 @@ func (impl *Server) UpdateMemory(ID string, memory []model.Memory) error {
 	}
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdateMemory", "error": err}).Warn("DB opertion failed.")
-		return err
+		return nil, err
 	}
-	return nil
+	return server.ToModel(), nil
 }
 
 func (impl *Server) deleteEthernetInterfaces(c *gorm.DB, server *entity.Server) error {
@@ -323,7 +323,7 @@ func (impl *Server) deleteEthernetInterfaces(c *gorm.DB, server *entity.Server) 
 // UpdateEthernetInterfaces Update server ethernet interface.
 // Each ethernet interface has many IPv4, IPv6 and vLAN, so it's very hard to check if 2 ethernet interface
 // are the same. So we just remove all of them and recreate them.
-func (impl *Server) UpdateEthernetInterfaces(ID string, ethernet []model.EthernetInterface) error {
+func (impl *Server) UpdateEthernetInterfaces(ID string, ethernet []model.EthernetInterface) (base.ModelInterface, error) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
@@ -338,7 +338,7 @@ func (impl *Server) UpdateEthernetInterfaces(ID string, ethernet []model.Etherne
 		First(server).
 		RecordNotFound()
 	if notFound {
-		return fmt.Errorf("Can't find server %s", ID)
+		return nil, fmt.Errorf("Can't find server %s", ID)
 	}
 	// Delete all ethernet interface.
 	impl.deleteEthernetInterfaces(c, server)
@@ -351,9 +351,9 @@ func (impl *Server) UpdateEthernetInterfaces(ID string, ethernet []model.Etherne
 	}
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdateEthernetInterfaces", "error": err}).Warn("DB opertion failed.")
-		return err
+		return nil, err
 	}
-	return nil
+	return server.ToModel(), nil
 }
 
 func (impl *Server) deleteNetworkInterfaces(c *gorm.DB, server *entity.Server) error {
@@ -364,7 +364,7 @@ func (impl *Server) deleteNetworkInterfaces(c *gorm.DB, server *entity.Server) e
 }
 
 // UpdateNetworkInterfaces Update network interfaces.
-func (impl *Server) UpdateNetworkInterfaces(ID string, networkInterface []model.NetworkInterface) error {
+func (impl *Server) UpdateNetworkInterfaces(ID string, networkInterface []model.NetworkInterface) (base.ModelInterface, error) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
@@ -376,7 +376,7 @@ func (impl *Server) UpdateNetworkInterfaces(ID string, networkInterface []model.
 		First(server).
 		RecordNotFound()
 	if notFound {
-		return fmt.Errorf("Can't find server %s", ID)
+		return nil, fmt.Errorf("Can't find server %s", ID)
 	}
 	// Delete them.
 	impl.deleteNetworkInterfaces(c, server)
@@ -389,9 +389,9 @@ func (impl *Server) UpdateNetworkInterfaces(ID string, networkInterface []model.
 	server.NetworkInterfaces = networkInterfacesE
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdateNetworkInterfaces", "error": err}).Warn("DB opertion failed.")
-		return err
+		return nil, err
 	}
-	return nil
+	return server.ToModel(), nil
 }
 
 func (impl *Server) deleteStorages(c *gorm.DB, server *entity.Server) error {
@@ -405,7 +405,7 @@ func (impl *Server) deleteStorages(c *gorm.DB, server *entity.Server) error {
 }
 
 // UpdateStorages Update storages.
-func (impl *Server) UpdateStorages(ID string, storages []model.Storage) error {
+func (impl *Server) UpdateStorages(ID string, storages []model.Storage) (base.ModelInterface, error) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
@@ -417,7 +417,7 @@ func (impl *Server) UpdateStorages(ID string, storages []model.Storage) error {
 		First(server).
 		RecordNotFound()
 	if notFound {
-		return fmt.Errorf("Can't find server %s", ID)
+		return nil, fmt.Errorf("Can't find server %s", ID)
 	}
 	impl.deleteStorages(c, server)
 	storagesE := []entity.Storage{}
@@ -429,9 +429,9 @@ func (impl *Server) UpdateStorages(ID string, storages []model.Storage) error {
 	server.Storages = storagesE
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdateStorages", "error": err}).Warn("DB opertion failed.")
-		return err
+		return nil, err
 	}
-	return nil
+	return server.ToModel(), nil
 }
 
 func (impl *Server) deletePower(c *gorm.DB, server *entity.Server) error {
@@ -452,7 +452,7 @@ func (impl *Server) deletePower(c *gorm.DB, server *entity.Server) error {
 }
 
 // UpdatePower Update power
-func (impl *Server) UpdatePower(ID string, power *model.Power) error {
+func (impl *Server) UpdatePower(ID string, power *model.Power) (base.ModelInterface, error) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
@@ -467,15 +467,15 @@ func (impl *Server) UpdatePower(ID string, power *model.Power) error {
 		First(server).
 		RecordNotFound()
 	if notFound {
-		return fmt.Errorf("Can't find server %s", ID)
+		return nil, fmt.Errorf("Can't find server %s", ID)
 	}
 	impl.deletePower(c, server)
 	server.Power.Load(power)
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdatePower", "error": err}).Warn("DB opertion failed.")
-		return err
+		return nil, err
 	}
-	return nil
+	return server.ToModel(), nil
 }
 
 func (impl *Server) deleteThermal(c *gorm.DB, server *entity.Server) error {
@@ -490,7 +490,7 @@ func (impl *Server) deleteThermal(c *gorm.DB, server *entity.Server) error {
 }
 
 // UpdateThermal Update thermal
-func (impl *Server) UpdateThermal(ID string, thermal *model.Thermal) error {
+func (impl *Server) UpdateThermal(ID string, thermal *model.Thermal) (base.ModelInterface, error) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
@@ -502,15 +502,15 @@ func (impl *Server) UpdateThermal(ID string, thermal *model.Thermal) error {
 		First(server).
 		RecordNotFound()
 	if notFound {
-		return fmt.Errorf("Can't find server %s", ID)
+		return nil, fmt.Errorf("Can't find server %s", ID)
 	}
 	impl.deleteThermal(c, server)
 	server.Thermal.Load(thermal)
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdateThermal", "error": err}).Warn("DB opertion failed.")
-		return err
+		return nil, err
 	}
-	return nil
+	return server.ToModel(), nil
 }
 
 func (impl *Server) deleteOemHuaweiBoards(c *gorm.DB, server *entity.Server) error {
@@ -521,7 +521,7 @@ func (impl *Server) deleteOemHuaweiBoards(c *gorm.DB, server *entity.Server) err
 }
 
 // UpdateOemHuaweiBoards Update OEM Huawei boards.
-func (impl *Server) UpdateOemHuaweiBoards(ID string, boards []model.OemHuaweiBoard) error {
+func (impl *Server) UpdateOemHuaweiBoards(ID string, boards []model.OemHuaweiBoard) (base.ModelInterface, error) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
@@ -532,7 +532,7 @@ func (impl *Server) UpdateOemHuaweiBoards(ID string, boards []model.OemHuaweiBoa
 		First(server).
 		RecordNotFound()
 	if notFound {
-		return fmt.Errorf("Can't find server %s", ID)
+		return nil, fmt.Errorf("Can't find server %s", ID)
 	}
 	impl.deleteOemHuaweiBoards(c, server)
 	boardsE := []entity.OemHuaweiBoard{}
@@ -544,9 +544,9 @@ func (impl *Server) UpdateOemHuaweiBoards(ID string, boards []model.OemHuaweiBoa
 	server.OemHuaweiBoards = boardsE
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdateOemHuaweiBoards", "error": err}).Warn("DB opertion failed.")
-		return err
+		return nil, err
 	}
-	return nil
+	return server.ToModel(), nil
 }
 
 func (impl *Server) deleteNetworkAdapters(c *gorm.DB, server *entity.Server) error {
@@ -565,7 +565,7 @@ func (impl *Server) deleteNetworkAdapters(c *gorm.DB, server *entity.Server) err
 }
 
 // UpdateNetworkAdapters Update network adapters.
-func (impl *Server) UpdateNetworkAdapters(ID string, networkAdapters []model.NetworkAdapter) error {
+func (impl *Server) UpdateNetworkAdapters(ID string, networkAdapters []model.NetworkAdapter) (base.ModelInterface, error) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
@@ -578,7 +578,7 @@ func (impl *Server) UpdateNetworkAdapters(ID string, networkAdapters []model.Net
 		First(server).
 		RecordNotFound()
 	if notFound {
-		return fmt.Errorf("Can't find server %s", ID)
+		return nil, fmt.Errorf("Can't find server %s", ID)
 	}
 	impl.deleteNetworkAdapters(c, server)
 	networkAdaptersE := []entity.NetworkAdapter{}
@@ -590,9 +590,9 @@ func (impl *Server) UpdateNetworkAdapters(ID string, networkAdapters []model.Net
 	server.NetworkAdapters = networkAdaptersE
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdateNetworkAdapters", "error": err}).Warn("DB opertion failed.")
-		return err
+		return nil, err
 	}
-	return nil
+	return server.ToModel(), nil
 }
 
 func (impl *Server) deleteDrives(c *gorm.DB, server *entity.Server) error {
@@ -613,7 +613,7 @@ func (impl *Server) deleteDrives(c *gorm.DB, server *entity.Server) error {
 }
 
 // UpdateDrives Update drives.
-func (impl *Server) UpdateDrives(ID string, drives []model.Drive) error {
+func (impl *Server) UpdateDrives(ID string, drives []model.Drive) (base.ModelInterface, error) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
@@ -626,7 +626,7 @@ func (impl *Server) UpdateDrives(ID string, drives []model.Drive) error {
 		First(server).
 		RecordNotFound()
 	if notFound {
-		return fmt.Errorf("Can't find server %s", ID)
+		return nil, fmt.Errorf("Can't find server %s", ID)
 	}
 	impl.deleteDrives(c, server)
 	drivesE := []entity.Drive{}
@@ -638,9 +638,9 @@ func (impl *Server) UpdateDrives(ID string, drives []model.Drive) error {
 	server.Drives = drivesE
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdateDrives", "error": err}).Warn("DB opertion failed.")
-		return err
+		return nil, err
 	}
-	return nil
+	return server.ToModel(), nil
 }
 
 func (impl *Server) deletePCIeDevices(c *gorm.DB, server *entity.Server) error {
@@ -655,7 +655,7 @@ func (impl *Server) deletePCIeDevices(c *gorm.DB, server *entity.Server) error {
 }
 
 // UpdatePCIeDevices Updagte PCIe devices.
-func (impl *Server) UpdatePCIeDevices(ID string, pcieDevices []model.PCIeDevice) error {
+func (impl *Server) UpdatePCIeDevices(ID string, pcieDevices []model.PCIeDevice) (base.ModelInterface, error) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
@@ -666,7 +666,7 @@ func (impl *Server) UpdatePCIeDevices(ID string, pcieDevices []model.PCIeDevice)
 		First(server).
 		RecordNotFound()
 	if notFound {
-		return fmt.Errorf("Can't find server %s", ID)
+		return nil, fmt.Errorf("Can't find server %s", ID)
 	}
 	impl.deletePCIeDevices(c, server)
 	pcieDevicesE := new([]entity.PCIeDevice)
@@ -678,9 +678,9 @@ func (impl *Server) UpdatePCIeDevices(ID string, pcieDevices []model.PCIeDevice)
 	server.PCIeDevices = *pcieDevicesE
 	if err := c.Save(server).Error; err != nil {
 		log.WithFields(log.Fields{"id": ID, "op": "UpdatePCIeDevices", "error": err}).Warn("DB opertion failed.")
-		return err
+		return nil, err
 	}
-	return nil
+	return server.ToModel(), nil
 }
 
 // DeleteServer will override the default process.

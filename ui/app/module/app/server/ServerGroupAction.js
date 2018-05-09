@@ -65,32 +65,32 @@ export function onServerGroupMessage(message) {
 
 export function openCreateServerGroupDialog() {
   return {
-    type: ActionType.OPEN_CREATE_SERVERGROUP_DIALOG
+    type: ActionType.SG_UI_DIALOG_ADD_OPEN
   };
 }
 
 export function closeCreateServerGroupDialog() {
   return {
-    type: ActionType.CLOSE_CREATE_SERVERGROUP_DIALOG
+    type: ActionType.SG_UI_DIALOG_ADD_CLOSE
   };
 }
 
 function createServerGroupStart() {
   return {
-    type: ActionType.CREATE_SERVERGROUP_START
+    type: ActionType.SG_REST_CREATE_START
   };
 }
 
 function createServerGroupSuccess(responseDto) {
   return {
-    type: ActionType.CREATE_SERVERGROUP_SUCCESS,
+    type: ActionType.SG_REST_CREATE_SUCCESS,
     info: responseDto
   };
 }
 
 function createServerGroupFailure(messages) {
   return {
-    type: ActionType.CREATE_SERVERGROUP_FAILURE,
+    type: ActionType.SG_REST_CREATE_MESSAGE,
     info: messages
   };
 }

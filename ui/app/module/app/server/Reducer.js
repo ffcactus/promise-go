@@ -48,6 +48,7 @@ export const serverApp = (state = defaultState, action) => {
       return {
         ...state,
         appState: ServerAppState.LOADING,
+        currentServer: null,
         currentServerUri: action.info.currentServerUri,
         currentServerGroupUri: action.info.currentServerGroupUri,
       };
