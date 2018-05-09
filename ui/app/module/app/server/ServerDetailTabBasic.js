@@ -1,21 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import SectionBasic from './SectionBasic';
+import ServerDetailSectionBasic from './ServerDetailSectionBasic';
 
-function TabBasic(props) {
+function ServerDetailTabBasic(props) {
   let content;
   if (props.computerSystem === null) {
     content = <p>Empty</p>;
   } else {
     content = (<div>
-      <SectionBasic server={props.server}/>
+      <ServerDetailSectionBasic server={props.server}/>
     </div>);
   }
   return content;
 }
 
-TabBasic.propTypes = {
+ServerDetailTabBasic.propTypes = {
   server: PropTypes.object
 };
 
-export default TabBasic;
+export default ServerDetailTabBasic;

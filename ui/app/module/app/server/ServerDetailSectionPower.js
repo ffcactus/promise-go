@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import CSSModules from 'react-css-modules';
-import SectionHeader from './SectionHeader';
-import TableVoltages from './TableVoltages';
+import ServerDetailSectionHeader from './ServerDetailSectionHeader';
+import ServerDetailTableVoltages from './ServerDetailTableVoltages';
 import styles from './Server.css';
 
-function SectionPower(props) {
+function ServerDetailSectionPower(props) {
   const iconImage = require('./img/icon/Power.png');
   return (<div styleName="ServerDetailSectionDiv">
-    <SectionHeader name="Power" image={iconImage} />
-    <TableVoltages voltages={props.power.Voltages} />
+    <ServerDetailSectionHeader name="Power" image={iconImage} />
+    <ServerDetailTableVoltages voltages={props.power.Voltages} />
     <table>
       <thead>
         <tr>
@@ -21,8 +21,8 @@ function SectionPower(props) {
   </div>);
 }
 
-SectionPower.propTypes = {
+ServerDetailSectionPower.propTypes = {
   power: PropTypes.object
 };
 
-export default CSSModules(SectionPower, styles);
+export default CSSModules(ServerDetailSectionPower, styles);

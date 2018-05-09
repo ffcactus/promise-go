@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import styles from './Server.css';
 import * as ServerAction from './ServerAction';
+import ServerListElementTask from './ServerListElementTask';
 
 class ServerListElement extends React.Component {
   constructor(props) {
@@ -33,7 +34,10 @@ class ServerListElement extends React.Component {
     const server = this.props.serverApp.serverList.get(this.props.serverUri);
 
     return (
-      <div styleName={currentStyle} onClick={this.onSelect}>{server.Name}</div>
+      <div styleName={currentStyle} onClick={this.onSelect}>
+        <div styleName="ServerListElementName">{server.Name}</div>
+        <ServerListElementTask serverUri={this.props.serverUri}/>
+      </div>
     );
   }
 }

@@ -4,7 +4,7 @@ import CSSModules from 'react-css-modules';
 import styles from './Server.css';
 
 
-function ObjectEthernetInterface(props) {
+function ServerDetailObjectEthernetInterface(props) {
   const IPv4Addresses = props.ethernetInterface.IPv4Addresses;
   const IPv6Addresses = props.ethernetInterface.IPv6Addresses;
   if (IPv4Addresses.length === 0) {
@@ -71,8 +71,8 @@ function ObjectEthernetInterface(props) {
   </table>);
 }
 
-ObjectEthernetInterface.propTypes = {
+ServerDetailObjectEthernetInterface.propTypes = {
   ethernetInterface: PropTypes.object,
 };
 
-export default CSSModules(ObjectEthernetInterface, styles);
+export default CSSModules(ServerDetailObjectEthernetInterface, styles);

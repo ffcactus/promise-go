@@ -1,22 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import SectionPower from './SectionPower';
+import ServerDetailSectionPower from './ServerDetailSectionPower';
 
-function TabChassis(props) {
+function ServerDetailTabChassis(props) {
   let content = null;
   if (props.chassis === null) {
     content = <p>Empty</p>;
   } else {
     content = (<div>
-      <SectionPower power={props.chassis.Power} />
+      <ServerDetailSectionPower power={props.chassis.Power} />
       <hr />
     </div>);
   }
   return content;
 }
 
-TabChassis.propTypes = {
+ServerDetailTabChassis.propTypes = {
   chassis: PropTypes.object
 };
 
-export default TabChassis;
+export default ServerDetailTabChassis;

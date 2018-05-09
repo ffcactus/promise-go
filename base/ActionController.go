@@ -67,7 +67,11 @@ func (c *ActionController) Post() {
 			service = v.Service
 			actionType = v.Type
 			// We need create a new instance here.
-			request = v.Request.NewInstance()
+			if v.Request == nil {
+				request = nil
+			} else {
+				request = v.Request.NewInstance()
+			}			
 		}
 	}
 	if service == nil {
@@ -84,7 +88,6 @@ func (c *ActionController) Post() {
 		c.ServeJSON()
 		return
 	}
-
 	if request != nil {
 		// Unmarshal the request.
 		if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
@@ -128,7 +131,7 @@ func (c *ActionController) Post() {
 		"action":   action,
 		"request":  requestDebugInfo,
 		"id":       id,
-	}).Debug("ActionController perform action.")
+	}).Info("ActionController perform action.")
 	// Now the request is correct, select the right runtine by action type.
 	ok := true
 	switch actionType {
@@ -236,12 +239,13 @@ func (c *ActionController) convertToAction(request RequestInterface, service Ser
 func (c *ActionController) convertToAsychAction(request RequestInterface, service ServiceInterface) (AsychActionRequestInterface, AsychActionServiceInterface, bool) {
 	asychActionService, ok := service.(AsychActionServiceInterface)
 	if !ok {
+		log.Info("--- convert service failed")
 		return nil, nil, ok
 	}
 	if request == nil {
 		return nil, asychActionService, true
 	}
-	asychActionRequest, ok := request.(UpdateRequestInterface)
+	asychActionRequest, ok := request.(AsychActionRequestInterface)
 	if !ok {
 		return nil, nil, ok
 	}

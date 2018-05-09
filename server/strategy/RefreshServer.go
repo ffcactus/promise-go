@@ -20,7 +20,7 @@ type RefreshServer interface {
 	RefreshNetworkAdapters(c *context.RefreshServer, server *model.Server) error
 	RefreshDrives(c *context.RefreshServer, server *model.Server) error
 	RefreshPCIeDevices(c *context.RefreshServer, server *model.Server) error
-	Execute(c *context.RefreshServer, server *model.Server) error
+	Execute(c *context.RefreshServer, server *model.Server) (*string, error)
 }
 
 // CreateRefreshServerStrategy creates the strategy based on server.

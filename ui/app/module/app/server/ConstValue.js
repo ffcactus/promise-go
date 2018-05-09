@@ -75,5 +75,10 @@ export const ActionType = Object.freeze(
     'SSG_WS_UPDATE': 'SSG_WS_UPDATE',
     'SSG_WS_DELETE': 'SSG_WS_DELETE',
     'SSG_WS_DELETE_LIST': 'SSG_WS_DELETE_LIST',
+
+    // Task.WS
+    'TASK_WS_CREATE': 'TASK_WS_CREATE',
+    'TASK_WS_UPDATE': 'TASK_WS_UPDATE',
+    'TASK_WS_DELETE': 'TASK_WS_DELETE',
   }
 );

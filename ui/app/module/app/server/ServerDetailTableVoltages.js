@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import CSSModules from 'react-css-modules';
 import styles from './Server.css';
 
-function TableVoltages(props) {
+function ServerDetailTableVoltages(props) {
   return (<table>
     <thead>
       <tr>
@@ -41,8 +41,8 @@ function TableVoltages(props) {
   </table>);
 }
 
-TableVoltages.propTypes = {
+ServerDetailTableVoltages.propTypes = {
   voltages: PropTypes.array
 };
 
-export default CSSModules(TableVoltages, styles);
+export default CSSModules(ServerDetailTableVoltages, styles);

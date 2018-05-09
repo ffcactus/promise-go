@@ -22,7 +22,7 @@ func (s *Refresh) FindServerStateAdded() {
 	for {
 		seconds := 5
 		if id := serverDB.FindServerStateAdded(); id != "" {
-			s.Perform(id, nil)
+			s.PerformAsych(id, nil)
 			seconds = 0
 		} else {
 			seconds = 5
@@ -31,20 +31,21 @@ func (s *Refresh) FindServerStateAdded() {
 	}
 }
 
-// Perform will process the refresh action.
-func (s *Refresh) Perform(id string, request base.ActionRequestInterface) (base.ResponseInterface, []base.Message) {
+// PerformAsych will process the refresh action.
+func (s *Refresh) PerformAsych(id string, request base.AsychActionRequestInterface) (base.ResponseInterface, *string, []base.Message) {
 	modelInterface, message := serverDB.Get(id)
 	if message != nil {
-		return nil, []base.Message{*message}
+		return nil, nil, []base.Message{*message}
 	}
 	server, ok := modelInterface.(*model.Server)
 	if !ok {
-		return nil, []base.Message{*base.NewMessageInternalError()}
+		return nil, nil, []base.Message{*base.NewMessageInternalError()}
 	}
 	ctx := context.CreateRefreshServerContext(server)
 	st := strategy.CreateRefreshServerStrategy(server)
-	if err := st.Execute(ctx, server); err != nil {
-		return nil, ctx.Messages()
+	task, err := st.Execute(ctx, server)
+	if err != nil {
+		return nil, nil, ctx.Messages()
 	}
-	return nil, nil
+	return nil, task, nil
 }

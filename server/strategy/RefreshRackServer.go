@@ -15,69 +15,71 @@ type RefreshRackServer struct {
 }
 
 // Execute will execute all the steps.
-func (s *RefreshRackServer) Execute(c *context.RefreshServer, server *model.Server) error {
+func (s *RefreshRackServer) Execute(c *context.RefreshServer, server *model.Server) (*string, error) {
 	// defer s.IndexServer(&c.Base)
 	// defer s.SetServerState(&c.Base, ServerStateReady)
 	// defer s.SetServerHealth(&c.Base, ServerHealthOK)
 	log.WithFields(log.Fields{"id": server.ID}).Info("Refresh server.")
 	// Lock server.
 	if err := s.LockServer(&c.Base, server); err != nil {
-		return err
+		return nil, err
 	}
 
 	taskID, err := s.CreateRefreshServerTask(&c.Base, server)
 	if err != nil {
-		return err
+		return nil, err
 	}
+	// TODO
+	// We need return here and make build a goroutine.
 
 	// Chassis.Power
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNamePower, c, server, s.RefreshPower); err != nil {
-		return err
+		return nil, err
 	}
 	// Chassis.Thermal
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameThermal, c, server, s.RefreshThermal); err != nil {
-		return err
+		return nil, err
 	}
 	// Chassis.OemHuaweiBoards
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameBoards, c, server, s.RefreshOemHuaweiBoards); err != nil {
-		return err
+		return nil, err
 	}
 	// Chassis.NetworkAdapters
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameNetworkAdapters, c, server, s.RefreshNetworkAdapters); err != nil {
-		return err
+		return nil, err
 	}
 	// Chassis.Drives
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameDrives, c, server, s.RefreshDrives); err != nil {
-		return err
+		return nil, err
 	}
 	// Chassis.PCIeDevices
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNamePCIeDevices, c, server, s.RefreshPCIeDevices); err != nil {
-		return err
+		return nil, err
 	}
 	// ComputerSystem.Processors
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameProcessors, c, server, s.RefreshProcessors); err != nil {
-		return err
+		return nil, err
 	}
 	// ComputerSystem.Memory
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameMemory, c, server, s.RefreshMemory); err != nil {
-		return err
+		return nil, err
 	}
 	// ComputerSystem.EthernetInterfaces
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameEthernetInterfaces, c, server, s.RefreshEthernetInterfaces); err != nil {
-		return err
+		return nil, err
 	}
 	// ComputerSystem.NetworkInterfaces
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameNetworkInterfaces, c, server, s.RefreshNetworkInterfaces); err != nil {
-		return err
+		return nil, err
 	}
 	// ComputerSystem.Storages
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameStorages, c, server, s.RefreshStorages); err != nil {
-		return err
+		return nil, err
 	}
 	s.SetServerHealth(&c.Base, server, constvalue.ServerHealthOK)
 	s.SetServerState(&c.Base, server, constvalue.ServerStateReady)
 	log.WithFields(log.Fields{"id": server.ID}).Info("Refresh server done.")
-	return nil
+	return nil, err
 }
 
 // Stepfunc is the func point.

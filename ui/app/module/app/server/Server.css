@@ -153,6 +153,7 @@
     float: none;
     flex: 0 1 auto;    
     position: relative;
+    display: flex;
 }
 
 .ServerListElementSelected {
@@ -162,6 +163,24 @@
     border: 0px;
     border-bottom: 1px solid rgb(11, 188, 233);
     float: none;
+    flex: 0 1 auto;
+    position: relative;
+}
+
+.ServerListElementName {
+    flex-flow: row;
+    flex: 0 1 auto;
+    position: relative;
+}
+
+.ServerListElementTask {
+    flex-flow: row;
+    flex: 0 1 auto;
+    position: relative;
+}
+
+.ServerListElementState {
+    flex-flow: row;
     flex: 0 1 auto;
     position: relative;
 }

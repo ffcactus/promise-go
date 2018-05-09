@@ -32,6 +32,7 @@ const defaultState = {
   serverDetail: {},
   serverGroupList: [],
   serverList: new Map(),
+  serverTask: new Map(),
   openCreateServerGroupDialog: false,
   openAddServerDialog: false,
 };
@@ -213,7 +214,7 @@ export const serverApp = (state = defaultState, action) => {
     // Server-ServerGroup.WS
     // We need check if the server belongs to the group selected.
     case ActionType.SSG_WS_CREATE:
-      if (action.info.ServerGroupID === state.currentServerGroup.ID) {
+      if (action.info.ServerGroupURI === state.currentServerGroup) {
         return {
           ...state,
           serverList: state.serverList.set(action.info.ServerURI, {})
@@ -223,12 +224,26 @@ export const serverApp = (state = defaultState, action) => {
     case ActionType.SSG_WS_UPDATE:
       return state;
     case ActionType.SSG_WS_DELETE:
-      if (action.info.ServerGroupID === state.currentServerGroup.ID) {
+      if (action.info.ServerGroupURI === state.currentServerGroup) {
         return {
           ...state,
           serverList: state.serverList.delete(action.info.ServerURI)
         };
       }
+      return state;
+    // Task.WS
+    case ActionType.TASK_WS_CREATE:
+    case ActionType.TASK_WS_UPDATE:
+      // If the task is created by the server in the list.
+      tempCurrentServer = state.serverList.get(action.info.TargetURI);
+      if (tempCurrentServer && tempCurrentServer.URI) {
+        return {
+          ...state,
+          serverTask: state.serverTask.set(action.info.TargetURI, action.info),
+        };
+      }
+      return state;
+    case ActionType.TASK_WS_DELETE:
       return state;
     // Others
     default:

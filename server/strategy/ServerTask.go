@@ -175,8 +175,8 @@ func createRefreshTaskRequest(server *model.Server) *taskDTO.PostTaskRequest {
 	request.Name = "Refresh Server"
 	description := "Refresh server resources and re-configure it."
 	request.Description = &description
-	request.CreatedByName = "CreatedByName???"
-	request.CreatedByURI = "CreatedByURI???"
+	request.CreatedByName = "Server Service"
+	request.CreatedByURI = "/promise/v1/server"
 	request.TargetName = server.Name
 	request.TargetURI = base.ToServerURI(server.ID)
 	request.TaskSteps = ServerTaskRefreshStepLIST

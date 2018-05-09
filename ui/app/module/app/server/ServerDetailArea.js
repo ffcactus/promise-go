@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import styles from './Server.css';
 import Tab from '../../promise/common/Tab';
-import TabSystem from './TabSystem';
-import TabChassis from './TabChassis';
-import TabBasic from './TabBasic';
+import ServerDetailTabSystem from './ServerDetailTabSystem';
+import ServerDetailTabChassis from './ServerDetailTabChassis';
+import ServerDetailTabBasic from './ServerDetailTabBasic';
 
 function ServerDetailArea(props) {
   const server = props.serverApp.serverList.get(props.serverApp.currentServer);
@@ -16,15 +16,15 @@ function ServerDetailArea(props) {
   const pages = [
     {
       'title': 'Basic',
-      'content': <TabBasic server={server} />
+      'content': <ServerDetailTabBasic server={server} />
     },
     {
       'title': 'System',
-      'content': <TabSystem computerSystem={server.ComputerSystem}/>
+      'content': <ServerDetailTabSystem computerSystem={server.ComputerSystem}/>
     },
     {
       'title': 'Chassis',
-      'content': <TabChassis chassis={server.Chassis}/>
+      'content': <ServerDetailTabChassis chassis={server.Chassis}/>
     }
   ];
   return (

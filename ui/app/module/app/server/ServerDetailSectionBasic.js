@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import CSSModules from 'react-css-modules';
 import styles from './Server.css';
 
-function SectionBasic(props) {
+function ServerDetailSectionBasic(props) {
   return (<div styleName="ServerDetailSectionDiv">
     <h5>Name</h5>
     <p>{props.server.Name}</p>
@@ -18,8 +18,8 @@ function SectionBasic(props) {
   </div>);
 }
 
-SectionBasic.propTypes = {
+ServerDetailSectionBasic.propTypes = {
   server: PropTypes.object
 };
 
-export default CSSModules(SectionBasic, styles);
+export default CSSModules(ServerDetailSectionBasic, styles);

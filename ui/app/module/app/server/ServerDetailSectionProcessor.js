@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import SectionHeader from './SectionHeader';
+import ServerDetailSectionHeader from './ServerDetailSectionHeader';
 import CSSModules from 'react-css-modules';
 import styles from './Server.css';
 
-function SectionProcessor(props) {
+function ServerDetailSectionProcessor(props) {
   const iconImage = require('./img/icon/Processor.png');
   return (<div styleName="ServerDetailSectionDiv">
-    <SectionHeader name="Processor" image={iconImage} />
+    <ServerDetailSectionHeader name="Processor" image={iconImage} />
     <table>
       <thead>
         <tr>
@@ -41,8 +41,8 @@ function SectionProcessor(props) {
   </div>);
 }
 
-SectionProcessor.propTypes = {
+ServerDetailSectionProcessor.propTypes = {
   processors: PropTypes.array
 };
 
-export default CSSModules(SectionProcessor, styles);
+export default CSSModules(ServerDetailSectionProcessor, styles);

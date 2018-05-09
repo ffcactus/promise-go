@@ -1,5 +1,6 @@
 import { ActionType } from './ConstValue';
 import * as WsAction from '../../promise/ws/WsAction';
+import * as TaskAction from './TaskAction';
 import * as ServerAction from './ServerAction';
 import * as ServerGroupAction from './ServerGroupAction';
 import * as ServerServerGroupAction from './ServerServerGroupAction';
@@ -18,6 +19,7 @@ export function appInit(currentServerGroup, currentServer) {
   WsAction.registerMessageAction('Server', ServerAction.onServerMessage);
   WsAction.registerMessageAction('ServerGroup', ServerGroupAction.onServerGroupMessage);
   WsAction.registerMessageAction('ServerServerGroup', ServerServerGroupAction.onServerServerGroupMessage);
+  WsAction.registerMessageAction('Task', TaskAction.onTaskMessage);
   return (dispatch, getState) => {
     dispatch({
       type: ActionType.APP_INIT_START,
@@ -61,36 +63,3 @@ export function appInit(currentServerGroup, currentServer) {
     });
   };
 }
-
-// export function appInit(serverGroupID, serverID) {
-//   WsAction.registerMessageAction('Server', ServerAction.onServerMessage);
-//   WsAction.registerMessageAction('ServerGroup', ServerGroupAction.onServerGroupMessage);
-//   WsAction.registerMessageAction('ServerServerGroup', ServerServerGroupAction.onServerServerGroupMessage);
-//   return (dispatch, getState) => {
-//     dispatch({
-//       type: ActionType.APP_INIT_START,
-//       info: {
-//         serverGroupID,
-//         serverID,
-//       }
-//     });
-//     const uri = 'http://' + getState().session.hostname + '/promise/v1/servergroup?$filter=Name eq \'all\'';
-//     doGet(uri).then((resp)=> {
-//       if (resp.status === 200) {
-//         dispatch({
-//           type: ActionType.APP_INIT_SUCCESS,
-//           info: resp.response.Members[0].URI,
-//         });
-//         return;
-//       }
-//       dispatch({
-//         type: ActionType.APP_INIT_FAILURE,
-//       });
-//     }).catch((e) => {
-//       dispatch({
-//         type: ActionType.APP_INIT_FAILURE,
-//         info: e,
-//       });
-//     });
-//   };
-// }

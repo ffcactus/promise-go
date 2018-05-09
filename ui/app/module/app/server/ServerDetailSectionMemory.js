@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import CSSModules from 'react-css-modules';
-import SectionHeader from './SectionHeader';
+import ServerDetailSectionHeader from './ServerDetailSectionHeader';
 import styles from './Server.css';
 
-function SectionMemory(props) {
+function ServerDetailSectionMemory(props) {
   const iconImage = require('./img/icon/Memory.png');
   return (<div styleName="ServerDetailSectionDiv">
-    <SectionHeader name="Memory" image={iconImage} />
+    <ServerDetailSectionHeader name="Memory" image={iconImage} />
     <table>
       <thead>
         <tr>
@@ -37,8 +37,8 @@ function SectionMemory(props) {
   </div>);
 }
 
-SectionMemory.propTypes = {
+ServerDetailSectionMemory.propTypes = {
   memory: PropTypes.array
 };
 
-export default CSSModules(SectionMemory, styles);
+export default CSSModules(ServerDetailSectionMemory, styles);
