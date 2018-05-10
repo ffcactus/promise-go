@@ -70,13 +70,13 @@ function login(hostname, username, password, from) {
     dispatch(loginStart());
     Client.login(hostname, username, password).then((response) => {
       if (response.status === 200) {
+        dispatch(WsAction.createWsConnection(hostname));
         dispatch(loginSuccess(hostname, username, response.response.token));
         // TODO
         // Is it good to do redirection in action?
         // browserHistory.push(afterLoginPath);
-        dispatch(push(from));
-        dispatch(WsAction.createWsConnection(hostname));
         dispatch(DesktopAction.setAppCollection());
+        dispatch(push(from));
         return;
       }
       setTimeout(() => {
