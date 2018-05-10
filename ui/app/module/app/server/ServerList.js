@@ -17,29 +17,25 @@ class ServerList extends React.Component {
   }
 
   render() {
-    return (
-      <div styleName="ServerList">
-        {
-          this.props.serverApp.serverList.size === 0 && <p>Empty</p>
-        }
-        {
-          (this.props.serverApp.serverList.size !== 0) && this.props.serverApp.serverList.map((value, key) => {
-            // we only have URI at this moment.
-            return (<ServerListElement key={key} serverUri={key} />);
-          }).toArray()
-        }
-      </div>
-    );
+    const size = this.props.serverList.size;
+    if (size === 0) {
+      return <div styleName="ServerList"><p>Empty</p></div>;
+    }
+    const list = [];
+    for (let i = 0; i < size; i++) {
+      const server = this.props.serverList.get(i);
+      list.push(<ServerListElement key={server.key} server = {server}/>);
+    }
+    return <div styleName="ServerList">{list}</div>;
   }
 }
 
 function mapStateToProps(state) {
-  const { serverApp } = state;
-  return { serverApp, updated: true };
+  return { serverList: state.serverApp.serverList};
 }
 
 ServerList.propTypes = {
-  serverApp: PropTypes.object,
+  serverList: PropTypes.object,
   dispatch: PropTypes.func,
 };
 

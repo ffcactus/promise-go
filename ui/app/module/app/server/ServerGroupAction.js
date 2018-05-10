@@ -132,19 +132,19 @@ export function getCollection() {
  * This action will be called when user selects a servergroup from list.
  * @param {string} uri The URI of the servergroup been selected.
  */
-export function UiListSelect(uri) {
+export function uiListSelect(uri) {
   return (dispatch, getState) => {
     dispatch({
       type: ActionType.SG_UI_LIST_SELECT,
       info: uri
     });
-    // return an action and call it.
+    // select the SSG which SG equals this one.
     createGetAction(
       '/promise/v1/server-servergroup?$filter=ServerGroupID eq \'' + uri.split('/').pop() + '\'',
-      ActionType.SERVER_REST_GETLIST_START,
-      ActionType.SERVER_REST_GETLIST_SUCCESS,
-      ActionType.SERVER_REST_GETLIST_MESSAGE,
-      ActionType.SERVER_REST_GETLIST_EXCEPTION,
+      ActionType.SSG_REST_GETLIST_START,
+      ActionType.SSG_REST_GETLIST_SUCCESS,
+      ActionType.SSG_REST_GETLIST_MESSAGE,
+      ActionType.SSG_REST_GETLIST_EXCEPTION,
     )(dispatch, getState);
   };
 }

@@ -23,20 +23,18 @@ class ServerListElement extends React.Component {
   // On selecting we need display the detail infomation.
   onSelect(event) {
     event.preventDefault();
-    this.props.dispatch(ServerAction.uiListSelect(this.props.serverUri));
+    this.props.dispatch(ServerAction.uiListSelect(this.props.server.key));
   }
 
   render() {
     const currentStyle = 'ServerListElement ' + (
-      this.props.currentServerUri === this.props.serverUri ?
+      this.props.currentServerUri === this.props.server.key ?
         'Selected' : 'NotSelected'
     );
-    const server = this.props.serverList.get(this.props.serverUri);
-
     return (
       <div styleName={currentStyle} onClick={this.onSelect}>
-        <div styleName="ServerListElementName">{server.Name}</div>
-        <ServerListElementTask serverUri={this.props.serverUri}/>
+        <div styleName="ServerListElementName">{this.props.server.value.Name}</div>
+        <ServerListElementTask serverUri={this.props.server.key}/>
       </div>
     );
   }
@@ -44,15 +42,16 @@ class ServerListElement extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    serverList: state.serverApp.serverList,
+    // serverList: state.serverApp.serverList,
     currentServerUri: state.serverApp.currentServerUri,
   };
 }
 
 ServerListElement.propTypes = {
+  server: PropTypes.object,
   currentServerUri: PropTypes.string,
-  serverList: PropTypes.object,
-  serverUri: PropTypes.string,
+  // serverList: PropTypes.object,
+  // serverUri: PropTypes.string,
   children: PropTypes.string,
   dispatch: PropTypes.func
 };

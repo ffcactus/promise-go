@@ -12,18 +12,18 @@ class ServerGroupElement extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.serverApp.currentServerGroup && this.props.serverApp.currentServerGroup === this.props.servergroup.URI) {
-      this.props.dispatch(ServerGroupAction.UiListSelect(this.props.servergroup.URI));
+    if (this.props.serverApp.currentServerGroup && this.props.serverApp.currentServerGroupUri === this.props.servergroup.URI) {
+      this.props.dispatch(ServerGroupAction.uiListSelect(this.props.servergroup.URI));
     }
   }
 
   onClick(event) {
     event.preventDefault();
-    this.props.dispatch(ServerGroupAction.UiListSelect(this.props.servergroup.URI));
+    this.props.dispatch(ServerGroupAction.uiListSelect(this.props.servergroup.URI));
   }
 
   render() {
-    const currentStyle = 'ServerGroupElement ' + (this.props.serverApp.currentServerGroup === this.props.servergroup.URI ? 'Selected' : 'NotSelected');
+    const currentStyle = 'ServerGroupElement ' + (this.props.serverApp.currentServerGroupUri === this.props.servergroup.URI ? 'Selected' : 'NotSelected');
     return (
       <div styleName={currentStyle} onClick={this.onClick}>
         <p styleName="ServerGroupElementText">{this.props.servergroup.Name}</p>
