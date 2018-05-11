@@ -73,6 +73,11 @@ export const serverApp = (state = defaultState, action) => {
         serverGroupList: List(action.info.serverGroupList.Members),
         serverList: new List(action.info.serverServerGroupList.Members.filter((each) => {
           return each.ServerGroupURI === tempCurrentServerGroupUri;
+        }).map((each) => {
+          return {
+            key: each.ServerURI,
+            value: null,
+          };
         })),
         defaultServerGroupUri: tempDefaultServerGroupUri,
         currentServerGroupUri: tempCurrentServerGroupUri,
@@ -237,7 +242,7 @@ export const serverApp = (state = defaultState, action) => {
       return {
         ...state,
         serverList: temp,
-        currentServerUri: temp.size() === 0 ? null : temp.get(0).key,
+        currentServerUri: temp.size === 0 ? null : temp.get(0).key,
       };
     case ActionType.SSG_REST_GETLIST_MESSAGE:
     case ActionType.SSG_REST_GETLIST_EXCEPTION:
@@ -250,7 +255,10 @@ export const serverApp = (state = defaultState, action) => {
       if (action.info.ServerGroupURI === state.currentServerGroupUri) {
         return {
           ...state,
-          serverList: state.serverList.set(action.info.ServerURI, {})
+          serverList: state.serverList.push({
+            key: action.info.ServerURI,
+            value: null,
+          }),
         };
       }
       return state;

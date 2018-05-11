@@ -116,7 +116,9 @@
     padding: 0px;
     position: relative;
     height: 40px;
+    min-height: 40px;
     display: flex;
+    flex: 1 1 none;
 }
 
 .ServerListControlArea {
@@ -127,7 +129,9 @@
     padding: 0px;
     position: relative;
     height: 40px;
-    display: flex; 
+    min-height: 40px;
+    display: flex;
+    flex: 1 1 none; 
 }
 
 .ServerList {
@@ -145,13 +149,14 @@
 }
 
 .ServerListElement {
-    height: 2em;
+    height: 50px;
+    min-height: 50px;
     margin: 0px;
     padding: 0px;    
     border: 0px;
     border-bottom: 1px solid rgb(11, 188, 233);
     float: none;
-    flex: 0 1 auto;    
+    flex: 1 1 auto;    
     position: relative;
     display: flex;
 }
@@ -163,19 +168,29 @@
     border: 0px;
     border-bottom: 1px solid rgb(11, 188, 233);
     float: none;
-    flex: 0 1 auto;
+    flex: 1 1 auto;
     position: relative;
 }
 
 .ServerListElementName {
     flex-flow: row;
-    flex: 0 1 auto;
+    flex: 1 1 auto;
     position: relative;
+}
+
+.ServerListElementName p {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    margin-right: -10%;
+    transform: translate(-10%, -50%)
 }
 
 .ServerListElementTask {
     flex-flow: row;
-    flex: 0 1 auto;
+    width: 50px;
+    flex: 0 1 initial;
     position: relative;
 }
 

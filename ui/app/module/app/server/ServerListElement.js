@@ -5,6 +5,7 @@ import CSSModules from 'react-css-modules';
 import styles from './Server.css';
 import * as ServerAction from './ServerAction';
 import ServerListElementTask from './ServerListElementTask';
+import ServerListElementName from './ServerListElementName';
 
 class ServerListElement extends React.Component {
   constructor(props) {
@@ -17,7 +18,7 @@ class ServerListElement extends React.Component {
 
   // on mounting we need send REST to get server to display some basic info.
   componentDidMount() {
-    this.props.dispatch(ServerAction.onElementDidMount(this.props.serverUri));
+    this.props.dispatch(ServerAction.onElementDidMount(this.props.server.key));
   }
 
   // On selecting we need display the detail infomation.
@@ -33,7 +34,7 @@ class ServerListElement extends React.Component {
     );
     return (
       <div styleName={currentStyle} onClick={this.onSelect}>
-        <div styleName="ServerListElementName">{this.props.server.value.Name}</div>
+        <ServerListElementName name={this.props.server.value ? this.props.server.value.Name : '...'} />
         <ServerListElementTask serverUri={this.props.server.key}/>
       </div>
     );

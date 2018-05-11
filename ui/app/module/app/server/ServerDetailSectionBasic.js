@@ -9,6 +9,8 @@ function ServerDetailSectionBasic(props) {
     <p>{props.server.Name}</p>
     <h5>Description</h5>
     <p>{props.server.Description}</p>
+    <h5>ID</h5>
+    <p>{props.server.ID}</p>
     <h5>Type</h5>
     <p>{props.server.Type}</p>
     <h5>State</h5>
