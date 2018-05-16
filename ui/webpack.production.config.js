@@ -21,7 +21,7 @@ module.exports = {
     // webpack gives your modules and chunks ids to identify them. Webpack can vary the
     // distribution of the ids to get the smallest id length for often used ids with
     // this plugin
-    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin(),
 
     // handles creating an index.html file and injecting assets. necessary because assets
     // change name because the hash part changes. We want hash name changes to bust cache
@@ -53,48 +53,33 @@ module.exports = {
     })
   ],
 
-  // ESLint options
-  eslint: {
-    configFile: '.eslintrc',
-    failOnWarning: false,
-    failOnError: true
-  },
-
   module: {
-    // Runs before loaders
-    preLoaders: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'eslint'
-      }
-    ],
     // loaders handle the assets, like transforming sass to css or jsx to js.
     loaders: [{
-      test: /\.js?$/,
+      test: /\.js|jsx?$/,
       exclude: /node_modules/,
-      loader: 'babel'
+      loader: 'babel-loader'
     }, {
       test: /\.json?$/,
-      loader: 'json'
+      loader: 'json-loader'
     }, {
-      // test: /\.scss$/,
-      // // we extract the styles into their own .css file instead of having
-      // // them inside the js.
-      // loader: ExtractTextPlugin.extract('style', 'css!postcss!sass')
-      test: /\.css$/, 
-      loader: ExtractTextPlugin.extract('style-loader', 'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader')
+      test: /\.css$/,
+      loaders: [
+        'style-loader?sourceMap',
+        'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]'
+      ]
     }, {
       test: /\.woff(2)?(\?[a-z0-9#=&.]+)?$/,
       loader: 'url?limit=10000&mimetype=application/font-woff'
     }, {
-      test: /\.(ttf|eot|svg)(\?[a-z0-9#=&.]+)?$/,
-      loader: 'file'
-    }, { 
-      test: /\.(png|jpg)$/, loader: 'url?limit=25000' 
+      test: /\.(png|jp(e*)g|svg|gif)$/,
+      use: [{
+        loader: 'url-loader',
+        options: {
+          limit: 8000, // Convert images < 8kb to base64 strings
+          name: 'images/[hash]-[name].[ext]'
+        }
+      }]
     }]
   },
-  postcss: [
-    require('autoprefixer')
-  ]
 };

@@ -40,6 +40,7 @@ export const serverApp = (state = defaultState, action) => {
   let tempCurrentServerGroupUri;
   let tempCurrentServerUri;
   let tempCurrentServerSet;
+  let arraylength;
   switch (action.type) {
     // App
     case ActionType.APP_INIT_START:
@@ -50,7 +51,7 @@ export const serverApp = (state = defaultState, action) => {
         currentServer: null,
         currentServerSet: new Set(),
         serverGroupList: new List(),
-        ssgSet: new Set(),
+        ssgSet: null,
         serverList: new List(),
         serverTask: new Map(),
         openCreateServerGroupDialog: false,
@@ -82,7 +83,7 @@ export const serverApp = (state = defaultState, action) => {
           return each.ServerGroupURI === tempCurrentServerGroupUri;
         }).map(each => each.ServerURI)),
         serverGroupList: List(action.info.serverGroupList.Members),
-        ssgSet: Set(action.info.serverServerGroupList.Members),
+        ssgSet: action.info.serverServerGroupList.Members,
         serverList: List(action.info.serverList.Members),
       };
     case ActionType.APP_INIT_FAILURE:
@@ -201,9 +202,13 @@ export const serverApp = (state = defaultState, action) => {
     // ServerGroup.UI
     // ServerGroup.UI.List
     case ActionType.SG_UI_LIST_SELECT:
-      tempCurrentServerSet = state.ssgSet.filter((each) => {
-        return each.ServerGroupURI === action.info;
-      }).map(each => each.ServerURI);
+      tempCurrentServerSet = [];
+      arraylength = state.ssgSet.length;
+      for (let i = 0; i < arraylength; i++) {
+        if (state.ssgSet[i].ServerGroupURI === action.info) {
+          tempCurrentServerSet.push(state.ssgSet[i].ServerURI);
+        }
+      }
       return {
         ...state,
         currentServerGroupUri: action.info,
@@ -234,7 +239,7 @@ export const serverApp = (state = defaultState, action) => {
     case ActionType.SSG_WS_CREATE:
       return {
         ...state,
-        ssgSet: state.ssgSet.add(action.info),
+        ssgSet: state.ssgSet.push(action.info),
         currentServerSet: action.info.ServerGroupURI === state.currentServerGroupUri ? state.currentServerSet.add(action.info.ServerURI) : state.currentServerSet,
       };
     case ActionType.SSG_WS_UPDATE:

@@ -7,11 +7,15 @@ import * as ServerAction from './ServerAction';
 import ServerListElementTask from './ServerListElementTask';
 import ServerListElementName from './ServerListElementName';
 
-class ServerListElement extends React.Component {
+class ServerListElement extends React.PureComponent {
   constructor(props) {
     super(props);
     this.onSelect = this.onSelect.bind(this);
   }
+
+  // shouldComponentUpdate(nextProps) {
+  //   return (nextProps.currentServerUri === this.props.server.URI || this.props.currentServerUri === this.props.server.URI);
+  // }
 
   // On selecting we need display the detail infomation.
   onSelect(event) {
@@ -21,7 +25,7 @@ class ServerListElement extends React.Component {
 
   render() {
     const currentStyle = 'ServerListElement ' + (
-      this.props.currentServerUri === this.props.server.URI ?
+      this.props.selected ?
         'Selected' : 'NotSelected'
     );
     return (
@@ -33,15 +37,15 @@ class ServerListElement extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
   return {
-    currentServerUri: state.serverApp.currentServerUri,
+    selected: ownProps.server.URI === state.serverApp.currentServerUri,
   };
 }
 
 ServerListElement.propTypes = {
   server: PropTypes.object,
-  currentServerUri: PropTypes.string,
+  selected: PropTypes.bool,
   children: PropTypes.string,
   dispatch: PropTypes.func
 };
