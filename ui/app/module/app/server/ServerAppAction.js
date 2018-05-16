@@ -5,7 +5,7 @@ import * as ServerAction from './ServerAction';
 import * as ServerGroupAction from './ServerGroupAction';
 import * as ServerServerGroupAction from './ServerServerGroupAction';
 import { doGet } from '../../../client/common';
-
+const Promise = require('promise');
 
 /**
  * Init the server App.
@@ -29,31 +29,23 @@ export function appInit(currentServerGroup, currentServer) {
       }
     });
     const prefix = 'http://' + getState().session.hostname;
+    const sURI = prefix + '/promise/v1/server';
     const sgURI = prefix + '/promise/v1/servergroup';
     const ssgURI = prefix + '/promise/v1/server-servergroup';
-    doGet(sgURI).then((sgResp) => {
-      if (sgResp.status === 200) {
-        return sgResp.response;
+    Promise.all([doGet(sURI), doGet(sgURI), doGet(ssgURI)]).then((responses) => {
+      if (responses[0].status === 200 && responses[1].status === 200 && responses[1].status === 200) {
+        dispatch({
+          type: ActionType.APP_INIT_SUCCESS,
+          info: {
+            serverList: responses[0].response,
+            serverGroupList: responses[1].response,
+            serverServerGroupList: responses[2].response,
+          }
+        });
+        return;
       }
       dispatch({
         type: ActionType.APP_INIT_FAILURE,
-      });
-      return null;
-    }).then((servergroup) => {
-      doGet(ssgURI).then((ssgResp)=> {
-        if (ssgResp.status === 200) {
-          dispatch({
-            type: ActionType.APP_INIT_SUCCESS,
-            info: {
-              serverGroupList: servergroup,
-              serverServerGroupList: ssgResp.response
-            }
-          });
-          return;
-        }
-        dispatch({
-          type: ActionType.APP_INIT_FAILURE,
-        });
       });
     }).catch((e) => {
       dispatch({

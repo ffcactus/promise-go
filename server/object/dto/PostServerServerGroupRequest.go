@@ -18,6 +18,9 @@ func (dto *PostServerServerGroupRequest) NewInstance() base.RequestInterface {
 
 // IsValid return if the request is valid.
 func (dto *PostServerServerGroupRequest) IsValid() *base.Message {
+	if dto.ServerID == "" || dto.ServerGroupID == "" {
+		return base.NewMessageInvalidRequest()
+	} 
 	return nil
 }
 
@@ -29,6 +32,7 @@ func (dto *PostServerServerGroupRequest) DebugInfo() string {
 // ToModel convert the DTO to model.
 func (dto *PostServerServerGroupRequest) ToModel() base.ModelInterface {
 	ret := model.ServerServerGroup{}
+	ret.Category = base.CategoryServerServerGroup
 	ret.ServerID = dto.ServerID
 	ret.ServerGroupID = dto.ServerGroupID
 	return &ret

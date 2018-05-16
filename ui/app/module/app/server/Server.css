@@ -156,7 +156,7 @@
     border: 0px;
     border-bottom: 1px solid rgb(11, 188, 233);
     float: none;
-    flex: 1 1 auto;    
+    flex: 1 1 initial;    
     position: relative;
     display: flex;
 }

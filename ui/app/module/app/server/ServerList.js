@@ -2,18 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
-import * as ServerAction from './ServerAction';
 import ServerListElement from './ServerListElement';
 import styles from './Server.css';
 
 class ServerList extends React.Component {
   constructor(props) {
     super(props);
-  }
-
-  componentDidMount() {
-    // At this point, the servergroup hasn't been clicked yet, so let's do a auto get collection.
-    this.props.dispatch(ServerAction.onListDidMount());
   }
 
   render() {
@@ -24,18 +18,24 @@ class ServerList extends React.Component {
     const list = [];
     for (let i = 0; i < size; i++) {
       const server = this.props.serverList.get(i);
-      list.push(<ServerListElement key={server.key} server = {server}/>);
+      if (this.props.currentServerSet.has(server.URI)) {
+        list.push(<ServerListElement key={server.ID} server = {server}/>);
+      }
     }
     return <div styleName="ServerList">{list}</div>;
   }
 }
 
 function mapStateToProps(state) {
-  return { serverList: state.serverApp.serverList};
+  return {
+    serverList: state.serverApp.serverList,
+    currentServerSet: state.serverApp.currentServerSet,
+  };
 }
 
 ServerList.propTypes = {
   serverList: PropTypes.object,
+  currentServerSet: PropTypes.object,
   dispatch: PropTypes.func,
 };
 

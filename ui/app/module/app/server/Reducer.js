@@ -1,11 +1,5 @@
-import {
-  ActionType,
-  ServerAppState,
-} from './ConstValue';
-import {
-  List,
-  Map
-} from 'immutable';
+import { ActionType, ServerAppState, ServerDetailState } from './ConstValue';
+import { List, Map, Set } from 'immutable';
 
 /**
  * The store updated in the this way:
@@ -26,14 +20,17 @@ import {
 
 const defaultState = {
   appState: ServerAppState.LOADING,
+  serverDetailState: ServerDetailState.EMPTY,
   // We need record the default servergroup because of it's special role.
-  defaultServerGroupUri: null,
-  currentServerGroupUri: null,
-  currentServerUri: null,
-  currentServer: null,
-  serverGroupList: new List(),
-  serverList: new List(),
-  serverTask: new Map(),
+  defaultServerGroupUri: null,  // The default servergroup, the one named 'all'.
+  currentServerGroupUri: null,  // The servergroup selected.
+  currentServerUri: null,       // The server selected.
+  currentServer: null,          // The server shows in detail.
+  currentServerSet: new Set(),    // To indicate the server that should be put in the list.
+  serverGroupList: new List(),  // To record all the servergroups.
+  ssgSet: new Set(),            // To record all the SSGs.
+  serverList: new List(),       // To record all the servers
+  serverTask: new Map(),        // To record all the tasks whos target is the servers in the list.
   openCreateServerGroupDialog: false,
   openAddServerDialog: false,
 };
@@ -42,14 +39,22 @@ export const serverApp = (state = defaultState, action) => {
   let tempDefaultServerGroupUri;
   let tempCurrentServerGroupUri;
   let tempCurrentServerUri;
-  let temp;
+  let tempCurrentServerSet;
   switch (action.type) {
     // App
     case ActionType.APP_INIT_START:
       return {
         ...state,
         appState: ServerAppState.LOADING,
+        defaultServerGroupUri: null,
         currentServer: null,
+        currentServerSet: new Set(),
+        serverGroupList: new List(),
+        ssgSet: new Set(),
+        serverList: new List(),
+        serverTask: new Map(),
+        openCreateServerGroupDialog: false,
+        openAddServerDialog: false,
         currentServerUri: action.info.currentServerUri,
         currentServerGroupUri: action.info.currentServerGroupUri,
       };
@@ -70,48 +75,44 @@ export const serverApp = (state = defaultState, action) => {
       return {
         ...state,
         appState: ServerAppState.NORMAL,
-        serverGroupList: List(action.info.serverGroupList.Members),
-        serverList: new List(action.info.serverServerGroupList.Members.filter((each) => {
-          return each.ServerGroupURI === tempCurrentServerGroupUri;
-        }).map((each) => {
-          return {
-            key: each.ServerURI,
-            value: null,
-          };
-        })),
         defaultServerGroupUri: tempDefaultServerGroupUri,
         currentServerGroupUri: tempCurrentServerGroupUri,
         currentServerUri: tempCurrentServerUri,
+        currentServerSet: Set(action.info.serverServerGroupList.Members.filter((each) => {
+          return each.ServerGroupURI === tempCurrentServerGroupUri;
+        }).map(each => each.ServerURI)),
+        serverGroupList: List(action.info.serverGroupList.Members),
+        ssgSet: Set(action.info.serverServerGroupList.Members),
+        serverList: List(action.info.serverList.Members),
       };
     case ActionType.APP_INIT_FAILURE:
       return {
         ...state,
         appState: ServerAppState.FAILURE,
-        serverGroupList: new List(),
-        serverList: new List(),
+        serverDetailState: ServerDetailState.FAILURE,
       };
     case ActionType.APP_EXIT:
       return defaultState;
     // Server
     // Server.REST.Get
     case ActionType.SERVER_REST_GET_START:
-      return state;
-    case ActionType.SERVER_REST_GET_SUCCESS:
-      // It indicates that the server in the list is loaded or the server selected by user is loaded.
       return {
         ...state,
-        serverList: state.serverList.map((each) => {
-          if (each.key === action.info.URI) {
-            return {key: each.key, value: action.info};
-          }
-          return each;
-        }),
-        currentServer: action.info.URI === state.currentServerUri ? action.info : state.currentServer,
+        currentServer: null,
+        serverDetailState: ServerDetailState.LOADING,
+      };
+    case ActionType.SERVER_REST_GET_SUCCESS:
+      return {
+        ...state,
+        currentServer: action.info,
+        serverDetailState: ServerDetailState.NORMAL,
       };
     case ActionType.SERVER_REST_GET_MESSAGE:
-      return state;
     case ActionType.SERVER_REST_GET_EXCEPTION:
-      return state;
+      return {
+        ...state,
+        serverDetailState: ServerDetailState.FAILURE
+      };
     // Server.REST.GetList
     case ActionType.SERVER_REST_GETLIST_START:
     case ActionType.SERVER_REST_GETLIST_SUCCESS:
@@ -122,23 +123,28 @@ export const serverApp = (state = defaultState, action) => {
     case ActionType.SERVER_WS_CREATE:
       // It indicates the a server is created, but we won't do anything here. we don't know if the server belongs to the current list.
       // So we just care about the SSG_WS_CREATE
-      return state;
+      return {
+        ...state,
+        serverList: state.serverList.push(action.info),
+      };
     case ActionType.SERVER_WS_UPDATE:
       // If the server in the list.
       return {
         ...state,
         serverList: state.serverList.map((each) => {
-          if (each.key === action.info.URI) {
-            return {
-              key: each.key,
-              value: action.info
-            };
+          if (each.ID === action.info.ID) {
+            return action.info;
           }
           return each;
         }),
         currentServer: action.info.URI === state.currentServerUri ? action.info : state.currentServer,
       };
     case ActionType.SERVER_WS_DELETE:
+      return {
+        ...state,
+        serverList: state.serverList.filter((each) => each.ID !== action.info.ID),
+        currentServer: action.info.URI === state.currentServerUri ? null : state.currentServer,
+      };
     case ActionType.SERVER_WS_DELETE_LIST:
       return state;
     // Server.UI
@@ -156,25 +162,16 @@ export const serverApp = (state = defaultState, action) => {
     // ServerGroup
     // ServerGroup.REST.Create
     case ActionType.SG_REST_CREATE_START:
-      return state;
     case ActionType.SG_REST_CREATE_SUCCESS:
-      return state;
     case ActionType.SG_REST_CREATE_MESSAGE:
     case ActionType.SG_REST_CREATE_EXCEPTION:
       return state;
     // ServerGroup.REST.GetList
     case ActionType.SG_REST_GETLIST_START:
-      return state;
     case ActionType.SG_REST_GETLIST_SUCCESS:
-      return {
-        ...state,
-        serverGroupList: List(action.info.Members),
-      };
     case ActionType.SG_REST_GETLIST_MESSAGE:
     case ActionType.SG_REST_GETLIST_EXCEPTION:
-      return Object.assign({}, state, {
-        serverGroupList: new List(),
-      });
+      return state;
     // ServerGroup.WS
     case ActionType.SG_WS_CREATE:
       return {
@@ -204,9 +201,13 @@ export const serverApp = (state = defaultState, action) => {
     // ServerGroup.UI
     // ServerGroup.UI.List
     case ActionType.SG_UI_LIST_SELECT:
+      tempCurrentServerSet = state.ssgSet.filter((each) => {
+        return each.ServerGroupURI === action.info;
+      }).map(each => each.ServerURI);
       return {
         ...state,
         currentServerGroupUri: action.info,
+        currentServerSet: new Set(tempCurrentServerSet),
       };
     // ServerGroup.UI.Dialog
     case ActionType.SG_UI_DIALOG_ADD_OPEN:
@@ -224,60 +225,32 @@ export const serverApp = (state = defaultState, action) => {
     // Server-ServerGroup.REST
     // Server-ServerGroup.REST.GetList
     case ActionType.SSG_REST_GETLIST_START:
-      // clean the server list.
-      return {
-        ...state,
-        serverList: new List(),
-        currentServerUri: null,
-        currentServer: null,
-      };
     case ActionType.SSG_REST_GETLIST_SUCCESS:
-      // This indicate that the server list can be updated, we need also select the current server.
-      temp = new List(action.info.Members.map((each) => {
-        return {
-          key: each.ServerURI,
-          value: null
-        };
-      }));
-      return {
-        ...state,
-        serverList: temp,
-        currentServerUri: temp.size === 0 ? null : temp.get(0).key,
-      };
     case ActionType.SSG_REST_GETLIST_MESSAGE:
     case ActionType.SSG_REST_GETLIST_EXCEPTION:
-      // report error.
-      // TODO
       return state;
     // Server-ServerGroup.WS
     // We need check if the server belongs to the group selected.
     case ActionType.SSG_WS_CREATE:
-      if (action.info.ServerGroupURI === state.currentServerGroupUri) {
-        return {
-          ...state,
-          serverList: state.serverList.push({
-            key: action.info.ServerURI,
-            value: null,
-          }),
-        };
-      }
-      return state;
+      return {
+        ...state,
+        ssgSet: state.ssgSet.add(action.info),
+        currentServerSet: action.info.ServerGroupURI === state.currentServerGroupUri ? state.currentServerSet.add(action.info.ServerURI) : state.currentServerSet,
+      };
     case ActionType.SSG_WS_UPDATE:
       return state;
     case ActionType.SSG_WS_DELETE:
-      if (action.info.ServerGroupURI === state.currentServerGroupUri) {
-        return {
-          ...state,
-          serverList: state.serverList.filter((each) => each.key === action.info.ServerURI),
-        };
-      }
-      return state;
+      return {
+        ...state,
+        ssgSet: state.ssgSet.filter((each) => each.ID !== action.info.ID),
+        currentServerSet: action.info.ServerGroupURI === state.currentServerGroupUri ? state.currentServerSet.delete(action.info.ServerURI) : state.currentServerSet,
+      };
     // Task.WS
     case ActionType.TASK_WS_CREATE:
     case ActionType.TASK_WS_UPDATE:
       // If the task related to the server in the list.
       for (let i = 0; i < state.serverList.size; i++) {
-        if (state.serverList.get(i).key === action.info.TargetURI) {
+        if (state.serverList.get(i).URI === action.info.TargetURI) {
           return {
             ...state,
             serverTask: state.serverTask.set(action.info.TargetURI, action.info),

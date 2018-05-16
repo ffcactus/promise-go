@@ -34,6 +34,5 @@ func (s *Discover) Perform(id string, request base.ActionRequestInterface) (base
 	if err := response.Load(model); err != nil {
 		return nil, []base.Message{*base.NewMessageInternalError()}
 	}
-	eventService.DispatchCreateEvent(&response)
 	return &response, nil
 }

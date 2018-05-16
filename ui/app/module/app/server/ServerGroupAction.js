@@ -1,25 +1,5 @@
 import * as Client from './Client';
 import { ActionType } from './ConstValue';
-import { createGetAction } from '../../../client/common';
-
-export function getCollectionStart() {
-  return {
-    type: ActionType.GET_SERVERGROUP_LIST_START
-  };
-}
-
-export function getCollectionSuccess(resp) {
-  return {
-    type: ActionType.GET_SERVERGROUP_LIST_SUCCESS,
-    info: resp,
-  };
-}
-
-export function getCollectionFailure() {
-  return {
-    type: ActionType.GET_SERVERGROUP_LIST_FAILURE,
-  };
-}
 
 function onServerGroupCreate(sg) {
   return {
@@ -113,38 +93,14 @@ export function createServerGroup(servergroup) {
 }
 
 /**
- *
- * @param {int} top How much you would like to get.
- * @param {int} skip From where you would like to get.
- * @param {string} filter The filter you would like to use.
- */
-export function getCollection() {
-  return createGetAction(
-    '/promise/v1/servergroup',
-    ActionType.SG_REST_GETLIST_START,
-    ActionType.SG_REST_GETLIST_SUCCESS,
-    ActionType.SG_REST_GETLIST_MESSAGE,
-    ActionType.SG_REST_GETLIST_EXCEPTION,
-  );
-}
-
-/**
  * This action will be called when user selects a servergroup from list.
  * @param {string} uri The URI of the servergroup been selected.
  */
 export function uiListSelect(uri) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({
       type: ActionType.SG_UI_LIST_SELECT,
       info: uri
     });
-    // select the SSG which SG equals this one.
-    createGetAction(
-      '/promise/v1/server-servergroup?$filter=ServerGroupID eq \'' + uri.split('/').pop() + '\'',
-      ActionType.SSG_REST_GETLIST_START,
-      ActionType.SSG_REST_GETLIST_SUCCESS,
-      ActionType.SSG_REST_GETLIST_MESSAGE,
-      ActionType.SSG_REST_GETLIST_EXCEPTION,
-    )(dispatch, getState);
   };
 }

@@ -11,19 +11,13 @@ class ServerGroupElement extends React.Component {
     this.onClick = this.onClick.bind(this);
   }
 
-  componentDidMount() {
-    if (this.props.serverApp.currentServerGroup && this.props.serverApp.currentServerGroupUri === this.props.servergroup.URI) {
-      this.props.dispatch(ServerGroupAction.uiListSelect(this.props.servergroup.URI));
-    }
-  }
-
   onClick(event) {
     event.preventDefault();
     this.props.dispatch(ServerGroupAction.uiListSelect(this.props.servergroup.URI));
   }
 
   render() {
-    const currentStyle = 'ServerGroupElement ' + (this.props.serverApp.currentServerGroupUri === this.props.servergroup.URI ? 'Selected' : 'NotSelected');
+    const currentStyle = 'ServerGroupElement ' + (this.props.currentServerGroupUri === this.props.servergroup.URI ? 'Selected' : 'NotSelected');
     return (
       <div styleName={currentStyle} onClick={this.onClick}>
         <p styleName="ServerGroupElementText">{this.props.servergroup.Name}</p>
@@ -33,14 +27,13 @@ class ServerGroupElement extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { serverApp } = state;
-  return { serverApp };
+  return { currentServerGroupUri: state.serverApp.currentServerGroupUri };
 }
 
 ServerGroupElement.propTypes = {
   servergroup: PropTypes.object,
   dispatch: PropTypes.func,
-  serverApp: PropTypes.object,
+  currentServerGroupUri: PropTypes.string,
 };
 
 export default connect(mapStateToProps)(CSSModules(ServerGroupElement, styles, {allowMultiple: true}));

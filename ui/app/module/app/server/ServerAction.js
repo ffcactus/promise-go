@@ -35,13 +35,6 @@ export function onServerMessage(message) {
   }
 }
 
-// export function uiListSelect(uri) {
-//   return {
-//     type: ActionType.SERVER_UI_LIST_SELECT,
-//     info: uri
-//   };
-// }
-
 export function openAddServerDialog() {
   return {
     type: ActionType.SERVER_UI_DIALOG_ADD_OPEN
@@ -58,7 +51,7 @@ export function closeAddServerDialog() {
  * When the server element did mount we get the server details.
  * @param {string} uri The URI to get the server.
  */
-export function onElementDidMount(uri) {
+export function getServer(uri) {
   return createGetAction(
     uri,
     ActionType.SERVER_REST_GET_START,
@@ -66,22 +59,6 @@ export function onElementDidMount(uri) {
     ActionType.SERVER_REST_GET_MESSAGE,
     ActionType.SERVER_REST_GET_EXCEPTION,
   );
-}
-
-/**
- * When server list did mount, we need load all the server-servergroup depends on the selected servergroup.
- */
-export function onListDidMount() {
-  return (dispatch, getState) => {
-    const uri = '/promise/v1/server-servergroup?$filter=ServerGroupID eq \'' + getState().serverApp.currentServerGroupUri.split('/').pop() + '\'';
-    createGetAction(
-      uri,
-      ActionType.SSG_REST_GETLIST_START,
-      ActionType.SSG_REST_GETLIST_SUCCESS,
-      ActionType.SSG_REST_GETLIST_MESSAGE,
-      ActionType.SSG_REST_GETLIST_EXCEPTION
-    )(dispatch, getState);
-  };
 }
 
 /**

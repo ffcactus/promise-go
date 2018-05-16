@@ -4,15 +4,10 @@ import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import styles from './Server.css';
 import ServerGroupElement from './ServerGroupElement';
-import * as ServerGroupAction from './ServerGroupAction';
 
 class ServerGroupList extends React.Component {
   constructor(props) {
     super(props);
-  }
-
-  componentDidMount() {
-    this.props.dispatch(ServerGroupAction.getCollection());
   }
 
   render() {

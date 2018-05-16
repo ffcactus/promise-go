@@ -11,31 +11,23 @@ class ServerListElement extends React.Component {
   constructor(props) {
     super(props);
     this.onSelect = this.onSelect.bind(this);
-    this.state = {
-      selected: false
-    };
-  }
-
-  // on mounting we need send REST to get server to display some basic info.
-  componentDidMount() {
-    this.props.dispatch(ServerAction.onElementDidMount(this.props.server.key));
   }
 
   // On selecting we need display the detail infomation.
   onSelect(event) {
     event.preventDefault();
-    this.props.dispatch(ServerAction.uiListSelect(this.props.server.key));
+    this.props.dispatch(ServerAction.uiListSelect(this.props.server.URI));
   }
 
   render() {
     const currentStyle = 'ServerListElement ' + (
-      this.props.currentServerUri === this.props.server.key ?
+      this.props.currentServerUri === this.props.server.URI ?
         'Selected' : 'NotSelected'
     );
     return (
       <div styleName={currentStyle} onClick={this.onSelect}>
-        <ServerListElementName name={this.props.server.value ? this.props.server.value.Name : '...'} />
-        <ServerListElementTask serverUri={this.props.server.key}/>
+        <ServerListElementName name={this.props.server.Name ? this.props.server.Name : '...'} />
+        <ServerListElementTask serverUri={this.props.server.URI}/>
       </div>
     );
   }
@@ -43,7 +35,6 @@ class ServerListElement extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    // serverList: state.serverApp.serverList,
     currentServerUri: state.serverApp.currentServerUri,
   };
 }
@@ -51,8 +42,6 @@ function mapStateToProps(state) {
 ServerListElement.propTypes = {
   server: PropTypes.object,
   currentServerUri: PropTypes.string,
-  // serverList: PropTypes.object,
-  // serverUri: PropTypes.string,
   children: PropTypes.string,
   dispatch: PropTypes.func
 };

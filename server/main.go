@@ -32,8 +32,8 @@ func initDB() {
 func main() {
 	base.Init("ServerApp")
 	initDB()
-	bgRefresh := service.Refresh{}
-	bgRefresh.StartBackgroundRefresh()
+	// bgRefresh := service.Refresh{}
+	// bgRefresh.StartBackgroundRefresh()
 
 	serverNS := beego.NewNamespace(
 		base.RootURL+base.ServerBaseURI,

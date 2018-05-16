@@ -6,6 +6,15 @@ export const ServerAppState = Object.freeze(
   }
 );
 
+export const ServerDetailState = Object.freeze(
+  {
+    'EMPTY': 'EMPTY',
+    'LOADING': 'LOADING',
+    'NORMAL': 'NORMAL',
+    'FAILURE': 'FAILURE',
+  }
+);
+
 export const ActionType = Object.freeze(
   {
     // App

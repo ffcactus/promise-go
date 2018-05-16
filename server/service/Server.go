@@ -55,7 +55,7 @@ func (s *Server) Delete(id string) []base.Message {
 	}
 	response.Load(server)
 	for _, v := range ssg {
-		ssgResponse := dto.GetServerGroupResponse{}
+		ssgResponse := dto.GetServerServerGroupResponse{}
 		ssgResponse.Load(v)
 		s.EventService().DispatchDeleteEvent(&ssgResponse)
 	}
