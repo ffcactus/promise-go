@@ -5,7 +5,7 @@ import CSSModules from 'react-css-modules';
 import ServerListElement from './ServerListElement';
 import styles from './Server.css';
 import { AutoSizer, List } from 'react-virtualized';
-import 'react-virtualized/styles.css';
+// import 'react-virtualized/styles.css';
 
 class ServerList extends React.Component {
   constructor(props) {
@@ -23,7 +23,7 @@ class ServerList extends React.Component {
     const server = this.props.serverList.get(index);
     return (
       <div key={key} style={style}>
-        <ServerListElement server={server}/>
+        <ServerListElement key={key} server={server}/>
       </div>
     );
   }

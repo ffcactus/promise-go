@@ -1,9 +1,11 @@
 .Selected {
     background-color: rgb(181, 214, 245);
+    border: 1px solid rgb(11, 188, 233);
 }
 
 .NotSelected {
     background-color: #DFEEFC;
+    border: 1px solid rgb(11, 188, 233);
 }
 
 .ServerGroupArea {
@@ -151,25 +153,9 @@
 .ServerListElement {
     height: 100%;
     margin: 0px;
-    padding: 0px;    
-    border: 0px;
-    border-bottom: 1px solid rgb(11, 188, 233);
-    float: none;
-    flex: 1 1 initial;    
-    position: relative;
+    padding: 0px;
     display: flex;
 }
-
-/* .ServerListElementSelected {
-    height: 2em;
-    margin: 0px;
-    padding: 0px;    
-    border: 0px;
-    border-bottom: 1px solid rgb(11, 188, 233);
-    float: none;
-    flex: 1 1 auto;
-    position: relative;
-} */
 
 .ServerListElementName {
     flex-flow: row;
@@ -178,7 +164,7 @@
 }
 
 .ServerListElementName p {
-    margin: 0;
+    margin: 0px;
     position: absolute;
     top: 50%;
     left: 10%;
