@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import ServerListElement from './ServerListElement';
 import styles from './Server.css';
-import { List } from 'react-virtualized';
+import { AutoSizer, List } from 'react-virtualized';
+import 'react-virtualized/styles.css';
 
 class ServerList extends React.Component {
   constructor(props) {
@@ -28,13 +29,19 @@ class ServerList extends React.Component {
 
   render() {
     return (
-      <List
-        autoHeight={true}
-        width={300}
-        rowCount={this.props.serverList.size}
-        rowHeight={49}
-        rowRenderer={this.rowRenderer}
-      />
+      <div>
+        <AutoSizer>{
+          ({ height, width }) => {
+            <List
+              width={height}
+              height={width}
+              rowCount={this.props.serverList.size}
+              rowHeight={40}
+              rowRenderer={this.rowRenderer}
+            />;
+          }
+        }</AutoSizer>
+      </div>
     );
   }
 }
