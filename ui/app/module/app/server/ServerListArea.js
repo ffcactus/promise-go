@@ -15,7 +15,9 @@ class ServerListArea extends React.Component {
       <div styleName="ServerListArea">
         <ServerSearchArea />
         <ServerListControlArea />
-        <ServerList />
+        <div style={{ flex: '1 1 auto' }}>
+          <ServerList />
+        </div>
       </div>
     );
   }

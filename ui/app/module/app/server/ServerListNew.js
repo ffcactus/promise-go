@@ -20,30 +20,43 @@ class ServerList extends React.Component {
     isVisible,      // This row is visible within the List
     style           // Style object to be applied to row
   }) {
+    const server = this.props.serverList.get(index);
     return (
       <div key={key} style={style}>
-        <p>{this.props.serverList.get(index).Name}</p>
+        <ServerListElement server={server}/>
       </div>
     );
   }
 
   render() {
     return (
-      <div>
-        <AutoSizer>{
-          ({ height, width }) => {
-            <List
-              width={height}
-              height={width}
-              rowCount={this.props.serverList.size}
-              rowHeight={40}
-              rowRenderer={this.rowRenderer}
-            />;
-          }
-        }</AutoSizer>
-      </div>
+      <AutoSizer>{
+        ({ height, width }) => (
+          <List
+            width={width}
+            height={height}
+            rowCount={this.props.serverList.size}
+            rowHeight={40}
+            rowRenderer={this.rowRenderer}
+          />
+        )
+      }</AutoSizer>
     );
   }
+
+  // render() {
+  //   return (
+  //     <div styleName="ServerList">
+  //       <List
+  //         width={452}
+  //         height={867}
+  //         rowCount={this.props.serverList.size}
+  //         rowHeight={40}
+  //         rowRenderer={this.rowRenderer}
+  //       />
+  //     </div>
+  //   );
+  // }
 }
 
 function mapStateToProps(state) {

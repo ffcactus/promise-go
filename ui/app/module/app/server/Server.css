@@ -149,8 +149,7 @@
 }
 
 .ServerListElement {
-    height: 50px;
-    min-height: 50px;
+    height: 100%;
     margin: 0px;
     padding: 0px;    
     border: 0px;
@@ -161,7 +160,7 @@
     display: flex;
 }
 
-.ServerListElementSelected {
+/* .ServerListElementSelected {
     height: 2em;
     margin: 0px;
     padding: 0px;    
@@ -170,7 +169,7 @@
     float: none;
     flex: 1 1 auto;
     position: relative;
-}
+} */
 
 .ServerListElementName {
     flex-flow: row;
