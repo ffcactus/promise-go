@@ -3,7 +3,7 @@ import CSSModules from 'react-css-modules';
 import styles from './Server.css';
 import ServerSearchArea from './ServerSearchArea';
 import ServerListControlArea from './ServerListControlArea';
-import ServerList from './ServerList';
+import ServerList from './ServerListNew';
 
 class ServerListArea extends React.Component {
   constructor(props) {
