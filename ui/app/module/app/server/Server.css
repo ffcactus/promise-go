@@ -1,11 +1,9 @@
 .Selected {
     background-color: rgb(181, 214, 245);
-    border: 1px solid rgb(11, 188, 233);
 }
 
 .NotSelected {
     background-color: #DFEEFC;
-    border: 1px solid rgb(11, 188, 233);
 }
 
 .ServerGroupArea {
@@ -151,10 +149,11 @@
 }
 
 .ServerListElement {
-    height: 100%;
     margin: 0px;
     padding: 0px;
     display: flex;
+    border: 1px solid rgb(11, 188, 233);
+    height: 38px; /* The outter box is 40 */
 }
 
 .ServerListElementName {

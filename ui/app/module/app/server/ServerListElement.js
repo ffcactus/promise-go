@@ -13,10 +13,6 @@ class ServerListElement extends React.PureComponent {
     this.onSelect = this.onSelect.bind(this);
   }
 
-  // shouldComponentUpdate(nextProps) {
-  //   return (nextProps.currentServerUri === this.props.server.URI || this.props.currentServerUri === this.props.server.URI);
-  // }
-
   // On selecting we need display the detail infomation.
   onSelect(event) {
     event.preventDefault();

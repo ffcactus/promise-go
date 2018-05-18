@@ -28,7 +28,7 @@ const defaultState = {
   currentServer: null,          // The server shows in detail.
   currentServerSet: new Set(),    // To indicate the server that should be put in the list.
   serverGroupList: new List(),  // To record all the servergroups.
-  ssgSet: new Set(),            // To record all the SSGs.
+  ssgSet: null,            // To record all the SSGs.
   serverList: new List(),       // To record all the servers
   serverTask: new Map(),        // To record all the tasks whos target is the servers in the list.
   openCreateServerGroupDialog: false,
@@ -211,6 +211,8 @@ export const serverApp = (state = defaultState, action) => {
       }
       return {
         ...state,
+        currentServer: null,
+        currentServerUri: null,
         currentServerGroupUri: action.info,
         currentServerSet: new Set(tempCurrentServerSet),
       };
@@ -239,7 +241,7 @@ export const serverApp = (state = defaultState, action) => {
     case ActionType.SSG_WS_CREATE:
       return {
         ...state,
-        ssgSet: state.ssgSet.push(action.info),
+        ssgSet: state.ssgSet.concat(action.info),
         currentServerSet: action.info.ServerGroupURI === state.currentServerGroupUri ? state.currentServerSet.add(action.info.ServerURI) : state.currentServerSet,
       };
     case ActionType.SSG_WS_UPDATE:

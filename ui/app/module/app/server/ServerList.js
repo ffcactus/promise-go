@@ -1,43 +1,49 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import ServerListElement from './ServerListElement';
 import styles from './Server.css';
+import { AutoSizer, List } from 'react-virtualized';
 
 class ServerList extends React.Component {
   constructor(props) {
     super(props);
+    this.rowRenderer = this.rowRenderer.bind(this);
+  }
+
+  rowRenderer({
+    key,            // Unique key within array of rows
+    index,          // Index of row within collection
+    style           // Style object to be applied to row
+  }) {
+    const server = this.props.serverList[index];
+    return (
+      <div key={key} style={style}>
+        <ServerListElement key={key} server={server} />
+      </div>
+    );
   }
 
   render() {
-    const size = this.props.serverList.size;
-    if (size === 0) {
-      return <div styleName="ServerList"><p>Empty</p></div>;
-    }
-    const list = [];
-    for (let i = 0; i < size; i++) {
-      const server = this.props.serverList.get(i);
-      if (this.props.currentServerSet.has(server.URI)) {
-        list.push(<ServerListElement key={server.ID} server = {server}/>);
-      }
-    }
-    return <div styleName="ServerList">{list}</div>;
+    return (
+      <AutoSizer>{
+        ({ height, width }) => (
+          <List
+            width={width}
+            height={height}
+            rowCount={this.props.serverList.length}
+            rowHeight={40}
+            rowRenderer={this.rowRenderer}
+          />
+        )
+      }</AutoSizer>
+    );
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    serverList: state.serverApp.serverList,
-    currentServerSet: state.serverApp.currentServerSet,
-  };
-}
-
 ServerList.propTypes = {
-  serverList: PropTypes.object,
-  currentServerSet: PropTypes.object,
-  dispatch: PropTypes.func,
+  serverList: PropTypes.array,
 };
 
-export default connect(mapStateToProps)(CSSModules(ServerList, styles));
+export default CSSModules(ServerList, styles);
 
