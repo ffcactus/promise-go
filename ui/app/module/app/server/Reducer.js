@@ -33,6 +33,10 @@ const defaultState = {
   serverTask: new Map(),        // To record all the tasks whos target is the servers in the list.
   openCreateServerGroupDialog: false,
   openAddServerDialog: false,
+  serverExist: false,
+  serverGroupExist: false,
+  serverIndex: undefined,
+  serverGroupIndex: undefined,
 };
 
 export const serverApp = (state = defaultState, action) => {
@@ -40,6 +44,9 @@ export const serverApp = (state = defaultState, action) => {
   let tempCurrentServerGroupUri;
   let tempCurrentServerUri;
   let tempCurrentServerSet;
+  let tempServerGroupExist;
+  let tempServerExist;
+  let tempServerIndex;
   let arraylength;
   switch (action.type) {
     // App
@@ -60,17 +67,32 @@ export const serverApp = (state = defaultState, action) => {
         currentServerGroupUri: action.info.currentServerGroupUri,
       };
     case ActionType.APP_INIT_SUCCESS:
+      tempCurrentServerUri = state.currentServerUri;
+      tempServerExist = false;
+      tempServerGroupExist = false;
       // Find the default servergroup.
       for (const each of action.info.serverGroupList.Members) {
         if (each.Name === 'all') {
           tempDefaultServerGroupUri = each.URI;
         }
+        if (each.URI === state.currentServerGroupUri) {
+          tempServerGroupExist = true;
+        }
+      }
+      arraylength = action.info.serverList.Members.length;
+      for (let i = 0; i < arraylength; i++) {
+        if (action.info.serverList.Members[i].URI === state.currentServerUri) {
+          tempServerIndex = i;
+          tempServerExist = true;
+        }
       }
       // Set the current servergroup.
       if (state.currentServerGroupUri === null) {
+        tempServerGroupExist = true;
         tempCurrentServerGroupUri = tempDefaultServerGroupUri;
       }
       if (state.currentServerUri === null) {
+        tempServerExist = true;
         tempCurrentServerUri = action.info.serverServerGroupList.Members.length === 0 ? null : action.info.serverServerGroupList.Members[0].ServerURI;
       }
       return {
@@ -85,6 +107,9 @@ export const serverApp = (state = defaultState, action) => {
         serverGroupList: List(action.info.serverGroupList.Members),
         ssgSet: action.info.serverServerGroupList.Members,
         serverList: List(action.info.serverList.Members),
+        serverExist: tempServerExist,
+        serverGroupExist: tempServerGroupExist,
+        serverIndex: tempServerIndex,
       };
     case ActionType.APP_INIT_FAILURE:
       return {

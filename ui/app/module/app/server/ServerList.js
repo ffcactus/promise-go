@@ -32,6 +32,7 @@ class ServerList extends React.Component {
             width={width}
             height={height}
             rowCount={this.props.serverList.length}
+            scrollToIndex={this.props.serverIndex}
             rowHeight={40}
             rowRenderer={this.rowRenderer}
           />
@@ -42,6 +43,7 @@ class ServerList extends React.Component {
 }
 
 ServerList.propTypes = {
+  serverIndex: PropTypes.number,
   serverList: PropTypes.array,
 };
 

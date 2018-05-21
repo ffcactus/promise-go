@@ -6,6 +6,7 @@ import LoadingIcon from '../../promise/common/LoadingIcon';
 import Server from './Server';
 import { ServerAppState } from './ConstValue';
 import * as ServerAppAction from './ServerAppAction';
+import * as Util from '../../promise/common/Util';
 
 class ServerContainer extends React.Component {
   constructor(props) {
@@ -13,7 +14,10 @@ class ServerContainer extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch(ServerAppAction.appInit());
+    const search = this.props.location.search;
+    const servergroup = Util.getParameterByName('servergroup', search);
+    const server = Util.getParameterByName('server', search);
+    this.props.dispatch(ServerAppAction.appInit(servergroup, server));
   }
 
   render() {
@@ -37,6 +41,7 @@ function mapStateToProps(state) {
 
 ServerContainer.propTypes = {
   serverApp: PropTypes.object,
+  location: PropTypes.object,
   dispatch: PropTypes.func
 };
 

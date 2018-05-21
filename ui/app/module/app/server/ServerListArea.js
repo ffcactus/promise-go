@@ -26,7 +26,7 @@ class ServerListArea extends React.Component {
         <ServerSearchArea />
         <ServerListControlArea />
         <div style={{ flex: '1 1 auto' }}>
-          <ServerList serverList={serverList} />
+          <ServerList serverList={serverList} serverIndex={this.props.serverIndex}/>
         </div>
       </div>
     );
@@ -36,12 +36,14 @@ class ServerListArea extends React.Component {
 function mapStateToProps(state) {
   return {
     serverList: state.serverApp.serverList,
+    serverIndex: state.serverApp.serverIndex,
     currentServerSet: state.serverApp.currentServerSet,
   };
 }
 
 ServerListArea.propTypes = {
   serverList: PropTypes.object,
+  serverIndex: PropTypes.number,
   currentServerSet: PropTypes.object,
   dispatch: PropTypes.func,
 };
