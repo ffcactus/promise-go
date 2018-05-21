@@ -6,6 +6,8 @@ import styles from './Server.css';
 import * as ServerAction from './ServerAction';
 import ServerListElementTask from './ServerListElementTask';
 import ServerListElementName from './ServerListElementName';
+import { Health } from '../../promise/common/Widget/Health';
+import CenterDiv from '../../promise/common/CenterDiv';
 
 class ServerListElement extends React.PureComponent {
   constructor(props) {
@@ -26,6 +28,11 @@ class ServerListElement extends React.PureComponent {
     );
     return (
       <div styleName={currentStyle} onClick={this.onSelect}>
+        <div styleName="ServerListElementHealth">
+          <CenterDiv>
+            <Health health={this.props.server.Health}/>
+          </CenterDiv>
+        </div>
         <ServerListElementName name={this.props.server.Name ? this.props.server.Name : '...'} />
         <ServerListElementTask serverUri={this.props.server.URI}/>
       </div>

@@ -156,9 +156,15 @@
     height: 38px; /* The outter box is 40 */
 }
 
-.ServerListElementName {
+.ServerListElementHealth {
     flex-flow: row;
     flex: 1 1 auto;
+    position: relative;
+}
+
+.ServerListElementName {
+    flex-flow: row;
+    flex: 9 1 auto;
     position: relative;
 }
 
@@ -174,7 +180,7 @@
 .ServerListElementTask {
     flex-flow: row;
     width: 50px;
-    flex: 0 1 initial;
+    flex: 1 1 auto;
     position: relative;
 }
 
