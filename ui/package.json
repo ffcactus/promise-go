@@ -15,6 +15,7 @@
     "license": "ISC",
     "dependencies": {
         "immutable": "^3.8.2",
+        "rc-progress": "^2.2.5",
         "react": "^16.3.0",
         "react-css-modules": "^4.7.1",
         "react-dom": "^16.3.0",
