@@ -2,6 +2,7 @@ package strategy
 
 import (
 	log "github.com/sirupsen/logrus"
+	"promise/base"
 	"promise/server/context"
 	"promise/server/object/constvalue"
 	"promise/server/object/model"
@@ -20,7 +21,7 @@ type RefreshServer interface {
 	RefreshNetworkAdapters(c *context.RefreshServer, server *model.Server) error
 	RefreshDrives(c *context.RefreshServer, server *model.Server) error
 	RefreshPCIeDevices(c *context.RefreshServer, server *model.Server) error
-	Execute(c *context.RefreshServer, server *model.Server) (*string, error)
+	Execute(c *context.RefreshServer, server *model.Server) (*string, []base.Message)
 }
 
 // CreateRefreshServerStrategy creates the strategy based on server.

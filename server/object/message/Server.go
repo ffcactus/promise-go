@@ -1,7 +1,6 @@
 package message
 
 import (
-	"net/http"
 	"promise/base"
 	"promise/server/object/model"
 )
@@ -9,8 +8,6 @@ import (
 const (
 	// MessageServerDiscoverFailed Message ID
 	MessageServerDiscoverFailed = "Server.Message.DiscoverFailed"
-	// MessageServerLockFailed Message ID
-	MessageServerLockFailed = "Server.Message.LockFailed"
 	// MessageServerAccountExist Message ID
 	MessageServerAccountExist = "Server.Message.AccountExist"
 	// MessageServerRefreshTaskFailed Message ID
@@ -43,25 +40,6 @@ func NewMessageServerDiscoverFailed() *base.Message {
 	ret.ID = MessageServerDiscoverFailed
 	ret.Severity = base.SeverityWarning
 	ret.Description = "Post server failed."
-	ret.Supports = []base.Support{
-		NewSupportServerUnableConnect(),
-		NewSupportServerUnknownProtocol(),
-		NewSupportServerNoBasicInfo(),
-	}
-	return ret
-}
-
-// NewMessageServerLockFailed create new message.
-func NewMessageServerLockFailed(s *model.Server) *base.Message {
-	ret := base.NewMessage()
-	ret.ID = MessageServerLockFailed
-	ret.StatusCode = http.StatusConflict
-	ret.Severity = base.SeverityNormal
-	ret.Description = "Server {0} failed to lock, server state = {1}."
-	ret.Arguments = []base.Argument{
-		NewArgumentServerID(s),
-		{Type: "String", Name: s.State, Value: s.State},
-	}
 	ret.Supports = []base.Support{
 		NewSupportServerUnableConnect(),
 		NewSupportServerUnknownProtocol(),

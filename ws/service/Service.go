@@ -45,7 +45,7 @@ func StartEventDispatcher() {
 				"type":     e.Type,
 				"category": e.Category,
 				"resource": e.ResourceID,
-			}).Info("Event dispatched.")
+			}).Debug("Event dispatched.")
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package service
 
 import (
+	log "github.com/sirupsen/logrus"
 	"promise/base"
 	"promise/server/context"
 	"promise/server/object/model"
@@ -22,8 +23,16 @@ func (s *Refresh) FindServerStateAdded() {
 	for {
 		seconds := 5
 		if id := serverDB.FindServerStateAdded(); id != "" {
-			s.PerformAsych(id, nil)
-			seconds = 0
+			_, _, message := s.PerformAsych(id, nil)
+			if message != nil {
+				log.WithFields(log.Fields{
+					"server":  id,
+					"message": message[0].ID,
+				}).Info("Service auto-refresh server failed.")
+				seconds = 10
+			} else {
+				seconds = 0
+			}
 		} else {
 			seconds = 5
 		}
@@ -43,9 +52,9 @@ func (s *Refresh) PerformAsych(id string, request base.AsychActionRequestInterfa
 	}
 	ctx := context.CreateRefreshServerContext(server)
 	st := strategy.CreateRefreshServerStrategy(server)
-	task, err := st.Execute(ctx, server)
-	if err != nil {
-		return nil, nil, ctx.Messages()
+	task, messages := st.Execute(ctx, server)
+	if messages != nil {
+		return nil, nil, messages
 	}
 	return nil, task, nil
 }

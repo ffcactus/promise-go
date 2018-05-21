@@ -31,6 +31,10 @@ const (
 	MessageTransactionError = "Promise.Message.TransactionError"
 	// MessageUnknownFilterName is message ID.
 	MessageUnknownFilterName = "Promise.Message.UnknownFilterName"
+	// MessageBusy is message ID.
+	MessageBusy = "Promise.Message.Busy"
+	// MessageErrorState is message ID.
+	MessageErrorState = "Promise.Message.ErrorState"
 )
 
 const (
@@ -46,6 +50,10 @@ const (
 	SupportTimeout = "Promise.Support.Timeout"
 	// SupportTransactionError is Support ID.
 	SupportTransactionError = "Promise.Support.TransactionError"
+	// SupportBusy is Support ID.
+	SupportBusy = "Promise.Support.Busy"
+	// SupportErrorState is Support ID.
+	SupportErrorState = "Promise.Support.ErrorState"
 )
 
 // For auth.
@@ -181,6 +189,30 @@ func NewMessageUnknownFilterName() *Message {
 	return ret
 }
 
+// NewMessageBusy returns a new message.
+func NewMessageBusy() *Message {
+	ret := NewMessage()
+	ret.ID = MessageBusy
+	ret.Severity = SeverityNormal
+	ret.Description = "The system is busy."
+	ret.Supports = []Support{
+		NewSupportBusy(),
+	}
+	return ret
+}
+
+// NewMessageErrorState returns a new message.
+func NewMessageErrorState() *Message {
+	ret := NewMessage()
+	ret.ID = MessageErrorState
+	ret.Severity = SeverityNormal
+	ret.Description = "The operation is failed due to resource state."
+	ret.Supports = []Support{
+		NewSupportErrorState(),
+	}
+	return ret
+}
+
 // NewSupport create a new Support.
 func NewSupport() Support {
 	ret := Support{}
@@ -240,5 +272,23 @@ func NewSupportTransactionError() Support {
 	ret.ID = SupportTransactionError
 	ret.Reason = "DB operation failed."
 	ret.Solution = "Try again later or contact support."
+	return ret
+}
+
+// NewSupportBusy will returns a support message.
+func NewSupportBusy() Support {
+	ret := NewSupport()
+	ret.ID = SupportBusy
+	ret.Reason = "Too many concurrent operation."
+	ret.Solution = "Try again later."
+	return ret
+}
+
+// NewSupportErrorState will returns a support message.
+func NewSupportErrorState() Support {
+	ret := NewSupport()
+	ret.ID = SupportErrorState
+	ret.Reason = "The operation is not allowed during resource state."
+	ret.Solution = "Make sure the resource is in a suitable state."
 	return ret
 }

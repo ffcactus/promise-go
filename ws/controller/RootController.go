@@ -64,6 +64,6 @@ func (c *RootController) Post() {
 		"category": request.Category,
 		"type":     request.Type,
 		"resource": request.ResourceID,
-	}).Info("Post ws message done.")
+	}).Debug("Post ws message done.")
 	c.ServeJSON()
 }
