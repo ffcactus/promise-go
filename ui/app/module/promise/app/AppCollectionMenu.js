@@ -18,10 +18,9 @@ class AppCollectionMenu extends React.Component {
   }
 
   render() {
-    const icon = require('../common/img/icon/QuickActions_Home_2x.png');
     return (
       <div styleName="AppCollectionMenu" onClick={this.handleClick}>
-        <p styleName="AppCollectionMenuText">Promise</p>
+        <p>Promise</p>
       </div>
     );
   }
