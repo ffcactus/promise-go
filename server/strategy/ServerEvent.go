@@ -18,13 +18,19 @@ type ServerEvent struct {
 }
 
 func (s *ServerEvent) dispatchServerEvent(c *context.Base, eventType string, server base.ModelInterface) {
+	if server == nil {
+		log.WithFields(log.Fields{
+			"type":  eventType,
+		}).Error("Strategy dispatch server event failed, server equals nil.")
+		return	
+	}
 	var serverDTO = new(dto.GetServerResponse)
 	if err := serverDTO.Load(server); err != nil {
 		log.WithFields(log.Fields{
 			"id":    server.GetID(),
 			"type":  eventType,
 			"error": err,
-		}).Warn("Dispatch server event failed, create event failed.")
+		}).Warn("Strategy dispatch server event failed, create event failed.")
 		return
 	}
 	messages, err := event.DispatchResourceEvent(eventType, serverDTO)
@@ -33,14 +39,14 @@ func (s *ServerEvent) dispatchServerEvent(c *context.Base, eventType string, ser
 			"id":    server.GetID(),
 			"type":  eventType,
 			"error": err,
-		}).Warn("Dispatch server event failed, event dispatching failed.")
+		}).Warn("Strategy dispatch server event failed, event dispatching failed.")
 	}
 	if messages != nil {
 		log.WithFields(log.Fields{
 			"id":      server.GetID(),
 			"type":    eventType,
 			"message": messages[0].ID,
-		}).Warn("Dispatch server create event failed, message returned, event dispatching failed.")
+		}).Warn("Strategy dispatch server create event failed, message returned, event dispatching failed.")
 	}
 }
 
@@ -72,7 +78,7 @@ func (s *ServerEvent) dispatchServerServerGroupEvent(c *context.Base, eventType 
 			"id":    ssg.GetID(),
 			"type":  eventType,
 			"error": err,
-		}).Warn("Dispatch server-servergroup event failed, create event failed.")
+		}).Warn("Strategy dispatch server-servergroup event failed, create event failed.")
 		return
 	}
 	messages, err := event.DispatchResourceEvent(eventType, ssgDTO)
@@ -81,14 +87,14 @@ func (s *ServerEvent) dispatchServerServerGroupEvent(c *context.Base, eventType 
 			"id":    ssg.GetID(),
 			"type":  eventType,
 			"error": err,
-		}).Warn("Dispatch server-servergroup event failed, event dispatching failed.")
+		}).Warn("Strategy dispatch server-servergroup event failed, event dispatching failed.")
 	}
 	if messages != nil {
 		log.WithFields(log.Fields{
 			"id":      ssg.GetID(),
 			"type":    eventType,
 			"message": messages[0].ID},
-		).Warn("Dispatch server-servergroup create event failed, message returned, event dispatching failed.")
+		).Warn("Strategy dispatch server-servergroup create event failed, message returned, event dispatching failed.")
 	}
 }
 

@@ -236,7 +236,9 @@ func (impl *Server) SetServerHealth(ID string, health string) bool {
 
 func (impl *Server) deleteProcessors(c *gorm.DB, server *entity.Server) error {
 	for i := range server.Processors {
-		c.Delete(server.Processors[i])
+		if err := c.Delete(server.Processors[i]).Error; err != nil {
+			return base.ErrorTransaction
+		}
 	}
 	return nil
 }
@@ -247,24 +249,58 @@ func (impl *Server) UpdateProcessors(ID string, processors []model.Processor) (b
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
 	)
-
-	notFound := c.Where("\"ID\" = ?", ID).
+	tx := c.Begin()
+	if err := tx.Error; err != nil {
+		log.WithFields(log.Fields{
+			"id": ID, 
+			"op": "UpdateProcessors", 
+			"error": err,
+		}).Warn("DB operation failed , start transaction failed.")
+		return nil, base.ErrorTransaction
+	}
+	notFound := tx.Where("\"ID\" = ?", ID).
 		Preload("Processors").
 		First(server).
 		RecordNotFound()
 	if notFound {
-		return nil, fmt.Errorf("can not find server %s", ID)
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id": ID,
+			"op": "UpdateProcessors",
+		}).Warn("DB operation failed , server not exist, transaction rollback.")		
+		return nil, base.ErrorTransaction
 	}
-	impl.deleteProcessors(c, server)
+	if err := impl.deleteProcessors(tx, server); err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id": ID,
+			"op": "UpdateProcessors", 
+			"error": err,
+		}).Warn("DB operation failed , delete association failed, transaction rollback.")	
+		return nil, base.ErrorTransaction
+	}
 	server.Processors = []entity.Processor{}
 	for _, v := range processors {
 		each := entity.Processor{}
 		each.Load(&v)
 		server.Processors = append(server.Processors, each)
 	}
-	if err := c.Save(server).Error; err != nil {
-		log.WithFields(log.Fields{"id": ID, "op": "UpdateProcessors", "error": err}).Warn("DB opertion failed.")
-		return nil, err
+	if err := tx.Save(server).Error; err != nil {
+		tx.Rollback()
+		log.WithFields(log.Fields{
+			"id": ID, 
+			"op": "UpdateProcessors", 
+			"error": err,
+		}).Warn("DB opertion failed, save server failed, transaction rollback.")
+		return nil, base.ErrorTransaction
+	}
+	if err := tx.Commit().Error; err != nil {
+		log.WithFields(log.Fields{
+			"id": ID, 
+			"op": "UpdateProcessors", 
+			"error": err,
+		}).Warn("DB opertion failed, commit failed.")
+		return nil, base.ErrorTransaction
 	}
 	return server.ToModel(), nil
 }

@@ -29,7 +29,7 @@ func (s *Refresh) FindServerStateAdded() {
 					"server":  id,
 					"message": message[0].ID,
 				}).Info("Service auto-refresh server failed.")
-				seconds = 10
+				seconds = 5
 			} else {
 				seconds = 0
 			}

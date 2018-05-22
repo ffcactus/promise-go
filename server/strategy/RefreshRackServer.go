@@ -1,12 +1,15 @@
 package strategy
 
 import (
+	"time"
 	log "github.com/sirupsen/logrus"
 	"promise/base"
 	"promise/server/context"
 	"promise/server/object/constvalue"
 	"promise/server/object/message"
 	"promise/server/object/model"
+	"promise/task/object/dto"
+	"promise/sdk/task"
 )
 
 // RefreshRackServer is the strategy of rack server refresh.
@@ -35,24 +38,45 @@ func (s *RefreshRackServer) execute(c *context.RefreshServer, server *model.Serv
 		return nil, []base.Message{*message}
 	}
 
-	taskID, err := s.CreateRefreshServerTask(&c.Base, server)
+	taskID, err := s.CreateRefreshServerTask(&c.Base, server)	
 	if err != nil {
 		return nil, []base.Message{*message.NewMessageServerRefreshTaskFailed()}
 	}
 
-	go s._execute(taskID, c, server)
+	// go s._execute(taskID, c, server)
+	go s.updateTask(taskID, c, server)
 	return &taskID, nil
 }
 
+func (s *RefreshRackServer) updateTask(taskID string, c *context.RefreshServer, server *model.Server) {
+	var (
+		request dto.UpdateTaskRequest
+		percentage = []uint32{0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100}
+	)
+	for _, v := range percentage {
+		request.Percentage = &v
+		log.Info("-------Percentage=", *request.Percentage)
+		task.UpdateTask(taskID, &request)
+		time.Sleep(time.Duration(1) * time.Second)
+	}
+	s.SetServerHealth(&c.Base, server, constvalue.ServerHealthOK)
+	s.SetServerState(&c.Base, server, constvalue.ServerStateReady)
+	log.WithFields(log.Fields{
+		"id": server.ID,
+	}).Info("Refresh server done.")
+	<-executor	
+}
+
 func (s *RefreshRackServer) _execute(taskID string, c *context.RefreshServer, server *model.Server) {
+	/*
 	// Chassis.Power
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNamePower, c, server, s.RefreshPower); err != nil {
 		log.WithFields(log.Fields{
 			"id":   server.ID,
-			"step": ServerRefreshTaskStepNameThermal,
+			"step": ServerRefreshTaskStepNamePower,
 		}).Info("Strategy refresh server step failed.")
 	}
-
+	
 	// Chassis.Thermal
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameThermal, c, server, s.RefreshThermal); err != nil {
 		log.WithFields(log.Fields{
@@ -64,65 +88,72 @@ func (s *RefreshRackServer) _execute(taskID string, c *context.RefreshServer, se
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameBoards, c, server, s.RefreshOemHuaweiBoards); err != nil {
 		log.WithFields(log.Fields{
 			"id":   server.ID,
-			"step": ServerRefreshTaskStepNameThermal,
+			"step": ServerRefreshTaskStepNameBoards,
 		}).Info("Strategy refresh server step failed.")
 	}
 	// Chassis.NetworkAdapters
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameNetworkAdapters, c, server, s.RefreshNetworkAdapters); err != nil {
 		log.WithFields(log.Fields{
 			"id":   server.ID,
-			"step": ServerRefreshTaskStepNameThermal,
+			"step": ServerRefreshTaskStepNameNetworkAdapters,
 		}).Info("Strategy refresh server step failed.")
 	}
 	// Chassis.Drives
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameDrives, c, server, s.RefreshDrives); err != nil {
 		log.WithFields(log.Fields{
 			"id":   server.ID,
-			"step": ServerRefreshTaskStepNameThermal,
+			"step": ServerRefreshTaskStepNameDrives,
 		}).Info("Strategy refresh server step failed.")
 	}
 	// Chassis.PCIeDevices
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNamePCIeDevices, c, server, s.RefreshPCIeDevices); err != nil {
 		log.WithFields(log.Fields{
 			"id":   server.ID,
-			"step": ServerRefreshTaskStepNameThermal,
+			"step": ServerRefreshTaskStepNamePCIeDevices,
 		}).Info("Strategy refresh server step failed.")
 	}
+	*/
+
 	// ComputerSystem.Processors
-	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameProcessors, c, server, s.RefreshProcessors); err != nil {
-		log.WithFields(log.Fields{
-			"id":   server.ID,
-			"step": ServerRefreshTaskStepNameThermal,
-		}).Info("Strategy refresh server step failed.")
-	}
+	// if err := s.StepWarper(taskID, ServerRefreshTaskStepNameProcessors, c, server, s.RefreshProcessors); err != nil {
+	// 	log.WithFields(log.Fields{
+	// 		"id":   server.ID,
+	// 		"step": ServerRefreshTaskStepNameProcessors,
+	// 	}).Info("Strategy refresh server step failed.")
+	// }
+
+	/*
 	// ComputerSystem.Memory
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameMemory, c, server, s.RefreshMemory); err != nil {
 		log.WithFields(log.Fields{
 			"id":   server.ID,
-			"step": ServerRefreshTaskStepNameThermal,
+			"step": ServerRefreshTaskStepNameMemory,
 		}).Info("Strategy refresh server step failed.")
 	}
 	// ComputerSystem.EthernetInterfaces
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameEthernetInterfaces, c, server, s.RefreshEthernetInterfaces); err != nil {
 		log.WithFields(log.Fields{
 			"id":   server.ID,
-			"step": ServerRefreshTaskStepNameThermal,
+			"step": ServerRefreshTaskStepNameEthernetInterfaces,
 		}).Info("Strategy refresh server step failed.")
 	}
 	// ComputerSystem.NetworkInterfaces
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameNetworkInterfaces, c, server, s.RefreshNetworkInterfaces); err != nil {
 		log.WithFields(log.Fields{
 			"id":   server.ID,
-			"step": ServerRefreshTaskStepNameThermal,
+			"step": ServerRefreshTaskStepNameNetworkInterfaces,
 		}).Info("Strategy refresh server step failed.")
 	}
 	// ComputerSystem.Storages
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameStorages, c, server, s.RefreshStorages); err != nil {
 		log.WithFields(log.Fields{
 			"id":   server.ID,
-			"step": ServerRefreshTaskStepNameThermal,
+			"step": ServerRefreshTaskStepNameStorages,
 		}).Info("Strategy refresh server step failed.")
 	}
+	*/
+
+
 	s.SetServerHealth(&c.Base, server, constvalue.ServerHealthOK)
 	s.SetServerState(&c.Base, server, constvalue.ServerStateReady)
 	log.WithFields(log.Fields{

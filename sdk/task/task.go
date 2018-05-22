@@ -28,7 +28,7 @@ func UpdateTask(taskID string, task *dto.UpdateTaskRequest) (*dto.GetTaskRespons
 	respDto := new(dto.GetTaskResponse)
 	messages, err := base.REST(
 		http.MethodPost,
-		TaskServerRoot+taskID+"/action/update",
+		TaskServerRoot+taskID+"/action/updatetask",
 		*task, respDto,
 		[]int{http.StatusAccepted})
 	return respDto, messages, err
@@ -39,7 +39,7 @@ func UpdateStep(taskID string, step *dto.UpdateTaskStepRequest) (*dto.GetTaskRes
 	respDto := new(dto.GetTaskResponse)
 	messages, err := base.REST(
 		http.MethodPost,
-		TaskServerRoot+taskID+"/action/updateTaskStep",
+		TaskServerRoot+taskID+"/action/updatetaskstep",
 		*step, respDto,
 		[]int{http.StatusAccepted})
 	return respDto, messages, err
@@ -53,7 +53,7 @@ func SetStepExecutionState(taskID string, name string, state model.ExecutionStat
 	respDto := new(dto.GetTaskResponse)
 	messages, err := base.REST(
 		http.MethodPost,
-		TaskServerRoot+taskID+"/action/updateTaskStep",
+		TaskServerRoot+taskID+"/action/updatetaskstep",
 		request, respDto,
 		[]int{http.StatusAccepted})
 	return respDto, messages, err
@@ -68,7 +68,7 @@ func SetStepExecutionResultState(taskID string, name string, state model.Executi
 	respDto := new(dto.GetTaskResponse)
 	messages, err := base.REST(
 		http.MethodPost,
-		TaskServerRoot+taskID+"/action/updateTaskStep",
+		TaskServerRoot+taskID+"/action/updatetaskstep",
 		request, respDto,
 		[]int{http.StatusAccepted})
 	return respDto, messages, err

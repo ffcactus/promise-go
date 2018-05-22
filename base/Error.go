@@ -21,7 +21,8 @@ var (
 	ErrorUnknownFilterName = fmt.Errorf("unknown filter name")
 	// ErrorUnknownPropertyValue is an error.
 	ErrorUnknownPropertyValue = fmt.Errorf("unknown property value")
-
+	// ErrorTransaction is an error.
+	ErrorTransaction = fmt.Errorf("transaction error")
 	// ErrorIPv4NotAllocated is an error.
 	ErrorIPv4NotAllocated = fmt.Errorf("IP has not been allocated before")
 	// ErrorIPv4NotInPool is an error.

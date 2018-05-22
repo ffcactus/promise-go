@@ -172,7 +172,7 @@ func main() {
 	fmt.Printf("Value = %d\n", table.Value)
 
 	fmt.Printf("--- Start Test ---\n")
-	instance := 0
+	instance := 10
 	for i := 0; i < instance; i++ {
 		go Increase(fmt.Sprintf("Instance %d", i))
 		// time.Sleep(time.Duration(1) * time.Second)
