@@ -81,7 +81,7 @@ func (impl *Server) FindServerStateAdded() string {
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
 	)
-	if notFound := c.Where("\"State\" = ?", constvalue.ServerStateAdded).First(server).RecordNotFound(); notFound {
+	if notFound := c.Where("\"State\" = ?", constvalue.ServerStateAdded).Order("\"Name\" asc").First(server).RecordNotFound(); notFound {
 		return ""
 	}
 	return server.ID

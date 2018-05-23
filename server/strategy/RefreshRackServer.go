@@ -19,7 +19,7 @@ type RefreshRackServer struct {
 	ServerTask
 }
 
-var executor = make(chan bool, 5)
+var executor = make(chan bool, 2)
 
 // Execute will execute all the steps.
 func (s *RefreshRackServer) Execute(c *context.RefreshServer, server *model.Server) (*string, []base.Message) {

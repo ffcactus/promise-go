@@ -25,11 +25,15 @@ func (s *Refresh) FindServerStateAdded() {
 		if id := serverDB.FindServerStateAdded(); id != "" {
 			_, _, message := s.PerformAsych(id, nil)
 			if message != nil {
-				log.WithFields(log.Fields{
-					"server":  id,
-					"message": message[0].ID,
-				}).Info("Service auto-refresh server failed.")
-				seconds = 5
+				if message[0].ID == base.MessageBusy {
+					seconds = 1
+				} else {
+					log.WithFields(log.Fields{
+						"server":  id,
+						"message": message[0].ID,
+					}).Info("Service auto-refresh server failed.")
+					seconds = 5
+				}
 			} else {
 				seconds = 0
 			}
