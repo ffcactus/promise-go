@@ -16,7 +16,6 @@ func (Account) TableName() string {
 	return "Account"
 }
 
-
 // Load Load model to entity.
 func (e *Account) Load(user *model.Account) {
 	e.Name = user.Name

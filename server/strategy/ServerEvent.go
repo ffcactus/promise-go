@@ -20,9 +20,9 @@ type ServerEvent struct {
 func (s *ServerEvent) dispatchServerEvent(c *context.Base, eventType string, server base.ModelInterface) {
 	if server == nil {
 		log.WithFields(log.Fields{
-			"type":  eventType,
+			"type": eventType,
 		}).Error("Strategy dispatch server event failed, server equals nil.")
-		return	
+		return
 	}
 	var serverDTO = new(dto.GetServerResponse)
 	if err := serverDTO.Load(server); err != nil {

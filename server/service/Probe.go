@@ -21,8 +21,8 @@ func Probe(request *dto.DiscoverServerRequest) (*model.ServerBasicInfo, error) {
 	serverBasicInfo, err := c.GetBasicInfo()
 	if err != nil {
 		log.WithFields(log.Fields{
-			"hostname": request.Hostname, 
-			"error": err,
+			"hostname": request.Hostname,
+			"error":    err,
 		}).Warn("Probe server failed, can not get basic info.")
 	}
 

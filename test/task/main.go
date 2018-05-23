@@ -2,25 +2,25 @@ package main
 
 import (
 	"fmt"
-	"time"
-	"promise/task/object/dto"
 	"promise/sdk/task"
+	"promise/task/object/dto"
+	"time"
 )
 
 var (
 	concurrent = make(chan bool, 2)
-	done = make(chan string, 100)
+	done       = make(chan string, 100)
 )
 
 func test(name string) {
 	var (
-		create = dto.PostTaskRequest{}
-		update = dto.UpdateTaskRequest{}
+		create     = dto.PostTaskRequest{}
+		update     = dto.UpdateTaskRequest{}
 		percentage = []uint32{10, 20, 30, 40, 50, 60, 70, 80, 90, 100}
 	)
 	create.Name = name
 	create.TaskSteps = []dto.PostTaskStepRequest{dto.PostTaskStepRequest{
-		Name: "Step",
+		Name:                "Step",
 		ExpectedExecutionMs: 1000,
 	}}
 	response, message, err := task.CreateTask(&create)
@@ -40,7 +40,7 @@ func test(name string) {
 			<-concurrent
 			return
 		}
-		fmt.Printf("Update %s to %d.\n", name,  *update.Percentage)
+		fmt.Printf("Update %s to %d.\n", name, *update.Percentage)
 	}
 	fmt.Printf("%s before done.\n", name)
 	done <- name
@@ -52,7 +52,7 @@ func test(name string) {
 func main() {
 	var (
 		instance = 10
-		index = 0
+		index    = 0
 	)
 	for {
 		select {
@@ -62,9 +62,9 @@ func main() {
 		default:
 			fmt.Printf("Wait.\n")
 			time.Sleep(time.Duration(1) * time.Second)
-		}		
+		}
 		if index == 10 {
-			break;
+			break
 		}
 	}
 	for i := 0; i < instance; i++ {

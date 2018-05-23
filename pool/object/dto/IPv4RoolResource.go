@@ -2,8 +2,8 @@ package dto
 
 // IPv4RangeRequest is a IPv4 range in request.
 type IPv4RangeRequest struct {
-	Start       string  `json:"Start"`
-	End         string  `json:"End"`
+	Start string `json:"Start"`
+	End   string `json:"End"`
 }
 
 // IPv4RangeResponse is a IPv4 range in response.

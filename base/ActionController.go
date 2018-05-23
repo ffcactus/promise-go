@@ -45,15 +45,15 @@ func (c *ActionController) Post() {
 		action     = c.Ctx.Input.Param(":action")
 		id         = c.Ctx.Input.Param(":id")
 		actionInfo = c.TemplateImpl.ActionInfo()
-		
-		request    RequestInterface
-		updateRequest UpdateRequestInterface
-		actionRequest ActionRequestInterface
+
+		request            RequestInterface
+		updateRequest      UpdateRequestInterface
+		actionRequest      ActionRequestInterface
 		asychActionRequest AsychActionRequestInterface
 
-		service    ServiceInterface
-		updateService CRUDServiceInterface
-		actionService ActionServiceInterface
+		service            ServiceInterface
+		updateService      CRUDServiceInterface
+		actionService      ActionServiceInterface
 		asychActionService AsychActionServiceInterface
 
 		response   ResponseInterface
@@ -71,7 +71,7 @@ func (c *ActionController) Post() {
 				request = nil
 			} else {
 				request = v.Request.NewInstance()
-			}			
+			}
 		}
 	}
 	if service == nil {
@@ -149,7 +149,7 @@ func (c *ActionController) Post() {
 		asychActionRequest, asychActionService, ok = c.convertToAsychAction(request, service)
 		if ok {
 			response, taskURI, messages = asychActionService.PerformAsych(id, asychActionRequest)
-		}		
+		}
 	default:
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),

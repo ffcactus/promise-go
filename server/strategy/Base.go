@@ -1,7 +1,6 @@
 package strategy
 
 import (
-	"fmt"
 	log "github.com/sirupsen/logrus"
 	"promise/base"
 	"promise/server/context"
@@ -30,18 +29,20 @@ func (s *Base) LockServer(c *context.Base, server *model.Server) *base.Message {
 
 // SetServerState Set server state.
 func (s *Base) SetServerState(c *context.Base, server *model.Server, state string) error {
-	if c.DB.SetServerState(server.ID, state) {
-		s.DispatchServerUpdate(c, server)
-		return nil
+	updatedServer, err := c.DB.SetServerState(server.ID, state)
+	if err != nil {
+		return base.ErrorTransaction
 	}
-	return fmt.Errorf("failed to set server %s to %s", server.ID, state)
+	s.DispatchServerUpdate(c, updatedServer)
+	return nil
 }
 
 // SetServerHealth Set server health.
 func (s *Base) SetServerHealth(c *context.Base, server *model.Server, health string) error {
-	if c.DB.SetServerHealth(server.ID, health) {
-		s.DispatchServerUpdate(c, server)
-		return nil
+	updatedServer, err := c.DB.SetServerHealth(server.ID, health)
+	if err != nil {
+		return base.ErrorTransaction
 	}
-	return fmt.Errorf("failed to set server %s to %s", server.ID, health)
+	s.DispatchServerUpdate(c, updatedServer)
+	return nil
 }

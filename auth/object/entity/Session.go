@@ -9,7 +9,7 @@ type Session struct {
 	ID        string `gorm:"column:ID;primary_key"`
 	AccountID string `gorm:"column:AccountID"`
 	Token     string `gorm:"column:Token"`
-	Expire    int64 `gorm:"column:Expire"`
+	Expire    int64  `gorm:"column:Expire"`
 }
 
 // TableName will set the table name.

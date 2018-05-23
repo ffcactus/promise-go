@@ -1,32 +1,32 @@
 package main
 
 import (
+	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"fmt"
 	"time"
 )
 
 var (
 	connection *gorm.DB
-	done = make(chan bool)
+	done       = make(chan bool)
 )
 
 // SubTestTable is the sub tables in TestTable.
 type SubTestTable struct {
-	ID uint64 `gorm:"column:ID;primary_key"`
+	ID           uint64 `gorm:"column:ID;primary_key"`
 	MainValueRef string `gorm:"column:MainValueRef"`
-	Value int `gorm:"column:Value"`
+	Value        int    `gorm:"column:Value"`
 }
 
 // TestTable is the table in DB for this test.
 type TestTable struct {
-	ID        string    `gorm:"column:ID;primary_key"`
-	Category  string    `gorm:"column:Category"`
-	CreatedAt time.Time `gorm:"column:CreatedAt"`
-	UpdatedAt time.Time `gorm:"column:UpdatedAt"`
-	Value int           `gorm:"column:Value"`
-	SubValue []SubTestTable `gorm:"column:SubValue;ForeignKey:MainValueRef"`
+	ID        string         `gorm:"column:ID;primary_key"`
+	Category  string         `gorm:"column:Category"`
+	CreatedAt time.Time      `gorm:"column:CreatedAt"`
+	UpdatedAt time.Time      `gorm:"column:UpdatedAt"`
+	Value     int            `gorm:"column:Value"`
+	SubValue  []SubTestTable `gorm:"column:SubValue;ForeignKey:MainValueRef"`
 }
 
 // TableName returns the table name.
@@ -55,7 +55,6 @@ func InitConnection() {
 		fmt.Println("DB connection exist.")
 	}
 }
-
 
 // GetConnection Get the DB connection.
 func GetConnection() *gorm.DB {
@@ -106,9 +105,9 @@ func Increase(name string) {
 		fmt.Printf("%s Commit() failed.\n", name)
 		done <- false
 		return
-	} 
+	}
 	fmt.Printf("%s Commit() successful!\n", name)
-	done <-true	
+	done <- true
 }
 
 func main() {
@@ -179,7 +178,7 @@ func main() {
 	}
 	expected := 0
 	for i := 0; i < instance; i++ {
-		if <- done {
+		if <-done {
 			expected++
 		}
 	}

@@ -20,7 +20,7 @@ func (dto *PostServerServerGroupRequest) NewInstance() base.RequestInterface {
 func (dto *PostServerServerGroupRequest) IsValid() *base.Message {
 	if dto.ServerID == "" || dto.ServerGroupID == "" {
 		return base.NewMessageInvalidRequest()
-	} 
+	}
 	return nil
 }
 

@@ -11,7 +11,7 @@ type Base struct {
 	ErrorHandler
 	CredentialHandler
 	ServerClient serverClient.ServerClientInterface
-	DB db.Server
+	DB           db.Server
 }
 
 // CreateServerContext Create server context by server.

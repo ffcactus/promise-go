@@ -9,7 +9,7 @@ import (
 
 type AddServerRequest struct {
 	Name     string `json:"Name"`
-	Hostname  string `json:"Hostname"`
+	Hostname string `json:"Hostname"`
 	Username string `json:"Username"`
 	Password string `json:"Password"`
 }
@@ -27,22 +27,22 @@ type AddServerGroupResponse struct {
 }
 
 type AddSSGRequestRequest struct {
-	ServerID string `json:"ServerID"`
+	ServerID      string `json:"ServerID"`
 	ServerGroupID string `json:"ServerGroupID"`
 }
 
 func main() {
 	var (
-		count  = 1000
+		count    = 1000
 		serverID = make([]string, count)
-		groupID = make([]string, 10)
-		Client = &http.Client{}
+		groupID  = make([]string, 10)
+		Client   = &http.Client{}
 	)
 	groupID = make([]string, count)
 	// Create 10 server group.
 	for i := 0; i < 10; i++ {
 		dto := AddServerGroupRequest{
-			Name: "Group" + fmt.Sprintf(" 0-%d", (9 - i) * 100 - 1),
+			Name: "Group" + fmt.Sprintf(" 0-%d", (9-i)*100-1),
 		}
 		b := new(bytes.Buffer)
 		json.NewEncoder(b).Encode(dto)
@@ -62,16 +62,16 @@ func main() {
 					return
 				}
 				groupID[i] = respDTO.ID
-				fmt.Printf("post group %s done.\n", dto.Name)				
+				fmt.Printf("post group %s done.\n", dto.Name)
 			}
 			resp.Body.Close()
-		}		
+		}
 	}
 
 	for i := 0; i < count; i++ {
 		hostname := "Mock" + fmt.Sprintf("%05d", i)
 		dto := AddServerRequest{
-			Name: hostname,
+			Name:     hostname,
 			Hostname: hostname,
 			Username: hostname,
 			Password: hostname,
@@ -93,7 +93,7 @@ func main() {
 					return
 				}
 				serverID[i] = respDTO.ID
-				fmt.Printf("post server %s done.\n", hostname)				
+				fmt.Printf("post server %s done.\n", hostname)
 			}
 			resp.Body.Close()
 		}
@@ -101,7 +101,7 @@ func main() {
 
 	for i := 0; i < 900; i++ {
 		dto := AddSSGRequestRequest{
-			ServerID: serverID[i],
+			ServerID:      serverID[i],
 			ServerGroupID: groupID[0],
 		}
 		b := new(bytes.Buffer)
@@ -116,12 +116,12 @@ func main() {
 				fmt.Printf("post SSG failed, status code = %d\n", resp.StatusCode)
 			}
 			resp.Body.Close()
-		}		
+		}
 	}
 
 	for i := 0; i < 800; i++ {
 		dto := AddSSGRequestRequest{
-			ServerID: serverID[i],
+			ServerID:      serverID[i],
 			ServerGroupID: groupID[1],
 		}
 		b := new(bytes.Buffer)
@@ -136,12 +136,12 @@ func main() {
 				fmt.Printf("post SSG failed, status code = %d\n", resp.StatusCode)
 			}
 			resp.Body.Close()
-		}		
+		}
 	}
-	
+
 	for i := 0; i < 700; i++ {
 		dto := AddSSGRequestRequest{
-			ServerID: serverID[i],
+			ServerID:      serverID[i],
 			ServerGroupID: groupID[2],
 		}
 		b := new(bytes.Buffer)
@@ -156,12 +156,12 @@ func main() {
 				fmt.Printf("post SSG failed, status code = %d\n", resp.StatusCode)
 			}
 			resp.Body.Close()
-		}		
+		}
 	}
-	
+
 	for i := 0; i < 600; i++ {
 		dto := AddSSGRequestRequest{
-			ServerID: serverID[i],
+			ServerID:      serverID[i],
 			ServerGroupID: groupID[3],
 		}
 		b := new(bytes.Buffer)
@@ -176,12 +176,12 @@ func main() {
 				fmt.Printf("post SSG failed, status code = %d\n", resp.StatusCode)
 			}
 			resp.Body.Close()
-		}		
+		}
 	}
-	
+
 	for i := 0; i < 500; i++ {
 		dto := AddSSGRequestRequest{
-			ServerID: serverID[i],
+			ServerID:      serverID[i],
 			ServerGroupID: groupID[4],
 		}
 		b := new(bytes.Buffer)
@@ -196,12 +196,12 @@ func main() {
 				fmt.Printf("post SSG failed, status code = %d\n", resp.StatusCode)
 			}
 			resp.Body.Close()
-		}		
+		}
 	}
-	
+
 	for i := 0; i < 400; i++ {
 		dto := AddSSGRequestRequest{
-			ServerID: serverID[i],
+			ServerID:      serverID[i],
 			ServerGroupID: groupID[5],
 		}
 		b := new(bytes.Buffer)
@@ -216,12 +216,12 @@ func main() {
 				fmt.Printf("post SSG failed, status code = %d\n", resp.StatusCode)
 			}
 			resp.Body.Close()
-		}		
+		}
 	}
-	
+
 	for i := 0; i < 300; i++ {
 		dto := AddSSGRequestRequest{
-			ServerID: serverID[i],
+			ServerID:      serverID[i],
 			ServerGroupID: groupID[6],
 		}
 		b := new(bytes.Buffer)
@@ -236,12 +236,12 @@ func main() {
 				fmt.Printf("post SSG failed, status code = %d\n", resp.StatusCode)
 			}
 			resp.Body.Close()
-		}		
+		}
 	}
-	
+
 	for i := 0; i < 200; i++ {
 		dto := AddSSGRequestRequest{
-			ServerID: serverID[i],
+			ServerID:      serverID[i],
 			ServerGroupID: groupID[7],
 		}
 		b := new(bytes.Buffer)
@@ -256,12 +256,12 @@ func main() {
 				fmt.Printf("post SSG failed, status code = %d\n", resp.StatusCode)
 			}
 			resp.Body.Close()
-		}		
+		}
 	}
-	
+
 	for i := 0; i < 100; i++ {
 		dto := AddSSGRequestRequest{
-			ServerID: serverID[i],
+			ServerID:      serverID[i],
 			ServerGroupID: groupID[8],
 		}
 		b := new(bytes.Buffer)
@@ -276,6 +276,6 @@ func main() {
 				fmt.Printf("post SSG failed, status code = %d\n", resp.StatusCode)
 			}
 			resp.Body.Close()
-		}		
-	}	
+		}
+	}
 }
