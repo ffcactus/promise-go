@@ -15,6 +15,14 @@ export const ServerDetailState = Object.freeze(
   }
 );
 
+export const ServerTabState = Object.freeze(
+  {
+    'BASIC': 'Basic',
+    'SYSTEM': 'System',
+    'CHASSIS': 'Chassis',
+  }
+);
+
 export const ActionType = Object.freeze(
   {
     // App
@@ -46,6 +54,8 @@ export const ActionType = Object.freeze(
     // Server.UI.Dialog.Add
     'SERVER_UI_DIALOG_ADD_OPEN': 'SERVER_UI_DIALOG_ADD_OPEN',
     'SERVER_UI_DIALOG_ADD_CLOSE': 'SERVER_UI_DIALOG_ADD_CLOSE',
+    // Server.UI.Tab
+    'SERVER_UI_TAB_CHANGE': 'SERVER_UI_TAB_CHANGE',
 
     // ServerGroup
     // ServerGroup.REST

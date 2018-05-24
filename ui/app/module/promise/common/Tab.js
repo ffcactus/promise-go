@@ -10,7 +10,8 @@ class Tab extends React.Component {
   }
 
   componentDidMount() {
-    const defaultOpen = document.getElementById('button' + this.props.pages[0].title);
+    const id = this.props.defaultOpen ? this.props.defaultOpen : this.props.pages[0].title;
+    const defaultOpen = document.getElementById('button' + id);
     if (defaultOpen !== null) {
       defaultOpen.click();
     }
@@ -19,6 +20,7 @@ class Tab extends React.Component {
   onTabClick(event) {
     let i;
     event.preventDefault();
+    this.props.handler(event.currentTarget.value);
     const tabContent = document.getElementsByClassName('tabcontent');
     for (i = 0; i < tabContent.length; i++) {
       tabContent[i].style.display = 'none';
@@ -52,7 +54,9 @@ class Tab extends React.Component {
 }
 
 Tab.propTypes = {
-  pages: PropTypes.array,
+  pages: PropTypes.arrayOf(PropTypes.object),
+  handler: PropTypes.func,
+  defaultOpen: PropTypes.string,
 };
 
 export default CSSModules(Tab, styles);

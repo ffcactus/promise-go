@@ -1,4 +1,4 @@
-import { ActionType, ServerAppState, ServerDetailState } from './ConstValue';
+import { ActionType, ServerAppState, ServerDetailState, ServerTabState } from './ConstValue';
 import { List, Map, Set } from 'immutable';
 
 /**
@@ -27,6 +27,7 @@ const defaultState = {
   currentServerUri: null,       // The server selected.
   currentServer: null,          // The server shows in detail.
   currentServerSet: new Set(),    // To indicate the server that should be put in the list.
+  currentServerTab: ServerTabState.BASIC,
   serverGroupList: new List(),  // To record all the servergroups.
   ssgSet: null,            // To record all the SSGs.
   serverList: new List(),       // To record all the servers
@@ -181,10 +182,16 @@ export const serverApp = (state = defaultState, action) => {
         currentServerUri: action.info,
       };
     // Server.UI.Dialog
+    // Server.UI.Dialog.Add
     case ActionType.SERVER_UI_DIALOG_ADD_OPEN:
     case ActionType.SERVER_UI_DIALOG_ADD_CLOSE:
       return state;
-
+    // Server.UI.Tab
+    case ActionType.SERVER_UI_TAB_CHANGE:
+      return {
+        ...state,
+        currentServerTab: action.info,
+      };
     // ServerGroup
     // ServerGroup.REST.Create
     case ActionType.SG_REST_CREATE_START:

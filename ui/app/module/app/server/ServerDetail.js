@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Tab from '../../promise/common/Tab';
 import ServerDetailTabSystem from './ServerDetailTabSystem';
 import ServerDetailTabChassis from './ServerDetailTabChassis';
 import ServerDetailTabBasic from './ServerDetailTabBasic';
+import { ActionType } from './ConstValue';
 
 const ServerDetail = props => {
   if (!props.server) {
@@ -23,13 +25,26 @@ const ServerDetail = props => {
       'content': <ServerDetailTabChassis chassis={props.server.Chassis}/>
     }
   ];
-  return (
-    <Tab pages={pages} />
-  );
+  const handler = (event) => {
+    props.dispatch({
+      type: ActionType.SERVER_UI_TAB_CHANGE,
+      info: event,
+    });
+  };
+
+  return <Tab pages={pages} handler={handler} defaultOpen={props.currentServerTab} />;
 };
 
 ServerDetail.propTypes = {
   server: PropTypes.object,
+  currentServerTab: PropTypes.string,
+  dispatch: PropTypes.func,
 };
 
-export default ServerDetail;
+function mapStateToProps(state) {
+  return {
+    currentServerTab: state.serverApp.currentServerTab,
+  };
+}
+
+export default connect(mapStateToProps)(ServerDetail);
