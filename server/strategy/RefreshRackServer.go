@@ -16,7 +16,7 @@ type RefreshRackServer struct {
 	ServerTask
 }
 
-var executor = make(chan bool, 2)
+var executor = make(chan bool, 5)
 
 // Execute will execute all the steps.
 func (s *RefreshRackServer) Execute(c *context.RefreshServer, server *model.Server) (*string, []base.Message) {
@@ -47,20 +47,20 @@ func (s *RefreshRackServer) execute(c *context.RefreshServer, server *model.Serv
 }
 
 func (s *RefreshRackServer) _execute(taskID string, c *context.RefreshServer, server *model.Server) {
-	// // Chassis.Power
-	// if err := s.StepWarper(taskID, ServerRefreshTaskStepNamePower, c, server, s.RefreshPower); err != nil {
-	// 	log.WithFields(log.Fields{
-	// 		"id":   server.ID,
-	// 		"step": ServerRefreshTaskStepNamePower,
-	// 	}).Info("Strategy refresh server step failed.")
-	// }
-	// // Chassis.Thermal
-	// if err := s.StepWarper(taskID, ServerRefreshTaskStepNameThermal, c, server, s.RefreshThermal); err != nil {
-	// 	log.WithFields(log.Fields{
-	// 		"id":   server.ID,
-	// 		"step": ServerRefreshTaskStepNameThermal,
-	// 	}).Info("Strategy refresh server step failed.")
-	// }
+	// Chassis.Power
+	if err := s.StepWarper(taskID, ServerRefreshTaskStepNamePower, c, server, s.RefreshPower); err != nil {
+		log.WithFields(log.Fields{
+			"id":   server.ID,
+			"step": ServerRefreshTaskStepNamePower,
+		}).Info("Strategy refresh server step failed.")
+	}	
+	// Chassis.Thermal
+	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameThermal, c, server, s.RefreshThermal); err != nil {
+		log.WithFields(log.Fields{
+			"id":   server.ID,
+			"step": ServerRefreshTaskStepNameThermal,
+		}).Info("Strategy refresh server step failed.")
+	}
 	// Chassis.OemHuaweiBoards
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameBoards, c, server, s.RefreshOemHuaweiBoards); err != nil {
 		log.WithFields(log.Fields{
@@ -124,7 +124,6 @@ func (s *RefreshRackServer) _execute(taskID string, c *context.RefreshServer, se
 			"step": ServerRefreshTaskStepNameStorages,
 		}).Info("Strategy refresh server step failed.")
 	}
-
 	s.SetServerHealth(&c.Base, server, constvalue.ServerHealthOK)
 	s.SetServerState(&c.Base, server, constvalue.ServerStateReady)
 	log.WithFields(log.Fields{

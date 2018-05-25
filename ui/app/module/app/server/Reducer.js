@@ -1,22 +1,34 @@
 import { ActionType, ServerAppState, ServerDetailState, ServerTabState } from './ConstValue';
 import { List, Map, Set } from 'immutable';
 
-/**
- * The store updated in the this way:
- * When the App will mount, get all the servergroups.
- * When the App is mount, set the selected servergroup to be the default one.
- * When the a servergroup is selected, get all the servers belong to this servergroup.
- * The servers will be put into a Map, the URI will be the key and the value will be the GetServerResponse.
- * After the server list is loaded, set the selected server to be the one on the top.
- * When an server element in the list is mounted, get the server and put the response as the value to the server map.
- * When a servergroup is added, we add it to servergroup list.
- * When a servergroup is removed, we remove it from servergroup list, and if it's the one been selected,
- * we selected the default one.
- * When a server is added to a servergroup and the servergroup is the one been selected, we add it to server map.
- * When a server is removed from a servergroup and the servergroup is the one been selected, we remove it from server map,
- * and if it's the server been selected, we choose another one unless it's empty.
- *
- */
+function serverNameComparator(A, B) {
+  return A.Name.localeCompare(B.Name);
+}
+
+function healthToValue(S) {
+  switch(S.Health) {
+    case 'OK':
+      return 1;
+    case 'Warning':
+      return 2;
+    case 'Critical':
+      return 3;
+    default:
+      return 0;
+  }
+}
+
+function serverHealthComparator(A, B) {
+  const a = healthToValue(A);
+  const b = healthToValue(B);
+  if (a > b) {
+    return -1;
+  }
+  if (a < b) {
+    return 1;
+  }
+  return 0;
+}
 
 const defaultState = {
   appState: ServerAppState.LOADING,
