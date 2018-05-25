@@ -1,4 +1,10 @@
-import { ActionType, ServerAppState, ServerDetailState, ServerTabState } from './ConstValue';
+import {
+  ActionType,
+  ServerAppState,
+  ServerDetailState,
+  ServerTabState,
+  ServerOrderByState,
+} from './ConstValue';
 import { List, Map, Set } from 'immutable';
 
 function serverNameComparator(A, B) {
@@ -30,6 +36,17 @@ function serverHealthComparator(A, B) {
   return 0;
 }
 
+function getOrderByComparator(orderBy) {
+  switch(orderBy) {
+    case ServerOrderByState.NAME:
+      return serverNameComparator;
+    case ServerOrderByState.HEALTH:
+      return serverHealthComparator;
+    default:
+      return serverNameComparator;
+  }
+}
+
 const defaultState = {
   appState: ServerAppState.LOADING,
   serverDetailState: ServerDetailState.EMPTY,
@@ -49,7 +66,10 @@ const defaultState = {
   serverExist: false,
   serverGroupExist: false,
   serverIndex: undefined,
+  refreshServerList: false,
   serverGroupIndex: undefined,
+  serverOrderBy: ServerOrderByState.NAME,
+  serverOrder: 'asc',
 };
 
 export const serverApp = (state = defaultState, action) => {
@@ -119,7 +139,7 @@ export const serverApp = (state = defaultState, action) => {
         }).map(each => each.ServerURI)),
         serverGroupList: List(action.info.serverGroupList.Members),
         ssgSet: action.info.serverServerGroupList.Members,
-        serverList: List(action.info.serverList.Members),
+        serverList: List(action.info.serverList.Members).sort(getOrderByComparator(state.serverOrderBy)),
         serverExist: tempServerExist,
         serverGroupExist: tempServerGroupExist,
         serverIndex: tempServerIndex,
@@ -203,6 +223,15 @@ export const serverApp = (state = defaultState, action) => {
       return {
         ...state,
         currentServerTab: action.info,
+      };
+    // Server.UI.OrderBy
+    case ActionType.SERVER_UI_ORDERBY_CHANGE:
+      return {
+        ...state,
+        serverIndex: 0,
+        refreshServerList: !state.refreshServerList,
+        serverOrderBy: action.info,
+        serverList: state.serverList.sort(getOrderByComparator(action.info))
       };
     // ServerGroup
     // ServerGroup.REST.Create

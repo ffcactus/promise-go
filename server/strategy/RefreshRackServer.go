@@ -2,6 +2,7 @@ package strategy
 
 import (
 	log "github.com/sirupsen/logrus"
+	"math/rand"
 	"promise/base"
 	"promise/server/context"
 	"promise/server/object/constvalue"
@@ -53,7 +54,7 @@ func (s *RefreshRackServer) _execute(taskID string, c *context.RefreshServer, se
 			"id":   server.ID,
 			"step": ServerRefreshTaskStepNamePower,
 		}).Info("Strategy refresh server step failed.")
-	}	
+	}
 	// Chassis.Thermal
 	if err := s.StepWarper(taskID, ServerRefreshTaskStepNameThermal, c, server, s.RefreshThermal); err != nil {
 		log.WithFields(log.Fields{
@@ -124,12 +125,23 @@ func (s *RefreshRackServer) _execute(taskID string, c *context.RefreshServer, se
 			"step": ServerRefreshTaskStepNameStorages,
 		}).Info("Strategy refresh server step failed.")
 	}
-	s.SetServerHealth(&c.Base, server, constvalue.ServerHealthOK)
+	// s.SetServerHealth(&c.Base, server, constvalue.ServerHealthOK)
+	s.SetServerHealth(&c.Base, server, randHealth())
 	s.SetServerState(&c.Base, server, constvalue.ServerStateReady)
 	log.WithFields(log.Fields{
 		"id": server.ID,
 	}).Info("Refresh server done.")
 	<-executor
+}
+
+var health = []string{
+	"OK",
+	"Warning",
+	"Critical",
+}
+
+func randHealth() string {
+	return health[rand.Intn(len(health))]
 }
 
 // Stepfunc is the func point.

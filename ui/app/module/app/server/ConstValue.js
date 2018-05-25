@@ -23,6 +23,13 @@ export const ServerTabState = Object.freeze(
   }
 );
 
+export const ServerOrderByState = Object.freeze(
+  {
+    'NAME': 'Name',
+    'HEALTH': 'Health',
+  }
+);
+
 export const ActionType = Object.freeze(
   {
     // App
@@ -56,6 +63,8 @@ export const ActionType = Object.freeze(
     'SERVER_UI_DIALOG_ADD_CLOSE': 'SERVER_UI_DIALOG_ADD_CLOSE',
     // Server.UI.Tab
     'SERVER_UI_TAB_CHANGE': 'SERVER_UI_TAB_CHANGE',
+    // Server.UI.OrderBy
+    'SERVER_UI_ORDERBY_CHANGE': 'SERVER_UI_ORDERBY_CHANGE',
 
     // ServerGroup
     // ServerGroup.REST

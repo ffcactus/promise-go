@@ -80,3 +80,14 @@ export function uiListSelect(uri) {
     )(dispatch, getState);
   };
 }
+
+/**
+ * When user clicks orderBy selector.
+ * @param {string} orderBy The by what to order the servers.
+ */
+export function onServerOrderChange(orderBy) {
+  return {
+    type: ActionType.SERVER_UI_ORDERBY_CHANGE,
+    info: orderBy,
+  };
+}

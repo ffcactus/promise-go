@@ -1,6 +1,7 @@
 import React from 'react';
 import CSSModules from 'react-css-modules';
 import styles from './Server.css';
+import ServerSortOrderSelect from './ServerSortOrderSelect';
 
 class ServerListControlArea extends React.Component {
   constructor(props) {
@@ -9,10 +10,11 @@ class ServerListControlArea extends React.Component {
 
   render() {
     return (
-      <div styleName="ServerListControlArea" />
+      <div styleName="ServerListControlArea" >
+        <ServerSortOrderSelect options={['Name', 'Health']} />
+      </div>
     );
   }
 }
 
 export default CSSModules(ServerListControlArea, styles);
-

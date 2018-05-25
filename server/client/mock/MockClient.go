@@ -341,11 +341,11 @@ func randState() *string {
 }
 
 func randHealth() *string {
-	return &state[rand.Intn(len(health))]
+	return &health[rand.Intn(len(health))]
 }
 
 func randPowerState() *string {
-	return &state[rand.Intn(len(powerState))]
+	return &powerState[rand.Intn(len(powerState))]
 }
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"

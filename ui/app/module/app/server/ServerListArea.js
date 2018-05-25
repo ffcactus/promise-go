@@ -35,6 +35,7 @@ class ServerListArea extends React.Component {
 
 function mapStateToProps(state) {
   return {
+    refreshServerList: state.serverApp.refreshServerList,
     serverList: state.serverApp.serverList,
     serverIndex: state.serverApp.serverIndex,
     currentServerSet: state.serverApp.currentServerSet,

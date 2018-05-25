@@ -4,11 +4,9 @@ import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import styles from './Server.css';
 import CenterDiv from '../../promise/common/CenterDiv';
-import CreateServerGroupDialog from './CreateServerGroupDialog';
-import * as ServerGroupAction from './ServerGroupAction';
+import * as ServerAction from './ServerAction';
 
-
-class ServerGroupControlCreate extends React.Component {
+class ServerOrderByName extends React.Component {
   constructor(props) {
     super(props);
     this.onClick = this.onClick.bind(this);
@@ -16,16 +14,13 @@ class ServerGroupControlCreate extends React.Component {
 
   onClick(event) {
     event.preventDefault();
-    if (! this.props.openCreateServerGroupDialog) {
-      this.props.dispatch(ServerGroupAction.openCreateServerGroupDialog());
-    }
+    this.props.dispatch(ServerAction.sortByName());
   }
 
   render() {
     const icon = require('../../promise/common/img/icon/Navigation_Add_2x.png');
     return (
       <div styleName="ServerGroupControlButton">
-        <CreateServerGroupDialog />
         <CenterDiv><img src={icon} onClick={this.onClick} style={{display: 'block', margin: 'auto', height: '30px'}}/></CenterDiv>
       </div>
     );
@@ -34,14 +29,13 @@ class ServerGroupControlCreate extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    openCreateServerGroupDialog: state.serverApp.openCreateServerGroupDialog
+    serverSortedBy: state.serverApp.serverSortedBy
   };
 }
 
-ServerGroupControlCreate.propTypes = {
+ServerOrderByName.propTypes = {
   dispatch: PropTypes.func,
-  openCreateServerGroupDialog: PropTypes.bool,
+  serverSortByName: PropTypes.bool,
 };
 
-export default connect(mapStateToProps)(CSSModules(ServerGroupControlCreate, styles));
-
+export default connect(mapStateToProps)(CSSModules(ServerOrderByName, styles));
