@@ -66,7 +66,6 @@ const defaultState = {
   serverExist: false,
   serverGroupExist: false,
   serverIndex: undefined,
-  refreshServerList: false,
   serverGroupIndex: undefined,
   serverOrderBy: ServerOrderByState.NAME,
   serverOrder: 'asc',
@@ -228,8 +227,6 @@ export const serverApp = (state = defaultState, action) => {
     case ActionType.SERVER_UI_ORDERBY_CHANGE:
       return {
         ...state,
-        serverIndex: 0,
-        refreshServerList: !state.refreshServerList,
         serverOrderBy: action.info,
         serverList: state.serverList.sort(getOrderByComparator(action.info))
       };

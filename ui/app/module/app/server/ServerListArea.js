@@ -10,8 +10,13 @@ import ServerList from './ServerList';
 class ServerListArea extends React.Component {
   constructor(props) {
     super(props);
+    this.listRef = React.createRef();
+    this.setListRef = this.setListRef.bind(this);
   }
 
+  setListRef(element) {
+    this.listRef = element;
+  }
   render() {
     const size = this.props.serverList.size;
     const serverList = [];
@@ -24,9 +29,9 @@ class ServerListArea extends React.Component {
     return (
       <div styleName="ServerListArea">
         <ServerSearchArea />
-        <ServerListControlArea />
+        <ServerListControlArea listRef={this.listRef}/>
         <div style={{ flex: '1 1 auto' }}>
-          <ServerList serverList={serverList} serverIndex={this.props.serverIndex}/>
+          <ServerList setListRef={this.setListRef} serverList={serverList} serverIndex={this.props.serverIndex}/>
         </div>
       </div>
     );
@@ -35,7 +40,6 @@ class ServerListArea extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    refreshServerList: state.serverApp.refreshServerList,
     serverList: state.serverApp.serverList,
     serverIndex: state.serverApp.serverIndex,
     currentServerSet: state.serverApp.currentServerSet,

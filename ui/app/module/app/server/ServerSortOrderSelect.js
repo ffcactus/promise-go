@@ -14,6 +14,8 @@ class ServerSortOrderSelect extends React.Component {
   _onChange(event) {
     event.preventDefault();
     this.props.dispatch(ServerAction.onServerOrderChange(event.currentTarget.value));
+    this.props.listRef.scrollToRow(0);
+    this.props.listRef.forceUpdateGrid();
   }
 
   render() {
@@ -34,6 +36,7 @@ function mapStateToProps(state) {
 }
 
 ServerSortOrderSelect.propTypes = {
+  listRef: PropTypes.object,
   dispatch: PropTypes.func,
   serverSortOrder: PropTypes.string,
   options: PropTypes.arrayOf(PropTypes.string),

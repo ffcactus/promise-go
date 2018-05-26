@@ -7,8 +7,8 @@ export const Health = (props) => {
     case 'OK':
       color = 'limegreen';
       break;
-    case 'Warn':
-      color = 'yellow';
+    case 'Warning':
+      color = 'orange';
       break;
     case 'Critical':
       color = 'red';
