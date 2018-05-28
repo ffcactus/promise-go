@@ -164,7 +164,7 @@ func (impl *Server) GetAndLockServer(ID string) (bool, base.ModelInterface) {
 			Warn("Get and lock server in DB failed, start transaction failed.")
 		return false, nil
 	}
-
+	tx.Exec("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;")
 	if tx.Where("\"ID\" = ?", ID).First(server).RecordNotFound() {
 		tx.Rollback()
 		log.WithFields(log.Fields{
