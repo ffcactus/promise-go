@@ -10,39 +10,55 @@ class AnimationTest extends React.Component {
 
   render() {
     const image1 = require('./img/icon/Phone.png');
-    const icon =
-      <CSSTransition
-        classNames={{
-          appear: this.props.styles.CSSTransitionAppear,
-          appearActive: this.props.styles.CSSTransitionAppearActive,
-          enter: this.props.styles.CSSTransitionEnter,
-          enterActive: this.props.styles.CSSTransitionEnterActive,
-          enterDone: this.props.styles.CSSTransitionEnterDone,
-        }}
-        in
-        appear
-        timeout={800}
-        onEnter={() => {
-          console.info('onEnter');
-        }}
-        onEntering={() => {
-          console.info('onEntering');
-        }}
-        onEntered={() => {
-          console.info('onEntered');
-        }}>
+    const iconStyles = {
+      appear: this.props.styles.IconAppear,
+      appearActive: this.props.styles.IconAppearActive,
+      enter: this.props.styles.IconEnter,
+      enterActive: this.props.styles.IconEnterActive,
+      enterDone: this.props.styles.IconEnterDone,
+    };
+    const appsStyles = {
+      appear: this.props.styles.AppsAppear,
+      appearActive: this.props.styles.AppsAppearActive,
+      enter: this.props.styles.AppsEnter,
+      enterActive: this.props.styles.AppsEnterActive,
+      enterDone: this.props.styles.AppsEnterDone,
+    };
+    const apps =
+      <CSSTransition classNames={appsStyles} in appear timeout={500}>
         <div>
-          <img src={image1}/>
+          <CSSTransition classNames={iconStyles} in appear timeout={500}>
+            <div>
+              <img src={image1}/>
+            </div>
+          </CSSTransition>
+          <CSSTransition classNames={iconStyles} in appear timeout={500}>
+            <div>
+              <img src={image1}/>
+            </div>
+          </CSSTransition>
+          <CSSTransition classNames={iconStyles} in appear timeout={500}>
+            <div>
+              <img src={image1}/>
+            </div>
+          </CSSTransition>
+          <CSSTransition classNames={iconStyles} in appear timeout={500}>
+            <div>
+              <img src={image1}/>
+            </div>
+          </CSSTransition>
+          <CSSTransition classNames={iconStyles} in appear timeout={500}>
+            <div>
+              <img src={image1}/>
+            </div>
+          </CSSTransition>
         </div>
       </CSSTransition>;
+
     return (
       <div>
         <div styleName="Desktop">
-          <CSSTransition classNames="AppCollection" in appear={true} timeout={1000}>
-            <div styleName="AppCollection">
-              {icon}
-            </div>
-          </CSSTransition>
+          {apps}
         </div>
         <input type="button" value="App"/>
         <input type="button" value="Desktop"/>
