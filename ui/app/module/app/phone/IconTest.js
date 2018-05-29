@@ -3,6 +3,7 @@ import CSSModules from 'react-css-modules';
 import PropTypes from 'prop-types';
 import { CSSTransition } from 'react-transition-group';
 import styles from './Phone.css';
+import AppIcon from '../../promise/common/AppIcon';
 
 class IconTest extends React.Component {
   constructor(props) {
@@ -19,9 +20,12 @@ class IconTest extends React.Component {
     };
     return (
       <CSSTransition classNames={iconStyles} in appear timeout={500}>
-        <div>
-          <img src={this.props.img}/>
-        </div>
+        <AppIcon
+          key={this.props.name}
+          name={this.props.name}
+          image={this.props.img}
+          uri={this.props.name}
+          notificationCount={0} />
       </CSSTransition>
     );
   }
@@ -29,6 +33,8 @@ class IconTest extends React.Component {
 
 IconTest.propTypes = {
   img: PropTypes.string,
+  name: PropTypes.string,
+  notificationCount: PropTypes.number,
   styles: PropTypes.object,
 };
 

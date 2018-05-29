@@ -16,12 +16,12 @@ class AnimationTest extends React.Component {
       <div>
         <DesktopTest>
           <AppGroup>
-            <IconTest key="Phone1" img={image1}/>
-            <IconTest key="Phone2" img={image1}/>
-            <IconTest key="Phone3" img={image1}/>
-            <IconTest key="Phone4" img={image1}/>
-            <IconTest key="Phone5" img={image1}/>
-            <IconTest key="Phone6" img={image1}/>
+            <IconTest img={image1} name="Server"/>
+            <IconTest img={image1} name="Server"/>
+            <IconTest img={image1} name="Enclosure"/>
+            <IconTest img={image1} name="Pool"/>
+            <IconTest img={image1} name="Task"/>
+            <IconTest img={image1} name="Settings"/>
           </AppGroup>
         </DesktopTest>
         <input type="button" value="App"/>

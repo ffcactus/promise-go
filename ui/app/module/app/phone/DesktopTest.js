@@ -19,7 +19,7 @@ class DesktopTest extends React.Component {
 }
 
 DesktopTest.propTypes = {
-  children: PropTypes.array,
+  children: PropTypes.any,
 };
 
 export default CSSModules(DesktopTest, styles);
