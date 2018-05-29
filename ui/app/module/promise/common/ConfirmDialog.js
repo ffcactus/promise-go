@@ -29,10 +29,4 @@ ConfirmDialog.propTypes = {
   onConfirm: PropTypes.func,
 };
 
-ConfirmDialog.propTypes = {
-  title: PropTypes.string,
-  message: PropTypes.string,
-  onConfirm: PropTypes.func,
-};
-
 export default CSSModules(ConfirmDialog, styles);
