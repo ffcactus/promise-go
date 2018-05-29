@@ -1,9 +1,10 @@
 import React from 'react';
 import CSSModules from 'react-css-modules';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { CSSTransition } from 'react-transition-group';
-import styles from './Phone.css';
-import AppIcon from '../../promise/common/AppIcon';
+import styles from './Animation.css';
+import IconNotification from '../../promise/common/IconNotification';
 
 class IconTest extends React.Component {
   constructor(props) {
@@ -19,14 +20,21 @@ class IconTest extends React.Component {
       enterDone: this.props.styles.IconEnterDone,
     };
     return (
-      <CSSTransition classNames={iconStyles} in appear timeout={500}>
-        <AppIcon
-          key={this.props.name}
-          name={this.props.name}
-          image={this.props.img}
-          uri={this.props.name}
-          notificationCount={0} />
-      </CSSTransition>
+      <div styleName="IconContainer">
+        <CSSTransition classNames={iconStyles} in appear timeout={500}>
+          <div key={this.props.name}>
+            <div styleName="AppIconAndNotification">
+              <Link to={'/xxxx'}>
+                <img src={this.props.img} />
+                <IconNotification notificationCount={this.props.notificationCount} />
+              </Link>
+            </div>
+            <div styleName="AppIconName">
+              <p>{this.props.name}</p>
+            </div>
+          </div>
+        </CSSTransition>
+      </div>
     );
   }
 }

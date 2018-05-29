@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import SettingsAppIcon from '../../app/settings/Icon';
-import PhoneAppIcon from '../../app/phone/Icon';
+import AnimationAppIcon from '../../app/animation/Icon';
 import ServerAppIcon from '../../app/server/Icon';
 import CSSModules from 'react-css-modules';
 import styles from './Desktop.css';
@@ -12,7 +12,7 @@ function AppCollection() {
     <div styleName="desktop">
       <div styleName="appArea">
         <SettingsAppIcon />
-        <PhoneAppIcon />
+        <AnimationAppIcon />
         <ServerAppIcon />
       </div>
     </div>

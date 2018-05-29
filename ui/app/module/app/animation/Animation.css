@@ -23,6 +23,9 @@
     display: grid;
     grid-template-rows: 1fr 1fr 1fr;
     grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-areas: "a a a a"
+                         "a a a a"
+                         "a a a a";
 	position: relative;
 	padding: 0px;
     border: 0px;
@@ -40,6 +43,9 @@
     display: grid;
     grid-template-rows: 1fr 1fr 1fr;
     grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-areas: "a a a a"
+                         "a a a a"
+                         "a a a a";    
 	position: relative;
 	padding: 0px;
     border: 0px;
@@ -54,25 +60,29 @@
     transition: all 300ms ease-in;
 }
 
+.IconContainer {
+    align-items: center;
+    align-self: center;
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
+
 .IconEnter, .IconAppear {
     color: white;
     text-align: center;
     flex-basis: 0;
-	padding: 0;
-    border: 0;
-    margin: 0;
-    max-width: 20%;
-    min-width: 20%;
-    max-height: 30%;
-    min-height: 30%;
-    flex-direction: row;
-    flex: 1;
+	padding: 0px;
+    border: 0px;
+    margin: 0px;
+    align-items: center;
+    align-self: center;
 
     display: flex;
     flex-direction: column;
     align-content: center;
     justify-content: center;
-    align-items: center;
+
     -webkit-filter: blur(40px); /* Safari 6.0 - 9.0 */
     filter: blur(40px);      
 }
@@ -83,21 +93,26 @@
     flex-basis: 0;
 	padding: 0px;
     border: 0px;
-    margin: 30px 20px;
-    max-width: 20%;
-    min-width: 20%;
-    max-height: 30%;
-    min-height: 30%;
-    flex-direction: row;
-    flex: 1;
+    margin: 0px;
+    align-items: center;
+    align-self: center;
 
     display: flex;
     flex-direction: column;
     align-content: center;
     justify-content: center;
-    align-items: center;    
-    animation-timing-function: ease-in;    
+
     -webkit-filter: blur(0px); /* Safari 6.0 - 9.0 */
     filter: blur(0px);
     transition: filter 300ms ease-in
+}
+
+.AppIconAndNotification {
+    position: relative;
+    width: 74px;
+    height: 74px;
+}
+
+.AppIconName {
+    font: "Helvetica Neue", sans-serif; 
 }

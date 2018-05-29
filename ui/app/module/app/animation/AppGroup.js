@@ -2,7 +2,7 @@ import React from 'react';
 import CSSModules from 'react-css-modules';
 import PropTypes from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import styles from './Phone.css';
+import styles from './Animation.css';
 
 class AppGroup extends React.Component {
   constructor(props) {

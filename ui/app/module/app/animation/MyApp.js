@@ -2,7 +2,7 @@ import React from 'react';
 import CSSModules from 'react-css-modules';
 import PropTypes from 'prop-types';
 import { CSSTransition } from 'react-transition-group';
-import styles from './Phone.css';
+import styles from './Animation.css';
 
 class MyApp extends React.Component {
   constructor(props) {
