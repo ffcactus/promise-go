@@ -8,15 +8,8 @@ import { AutoSizer, List } from 'react-virtualized';
 class ServerList extends React.Component {
   constructor(props) {
     super(props);
-    // this.myRef = React.createRef();
     this.rowRenderer = this.rowRenderer.bind(this);
   }
-
-  // componentDidUpdate() {
-  //   if (this.myRef.current) {
-  //     this.myRef.current.forceUpdateGrid();
-  //   }
-  // }
 
   rowRenderer({
     key,            // Unique key within array of rows

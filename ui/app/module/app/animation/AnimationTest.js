@@ -4,10 +4,34 @@ import styles from './Animation.css';
 import DesktopTest from './DesktopTest';
 import AppGroup from './AppGroup';
 import IconTest from './IconTest';
+import AppContainer from './AppContainer';
+import { CSSTransition } from 'react-transition-group';
 
 class AnimationTest extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      content: 'AppGroup'
+    };
+    this.changeContent = this.changeContent.bind(this);
+  }
+
+  changeContent(event) {
+    event.preventDefault();
+    switch (event.currentTarget.value) {
+      case 'AppGroup':
+        this.setState({
+          content: 'AppGroup'
+        });
+        break;
+      case 'AppContainer':
+        this.setState({
+          content: 'AppContainer'
+        });
+        break;
+      default:
+        break;
+    }
   }
 
   render() {
@@ -19,9 +43,11 @@ class AnimationTest extends React.Component {
     const Phone = require('./img/icon/Phone.png');
     const Settings = require('./img/icon/Settings.png');
 
-    return (
-      <div>
-        <DesktopTest>
+    let current = null;
+
+    switch(this.state.content) {
+      case 'AppGroup':
+        current = (
           <AppGroup>
             <IconTest img={Clock} name="Clock" notificationCount={0}/>
             <IconTest img={Mail} name="Mail" notificationCount={1}/>
@@ -35,9 +61,24 @@ class AnimationTest extends React.Component {
             <IconTest img={Mail} name="Mail" notificationCount={1}/>
             <IconTest img={Podcast} name="Podcast" notificationCount={0}/>
           </AppGroup>
+        );
+        break;
+      case 'AppContainer':
+        current = (
+          <AppContainer/>
+        );
+        break;
+      default:
+        break;
+    }
+
+    return (
+      <div>
+        <DesktopTest>
+          {current}
         </DesktopTest>
-        <input type="button" value="App"/>
-        <input type="button" value="Desktop"/>
+        <input type="button" value="AppGroup" onClick={this.changeContent}/>
+        <input type="button" value="AppContainer" onClick={this.changeContent}/>
       </div>
     );
   }
