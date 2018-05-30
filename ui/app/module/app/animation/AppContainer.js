@@ -17,17 +17,29 @@ class AppContainer extends React.Component {
       enterActive: this.props.styles.AppContainerEnterActive,
       enterDone: this.props.styles.AppContainerEnterDone,
       exit: this.props.styles.AppContainerExit,
-      exitAction: this.props.styles.AppContainerExitAction,
+      exitActive: this.props.styles.AppContainerExitActive,
       exitDone: this.props.styles.AppContainerExitDone
     };
     return (
-      <CSSTransition classNames={transitionStyles} key={'AppContainer'} appear in exit timeout={500}
-        onEnter={()=>{console.info('AppContainer onEnter');}}
-        onEntering={()=>{console.info('AppContainer onEntering');}}
-        onEntered={()=>{console.info('AppContainer onEntered');}}
-        onExit={()=>{console.info('AppContainer onExit');}}
-        onExiting={()=>{console.info('AppContainer onExiting');}}
-        onExited={()=>{console.info('AppContainer onExited');}}
+      <CSSTransition in={this.props.inProp} appear enter exit mountOnEnter unmountOnExit timeout={300} classNames={transitionStyles}
+        onEnter={()=>{
+          console.info('AppContainer onEnter');
+        }}
+        onEntering={()=>{
+          console.info('AppContainer onEntering');
+        }}
+        onEntered={()=>{
+          console.info('AppContainer onEntered');
+        }}
+        onExit={()=>{
+          console.info('AppContainer onExit');
+        }}
+        onExiting={()=>{
+          console.info('AppContainer onExiting');
+        }}
+        onExited={()=>{
+          console.info('AppContainer onExited');
+        }}
       >
         <div>
           <div>
@@ -41,6 +53,7 @@ class AppContainer extends React.Component {
 }
 
 AppContainer.propTypes = {
+  inProp: PropTypes.bool,
   children: PropTypes.object,
   styles: PropTypes.object,
 };

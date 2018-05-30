@@ -5,13 +5,13 @@ import DesktopTest from './DesktopTest';
 import AppGroup from './AppGroup';
 import IconTest from './IconTest';
 import AppContainer from './AppContainer';
-import { CSSTransition } from 'react-transition-group';
 
 class AnimationTest extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      content: 'AppGroup'
+      desktop: false,
+      app: false
     };
     this.changeContent = this.changeContent.bind(this);
   }
@@ -19,14 +19,45 @@ class AnimationTest extends React.Component {
   changeContent(event) {
     event.preventDefault();
     switch (event.currentTarget.value) {
-      case 'AppGroup':
-        this.setState({
-          content: 'AppGroup'
+      case 'DesktopIn':
+        this.setState((state) => {
+          return {
+            ...state,
+            desktop: true
+          };
         });
         break;
-      case 'AppContainer':
-        this.setState({
-          content: 'AppContainer'
+      case 'DesktopOut':
+        this.setState((state) => {
+          return {
+            ...state,
+            desktop: false
+          };
+        });
+        break;
+      case 'AppIn':
+        this.setState((state) => {
+          return {
+            ...state,
+            app: true
+          };
+        });
+        break;
+      case 'AppOut':
+        this.setState((state) => {
+          return {
+            ...state,
+            app: false
+          };
+        });
+        break;
+      case 'Switch':
+        this.setState((state) => {
+          return {
+            ...state,
+            app: !state.app,
+            desktop: !state.desktop
+          };
         });
         break;
       default:
@@ -42,13 +73,11 @@ class AnimationTest extends React.Component {
     const Podcast = require('./img/icon/Podcast.png');
     const Phone = require('./img/icon/Phone.png');
     const Settings = require('./img/icon/Settings.png');
-
-    let current = null;
-
-    switch(this.state.content) {
-      case 'AppGroup':
-        current = (
-          <AppGroup>
+    // appear enter exit mountOnEnter unmountOnExit
+    return (
+      <div>
+        <DesktopTest>
+          <AppGroup key={'AppGroup'} inProp={this.state.desktop} >
             <IconTest img={Clock} name="Clock" notificationCount={0}/>
             <IconTest img={Mail} name="Mail" notificationCount={1}/>
             <IconTest img={Maps} name="Maps" notificationCount={0}/>
@@ -61,24 +90,15 @@ class AnimationTest extends React.Component {
             <IconTest img={Mail} name="Mail" notificationCount={1}/>
             <IconTest img={Podcast} name="Podcast" notificationCount={0}/>
           </AppGroup>
-        );
-        break;
-      case 'AppContainer':
-        current = (
-          <AppContainer/>
-        );
-        break;
-      default:
-        break;
-    }
-
-    return (
-      <div>
-        <DesktopTest>
-          {current}
+          <AppContainer key={'AppContainer'} inProp={this.state.app}/>
         </DesktopTest>
-        <input type="button" value="AppGroup" onClick={this.changeContent}/>
-        <input type="button" value="AppContainer" onClick={this.changeContent}/>
+        <input type="button" value="DesktopIn" onClick={this.changeContent}/>
+        <input type="button" value="DesktopOut" onClick={this.changeContent}/>
+        <br/>
+        <input type="button" value="AppIn" onClick={this.changeContent}/>
+        <input type="button" value="AppOut" onClick={this.changeContent}/>
+        <br/>
+        <input type="button" value="Switch" onClick={this.changeContent}/>
       </div>
     );
   }

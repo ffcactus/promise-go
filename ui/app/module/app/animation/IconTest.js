@@ -21,7 +21,7 @@ class IconTest extends React.Component {
     };
     return (
       <div styleName="IconContainer">
-        <CSSTransition classNames={iconStyles} in appear timeout={500}>
+        <CSSTransition classNames={iconStyles} in appear timeout={300}>
           <div key={this.props.name}>
             <div styleName="AppIconAndNotification">
               <Link to={'/xxxx'}>

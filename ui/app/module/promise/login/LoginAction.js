@@ -71,6 +71,8 @@ function login(hostname, username, password, from) {
     Client.login(hostname, username, password).then((response) => {
       if (response.status === 200) {
         dispatch(WsAction.createWsConnection(hostname));
+        // TODO
+        // We dispatch login success only on ws connection created.
         dispatch(loginSuccess(hostname, username, response.response.token));
         // TODO
         // Is it good to do redirection in action?

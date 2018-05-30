@@ -6,7 +6,7 @@
     z-index: -1;
 }
 
-.AppContainerAppear, .AppGroupEnter{
+.AppContainerAppear, .AppContainerEnter {
     position: absolute;
     z-index: 1;
 
@@ -18,8 +18,8 @@
     right: 19.1%;
     bottom: 19.1%;
 
-    /* opacity: 0.1; */
-    background-color: red;
+    opacity: 0;
+    background-color: #ccc;
 }
 
 .AppContainerAppearActive, .AppContainerEnterActive, .AppContainerEnterDone {
@@ -32,8 +32,9 @@
     left: 0px;
     right: 0px;
     bottom: 0px;
-    /* opacity: 1; */
-    background-color: red;
+
+    opacity: 1;
+    background-color: #ccc;
     transition: all 300ms ease-in;
 }
 
@@ -47,11 +48,11 @@
     left: 0px;
     right: 0px;
     bottom: 0px;
-    /* opacity: 1; */
-    background-color: red;    
+    opacity: 1;
+    background-color: #ccc;    
 }
 
-.AppContainerExitAction, .AppContainerExitDone {
+.AppContainerExitActive, .AppContainerExitDone {
     position: absolute;
     z-index: 1;
 
@@ -63,8 +64,8 @@
     right: 19.1%;
     bottom: 19.1%;
 
-    /* opacity: 0.1; */
-    background-color: red;
+    opacity: 0;
+    background-color: #ccc;
     transition: all 300ms ease-in;        
 }
 
@@ -134,7 +135,7 @@
     bottom: 19.1%;
 }
 
-.AppGroupExitAction, .AppGroupExitDone {
+.AppGroupExitActive, .AppGroupExitDone {
     display: grid;
     grid-template-rows: 1fr 1fr 1fr;
     grid-template-columns: 1fr 1fr 1fr 1fr;

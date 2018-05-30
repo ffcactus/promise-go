@@ -17,17 +17,29 @@ class AppGroup extends React.Component {
       enterActive: this.props.styles.AppGroupEnterActive,
       enterDone: this.props.styles.AppGroupEnterDone,
       exit: this.props.styles.AppGroupExit,
-      exitAction: this.props.styles.AppGroupExitAction,
+      exitActive: this.props.styles.AppGroupExitActive,
       exitDone: this.props.styles.AppGroupExitDone
     };
     return (
-      <CSSTransition classNames={iconStyles} key={'AppGroup'} appear in exit timeout={500}
-        onEnter={()=>{console.info('AppGroup onEnter');}}
-        onEntering={()=>{console.info('AppGroup onEntering');}}
-        onEntered={()=>{console.info('AppGroup onEntered');}}
-        onExit={()=>{console.info('AppGroup onExit');}}
-        onExiting={()=>{console.info('AppGroup onExiting');}}
-        onExited={()=>{console.info('AppGroup onExited');}}
+      <CSSTransition in={this.props.inProp} appear enter exit mountOnEnter unmountOnExit timeout={300} classNames={iconStyles}
+        onEnter={()=>{
+          console.info('AppGroup onEnter');
+        }}
+        onEntering={()=>{
+          console.info('AppGroup onEntering');
+        }}
+        onEntered={()=>{
+          console.info('AppGroup onEntered');
+        }}
+        onExit={()=>{
+          console.info('AppGroup onExit');
+        }}
+        onExiting={()=>{
+          console.info('AppGroup onExiting');
+        }}
+        onExited={()=>{
+          console.info('AppGroup onExited');
+        }}
       >
         <TransitionGroup>
           {this.props.children}
@@ -38,6 +50,7 @@ class AppGroup extends React.Component {
 }
 
 AppGroup.propTypes = {
+  inProp: PropTypes.bool,
   children: PropTypes.array,
   styles: PropTypes.object,
 };
