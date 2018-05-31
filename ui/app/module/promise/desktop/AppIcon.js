@@ -21,11 +21,11 @@ class AppIcon extends React.Component {
       enterDone: this.props.styles.AppIconEnterDone,
     };
     return (
-      <div styleName="AppIconContainer">
-        <CSSTransition classNames={iconStyles} in appear timeout={300}>
+      <CSSTransition classNames={iconStyles} in appear timeout={300}>
+        <div styleName="AppIconContainer">
           <div key={this.props.name}>
             <div styleName="AppIconAndNotification">
-              <Link to={'/xxxx'}>
+              <Link to={this.props.uri}>
                 <img src={this.props.img} />
                 <IconNotification notificationCount={this.props.notificationCount} />
               </Link>
@@ -34,13 +34,14 @@ class AppIcon extends React.Component {
               <p>{this.props.name}</p>
             </div>
           </div>
-        </CSSTransition>
-      </div>
+        </div>
+      </CSSTransition>
     );
   }
 }
 
 AppIcon.propTypes = {
+  uri: PropTypes.string,
   img: PropTypes.string,
   name: PropTypes.string,
   notificationCount: PropTypes.number,

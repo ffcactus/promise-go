@@ -31,44 +31,19 @@ class AppList extends React.Component {
     const Phone = require('./img/icon/Phone.png');
     const Settings = require('./img/icon/Settings.png');
     return (
-      <div> {/* this div will be used by CSSTransition container. */}
-        <FullSizeDiv>
-          <CSSTransition appear enter exit mountOnEnter unmountOnExit timeout={300} classNames={appListStyle}
-            onEnter={()=>{
-              console.info('%s onEnter', 'AppList');
-            }}
-            onEntering={()=>{
-              console.info('%s onEntering', 'AppList');
-            }}
-            onEntered={()=>{
-              console.info('%s onEntered', 'AppList');
-            }}
-            onExit={()=>{
-              console.info('%s onExit', 'AppList');
-            }}
-            onExiting={()=>{
-              console.info('%s onExiting', 'AppList');
-            }}
-            onExited={()=>{
-              console.info('%s onExited', 'AppList');
-            }}
-          >
-            <TransitionGroup>
-              <AppIcon img={Clock} name="Clock" notificationCount={0}/>
-              <AppIcon img={Mail} name="Mail" notificationCount={1}/>
-              <AppIcon img={Maps} name="Maps" notificationCount={0}/>
-              <AppIcon img={Photos} name="Photos" notificationCount={10000}/>
-              <AppIcon img={Podcast} name="Podcast" notificationCount={0}/>
-              <AppIcon img={Phone} name="Phone" notificationCount={0}/>
-              <AppIcon img={Settings} name="Settings" notificationCount={0}/>
-              <AppIcon img={Photos} name="Photos" notificationCount={2}/>
-              <AppIcon img={Maps} name="Maps" notificationCount={0}/>
-              <AppIcon img={Mail} name="Mail" notificationCount={1}/>
-              <AppIcon img={Podcast} name="Podcast" notificationCount={0}/>
-            </TransitionGroup>
-          </CSSTransition>
-        </FullSizeDiv>
-      </div>
+      <TransitionGroup>
+        <AppIcon img={Clock} uri="/app/settings" name="Clock" notificationCount={0}/>
+        <AppIcon img={Mail} uri="/app/settings" name="Mail" notificationCount={1}/>
+        <AppIcon img={Maps} uri="/app/settings" name="Maps" notificationCount={0}/>
+        <AppIcon img={Photos} uri="/app/settings" name="Photos" notificationCount={10000}/>
+        <AppIcon img={Podcast} uri="/app/settings" name="Podcast" notificationCount={0}/>
+        <AppIcon img={Phone} uri="/app/settings" name="Phone" notificationCount={0}/>
+        <AppIcon img={Settings} uri="/app/settings" name="Settings" notificationCount={0}/>
+        <AppIcon img={Photos} uri="/app/settings" name="Photos" notificationCount={2}/>
+        <AppIcon img={Maps} uri="/app/settings" name="Maps" notificationCount={0}/>
+        <AppIcon img={Mail} uri="/app/settings" name="Mail" notificationCount={1}/>
+        <AppIcon img={Podcast} uri="/app/settings" name="Podcast" notificationCount={0}/>
+      </TransitionGroup>
     );
   }
 }

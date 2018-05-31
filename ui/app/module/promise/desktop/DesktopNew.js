@@ -29,9 +29,38 @@ class Desktop extends React.Component {
       exitDone: this.props.styles.MainContentFadeExitDone
     };
     const path = this.props.location.pathname;
+    let animationStyle;
+    switch(path) {
+      case '/':
+        animationStyle = {
+          appear: this.props.styles.AppListAppear,
+          appearActive: this.props.styles.AppListAppearActive,
+          enter: this.props.styles.AppListEnter,
+          enterActive: this.props.styles.AppListEnterActive,
+          enterDone: this.props.styles.AppListEnterDone,
+          exit: this.props.styles.AppListExit,
+          exitActive: this.props.styles.AppListExitActive,
+          exitDone: this.props.styles.AppListExitDone
+        };
+        break;
+      case '/animation':
+        animationStyle = {
+          appear: this.props.styles.MainContentFadeAppear,
+          appearActive: this.props.styles.MainContentFadeAppearActive,
+          enter: this.props.styles.MainContentFadeEnter,
+          enterActive: this.props.styles.MainContentFadeEnterActive,
+          enterDone: this.props.styles.MainContentFadeEnterDone,
+          exit: this.props.styles.MainContentFadeExit,
+          exitActive: this.props.styles.MainContentFadeExitActive,
+          exitDone: this.props.styles.MainContentFadeExitDone
+        };
+        break;
+      default:
+        break;
+    }
     return (
       <TransitionGroup styleName="Background">
-        <CSSTransition key={path} appear enter exit mountOnEnter unmountOnExit timeout={300} classNames={mainContentFade}
+        <CSSTransition key={path} appear enter exit mountOnEnter unmountOnExit timeout={300} classNames={animationStyle}
           onEnter={()=>{
             console.info('%s onEnter', path);
           }}
@@ -54,9 +83,9 @@ class Desktop extends React.Component {
           <Switch>
             <Route path="/login" component={Login} />
             <Route exact path="/" component={AppList} />
-            <Route path="/app/settings" component={Settings} />
-            <Route path="/app/animation" component={Animation} />
-            <Route appName="Server" path="/app/server" hostname={window.location.hostname} component={ServerContainer} />
+            <Route path="/settings" component={Settings} />
+            <Route path="/animation" component={Animation} />
+            <Route appName="Server" path="/server" hostname={window.location.hostname} component={ServerContainer} />
           </Switch>
         </CSSTransition>
       </TransitionGroup>
