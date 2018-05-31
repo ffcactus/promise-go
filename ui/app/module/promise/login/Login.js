@@ -5,7 +5,7 @@ import CSSModules from 'react-css-modules';
 import { login } from './LoginAction';
 import Styles from './login.css';
 import { LoginState } from './ConstValue';
-import Background from '../desktop/Background';
+import FullSizeDiv from '../common/Widget/FullSizeDiv';
 
 class Login extends React.Component {
   constructor(props) {
@@ -63,8 +63,7 @@ class Login extends React.Component {
     };
 
     return (
-      <React.Fragment>
-        <Background />
+      <FullSizeDiv>
         <div styleName="loginForm">
           <form id="login" onSubmit={this.handleSubmit}>
             <p styleName="loginTitle">Promise</p>
@@ -81,7 +80,7 @@ class Login extends React.Component {
             </section>
           </form>
         </div>
-      </React.Fragment>
+      </FullSizeDiv>
     );
   }
 }
