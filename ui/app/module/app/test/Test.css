@@ -1,0 +1,62 @@
+.TestAppear, .TestEnter {
+    position: absolute;
+    z-index: 1;
+
+    height: 61.8%;
+    width: 61.8%;
+    opacity: 0;
+	top: 19.1%;
+    left: 19.1%;
+    right: 19.1%;
+    bottom: 19.1%;
+
+    opacity: 0;
+    background-color: #ccc;
+}
+
+.TestAppearActive, .TestEnterActive, .TestEnterDone {
+    position: absolute;
+    z-index: 1;
+
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+
+    opacity: 1;
+    background-color: #ccc;
+    transition: all 300ms ease-in;
+}
+
+.TestExit {
+    position: absolute;
+    z-index: 1;
+
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    opacity: 1;
+    background-color: #ccc;    
+}
+
+.TestExitActive, .TestExitDone {
+    position: absolute;
+    z-index: 1;
+
+    height: 61.8%;
+    width: 61.8%;
+    opacity: 0;
+	top: 19.1%;
+    left: 19.1%;
+    right: 19.1%;
+    bottom: 19.1%;
+
+    opacity: 0;
+    background-color: #ccc;
+    transition: all 300ms ease-in;        
+}

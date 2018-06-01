@@ -8,6 +8,7 @@ import PrivateRoute from '../common/PrivateRoute';
 import Login from '../login/Login';
 import AppList from './AppList';
 import Settings from '../../app/settings/Settings';
+import Test from '../../app/test/Test';
 import Animation from '../../app/animation/Animation';
 import ServerContainer from '../../app/server/ServerContainer';
 import styles from './Desktop.css';
@@ -55,6 +56,18 @@ class Desktop extends React.Component {
           exitDone: this.props.styles.MainContentFadeExitDone
         };
         break;
+      case '/test':
+        animationStyle = {
+          appear: this.props.styles.TestAppear,
+          appearActive: this.props.styles.TestAppearActive,
+          enter: this.props.styles.TestEnter,
+          enterActive: this.props.styles.TestEnterActive,
+          enterDone: this.props.styles.TestEnterDone,
+          exit: this.props.styles.TestExit,
+          exitActive: this.props.styles.TestExitActive,
+          exitDone: this.props.styles.TestExitDone
+        };
+        break;
       default:
         break;
     }
@@ -84,6 +97,7 @@ class Desktop extends React.Component {
             <Route path="/login" component={Login} />
             <Route exact path="/" component={AppList} />
             <Route path="/settings" component={Settings} />
+            <Route path="/test" component={Test} />
             <Route path="/animation" component={Animation} />
             <Route appName="Server" path="/server" hostname={window.location.hostname} component={ServerContainer} />
           </Switch>

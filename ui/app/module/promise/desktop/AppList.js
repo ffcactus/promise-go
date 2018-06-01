@@ -32,17 +32,17 @@ class AppList extends React.Component {
     const Settings = require('./img/icon/Settings.png');
     return (
       <TransitionGroup>
-        <AppIcon img={Clock} uri="/app/settings" name="Clock" notificationCount={0}/>
-        <AppIcon img={Mail} uri="/app/settings" name="Mail" notificationCount={1}/>
-        <AppIcon img={Maps} uri="/app/settings" name="Maps" notificationCount={0}/>
-        <AppIcon img={Photos} uri="/app/settings" name="Photos" notificationCount={10000}/>
-        <AppIcon img={Podcast} uri="/app/settings" name="Podcast" notificationCount={0}/>
-        <AppIcon img={Phone} uri="/app/settings" name="Phone" notificationCount={0}/>
-        <AppIcon img={Settings} uri="/app/settings" name="Settings" notificationCount={0}/>
-        <AppIcon img={Photos} uri="/app/settings" name="Photos" notificationCount={2}/>
-        <AppIcon img={Maps} uri="/app/settings" name="Maps" notificationCount={0}/>
-        <AppIcon img={Mail} uri="/app/settings" name="Mail" notificationCount={1}/>
-        <AppIcon img={Podcast} uri="/app/settings" name="Podcast" notificationCount={0}/>
+        <AppIcon img={Clock} uri="/test" name="Test" notificationCount={0}/>
+        <AppIcon img={Mail} uri="/settings" name="Mail" notificationCount={1}/>
+        <AppIcon img={Maps} uri="/settings" name="Maps" notificationCount={0}/>
+        <AppIcon img={Photos} uri="/settings" name="Photos" notificationCount={10000}/>
+        <AppIcon img={Podcast} uri="/settings" name="Podcast" notificationCount={0}/>
+        <AppIcon img={Phone} uri="/settings" name="Phone" notificationCount={0}/>
+        <AppIcon img={Settings} uri="/settings" name="Settings" notificationCount={0}/>
+        <AppIcon img={Photos} uri="/settings" name="Photos" notificationCount={2}/>
+        <AppIcon img={Maps} uri="/settings" name="Maps" notificationCount={0}/>
+        <AppIcon img={Mail} uri="/settings" name="Mail" notificationCount={1}/>
+        <AppIcon img={Podcast} uri="/settings" name="Podcast" notificationCount={0}/>
       </TransitionGroup>
     );
   }

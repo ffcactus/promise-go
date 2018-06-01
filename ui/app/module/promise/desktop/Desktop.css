@@ -3,7 +3,7 @@
     width: 100%;
     background: linear-gradient(to bottom, rgba(7,42,78,1) 0%,rgba(10,48,85,1) 6%,rgba(19,66,106,1) 15%,rgba(35,94,137,1) 24%,rgba(60,127,166,1) 33%,rgba(80,146,178,1) 39%,rgba(100,163,184,1) 44%,rgba(128,180,182,1) 51%,rgba(151,192,177,1) 56%,rgba(178,201,166,1) 62%,rgba(194,202,155,1) 66%,rgba(213,199,137,1) 71%,rgba(228,189,118,1) 76%,rgba(238,168,92,1) 84%,rgba(240,150,75,1) 92%,rgba(236,126,57,1) 98%,rgba(235,120,53,1) 100%);
     position: relative;
-    z-index: -1;
+
 }
 
 .MainContentFadeAppear, .MainContentFadeEnter {
@@ -227,4 +227,69 @@
     color: white;
     text-decoration: none;
     text-shadow: 0 -1px 0 rgba(0,0,0,.6);      
+}
+
+
+
+.TestAppear, .TestEnter {
+    position: absolute;
+    z-index: 1;
+
+    height: 61.8%;
+    width: 61.8%;
+    opacity: 0;
+	top: 19.1%;
+    left: 19.1%;
+    right: 19.1%;
+    bottom: 19.1%;
+
+    opacity: 0;
+    background-color: #ccc;
+}
+
+.TestAppearActive, .TestEnterActive, .TestEnterDone {
+    position: absolute;
+    z-index: 1;
+
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+
+    opacity: 1;
+    background-color: #ccc;
+    transition: all 300ms ease-in;
+}
+
+.TestExit {
+    position: absolute;
+    z-index: 1;
+
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    opacity: 1;
+    background-color: #ccc;    
+}
+
+.TestExitActive, .TestExitDone {
+    position: absolute;
+    z-index: 1;
+
+    height: 61.8%;
+    width: 61.8%;
+    opacity: 0;
+	top: 19.1%;
+    left: 19.1%;
+    right: 19.1%;
+    bottom: 19.1%;
+
+    opacity: 0;
+    background-color: #ccc;
+    transition: all 300ms ease-in;        
 }
