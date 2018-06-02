@@ -63,24 +63,26 @@ class Login extends React.Component {
     };
 
     return (
-      <FullSizeDiv>
-        <div styleName="loginForm">
-          <form id="login" onSubmit={this.handleSubmit}>
-            <p styleName="loginTitle">Promise</p>
-            <section styleName="loginInput">
-              <input id="hostname" type="text" value={this.state.hostname} placeholder="hostname" onChange={this.handleHostnameChange} />
-              <input id="username" type="text" placeholder="username" onChange={this.handleUsernameChange} />
-              <input id="password" type="password" placeholder="password" onChange={this.handlePasswordChange} />
-            </section>
-            <section styleName="loginSubmit">
-              <input type="submit" value="login" disabled={isLoginButtonDisabled()} />
-            </section>
-            <section styleName="loginFailureMessage">
-              <p styleName={isErrorMessageShow() ? 'showError' : 'hideError'}>{getLoginFailureDescription()}</p>
-            </section>
-          </form>
-        </div>
-      </FullSizeDiv>
+      <div>
+        <FullSizeDiv>
+          <div styleName="loginForm">
+            <form onSubmit={this.handleSubmit}>
+              <p styleName="loginTitle">Promise</p>
+              <section styleName="loginInput">
+                <input type="text" value={this.state.hostname} placeholder="hostname" onChange={this.handleHostnameChange} />
+                <input type="text" placeholder="username" onChange={this.handleUsernameChange} />
+                <input type="password" placeholder="password" onChange={this.handlePasswordChange} />
+              </section>
+              <section styleName="loginSubmit">
+                <input type="submit" value="login" disabled={isLoginButtonDisabled()} />
+              </section>
+              <section styleName="loginFailureMessage">
+                <p styleName={isErrorMessageShow() ? 'showError' : 'hideError'}>{getLoginFailureDescription()}</p>
+              </section>
+            </form>
+          </div>
+        </FullSizeDiv>
+      </div>
     );
   }
 }

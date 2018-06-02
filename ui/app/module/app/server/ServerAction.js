@@ -1,5 +1,5 @@
 import { ActionType } from './ConstValue';
-import { createGetAction } from '../../../client/common';
+import { createGetAction } from '../../promise/common/Client';
 
 function onServerCreate(server) {
   return {

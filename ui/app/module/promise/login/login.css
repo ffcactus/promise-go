@@ -1,5 +1,4 @@
 .loginForm {
-
 	width: 240px;
 	height: 200px;
 	position: fixed;
@@ -9,7 +8,6 @@
 	border: 0;
 	margin: -100px 0 0 -120px; /* [-(height/2)px 0 0 -(width/2)px] */
 	display: block;
-	z-index: 99;
 }
 
 .loginTitle {

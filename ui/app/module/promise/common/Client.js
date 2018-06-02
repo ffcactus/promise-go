@@ -1,7 +1,5 @@
-// import store from '../configureStore';
 
 const Promise = require('promise');
-// const HOST = (process.env.NODE_ENV === 'development') ? '192.168.116.135' : store.getState().global.host;
 
 function createCORSRequest(method, url, async) {
   let xhr = new XMLHttpRequest();
@@ -87,8 +85,8 @@ export function doGet(url, request) {
 }
 
 /**
- * GetAction is the common get action template.
- * @param {string} uri The URI to perform GET method.
+ * The common runtine to perform GET method and dispatch Action.
+ * @param {string} uri The URI to perform GET method. Do not paass hostname.
  * @param {ActionType} start The ActionType when start.
  * @param {ActionType} success The ActionType when success.
  * @param {ActionType} message The ActionType when message returned.
@@ -111,3 +109,32 @@ export function createGetAction(uri, start, success, message, exception) {
     });
   };
 }
+
+/**
+ * The common runtine to perform POST method and dispatch Action.
+ * @param {string} uri The URI to perform POST method. Do not pass hostname.
+ * @param {object} request The request body.
+ * @param {ActionType} start The ActionType when start.
+ * @param {ActionType} success The ActionType when success.
+ * @param {ActionType} message The ActionType when message returned.
+ * @param {ActionType} exception The ActionType when exception returned.
+
+ */
+export function createPostAction(uri, request, start, success, message, exception) {
+  return (dispatch, getState) => {
+    dispatch({ type: start });
+    doPost('http://' + getState().session.hostname + uri, request).then((resp) => {
+      if (resp.status >= 200 && resp.status < 300) {
+        dispatch({ type: success, info: resp.response });
+        return;
+      }
+      if (resp.status === 400) {
+        dispatch({ type: message, info: resp.response });
+        return;
+      }
+    }).catch((e) => {
+      dispatch({ type: exception, info: e });
+    });
+  };
+}
+

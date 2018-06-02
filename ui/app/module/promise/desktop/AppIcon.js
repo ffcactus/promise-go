@@ -23,7 +23,7 @@ class AppIcon extends React.Component {
     return (
       <CSSTransition classNames={iconStyles} in appear timeout={300}>
         <div styleName="AppIconContainer">
-          <div key={this.props.name}>
+          <div styleName="AppIconColumn">
             <div styleName="AppIconAndNotification">
               <Link to={this.props.uri}>
                 <img src={this.props.img} />

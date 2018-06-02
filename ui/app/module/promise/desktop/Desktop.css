@@ -9,6 +9,7 @@
 .MainContentFadeAppear, .MainContentFadeEnter {
     position: absolute;
     z-index: 1;
+    background-color: #ccc;
 
     height: 61.8%;
     width: 61.8%;
@@ -31,8 +32,11 @@
     right: 0px;
     bottom: 0px;
     opacity: 1;
+    
 
-    transition: all 300ms ease-in;
+    transition-property: height, width, top, left, right, bottom, opacity;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in; 
 }
 
 .MainContentFadeExit {
@@ -60,8 +64,10 @@
     right: 19.1%;
     bottom: 19.1%;
     opacity: 0;
-
-    transition: all 300ms ease-in;        
+    
+    transition-property: height, width, top, left, right, bottom, opacity;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in;          
 }
 
 .AppListAppear, .AppListEnter{
@@ -152,10 +158,15 @@
 }
 
 .AppIconContainer {
-    align-items: center;
-    align-self: center;
     height: 100%;
     width: 100%;
+}
+
+.AppIconColumn {
+    align-items: center;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
 }
 
 .AppIconEnter, .AppIconAppear {
@@ -234,6 +245,7 @@
 .TestAppear, .TestEnter {
     position: absolute;
     z-index: 1;
+    background-color: #ccc;
 
     height: 61.8%;
     width: 61.8%;
@@ -242,14 +254,13 @@
     left: 19.1%;
     right: 19.1%;
     bottom: 19.1%;
-
-    opacity: 0;
-    background-color: #ccc;
+    opacity: 0;    
 }
 
 .TestAppearActive, .TestEnterActive, .TestEnterDone {
     position: absolute;
     z-index: 1;
+    background-color: #ccc;
 
     height: 100%;
     width: 100%;
@@ -257,10 +268,12 @@
     left: 0px;
     right: 0px;
     bottom: 0px;
-
     opacity: 1;
-    background-color: #ccc;
-    transition: all 300ms ease-in;
+    
+
+    transition-property: height, width, top, left, right, bottom, opacity;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in; 
 }
 
 .TestExit {
@@ -280,6 +293,7 @@
 .TestExitActive, .TestExitDone {
     position: absolute;
     z-index: 1;
+    background-color: #ccc;
 
     height: 61.8%;
     width: 61.8%;
@@ -288,8 +302,9 @@
     left: 19.1%;
     right: 19.1%;
     bottom: 19.1%;
-
     opacity: 0;
-    background-color: #ccc;
-    transition: all 300ms ease-in;        
+    
+    transition-property: height, width, top, left, right, bottom, opacity;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in;      
 }

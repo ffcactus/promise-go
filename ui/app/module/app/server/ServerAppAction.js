@@ -4,7 +4,7 @@ import * as TaskAction from './TaskAction';
 import * as ServerAction from './ServerAction';
 import * as ServerGroupAction from './ServerGroupAction';
 import * as ServerServerGroupAction from './ServerServerGroupAction';
-import { doGet } from '../../../client/common';
+import { doGet } from '../../promise/common/Client';
 const Promise = require('promise');
 
 /**
