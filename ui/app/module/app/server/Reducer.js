@@ -183,7 +183,14 @@ export const serverApp = (state = defaultState, action) => {
       // So we just care about the SSG_WS_CREATE
       return {
         ...state,
-        serverList: state.serverList.push(action.info),
+        serverList: state.serverList.push({
+          ID: action.info.ID,
+          URI: action.info.URI,
+          Category: action.info.Category,
+          Name: action.info.Name,
+          State: action.info.State,
+          Health: action.info.Health
+        }),
       };
     case ActionType.SERVER_WS_UPDATE:
       // If the server in the list.
@@ -191,7 +198,14 @@ export const serverApp = (state = defaultState, action) => {
         ...state,
         serverList: state.serverList.map((each) => {
           if (each.ID === action.info.ID) {
-            return action.info;
+            return {
+              ID: action.info.ID,
+              URI: action.info.URI,
+              Category: action.info.Category,
+              Name: action.info.Name,
+              State: action.info.State,
+              Health: action.info.Health
+            };
           }
           return each;
         }),

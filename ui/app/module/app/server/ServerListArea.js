@@ -14,6 +14,12 @@ class ServerListArea extends React.Component {
     this.setListRef = this.setListRef.bind(this);
   }
 
+  UNSAFE_componentWillUpdate() {
+    if (this.listRef.forceUpdateGrid) {
+      this.listRef.forceUpdateGrid();
+    }
+  }
+
   setListRef(element) {
     this.listRef = element;
   }
