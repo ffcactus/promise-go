@@ -26,7 +26,7 @@ class AppIcon extends React.Component {
           <div styleName="AppIconColumn">
             <div styleName="AppIconAndNotification">
               <Link to={this.props.uri}>
-                <img src={this.props.img} />
+                <img src={this.props.img} height="128px" width="128px"/>
                 <IconNotification notificationCount={this.props.notificationCount} />
               </Link>
             </div>

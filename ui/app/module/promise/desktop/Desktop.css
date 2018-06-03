@@ -71,12 +71,10 @@
 
 .AppListAppear, .AppListEnter{
     display: grid;
-    grid-template-rows: 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-areas: "a a a a"
-                         "a a a a"
-                         "a a a a";
-    position: absolute;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-areas: "a a a a a a a"
+                         "a a a a a a a";
     z-index: 1;
 	padding: 0px;
     border: 0px;
@@ -94,11 +92,10 @@
 
 .AppListAppearActive, .AppListEnterActive, .AppListEnterDone {
     display: grid;
-    grid-template-rows: 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-areas: "a a a a"
-                         "a a a a"
-                         "a a a a";    
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-areas: "a a a a a a a"
+                         "a a a a a a a";
     position: absolute;
     z-index: 1;
 	padding: 0px;
@@ -117,11 +114,10 @@
 
 .AppListExit {
     display: grid;
-    grid-template-rows: 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-areas: "a a a a"
-                         "a a a a"
-                         "a a a a";    
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-areas: "a a a a a a a"
+                         "a a a a a a a";  
     position: absolute;
     z-index: 1;
 	padding: 0px;
@@ -137,11 +133,10 @@
 
 .AppListExitActive, .AppListExitDone {
     display: grid;
-    grid-template-rows: 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-areas: "a a a a"
-                         "a a a a"
-                         "a a a a";    
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-areas: "a a a a a a a"
+                         "a a a a a a a"; 
     position: absolute;
     z-index: 1;
 	padding: 0px;
@@ -209,12 +204,13 @@
 
 .AppIconAndNotification {
     position: relative;
-    width: 74px;
-    height: 74px;
+    width: 128px;
+    height: 128px;
 }
 
 .AppIconName {
-    font: "Helvetica Neue", sans-serif; 
+    font: "Helvetica Neue", sans-serif;
+    text-shadow: 0px 0px 5px black;
 }
 
 .IconNotification {

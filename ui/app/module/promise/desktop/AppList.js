@@ -11,26 +11,35 @@ class AppList extends React.Component {
   }
 
   render() {
-    const Clock = require('./img/icon/Clock.png');
-    const Mail = require('./img/icon/Mail.png');
-    const Maps = require('./img/icon/Maps.png');
-    const Photos = require('./img/icon/Photos.png');
-    const Podcast = require('./img/icon/Podcast.png');
-    const Phone = require('./img/icon/Phone.png');
-    const Settings = require('./img/icon/Settings.png');
+    const Contacts = require('./img/icon/contacts_icon@2x.png');
+    const Date = require('./img/icon/date_icon@2x.png');
+    const Find = require('./img/icon/find_icon@2x.png');
+    const Friends = require('./img/icon/fmf_icon@2x.png');
+    const Drive = require('./img/icon/icloud_drive_icon@2x.png');
+    const Keynote = require('./img/icon/keynote_icon@2x.png');
+    const Mail = require('./img/icon/mail_icon@2x.png');
+    const Notes = require('./img/icon/notes_icon@2x.png');
+    const Numbers = require('./img/icon/numbers_icon@2x.png');
+    const Pages = require('./img/icon/pages_icon@2x.png');
+    const Photos = require('./img/icon/photos_icon@2x.png');
+    const Reminders = require('./img/icon/reminders_icon@2x.png');
+    const Settings = require('./img/icon/settings_icon@2x.png');
+
     return (
       <TransitionGroup key="AppList" _id="AppList">
-        <AppIcon img={Clock} uri="/test" name="Test" notificationCount={0}/>
-        <AppIcon img={Mail} uri="/servercontroller" name="ServerController" notificationCount={1}/>
-        <AppIcon img={Maps} uri="/login" name="Login" notificationCount={0}/>
-        <AppIcon img={Photos} uri="/animation" name="Animation" notificationCount={10000}/>
-        <AppIcon img={Podcast} uri="/server" name="Server" notificationCount={0}/>
-        <AppIcon img={Phone} uri="/settings" name="Phone" notificationCount={0}/>
+        <AppIcon img={Contacts} uri="/test" name="Contacts" notificationCount={0}/>
+        <AppIcon img={Date} uri="/servercontroller" name="Date" notificationCount={0}/>
+        <AppIcon img={Find} uri="/login" name="Find" notificationCount={0}/>
+        <AppIcon img={Friends} uri="/animation" name="Friends" notificationCount={0}/>
+        <AppIcon img={Drive} uri="/server" name="Drive" notificationCount={0}/>
+        <AppIcon img={Keynote} uri="/server" name="Keynote" notificationCount={0}/>
+        <AppIcon img={Mail} uri="/settings" name="Mail" notificationCount={0}/>
+        <AppIcon img={Notes} uri="/settings" name="Notes" notificationCount={0}/>
+        <AppIcon img={Numbers} uri="/settings" name="Numbers" notificationCount={0}/>
+        <AppIcon img={Pages} uri="/settings" name="Pages" notificationCount={0}/>
+        <AppIcon img={Photos} uri="/settings" name="Photos" notificationCount={0}/>
+        <AppIcon img={Reminders} uri="/settings" name="Reminders" notificationCount={0}/>
         <AppIcon img={Settings} uri="/settings" name="Settings" notificationCount={0}/>
-        <AppIcon img={Photos} uri="/settings" name="Photos" notificationCount={2}/>
-        <AppIcon img={Maps} uri="/settings" name="Maps" notificationCount={0}/>
-        <AppIcon img={Mail} uri="/settings" name="Mail" notificationCount={1}/>
-        <AppIcon img={Podcast} uri="/settings" name="Podcast" notificationCount={0}/>
       </TransitionGroup>
     );
   }
