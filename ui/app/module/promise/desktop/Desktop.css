@@ -69,38 +69,57 @@
     transition-timing-function: ease-in-out;          
 }
 
-.AppListAppear, .AppListEnter{
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-areas: "a a a a a a a"
-                         "a a a a a a a";
+.AppList {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: center;
     z-index: 1;
 	padding: 0px;
     border: 0px;
     margin: 0px;
+}
+
+.AppList::after {
+    content: '';
+    flex: auto;
+}
+
+.AppListAppear, .AppListEnter{
+    /* display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-areas: "a a a a a a a"
+                         "a a a a a a a"; */
+    /* z-index: 1;
+	padding: 0px;
+    border: 0px;
+    margin: 0px; */
 
 
-    height: 100%;
-    width: 100%;
+    height: 80%;
+    width: 80%;
     opacity: 0;
-	top: 0px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
+	top: 20%;
+    left: 20%;
+    right: 20%;
+    bottom: 20%;
 }
 
 .AppListAppearActive, .AppListEnterActive, .AppListEnterDone {
-    display: grid;
+    /* display: grid;
     grid-template-rows: 1fr 1fr;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-areas: "a a a a a a a"
-                         "a a a a a a a";
-    position: absolute;
+                         "a a a a a a a"; */
+    /* position: absolute;
     z-index: 1;
 	padding: 0px;
     border: 0px;
-    margin: 0px;
+    margin: 0px; */
 
     height: 61.8%;
     width: 61.8%;
@@ -113,17 +132,19 @@
 }
 
 .AppListExit {
-    display: grid;
+    /* display: grid;
     grid-template-rows: 1fr 1fr;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-areas: "a a a a a a a"
-                         "a a a a a a a";  
-    position: absolute;
+                         "a a a a a a a";   */
+    /* position: absolute;
     z-index: 1;
 	padding: 0px;
     border: 0px;
-    margin: 0px;
+    margin: 0px; */
 
+    height: 61.8%;
+    width: 61.8%;
     opacity: 1;
 	top: 19.1%;
     left: 19.1%;
@@ -132,28 +153,34 @@
 }
 
 .AppListExitActive, .AppListExitDone {
-    display: grid;
+    /* display: grid;
     grid-template-rows: 1fr 1fr;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-areas: "a a a a a a a"
-                         "a a a a a a a"; 
-    position: absolute;
+                         "a a a a a a a";  */
+    /* position: absolute;
     z-index: 1;
 	padding: 0px;
     border: 0px;
-    margin: 0px;
+    margin: 0px; */
 
+    height: 80%;
+    width: 80%;
     opacity: 0;
-	top: 0px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
+	top: 20%;
+    left: 20%;
+    right: 20%;
+    bottom: 20%;
     transition: all 300ms ease-in-out;  
 }
 
 .AppIconContainer {
     height: 100%;
     width: 100%;
+    min-width: 160px;
+    max-height: 220px;
+    flex-grow: 1;
+    flex-shrink: 1;
 }
 
 .AppIconColumn {

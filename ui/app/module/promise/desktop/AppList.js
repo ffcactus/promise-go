@@ -26,7 +26,7 @@ class AppList extends React.Component {
     const Settings = require('./img/icon/settings_icon@2x.png');
 
     return (
-      <TransitionGroup key="AppList" _id="AppList">
+      <TransitionGroup styleName="AppList" key="AppList" _id="AppList">
         <AppIcon img={Contacts} uri="/test" name="Contacts" notificationCount={0}/>
         <AppIcon img={Date} uri="/servercontroller" name="Date" notificationCount={0}/>
         <AppIcon img={Find} uri="/login" name="Find" notificationCount={0}/>
