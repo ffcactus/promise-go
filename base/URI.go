@@ -16,6 +16,8 @@ const (
 	ServerServerGroupBaseURI = "/server-servergroup"
 	// AdapterConfigBaseURI is adapterconfig base URI.
 	AdapterConfigBaseURI = "/adapterconfig"
+	// AdapterModelBaseURI is adapterconfig base URI.
+	AdapterModelBaseURI = "/adaptermodel"
 	// AuthBaseURI is auth base URI.
 	AuthBaseURI = "/auth"
 	// WSBaseURI is websocket base URI.
@@ -45,6 +47,8 @@ func CategoryToURI(c string, id string) string {
 		return RootURL + ServerServerGroupBaseURI + "/" + id
 	case CategoryAdapterConfig:
 		return RootURL + AdapterConfigBaseURI + "/" + id
+	case CategoryAdapterModel:
+		return RootURL + AdapterModelBaseURI + "/" + id
 	case CategoryPoolIPv4:
 		return RootURL + IDPoolIPv4BaseURI + "/" + id
 	default:
@@ -72,8 +76,12 @@ func ToAdapterConfigURI(id string) string {
 	return RootURL + AdapterConfigBaseURI + "/" + id
 }
 
+// ToAdapterModelURI convert ID to URI.
+func ToAdapterModelURI(id string) string {
+	return RootURL + AdapterModelBaseURI + "/" + id
+}
+
 // ToIDPoolIPv4URI convert ID to URI.
 func ToIDPoolIPv4URI(id string) string {
 	return RootURL + IDPoolIPv4BaseURI + "/" + id
 }
-

@@ -1,0 +1,11 @@
+{
+    "Name": "MZ520",
+    "Type": "Mezz",
+    "Version": 1,
+    "Capability": {
+        "Version": 1,
+        "FCoE": {
+            
+        }
+    }
+}
