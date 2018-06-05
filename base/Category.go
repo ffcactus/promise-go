@@ -11,8 +11,8 @@ const (
 	CategoryServerGroup = "ServerGroup"
 	// CategoryServerServerGroup is a category name.
 	CategoryServerServerGroup = "ServerServerGroup"
+	// CategoryAdapterConfig is a category name.
+	CategoryAdapterConfig = "AdapterConfig"
 	// CategoryPoolIPv4 is a category name.
 	CategoryPoolIPv4 = "PoolIPv4"
-	// CategoryStudent is a category name.
-	CategoryStudent = "Student"
 )

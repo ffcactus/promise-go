@@ -73,6 +73,18 @@ func main() {
 		}),
 	)
 	beego.AddNamespace(serverServerGroupNS)
+
+	adapterConfigNS := beego.NewNamespace(
+		base.RootURL+base.AdapterConfigBaseURI,
+		beego.NSRouter("/", &base.RootController{
+			TemplateImpl: new(controller.AdapterConfigRoot),
+		}),
+		beego.NSRouter("/:id", &base.IDController{
+			TemplateImpl: new(controller.AdapterConfigID),
+		}),
+	)
+	beego.AddNamespace(adapterConfigNS)
+
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins:  true,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},

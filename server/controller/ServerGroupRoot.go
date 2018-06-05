@@ -12,7 +12,7 @@ var (
 	}
 )
 
-// ServerGroupRoot is ther servergroup controller.
+// ServerGroupRoot is the servergroup controller.
 type ServerGroupRoot struct {
 }
 

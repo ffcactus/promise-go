@@ -14,6 +14,8 @@ const (
 	ServerGroupBaseURI = "/servergroup"
 	// ServerServerGroupBaseURI is server-servergroup base URI.
 	ServerServerGroupBaseURI = "/server-servergroup"
+	// AdapterConfigBaseURI is adapterconfig base URI.
+	AdapterConfigBaseURI = "/adapterconfig"
 	// AuthBaseURI is auth base URI.
 	AuthBaseURI = "/auth"
 	// WSBaseURI is websocket base URI.
@@ -26,8 +28,6 @@ const (
 	IDPoolBaseURI = "/id-pool"
 	// IDPoolIPv4BaseURI is IPv4 pool base URI.
 	IDPoolIPv4BaseURI = "/id-pool/ipv4"
-	// StudentBaseURI is student base URI.
-	StudentBaseURI = "/student"
 )
 
 // CategoryToURI turns ID to to URI depends on category.
@@ -43,10 +43,10 @@ func CategoryToURI(c string, id string) string {
 		return RootURL + ServerGroupBaseURI + "/" + id
 	case CategoryServerServerGroup:
 		return RootURL + ServerServerGroupBaseURI + "/" + id
+	case CategoryAdapterConfig:
+		return RootURL + AdapterConfigBaseURI + "/" + id
 	case CategoryPoolIPv4:
 		return RootURL + IDPoolIPv4BaseURI + "/" + id
-	case CategoryStudent:
-		return RootURL + StudentBaseURI + "/" + id
 	default:
 		return ""
 	}
@@ -67,12 +67,13 @@ func ToServerServerGroupURI(id string) string {
 	return RootURL + ServerServerGroupBaseURI + "/" + id
 }
 
+// ToAdapterConfigURI convert ID to URI.
+func ToAdapterConfigURI(id string) string {
+	return RootURL + AdapterConfigBaseURI + "/" + id
+}
+
 // ToIDPoolIPv4URI convert ID to URI.
 func ToIDPoolIPv4URI(id string) string {
 	return RootURL + IDPoolIPv4BaseURI + "/" + id
 }
 
-// ToStudentURI convert ID to URI.
-func ToStudentURI(id string) string {
-	return RootURL + StudentBaseURI + "/" + id
-}

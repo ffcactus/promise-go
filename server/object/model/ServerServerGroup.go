@@ -35,5 +35,5 @@ type ServerServerGroupCollection struct {
 
 // NewModelMember return a new ModelMember
 func (m *ServerServerGroupCollection) NewModelMember() interface{} {
-	return new(ServerCollectionMember)
+	return new(ServerServerGroupCollectionMember)
 }

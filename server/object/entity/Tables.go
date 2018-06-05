@@ -37,6 +37,7 @@ var (
 		{Name: "NetworkPort", Info: new(NetworkPort)},
 		{Name: "ServerGroup", Info: new(ServerGroup)},
 		{Name: "ServerServerGroup", Info: new(ServerServerGroup)},
+		{Name: "AdapterConfig", Info: new(AdapterConfig)},
 	}
 
 	// ServerTables The tables used by server resources.
