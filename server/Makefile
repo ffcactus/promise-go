@@ -7,7 +7,7 @@ clean:
 
 install: all
 	mkdir -p /opt/promise/apps/server
-	cp -rf ./package/* /opt/promise/apps/server/
+	cp -rf ./package/rpm/* /opt/promise/apps/server/
 
 clean-install:
 	rm -rf /opt/promise/apps/server
