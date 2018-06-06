@@ -1,6 +1,10 @@
 package constvalue
 
 const (
+	AdapterModelPath = "/opt/promise/apps/server/static/adapter"
+)
+
+const (
 	// ServerStateAdded means the server is added but not ready.
 	ServerStateAdded = "Added"
 	// ServerStateReady means the server is ready for operation.

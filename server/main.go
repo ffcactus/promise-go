@@ -26,6 +26,7 @@ func initDB() {
 			log.Info("DB schema created.")
 		}
 	}
+	service.LoadModel()
 	service.CreateDefaultServerGroup()
 }
 

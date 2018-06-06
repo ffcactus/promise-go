@@ -1,4 +1,4 @@
-export const ServerAppState = Object.freeze(
+export const AppState = Object.freeze(
   {
     'LOADING': 'LOADING',
     'NORMAL': 'NORMAL',

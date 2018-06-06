@@ -1,9 +1,12 @@
 package service
 
 import (
+	log "github.com/sirupsen/logrus"
+	"io/ioutil"
 	"promise/base"
 	"promise/server/db"
 	"promise/server/object/dto"
+	"promise/server/object/constvalue"
 )
 
 var (
@@ -12,6 +15,7 @@ var (
 			TemplateImpl: new(db.AdapterModel),
 		},
 	}
+	models = make(map[string]string)
 )
 
 // AdapterModel is the servergroup service.
@@ -36,4 +40,22 @@ func (s *AdapterModel) DB() base.DBInterface {
 // EventService returns the event service implementation.
 func (s *AdapterModel) EventService() base.EventServiceInterface {
 	return eventService
+}
+
+// LoadModel will load the model from local files.
+func LoadModel() {
+	files, err := ioutil.ReadDir(constvalue.AdapterModelPath)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"path": constvalue.AdapterModelPath,
+		}).Error("Service failed to read adapter model directory.")
+	}
+	for _, file := range files {
+		content, err := ioutil.ReadFile(constvalue.AdapterModelPath + "/" + file.Name())
+		if err != nil {
+			log.WithFields(log.Fields{
+				"name": file.Name(),
+			}).Error("Service failed to read adapter model file.")
+		}
+	}
 }
