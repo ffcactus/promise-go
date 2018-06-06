@@ -38,6 +38,11 @@ var (
 		{Name: "ServerGroup", Info: new(ServerGroup)},
 		{Name: "ServerServerGroup", Info: new(ServerServerGroup)},
 		{Name: "AdapterConfig", Info: new(AdapterConfig)},
+		{Name: "AdapterModel", Info: new(AdapterModel)},
+		{Name: "AdapterCapability", Info: new(AdapterCapability)},
+		{Name: "RAIDCapability", Info: new(RAIDCapability)},
+		{Name: "EthernetCapability", Info: new(EthernetCapability)},
+		{Name: "FCoECapability", Info: new(FCoECapability)},
 	}
 
 	// ServerTables The tables used by server resources.

@@ -28,19 +28,20 @@ func CreateDefaultServerGroup() {
 	request.Name = "all"
 	request.Description = "The default servergroup that includes all the servers."
 	sg, message := serverGroupDB.Create(request.ToModel())
-	if message != nil && message.ID == base.MessageDuplicate {
-		log.Debug("The default servergroup exist.")
+	if message == nil {
+		response.Load(sg)
+		eventService.DispatchCreateEvent(&response)
+		log.WithFields(log.Fields{
+			"id": sg.GetID(),
+		}).Info("Service create the default servergroup created.")
+		db.DefaultServerGroupID = sg.GetID()
+	} else if message.ID == base.MessageDuplicate {
+		log.Debug("Service found the default servergroup exist.")
+	} else {
+		log.WithFields(log.Fields{
+			"message": message.ID,
+		}).Error("Service failed to create default servergroup.")
 	}
-	if message != nil {
-		log.Fatal("Failed to create default servergroup.")
-	}
-
-	response.Load(sg)
-	eventService.DispatchCreateEvent(&response)
-	log.WithFields(log.Fields{
-		"id": sg.GetID(),
-	}).Info("Default servergroup created.")
-	db.DefaultServerGroupID = sg.GetID()
 }
 
 // Category returns the category of this service.

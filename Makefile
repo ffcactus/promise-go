@@ -21,6 +21,12 @@ clean:
 	$(MAKE) -C server clean
 	$(MAKE) -C pool clean
 
+install:
+	$(MAKE) -C server install
+
+clean-install:
+	$(MAKE) -C server clean-install
+
 start:
 	# Make sure the start order is right.
 	$(MAKE) -C auth start

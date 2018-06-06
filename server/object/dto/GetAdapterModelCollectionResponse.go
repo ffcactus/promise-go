@@ -10,6 +10,7 @@ import (
 type AdapterModelCollectionMember struct {
 	base.CollectionMemberResponse
 	Name string `json:"Name"`
+	Type string `json:"Type"`
 }
 
 // Load will load info from model.
@@ -21,6 +22,7 @@ func (dto *AdapterModelCollectionMember) Load(i base.CollectionMemberModelInterf
 	}
 	dto.CollectionMemberResponse.Load(&m.CollectionMemberModel)
 	dto.Name = m.Name
+	dto.Type = m.Type
 	return nil
 }
 

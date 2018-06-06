@@ -34,7 +34,7 @@ func (impl *AdapterModel) GetConnection() *gorm.DB {
 
 // NeedCheckDuplication return if need check duplication for entity.
 func (impl *AdapterModel) NeedCheckDuplication() bool {
-	return false
+	return true
 }
 
 // ConvertFindResultToCollection convert the Find() result to collection mode.

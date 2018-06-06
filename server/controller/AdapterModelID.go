@@ -11,7 +11,7 @@ type AdapterModelID struct {
 
 // ResourceName returns the name this controller handle of.
 func (c *AdapterModelID) ResourceName() string {
-	return "servergroup"
+	return "adaptermodel"
 }
 
 // Request creates a new request DTO.
@@ -26,5 +26,5 @@ func (c *AdapterModelID) Response() base.GetResponseInterface {
 
 // Service returns the service.
 func (c *AdapterModelID) Service() base.CRUDServiceInterface {
-	return serverGroupService
+	return adapterModelService
 }

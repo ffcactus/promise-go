@@ -4,10 +4,35 @@ import (
 	"promise/base"
 )
 
+// RAIDCapability describe the capability of an FCoE adapter.
+type RAIDCapability struct {
+	Version int
+}
+
+// EthernetCapability describe the capability of an FCoE adapter.
+type EthernetCapability struct {
+	Version int
+}
+
+// FCoECapability describe the capability of an FCoE adapter.
+type FCoECapability struct {
+	Version int
+}
+
+// AdapterCapability describe the capability of an adapter.
+type AdapterCapability struct {
+	Version  int
+	RAID     *RAIDCapability
+	Ethernet *EthernetCapability
+	FCoE     *FCoECapability
+}
+
 // AdapterModel is the model.
 type AdapterModel struct {
 	base.Model
-	Name string
+	Name       string
+	Type       string
+	Capability AdapterCapability
 }
 
 // DebugInfo return the debug name the model.
@@ -17,13 +42,14 @@ func (m *AdapterModel) DebugInfo() string {
 
 // ValueForDuplicationCheck return the value for duplication check.
 func (m *AdapterModel) ValueForDuplicationCheck() string {
-	return ""
+	return m.Name
 }
 
 // AdapterModelCollectionMember is the member in collection.
 type AdapterModelCollectionMember struct {
 	base.CollectionMemberModel
 	Name string
+	Type string
 }
 
 // AdapterModelCollection is the model of collection.
