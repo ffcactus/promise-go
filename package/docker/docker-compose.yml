@@ -1,0 +1,19 @@
+version: "3"
+services:
+  server:
+    image: server
+    deploy:
+      replicas: 4
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 100M
+        restart_policy:
+          condition: on-failure
+    ports:
+      - "4000:80"
+    networks:
+      - webnet
+networks: 
+  webnet:
+    
