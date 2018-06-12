@@ -5,6 +5,9 @@ all:
 clean:
 	@rm -f ./server
 
+docker:
+	docker build -t promise.server ./package/docker
+
 install: all
 	mkdir -p /opt/promise/apps/server
 	cp -rf ./package/rpm/* /opt/promise/apps/server/

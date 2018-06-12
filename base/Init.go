@@ -8,11 +8,11 @@ import (
 
 // Init will init the app.
 func Init(appName string) {
-	err := beego.LoadAppConfig("ini", "/opt/promise/conf/promise.conf")
+	err := beego.LoadAppConfig("ini", "/opt/promise/conf/app.conf")
 	if err != nil {
 		panic(err)
 	}
-	port, err := beego.AppConfig.Int(appName + "Port")
+	port, err := beego.AppConfig.Int("Port")
 	if err != nil {
 		panic(err)
 	}
