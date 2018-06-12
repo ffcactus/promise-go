@@ -11,7 +11,10 @@ import (
 )
 
 func initDB() {
-	base.InitConnection()
+	if err := base.InitConnection(); err != nil {
+		log.Error("Init DB failed, App exit.")
+		panic("Init DB failed, App exit.")
+	}
 	if recreateDB, _ := beego.AppConfig.Bool("recreate_db"); recreateDB {
 		// Remove tables.
 		if base.RemoveTables(entity.Tables) {

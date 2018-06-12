@@ -5,7 +5,8 @@ all:
 clean:
 	@rm -f ./server
 
-docker:
+docker: all
+	mv ./server ./package/docker
 	docker build -t promise.server ./package/docker
 
 install: all
