@@ -1,0 +1,2 @@
+image:
+	@echo "Nothing..."
