@@ -1,7 +1,8 @@
 version: "3"
+
 services:
   server:
-    image: promise.server
+    image: promise.server:latest
     deploy:
       replicas: 4
       resources:
@@ -10,10 +11,25 @@ services:
           memory: 100M
       restart_policy:
         condition: on-failure
-    ports:
-      - "4000:80"
-    networks:
-      - webnet
+    networks: 
+      - promise
+  db:
+    image: postgres:latest
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 2G
+      restart_policy:
+        condition: on-failure
+    environment:
+      - POSTGRES_PASSWORD=iforgot
+      - POSTGRES_DB=promise
+    networks: 
+      - promise
+      
 networks: 
-  webnet:
+  promise:
+    driver: overlay
     
