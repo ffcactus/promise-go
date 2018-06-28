@@ -103,6 +103,7 @@ func NewMessageNotExist() *Message {
 	ret.ID = MessageNotExist
 	ret.Severity = SeverityNormal
 	ret.Description = "Resource does not exist."
+	ret.StatusCode = http.StatusNotFound
 	ret.Supports = []Support{
 		NewSupportNotExist(),
 	}

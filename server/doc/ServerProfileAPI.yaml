@@ -1,0 +1,732 @@
+swagger: "2.0"
+info:
+  description: "ServerProfile Service provides profile base management capabilities for servers."
+  version: "1.0.0"
+  title: "ServerProfile Service"
+host: "localhost"
+basePath: "/redfish/v1"
+tags:
+- name: "AdapterHardwareCapability"
+  description: "AdapterHardwareCapability is used to describe the capability of a hardware adapter device."
+- name: "ServerHardwareModel"
+  description: "ServerHardwareModel is used to describe the hardware skeleton of a server. Many server may share a same ServerHardwareModel."
+- name: "ServerProfile"
+  description: "ServerProfile is used to describe the expected settings to a server."
+schemes:
+- "https"
+paths:
+  /AdapterHardwareCapability:
+    get:
+      tags:
+      - "AdapterHardwareCapability"
+      summary: "Returns AdapterHardwareCapability collection"
+      description: "Returns AdapterHardwareCapability collection. You can use filter to find a specific adapter."
+      operationId: "getAdapterHardwareCapabilityCollection"
+      produces:
+      - "application/json"
+      responses:
+        '200':
+          description: "OK."
+          schema:
+            $ref: "#/definitions/AdapterHardwareCapabilityCollection"
+        '404':
+          description: "Not Found."
+  /AdapterHardwareCapability/{id}:
+    get:
+      tags:
+      - "AdapterHardwareCapability"
+      summary: "Returns AdapterHardwareCapability by ID."
+      description: "For all the adapter that is supported in FusionDirector, it's AdapterHardwareCapability will be pre-created automatically."
+      operationId: "getAdapterHardwareCapability"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of AdapterHardwareCapability."
+        required: true
+        type: "string"      
+      produces:
+      - "application/json"
+      responses:
+        '200':
+          description: "OK."
+          schema:
+            $ref: "#/definitions/AdapterHardwareCapability"
+        '404':
+          description: "Not Found."
+  /ServerHardwareModel:
+    post:
+      tags:
+      - "ServerHardwareModel"
+      summary: "Creates a ServerHardwareModel."
+      description: "Creates a ServerHardwareModel. ServerProfile Service will create ServerHardwareModel for each of the server, however, if you would like to create a ServerHardwareModel that doesn't belong to any of the server exists in FusionDirector, you can create one manually."
+      operationId: "postServerHardwareModel"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/PostServerHardwareModelRequest"
+      responses:
+        '200':
+          description: "OK."
+        '400':
+          description: "Bad request."
+    get:
+      tags:
+      - "ServerHardwareModel"
+      summary: "Returns ServerHardwareModel collection."
+      description: "Returns ServerHardwareModel collection."
+      operationId: "getServerHardwareModel"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        '200':
+          description: "OK."
+          schema:
+            $ref: "#/definitions/ServerHardwareModelCollection"
+  /ServerHardwareModel/{id}:
+    get:
+      tags:
+      - "ServerHardwareModel"
+      summary: "Find ServerHardwareModel by ID."
+      description: "Returns a single ServerHardwareModel."
+      operationId: "getServerHardwareModelById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of ServerHardwareModel."
+        required: true
+        type: "string"
+      responses:
+        '200':
+          description: "OK."
+          schema:
+            $ref: "#/definitions/ServerHardwareModel"
+        '400':
+          description: "Invalid ID supplied."
+        '404':
+          description: "ServerHardwareModel not found."
+    delete:
+      tags:
+      - "ServerHardwareModel"    
+      summary: "Delete a ServerHardwareModel."
+      description: "Delete a ServerHardwareModel. The deleted ServerHardwareModel will be returned."
+      operationId: "deleteServerHardwareModel"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of ServerHardwareModel."
+        required: true
+        type: "string"      
+      responses:
+        '200':
+          description: "OK."
+          schema:
+            $ref: "#/definitions/ServerHardwareModel"
+        '400':
+          description: "Invalid ID supplied."
+        '404':
+          description: "ServerHardwareModel not found."
+  /ServerHardwareModel/{id}/ServerAssociation:
+    get:
+      tags:
+      - "ServerHardwareModel"
+      summary: "Get the associated server of this ServerHardwareModel."
+      description: "Get the associated server of this ServerHardwareModel. The association is managed by ServerProfile service."
+      operationId: "getServerHardwareModelServerAssociation"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of ServerHardwareModel."
+        required: true
+        type: "string"      
+      responses:
+        '200':
+          description: "OK."
+          schema:
+            type: "array"
+            items:
+              type: "string"
+              example: "/Server/1"
+        '404':
+          description: "ServerHardwareModel not found."      
+  /ServerHardwareModel/{id}/Action/ParseNetworkAdapterPortConnection:
+    post:
+      tags:
+      - "ServerHardwareModel"
+      summary: "Parse network adapter port connection."
+      description: "When the server's name and location in enclosure are sure, and it's network adapters' name and location are sure, we can figure out the physical connection path from the port of the network adapter to the IO modules inside the enclosure, we can also figure out the PCIe function number of the network adapter."
+      operationId: "serverHardwareModelActionParseNetworkAdapterPort"
+      produces: 
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of ServerHardwareModel."
+        required: true
+        type: "string"      
+      responses:
+        '200':
+          description: "OK."
+          schema:
+            $ref: "#/definitions/ServerNetworkAdapterPortConnection"
+        '400':
+          description: "Invalid request."
+  /ServerProfile:
+    post:
+      tags:
+      - "ServerProfile"
+      summary: "Create a ServerProfile."
+      description: "Create a ServerProfile."
+      operationId: "postServerProfile"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/PostServerProfileRequest"      
+      responses:
+        '200':
+          description: "OK."
+        '400':
+          description: "Bad request."
+    get:
+      tags:
+      - "ServerProfile"    
+      summary: "Get ServerProfile collection."
+      description: "Get ServerProfile collection."
+      operationId: "getServerProfileCollection"
+      produces: 
+      - "application/json"
+      parameters:
+      - name: "top"
+        in: "query"
+        description: "The $top system query option requests the number of items in the queried collection to be included in the result." 
+        required: false
+        type: "integer"
+      - name: "skip"
+        in: "query"
+        description: "The $skip query option requests the number of items in the queried collection that are to be skipped and not included in the result."
+        required: false
+        type: "integer"
+      - name: "filter"
+        in: "query"
+        description: "The filter to be used in form the collection."
+        required: false
+        type: "integer"        
+      responses:
+        '200':
+          description: "OK."
+          schema:
+            $ref: "#/definitions/ServerProfileCollection"
+  /ServerProfile/{id}:
+    get:
+      tags:
+      - "ServerProfile"
+      summary: "Find ServerProfile by ID."
+      description: "Find ServerProfile by ID."
+      operationId: "getServerProfile"
+      produces: 
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of ServerHardwareModel."
+        required: true
+        type: "string"
+      responses:
+        '200':
+          description: "OK."
+          schema:
+            $ref: "#/definitions/ServerProfile"
+        '400':
+          description: "Invalid ID supplied."
+        '404':
+          description: "ServerProfile not found."
+    delete:
+      tags:
+      - "ServerProfile"    
+      summary: "Delete a ServerProfile."
+      description: "Delete a ServerProfile. The deleted ServerProfile will be returned."
+      operationId: "deleteServerProfile"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of ServerProfile."
+        required: true
+        type: "string"      
+      responses:
+        '200':
+          description: "OK."
+          schema:
+            $ref: "#/definitions/ServerProfile"
+        '400':
+          description: "Invalid ID supplied."
+        '404':
+          description: "ServerProfile not found."
+  /ServerProfile/{id}/Action/Apply:
+    post:
+      tags:
+      - "ServerProfile"
+      summary: "Apply a ServerProfile to a server."
+      description: "Apply a ServerProfile to a server. Use can select settings to apply, and how to activate the settings."
+      operationId: "serverProfileActionApply"
+      consumes:
+      - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of ServerProfile."
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          type: "object"
+          required:
+          - ServerURL
+          properties:
+            ServerURL:
+              type: "string"
+              example: "/Server/1"
+            ActivateType:
+              type: "string"
+              enum:
+                - AfterApply
+                - Manual
+              example: "Manual"
+            Settings:
+              type: "array"
+              items: 
+                type: "string"
+                enum:
+                - "All"
+                - "BMCSettings"
+                - "RAIDSettings"
+                - "NetworkAdapterSettings"
+                example: "All"
+      responses:
+        '200':
+          description: "OK."
+          headers:
+            TaskURL:
+              type: "string"
+              description: "The task that is generated by this action."
+        '400':
+          description: "Invalid ID supplied."
+        '404':
+          description: "ServerProfile not found."
+definitions:
+  AdapterHardwareCapability:
+    type: "object"
+    required:
+    - ID
+    - URL
+    - Name
+    - AdapterType
+    properties:
+      ID: 
+        type: "string"
+        example: "1"
+      URL:
+        type: "string"
+        example: "/AdapterHardwareCapability/1"
+      Name:
+        type: "string"
+        example: "MZ510"
+      AdapterType:
+        type: "string"
+        enum:
+        - "Ethernet"
+        - "FC"
+        - "CNA"
+        - "RAID"
+        example: "CNA"
+  AdapterHardwareCapabilityCollectionMember:
+    type: "object"
+    required:
+    - ID
+    - URL
+    - Name
+    - Type    
+    properties:
+      ID: 
+        type: "string"
+        example: "1"
+      URL:
+        type: "string"
+        example: "/AdapterHardwareCapability/1"
+      Name:
+        type: "string"
+        example: "MZ510"
+      Type:
+        type: "string"
+        example: "Mezz"                 
+  AdapterHardwareCapabilityCollection:   
+    type: "object"
+    required:
+    - Count
+    - Top
+    - Skip
+    - Members
+    properties:
+      Count:
+        type: "integer"
+        example: 100
+      Top:
+        type: "integer"
+        example: 10     
+      Skip:
+        type: "integer"
+        example: 0
+      Members:
+        type: "array"
+        items:
+          $ref: "#/definitions/AdapterHardwareCapabilityCollectionMember"   
+  AdapterLocationType:
+    type: "string"
+    enum:
+    - 'LOM'
+    - "Mezz"
+    - "Raid"
+    - "StandardPCIe"
+    example: "Mezz"
+  AdapterHardwareModel:
+    type: "array"
+    items:
+      type: "object"
+      required:
+      - Index
+      - ProductName
+      - AdapterHardwareCapabilityURL
+      properties:
+        AdapterLocationType:
+          $ref: "#/definitions/AdapterLocationType"
+        Index:
+          type: "integer"
+          example: 1
+        ProductName:
+          type: "string"
+          example: "MZ510"
+        AdapterHardwareCapabilityURL:
+          type: "string"
+          example: "/AdapterHardwareCapability/1"
+  PostServerHardwareModelRequest:
+    type: "object"
+    required:
+    - Name
+    - ServerType
+    - ProductName
+    - ProcessorHardwareModel
+    - AdapterHardwareModels
+    properties:
+      Name:
+        type: "string"
+        example: "CH121 V5, Xeon E5 V4, LSI3108_RAID_1, MZ510_MEZZ_1, MZ510_MEZZ_2"
+      Description:
+        type: "string"
+        example: "A virtual model for stateless computing."
+      ServerType:
+        type: "string"
+        enum:
+        - "Blade"
+        - "Rack"
+        example: "Blade"
+      ProductName:
+        type: "string"
+        example: "CH121 V5"
+      ProcessorHardwareModel:
+        type: "string"
+        example: "Xeon E5 V4"
+      AdapterHardwareModels:
+        type: "array"
+        items:
+          $ref: "#/definitions/AdapterHardwareModel"
+  ServerHardwareModel:
+    type: "object"
+    required:
+    - ID
+    - URL
+    - Name
+    - RefCount
+    - ServerType
+    - ProductName
+    - ProcessorHadwareModel
+    - AdapterHardwareModels
+    properties:
+      ID: 
+        type: "string"
+        example: "1"
+      URL:
+        type: "string"
+        example: "/ServerHardwareModel/1"
+      Name:
+        type: "string"
+        example: "CH121 V5, Xeon E5 V4, LSI3108_RAID_1, MZ510_MEZZ_1, MZ510_MEZZ_2"
+      Description:
+        type: "string"
+        example: "CH121 V5, Xeon E5 V4, LSI3108_RAID_1, MZ510_MEZZ_1, MZ510_MEZZ_2"
+      RefCount:
+        type: "integer"
+        description: "The devices that have this model."
+        example: 10
+      ServerType:
+        type: "string"
+        enum:
+        - "blade"
+        - "rack"
+        example: "blade"
+      ProductName:
+        type: "string"
+        example: "CH121 V5"
+      ProcessorHardwareModel:
+        type: "string"
+        example: "Xeon E5 V4"
+      AdapterHardwareModels:
+        type: "array"
+        items:
+          $ref: "#/definitions/AdapterHardwareModel"
+  ServerHardwareModelCollectionMember:
+    type: "object"
+    required:
+    - ID
+    - URL
+    - Name
+    - RefCount
+    - ServerType
+    - ProductName
+    properties:
+      ID: 
+        type: "string"
+        example: "1"
+      URL:
+        type: "string"
+        example: "/ServerHardwareModel/1"
+      Name:
+        type: "string"
+        example: "CH121 V5, Xeon E5 V4, LSI3108_RAID_1, MZ510_MEZZ_1, MZ510_MEZZ_2"
+      RefCount:
+        type: "integer"
+        description: "The devices that have this model."
+        example: 10
+      ServerType:
+        type: "string"
+        enum:
+        - "Blade"
+        - "Rack"
+        example: "Blade"
+      ProductName:
+        type: "string"
+        example: "CH121 V5"
+  ServerHardwareModelCollection:
+    type: "object"
+    required:
+    - Count
+    - Top
+    - Skip
+    - Members
+    properties:
+      Count:
+        type: "integer"
+        example: 100
+      Top:
+        type: "integer"
+        example: 10     
+      Skip:
+        type: "integer"
+        example: 0
+      Members:
+        type: "array"
+        items:
+          $ref: "#/definitions/ServerHardwareModelCollectionMember"          
+  ServerNetworkAdapterPortConnection:
+    type: 'object'
+    required:
+    - ServerProductName
+    - NetworkAdapter
+    properties:
+      ServerProductName: 
+        type: "string"
+      NetworkAdapter:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            AdapterLocationType:
+              $ref: "#/definitions/AdapterLocationType"
+            Index:
+              type: "integer"
+              example: 1
+            Ports:
+              type: "array"
+              items:
+                type: "object"
+                required:
+                - Index
+                - PCIeRootPort
+                - PCIeFunction
+                - IOModelSlot
+                - SwitchIOModelPort
+                - PassthroughIOModelPort
+                properties:
+                  Index:
+                    type: "integer"
+                  PCIeRootPort:
+                    type: "string"
+                    example: "00:03.0"
+                  PCIeFunction:
+                    type: "array"
+                    items:
+                      type: "string"
+                      example: "xx:00.1"
+                  IOModelSlot:
+                    type: "integer"
+                  SwitchIOModelPort:
+                    type: "string"
+                    example: "10GE2/S/1"
+                  PassthroughIOModelPort:
+                    type: "string"
+                    example: "S-2"          
+  BIOSSettings:
+    type: "object"
+  RAIDSettings:
+    type: "object"
+  NetworkAdapterSettings:
+    type: "object"
+  BMCSettings:
+    type: "object"
+  FirmwareSettings:
+    type: 'object'
+  ServerSettings:
+    type: "object"
+    properties:
+      BIOSSettings:
+        $ref: "#/definitions/BIOSSettings"
+      RADISettings:
+        $ref: "#/definitions/RAIDSettings"
+      BMCSettings:
+        $ref: "#/definitions/BMCSettings"
+      NetworkAdapterSettings:
+        $ref: "#/definitions/NetworkAdapterSettings"
+      FirmwareSettings:
+        $ref: "#/definitions/FirmwareSettings"      
+  PostServerProfileRequest:
+    type: "object"
+    required:
+    - Name
+    - ServerHardwareModelURL
+    - ServerSettings
+    properties:
+      Name:
+        type: "string"
+        example: "My Profile"
+      Description:
+        type: "string"
+        example: "My Profile for BIOS settings"
+      ServerHardwareModelURL:
+        type: "string"
+        example: "/ServerHardwareModel/1"
+      DomainURL:
+        type: "string"
+        example: "/EnclosureProfile/1"
+      ServerSettings:
+        $ref: "#/definitions/ServerSettings"       
+  ServerProfile:
+    type: "object"
+    required:
+    - ID
+    - URL
+    - Name
+    - State
+    - Revision
+    - ServerHardwareModelURL
+    - ServerSettings
+    properties:
+      ID:
+        type: "string"
+        example: "1"
+      URL:
+        type: "string"
+        example: "/ServerProfile/1"
+      Name:
+        type: "string"
+        example: "My ServerProfile"
+      Description:
+        type: "string"
+        example: "To configure blade CH121 V5 with MZ510 on mezz slot 1."
+      State:
+        type: "string"
+        enum:
+        - OK
+        - Applying
+        - ContentConflict
+        example: "OK"
+      Revision:
+        type: "integer"
+        description: "Each time a ServerProfile is updated, the Revision should increase by 1."
+        example: "1"
+      ServerHardwareModelURL:
+        type: "string"
+        description: "The ServerHardwareModel this ServerProfile is based on."
+        example: "/ServerHardwareModel/1"
+      DomainURL:
+        type: "string"
+        description: "The domain that provider the dynamic values for ServerProfile while applying it."
+        example: "/EnclosureProfile/1"
+      ServerSettings:
+        $ref: "#/definitions/ServerSettings"
+  ServerProfileCollectionMember:
+    type: "object"
+    required:
+    - ID
+    - URL
+    - Name
+    - State
+    properties:
+      ID: 
+        type: "string"
+        example: "1"
+      URL:
+        type: "string"
+        example: "/ServerProfile/1"
+      Name:
+        type: "string"
+        example: "Profile 001"
+      State:
+        type: "string"
+        example: "OK"
+  ServerProfileCollection:
+    type: "object"
+    required:
+    - Count
+    - Top
+    - Skip
+    - Members
+    properties:
+      Count:
+        type: "integer"
+        example: 100
+      Top:
+        type: "integer"
+        example: 10     
+      Skip:
+        type: "integer"
+        example: 0
+      Members:
+        type: "array"
+        items:
+          $ref: "#/definitions/ServerProfileCollectionMember"
