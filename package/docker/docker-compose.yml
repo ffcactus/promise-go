@@ -1,35 +1,57 @@
 version: "3"
 
 services:
-  server:
-    image: promise.server:latest
+  httpd:
+    image: promise.httpd:latest
     deploy:
-      replicas: 4
+      # replicas: 1
+      placement:
+        constraints: [node.role == manager]
       resources:
         limits:
           cpus: "0.2"
           memory: 100M
       restart_policy:
         condition: on-failure
+    ports:
+      - "80:8080"
     networks: 
-      - promise
-  db:
-    image: postgres:latest
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 2G
-      restart_policy:
-        condition: on-failure
-    environment:
-      - POSTGRES_PASSWORD=iforgot
-      - POSTGRES_DB=promise
-    networks: 
-      - promise
+      - networks_front
+      - networks_service
+  # server:
+  #   image: promise.server:latest
+  #   deploy:
+  #     replicas: 4
+  #     resources:
+  #       limits:
+  #         cpus: "0.2"
+  #         memory: 100M
+  #     restart_policy:
+  #       condition: on-failure
+  #   networks: 
+  #     - networks_service
+  #     - networks_db
+  # db:
+  #   image: postgres:latest
+  #   deploy:
+  #     replicas: 1
+  #     resources:
+  #       limits:
+  #         cpus: "0.5"
+  #         memory: 2G
+  #     restart_policy:
+  #       condition: on-failure
+  #   environment:
+  #     - POSTGRES_PASSWORD=iforgot
+  #     - POSTGRES_DB=promise
+  #   networks: 
+  #     - networks_db
       
 networks: 
-  promise:
+  networks_front:
+    driver: overlay
+  networks_service:
+    driver: overlay
+  networks_db:
     driver: overlay
     
