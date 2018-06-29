@@ -8,15 +8,16 @@ import (
 
 // Init will init the app.
 func Init(appName string) {
-	err := beego.LoadAppConfig("ini", "/opt/promise/conf/app.conf")
-	if err != nil {
-		panic(err)
-	}
-	port, err := beego.AppConfig.Int("Port")
-	if err != nil {
-		panic(err)
-	}
-	beego.BConfig.Listen.HTTPPort = port
+	// err := beego.LoadAppConfig("ini", "/opt/promise/conf/app.conf")
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// port, err := beego.AppConfig.Int("Port")
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// beego.BConfig.Listen.HTTPPort = port
+	beego.BConfig.Listen.HTTPPort = 80
 	log.SetFormatter(&LogTextFormatter{App: appName, ForceColors: true, DisableSorting: false})
 	log.SetLevel(log.InfoLevel)
 	file, err := os.OpenFile("/tmp/promise.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)

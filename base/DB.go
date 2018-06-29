@@ -455,7 +455,7 @@ var connection *gorm.DB
 func InitConnection() error {
 	if connection == nil {
 		log.Info("Init DB connection.")
-		args := "host=postgres port=5432 user=postgres dbname=promise sslmode=disable password=iforgot"
+		args := "host=db port=5432 user=postgres dbname=promise sslmode=disable password=iforgot"
 		db, err := gorm.Open("postgres", args)
 		// args := "host=100.100.194.103 port=5432 user=gaussdba dbname=NETADAPTOR sslmode=disable password=Huawei12#$"
 		// db, err := gorm.Open("gauss", args)

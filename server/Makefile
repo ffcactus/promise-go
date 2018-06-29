@@ -5,9 +5,9 @@ all:
 clean:
 	@rm -f ./server
 
-docker: all
+image: all
 	mv ./server ./package/docker
-	docker build -t promise.server ./package/docker
+	docker build -t server.promise ./package/docker
 
 install: all
 	mkdir -p /opt/promise/apps/server

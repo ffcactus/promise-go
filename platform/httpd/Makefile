@@ -1,2 +1,2 @@
 image:
-	docker build -t promise.httpd package/image
+	docker build -t httpd.promise package/image
