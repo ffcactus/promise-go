@@ -16,8 +16,7 @@ services:
     ports:
       - "80:80"
     networks: 
-      - networks_front
-      - networks_service
+      - networks_all
   server:
     image: server.promise:latest
     deploy:
@@ -29,8 +28,7 @@ services:
       restart_policy:
         condition: on-failure
     networks: 
-      - networks_service
-      - networks_db
+      - networks_all
   db:
     image: postgres:latest
     deploy:
@@ -45,9 +43,12 @@ services:
       - POSTGRES_PASSWORD=iforgot
       - POSTGRES_DB=promise
     networks: 
-      - networks_db
+      - networks_all
       
-networks: 
+networks:
+  networks_all:
+    driver: overlay
+    attachable: true 
   networks_front:
     driver: overlay
     attachable: true

@@ -7,7 +7,7 @@ clean:
 
 image: all
 	mv ./server ./package/docker
-	docker build -t server.promise ./package/docker
+	docker build --no-cache -t server.promise ./package/docker
 
 install: all
 	mkdir -p /opt/promise/apps/server

@@ -17,4 +17,4 @@ COPY rpm/static ./static
 EXPOSE 80
 
 # ENTRYPOINT ["/bin/bash"]
-CMD ["./server"]
+ENTRYPOINT ["./server"]
