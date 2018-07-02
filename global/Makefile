@@ -1,11 +1,13 @@
 all:
 	@echo "Building global ..."
-	go build
+	GOARCH=amd64 CGO_ENABLED=0 GOOS=linux go build
 
 clean:
 	@rm -f ./global
 
-start: clean all
-	./global &
+image: all
+	mv ./global ./package/image/fs/
+	docker build --no-cache -t global.promise ./package/image
 
-.PHONY: all clean start
+.PHONY: all clean start image
+

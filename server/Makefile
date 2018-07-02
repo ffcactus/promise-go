@@ -1,23 +1,13 @@
 all:
 	@echo "Building server ..."
-	go build
+	GOARCH=amd64 CGO_ENABLED=0 GOOS=linux go build
 
 clean:
 	@rm -f ./server
 
 image: all
-	mv ./server ./package/docker
-	docker build --no-cache -t server.promise ./package/docker
+	mv ./server ./package/image/fs/
+	docker build --no-cache -t server.promise ./package/image
 
-install: all
-	mkdir -p /opt/promise/apps/server
-	cp -rf ./package/rpm/* /opt/promise/apps/server/
+.PHONY: all clean start image
 
-clean-install:
-	rm -rf /opt/promise/apps/server
-
-
-start: clean all
-	./server &
-
-.PHONY: all clean start

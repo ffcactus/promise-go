@@ -1,9 +1,12 @@
 all:
 	@echo "Building ws ..."
-	go build
+	GOARCH=amd64 CGO_ENABLED=0 GOOS=linux go build
 
 clean:
 	@rm -f ./ws
 
-start: clean all
-	./ws &
+image: all
+	mv ./ws ./package/image/fs/
+	docker build --no-cache -t ws.promise ./package/image
+
+.PHONY: all clean start image

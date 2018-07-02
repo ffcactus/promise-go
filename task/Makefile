@@ -1,11 +1,12 @@
 all:
 	@echo "Building task ..."
-	go build
+	GOARCH=amd64 CGO_ENABLED=0 GOOS=linux go build
 
 clean:
 	@rm -f ./task
 
-start: clean all
-	./task &
+image: all
+	mv ./task ./package/image/fs/
+	docker build --no-cache -t task.promise ./package/image
 
-.PHONY: all clean start
+.PHONY: all clean start image

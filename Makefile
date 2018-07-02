@@ -21,18 +21,19 @@ clean:
 	$(MAKE) -C server clean
 	$(MAKE) -C pool clean
 
-install:
-	$(MAKE) -C server install
+image:
+	$(MAKE) -C platform image
+	$(MAKE) -C global image
+	$(MAKE) -C auth image
+	$(MAKE) -C task image
+	$(MAKE) -C ws image
+	$(MAKE) -C server image
+	$(MAKE) -C pool image
 
-clean-install:
-	$(MAKE) -C server clean-install
+deploy:
+	docker stack deploy -c docker-compose.yml promise
 
-start:
-	# Make sure the start order is right.
-	$(MAKE) -C auth start
-	$(MAKE) -C ws start
-	$(MAKE) -C task start
-	$(MAKE) -C server start
-	$(MAKE) -C pool start
+undeploy:
+	docker stack rm promise
 
-.PHONY: global auth task ws server pool clean start
+.PHONY: global auth task ws server pool all clean image deploy undeploy
