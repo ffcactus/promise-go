@@ -3,6 +3,7 @@ package base
 import (
 	"github.com/astaxie/beego"
 	log "github.com/sirupsen/logrus"
+	"io"
 	"os"
 )
 
@@ -22,7 +23,8 @@ func Init(appName string) {
 	log.SetLevel(log.InfoLevel)
 	file, err := os.OpenFile("/tmp/promise.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 	if err == nil {
-		log.SetOutput(file)
+		mw := io.MultiWriter(os.Stdout, file)
+		log.SetOutput(mw)
 	} else {
 		log.Info("Failed to log to file, using default stderr")
 	}
