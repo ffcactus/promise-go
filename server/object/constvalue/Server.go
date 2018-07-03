@@ -1,7 +1,8 @@
 package constvalue
 
 const (
-	AdapterModelPath = "/opt/promise/apps/server/static/adapter"
+	// AdapterModelPath is the path to load adapter model files.
+	AdapterModelPath = "/opt/promise/static/adapter"
 )
 
 const (

@@ -1,6 +1,22 @@
 version: "3.2"
 
 services:
+  db:
+    image: postgres:latest
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 2G
+      restart_policy:
+        condition: on-failure
+    environment:
+      - POSTGRES_PASSWORD=iforgot
+      - POSTGRES_DB=promise
+    networks:
+      - networks_service
+      - networks_db  
   httpd:
     image: httpd.promise:latest
     deploy:
@@ -18,41 +34,95 @@ services:
     networks:
       - networks_front
       - networks_service
-  server:
-    image: server.promise:latest
-    deploy:
-      replicas: 4
-      resources:
-        limits:
-          cpus: "0.2"
-          memory: 100M
-      restart_policy:
-        condition: on-failure
-    networks:
-      - networks_front
-      - networks_service
-      - networks_db
-  db:
-    image: postgres:latest
+  ws:
+    image: ws.promise:latest
     deploy:
       replicas: 1
       resources:
         limits:
-          cpus: "0.5"
-          memory: 2G
+          cpus: "0.2"
+          memory: 256M
       restart_policy:
         condition: on-failure
-    environment:
-      - POSTGRES_PASSWORD=iforgot
-      - POSTGRES_DB=promise
+    depends_on:
+      - "httpd"
     networks:
+      - networks_front
+      - networks_service
+  auth:
+    image: auth.promise:latest
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - "httpd"
+      - "db"
+    networks:
+      - networks_front
+      - networks_service
+      - networks_db
+  task:
+    image: task.promise:latest
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.8"
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - "httpd"
+      - "db"
+      - "auth"     
+    networks:
+      - networks_front
+      - networks_service
+      - networks_db
+  pool:
+    image: pool.promise:latest
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - "httpd"
+      - "db"
+      - "auth"        
+    networks:
+      - networks_front
+      - networks_service
+      - networks_db                
+  server:
+    image: server.promise:latest
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.8"
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - "httpd"
+      - "db"
+      - "auth"
+      - "task"        
+    networks:
+      - networks_front
       - networks_service
       - networks_db
 
 networks:
-  networks_all:
-    driver: overlay
-    attachable: true
   networks_front:
     driver: overlay
     attachable: true

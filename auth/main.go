@@ -11,21 +11,24 @@ import (
 )
 
 func initDB() {
-	base.InitConnection()
-	if recreateDB, _ := beego.AppConfig.Bool("recreate_db"); recreateDB {
-		// Remove tables.
-		if base.RemoveTables(entity.Tables) {
-			log.Info("Remove all tables in DB done.")
-		} else {
-			log.Warn("Failed to remove all tables in DB.")
-		}
-		// Create tables.
-		if !base.CreateTables(entity.Tables) {
-			panic("DB Initialization failed.")
-		} else {
-			log.Info("DB schema created.")
-		}
+	if err := base.InitConnection(); err != nil {
+		log.Error("Init DB failed, App exit.")
+		panic("Init DB failed, App exit.")
 	}
+	// if recreateDB, _ := beego.AppConfig.Bool("recreate_db"); recreateDB {
+	// Remove tables.
+	if base.RemoveTables(entity.Tables) {
+		log.Info("Remove all tables in DB done.")
+	} else {
+		log.Warn("Failed to remove all tables in DB.")
+	}
+	// Create tables.
+	if !base.CreateTables(entity.Tables) {
+		panic("DB Initialization failed.")
+	} else {
+		log.Info("DB schema created.")
+	}
+	// }
 	service.CreateDefaultAdmin()
 }
 

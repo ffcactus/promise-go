@@ -11,7 +11,7 @@ import (
 
 var (
 	// WsSenderServiceURL is the service URL.
-	WsSenderServiceURL = base.ProtocolScheme + base.Host + base.RootURL + base.WSSenderBaseURI
+	WsSenderServiceURL = base.ProtocolScheme + "ws" + base.RootURL + base.WSSenderBaseURI
 )
 
 // Service is the implementation of EventServiceInterface

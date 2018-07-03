@@ -3,8 +3,6 @@ package base
 const (
 	// ProtocolScheme is the protocol scheme used by client.
 	ProtocolScheme = "http://"
-	// Host is the host used by client.
-	Host = "localhost"
 	// RootURL is the root URI for all the service.
 	RootURL = "/promise/v1"
 
