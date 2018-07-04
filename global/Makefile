@@ -7,7 +7,7 @@ clean:
 
 image: all
 	mv ./global ./package/image/fs/
-	docker build --no-cache -t global.promise ./package/image
+	docker build  -t global.promise ./package/image
 
 .PHONY: all clean start image
 

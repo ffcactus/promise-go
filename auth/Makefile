@@ -7,7 +7,7 @@ clean:
 
 image: all
 	mv ./auth ./package/image/fs/
-	docker build --no-cache -t auth.promise ./package/image
+	docker build  -t auth.promise ./package/image
 
 .PHONY: all clean start image
 

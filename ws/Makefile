@@ -7,6 +7,6 @@ clean:
 
 image: all
 	mv ./ws ./package/image/fs/
-	docker build --no-cache -t ws.promise ./package/image
+	docker build  -t ws.promise ./package/image
 
 .PHONY: all clean start image
