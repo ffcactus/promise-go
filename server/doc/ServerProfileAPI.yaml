@@ -19,7 +19,7 @@ paths:
     get:
       tags:
       - "AdapterHardwareCapability"
-      summary: "Returns AdapterHardwareCapability collection"
+      summary: "Returns AdapterHardwareCapability collection."
       description: "Returns AdapterHardwareCapability collection. You can use filter to find a specific adapter."
       operationId: "getAdapterHardwareCapabilityCollection"
       produces: 
@@ -45,8 +45,6 @@ paths:
           description: "OK."
           schema:
             $ref: "#/definitions/AdapterHardwareCapabilityCollection"
-        '404':
-          description: "Not Found."
   /AdapterHardwareCapability/{id}:
     get:
       tags:
@@ -147,8 +145,8 @@ paths:
     delete:
       tags:
       - "ServerHardwareModel"    
-      summary: "Delete a ServerHardwareModel."
-      description: "Delete a ServerHardwareModel. The deleted ServerHardwareModel will be returned."
+      summary: "Deletes a ServerHardwareModel."
+      description: "Deletes a ServerHardwareModel. The deleted ServerHardwareModel will be returned."
       operationId: "deleteServerHardwareModel"
       parameters:
       - name: "id"
@@ -169,8 +167,8 @@ paths:
     get:
       tags:
       - "ServerHardwareModel"
-      summary: "Get the associated server of this ServerHardwareModel."
-      description: "Get the associated server of this ServerHardwareModel. The association is managed by ServerProfile service."
+      summary: "Gets the associated server of this ServerHardwareModel."
+      description: "Gets the associated server of this ServerHardwareModel. The association is managed by ServerProfile service."
       operationId: "getServerHardwareModelServerAssociation"
       produces:
       - "application/json"
@@ -237,8 +235,8 @@ paths:
     get:
       tags:
       - "ServerProfile"    
-      summary: "Get ServerProfile collection."
-      description: "Get ServerProfile collection."
+      summary: "Gets ServerProfile collection."
+      description: "Gets ServerProfile collection."
       operationId: "getServerProfileCollection"
       produces: 
       - "application/json"
@@ -290,8 +288,8 @@ paths:
     delete:
       tags:
       - "ServerProfile"    
-      summary: "Delete a ServerProfile."
-      description: "Delete a ServerProfile. The deleted ServerProfile will be returned."
+      summary: "Deletes a ServerProfile."
+      description: "Deletes a ServerProfile. The deleted ServerProfile will be returned."
       operationId: "deleteServerProfile"
       parameters:
       - name: "id"
@@ -549,6 +547,7 @@ definitions:
     - RefCount
     - ServerType
     - ProductName
+    - SlotDimension
     properties:
       ID: 
         type: "string"
@@ -572,6 +571,15 @@ definitions:
       ProductName:
         type: "string"
         example: "CH121 V5"
+      SlotDimension:
+        type: "object"
+        properties:
+          Width:
+            type: "integer"
+            example: 2
+          Height:
+            type: "integer"
+            example: 1        
   ServerHardwareModelCollection:
     type: "object"
     required:

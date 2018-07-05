@@ -1,0 +1,316 @@
+swagger: "2.0"
+info:
+  description: "Director Service is the root service that orchestrate other services and resources need by Promise."
+  version: "1.0.0"
+  title: "Director Service"
+host: "localhost"
+basePath: "/rest/"
+tags:
+- name: "Node"
+  description: "Node is used to describe the host that joined to Promise."
+- name: "Service"
+  description: "Service is a set of related APIs that is used manipulate a particular work."
+schemes:
+- "https"
+paths:
+  /node:
+    get:
+      tags:
+      - "Node"
+      summary: "Returns Node collection."
+      description: "Returns Node collection. Only the nodes that currently joined will be returned."
+      operationId: "getNodeCollection"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "top"
+        in: "query"
+        description: "The $top system query option requests the number of items in the queried collection to be included in the result." 
+        required: false
+        type: "integer"
+      - name: "skip"
+        in: "query"
+        description: "The $skip query option requests the number of items in the queried collection that are to be skipped and not included in the result."
+        required: false
+        type: "integer"
+      - name: "filter"
+        in: "query"
+        description: "The filter to be used in form the collection."
+        required: false
+        type: "integer"      
+      responses:
+        '200':
+          description: "OK."
+          schema:
+            $ref: "#/definitions/NodeCollection"
+  /node/{id}:
+    get:
+      tags:
+      - "Node"
+      summary: "Returns Node by ID."
+      description: "Returns Node by ID."
+      operationId: "getNode"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of Node."
+        required: true
+        type: "string"      
+      produces:
+      - "application/json"
+      responses:
+        '200':
+          description: "OK."
+          schema:
+            $ref: "#/definitions/Node"
+        '404':
+          description: "Not Found."
+    delete:
+      tags:
+      - "Node"
+      summary: "Removes a Node."
+      description: "Removes a Node."
+      operationId: "removeNode"   
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of Node."
+        required: true
+        type: "string"
+      responses:
+        '200':
+          description: "OK."
+          schema:
+            $ref: "#/definitions/Node"
+        '404':
+          description: "Not Found."      
+  /node/action/add:
+    post:
+      tags:
+      - "Node"
+      summary: "Adds a Node."
+      description: "Adds a Node."
+      operationId: "addNode"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/AddNodeRequest"  
+      responses:
+        '200':
+          description: "OK."
+          schema:
+            $ref: "#/definitions/Node"
+        '400':
+          description: "Bad request."          
+  /service:
+    get:
+      tags:
+      - "Service"
+      summary: "Returns service collection."
+      description: "Returns service collection."
+      operationId: "getServiceCollection"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "top"
+        in: "query"
+        description: "The $top system query option requests the number of items in the queried collection to be included in the result." 
+        required: false
+        type: "integer"
+      - name: "skip"
+        in: "query"
+        description: "The $skip query option requests the number of items in the queried collection that are to be skipped and not included in the result."
+        required: false
+        type: "integer"
+      - name: "filter"
+        in: "query"
+        description: "The filter to be used in form the collection."
+        required: false
+        type: "integer"      
+      responses:
+        '200':
+          description: "OK."
+          schema:
+            $ref: "#/definitions/ServiceCollection"
+  /service/{id}:
+    get:
+      tags:
+      - "Service"
+      summary: "Returns Node by ID."
+      description: "Returns Node by ID."
+      operationId: "getService"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of Service."
+        required: true
+        type: "string"      
+      produces:
+      - "application/json"
+      responses:
+        '200':
+          description: "OK."
+          schema:
+            $ref: "#/definitions/Service"
+        '404':
+          description: "Not Found."
+definitions:
+  Node:
+    type: "object"
+    required:
+    - ID
+    - URL
+    - Hostname
+    - Status
+    - Availibility
+    - ManagerStatus
+    properties:
+      ID:
+        type: "string"
+        example: "1"
+      URL:
+        type: "string"
+        example: "/rest/director/node/1"
+      Hostname:
+        type: "string"
+        example: "hostname1"
+      Status:
+        type: "string"
+        example: "Ready"
+      Availibility:
+        type: "string"
+        example: "Active"
+      ManagerStatus:
+        type: "string"
+        example: "Leader"
+  NodeCollectionMember:
+    type: "object"
+    required:
+    - ID
+    - URL
+    - Hostname
+    properties:
+      ID:
+        type: "string"
+        example: "1"
+      URL:
+        type: "string"
+        example: "/rest/director/node/1"
+      Hostname:
+        type: "string"
+        example: "hostname1"
+  NodeCollection:
+    type: "object"
+    required:
+    - Count
+    - Top
+    - Skip
+    - Members
+    properties:
+      Count:
+        type: "integer"
+        example: 100
+      Top:
+        type: "integer"
+        example: 10     
+      Skip:
+        type: "integer"
+        example: 0
+      Members:
+        type: "array"
+        items:
+          $ref: "#/definitions/NodeCollectionMember"
+  AddNodeRequest:
+    description: "The add Node request."
+    type: "object"
+    required:
+    - Hostname
+    - Username
+    - Password
+    properties:
+      Hostname:
+        type: "string"
+        description: "The hostname or IP of the node."
+        example: "192.0.0.10"
+      Username:
+        type: "string"
+        description: "The user that has the privilege to add the Node."
+        example: "root"
+      Password:
+        type: "string"
+        example: "password"
+  Service:
+    type: "object"
+    required:
+    - ID
+    - URL
+    - Name
+    - Replicas
+    - Dependency
+    properties:
+      ID:
+        type: "string"
+        example: "1"
+      URL:
+        type: "string"
+        example: "/rest/director/service/1"
+      Name:
+        type: "string"
+        example: "Task"
+      Replicas:
+        type: "string"
+        example: "3/3"
+      Dependency:
+        type: "array"
+        items:
+          type: "string"
+          example:
+          - "DB"
+          - "Auth"
+  ServiceCollectionMember:
+    type: "object"
+    required:
+    - ID
+    - URL
+    - Name
+    - Replicas
+    properties:
+      ID:
+        type: "string"
+        example: "1"
+      URL:
+        type: "string"
+        example: "/rest/director/node/1"
+      Name:
+        type: "string"
+        example: "Task"
+      Replicas:
+        type: "string"
+        example: "3/3"
+  ServiceCollection:
+    type: "object"
+    required:
+    - Count
+    - Top
+    - Skip
+    - Members
+    properties:
+      Count:
+        type: "integer"
+        example: 100
+      Top:
+        type: "integer"
+        example: 10     
+      Skip:
+        type: "integer"
+        example: 0
+      Members:
+        type: "array"
+        items:
+          $ref: "#/definitions/ServiceCollectionMember"           
