@@ -1,6 +1,7 @@
 package com.promise.integrationtest.util;
 
 import org.junit.Assert;
+import org.springframework.http.HttpStatus;
 
 import com.promise.integrationtest.base.MessageEnum;
 import com.promise.integrationtest.idpool.dto.AllocateIPv4Request;
@@ -86,6 +87,7 @@ public class IPv4PoolAssertUtil
         final AllocateIPv4Request request = new AllocateIPv4Request();
         PromiseAssertUtil.assertPostMessage(
                 "/promise/v1/id-pool/ipv4/" + id + "/action/allocate",
+                HttpStatus.BAD_REQUEST,
                 MessageEnum.IPv4PoolEmpty.getId(),
                 request);
 
@@ -107,6 +109,7 @@ public class IPv4PoolAssertUtil
         request.setAddress(address);
         PromiseAssertUtil.assertPostMessage(
                 "/promise/v1/id-pool/ipv4/" + id + "/action/free",
+                HttpStatus.BAD_REQUEST,
                 MessageEnum.IPv4PoolAddressNotExist.getId(),
                 request);
     }
@@ -124,6 +127,7 @@ public class IPv4PoolAssertUtil
         request.setAddress(address);
         PromiseAssertUtil.assertPostMessage(
                 "/promise/v1/id-pool/ipv4/" + id + "/action/free",
+                HttpStatus.BAD_REQUEST,
                 MessageEnum.IPv4PoolNotAllocatedError.getId(),
                 request);
     }

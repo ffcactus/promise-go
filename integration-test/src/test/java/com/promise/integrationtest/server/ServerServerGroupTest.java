@@ -84,17 +84,18 @@ public class ServerServerGroupTest extends PromiseIntegrationTest
     public void testHappyPath()
             throws UnsupportedEncodingException
     {
+        PromiseAssertUtil.assertGetColletcionWithStartCount("/promise/v1/server-servergroup", 0);
         // Add 3 servers.
         final String server1_ID = ServerAssertUtil.assertServerPosted("Mock_Hostname_1", "Username", "Password").getId();
         final String server2_ID = ServerAssertUtil.assertServerPosted("Mock_Hostname_2", "Username", "Password").getId();
         final String server3_ID = ServerAssertUtil.assertServerPosted("Mock_Hostname_3", "Username", "Password").getId();
-
+        PromiseAssertUtil.assertGetColletcionWithStartCount("/promise/v1/server-servergroup", 3);
         // Now the default server group should contain these 3 servers.
         final String defaultServerGroupID = ServerGroupAssertUtil.assertGetServerGroupByName("all").getId();
 
         final String filter1 = URLEncoder.encode("ServerGroupID eq '" + defaultServerGroupID + "'", "UTF-8");
         final ResponseEntity<ResourceCollectionResponse<MemberResponse>> response1 = RestClient.get(
-                "/promise/v1/server-servergroup?$filter=" + filter1,
+                "/promise/v1/server-servergroup?filter=" + filter1,
                 new TypeReference<ResourceCollectionResponse<MemberResponse>>()
                 {
                 });
@@ -131,7 +132,7 @@ public class ServerServerGroupTest extends PromiseIntegrationTest
         // group 1 should have 1 server.
         final String filter2 = URLEncoder.encode("ServerGroupID eq '" + group1_ID + "'", "UTF-8");
         final ResponseEntity<ResourceCollectionResponse<MemberResponse>> ssgResponse4 = RestClient.get(
-                "/promise/v1/server-servergroup?$filter=" + filter2,
+                "/promise/v1/server-servergroup?filter=" + filter2,
                 new TypeReference<ResourceCollectionResponse<MemberResponse>>()
                 {
                 });
@@ -141,7 +142,7 @@ public class ServerServerGroupTest extends PromiseIntegrationTest
         // group 2 should have 2 server.
         final String filter3 = URLEncoder.encode("ServerGroupID eq '" + group2_ID + "'", "UTF-8");
         final ResponseEntity<ResourceCollectionResponse<MemberResponse>> ssgResponse5 = RestClient.get(
-                "/promise/v1/server-servergroup?$filter=" + filter3,
+                "/promise/v1/server-servergroup?filter=" + filter3,
                 new TypeReference<ResourceCollectionResponse<MemberResponse>>()
                 {
                 });
@@ -151,7 +152,7 @@ public class ServerServerGroupTest extends PromiseIntegrationTest
         // server 1 should belong to 2 groups.
         final String filter4 = URLEncoder.encode("ServerID eq '" + server1_ID + "'", "UTF-8");
         final ResponseEntity<ResourceCollectionResponse<MemberResponse>> ssgResponse6 = RestClient.get(
-                "/promise/v1/server-servergroup?$filter=" + filter4,
+                "/promise/v1/server-servergroup?filter=" + filter4,
                 new TypeReference<ResourceCollectionResponse<MemberResponse>>()
                 {
                 });
@@ -172,14 +173,13 @@ public class ServerServerGroupTest extends PromiseIntegrationTest
         final String serverID = ServerAssertUtil.assertServerPosted("Mock_Hostname_1", "Username", "Password").getId();
         final String filter = URLEncoder.encode("ServerID eq '" + serverID + "'", "UTF-8");
         final ResponseEntity<ResourceCollectionResponse<MemberResponse>> ssgResponse = RestClient.get(
-                "/promise/v1/server-servergroup?$filter=" + filter,
+                "/promise/v1/server-servergroup?filter=" + filter,
                 new TypeReference<ResourceCollectionResponse<MemberResponse>>()
                 {
                 });
         Assert.assertEquals(HttpStatus.OK, ssgResponse.getStatusCode());
         Assert.assertEquals(1, ssgResponse.getBody().getMember().size());
         final String ssgUrl = ssgResponse.getBody().getMember().get(0).getUri();
-        PromiseAssertUtil.assertDeleteMessage(ssgUrl, MessageEnum.ServerServerGroupDeleteDefault.getId());
-
+        PromiseAssertUtil.assertDeleteMessage(ssgUrl, HttpStatus.BAD_REQUEST, MessageEnum.ServerServerGroupDeleteDefault.getId());
     }
 }

@@ -71,7 +71,7 @@ public class PromiseAssertUtil
      * @param expectedMessageID The expected message's ID.
      * @param request The request DTO.
      */
-    public static <R> void assertActionMessage(String url, String expectedMessageID, R request)
+    public static <R> void assertActionMessage(String url, HttpStatus expectedStatus, String expectedMessageID, R request)
     {
         final ResponseEntity<List<Message>> response = RestClient.post(
                 url,
@@ -79,7 +79,7 @@ public class PromiseAssertUtil
                 new TypeReference<List<Message>>()
                 {
                 });
-        Assert.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Assert.assertEquals(expectedStatus, response.getStatusCode());
         final List<Message> message = response.getBody();
         Assert.assertEquals(expectedMessageID, message.get(0).getId());
     }
@@ -111,7 +111,7 @@ public class PromiseAssertUtil
      * @param expectedMessageID The expected message's ID.
      * @param request The request DTO.
      */
-    public static <R> void assertPostMessage(String url, String expectedMessageID, R request)
+    public static <R> void assertPostMessage(String url, HttpStatus expectedStatus, String expectedMessageID, R request)
     {
         final ResponseEntity<List<Message>> response = RestClient.post(
                 url,
@@ -119,7 +119,7 @@ public class PromiseAssertUtil
                 new TypeReference<List<Message>>()
                 {
                 });
-        Assert.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Assert.assertEquals(expectedStatus, response.getStatusCode());
         final List<Message> message = response.getBody();
         Assert.assertEquals(expectedMessageID, message.get(0).getId());
     }
@@ -143,19 +143,20 @@ public class PromiseAssertUtil
     }
 
     /**
-     * Assert the GET should fail, and the message should match.
+     * Assert the GET should fail if there is an error, and the message should
+     * match.
      * 
      * @param url The URL to GET.
      * @param expectedMessageID The expected message ID.
      */
-    public static void assertGetMessage(String url, String expectedMessageID)
+    public static void assertGetMessage(String url, HttpStatus expectedStatus, String expectedMessageID)
     {
         final ResponseEntity<List<Message>> response = RestClient.get(
                 url,
                 new TypeReference<List<Message>>()
                 {
                 });
-        Assert.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Assert.assertEquals(expectedStatus, response.getStatusCode());
         final List<Message> message = response.getBody();
         Assert.assertEquals(expectedMessageID, message.get(0).getId());
     }
@@ -175,23 +176,24 @@ public class PromiseAssertUtil
                 new TypeReference<List<Message>>()
                 {
                 });
-        Assert.assertEquals(HttpStatus.BAD_REQUEST, response2.getStatusCode());
+        Assert.assertEquals(HttpStatus.NOT_FOUND, response2.getStatusCode());
         final List<Message> message = response2.getBody();
         Assert.assertEquals(MessageEnum.NotExist.getId(), message.get(0).getId());
     }
 
     /**
-     * Assert the DELETE should fail, and the error message should match.
+     * Assert the DELETE operation should fail and the error message should
+     * match.
      * 
      * @param url The URL to DELETE.
      */
-    public static void assertDeleteMessage(String url, String expectedMessageID)
+    public static void assertDeleteMessage(String url, HttpStatus expectedStatus, String expectedMessageID)
     {
         final ResponseEntity<List<Message>> response = RestClient.delete(url, new TypeReference<List<Message>>()
         {
         });
 
-        Assert.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Assert.assertEquals(expectedStatus, response.getStatusCode());
         final List<Message> message = response.getBody();
         Assert.assertEquals(expectedMessageID, message.get(0).getId());
     }
@@ -295,7 +297,8 @@ public class PromiseAssertUtil
             throws UnsupportedEncodingException
     {
         String filter1 = URLEncoder.encode(name + " eq '" + value + "'", "UTF-8");
-        PromiseAssertUtil.assertGetMessage(url + "?$filter=" + filter1, MessageEnum.UnknownFilterName.getId());
+        PromiseAssertUtil
+                .assertGetMessage(url + "?filter=" + filter1, HttpStatus.BAD_REQUEST, MessageEnum.UnknownFilterName.getId());
     }
 
     public static void assertSameElements(List<?> firstList, List<?> secondList)

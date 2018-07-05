@@ -40,7 +40,7 @@ public class ServerGroupAssertUtil
     {
         final String filter = URLEncoder.encode("Name eq '" + name + "'", "UTF-8");
         final ResponseEntity<ResourceCollectionResponse<MemberResponse>> response1 = RestClient.get(
-                "/promise/v1/servergroup?$filter=" + filter,
+                "/promise/v1/servergroup?filter=" + filter,
                 new TypeReference<ResourceCollectionResponse<MemberResponse>>()
                 {
                 });

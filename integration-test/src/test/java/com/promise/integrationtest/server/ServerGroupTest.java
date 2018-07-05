@@ -105,8 +105,11 @@ public class ServerGroupTest extends PromiseIntegrationTest
     {
         // Create the default "all" server group should fail.
         final PostServerGroupRequest request = new PostServerGroupRequest("all", "default server group");
-        PromiseAssertUtil
-                .assertPostMessage("/promise/v1/servergroup/", MessageEnum.Duplicate.getId(), request);
+        PromiseAssertUtil.assertPostMessage(
+                "/promise/v1/servergroup/",
+                HttpStatus.BAD_REQUEST,
+                MessageEnum.Duplicate.getId(),
+                request);
     }
 
     /**
@@ -117,6 +120,7 @@ public class ServerGroupTest extends PromiseIntegrationTest
     {
         PromiseAssertUtil.assertDeleteMessage(
                 "/promise/v1/servergroup/i_am_not_exist",
+                HttpStatus.NOT_FOUND,
                 MessageEnum.NotExist.getId());
     }
 
@@ -130,7 +134,10 @@ public class ServerGroupTest extends PromiseIntegrationTest
             throws UnsupportedEncodingException
     {
         GetServerGroupResponse response = ServerGroupAssertUtil.assertGetServerGroupByName("all");
-        PromiseAssertUtil.assertDeleteMessage(response.getUri(), MessageEnum.ServerGroupDeleteDefault.getId());
+        PromiseAssertUtil.assertDeleteMessage(
+                response.getUri(),
+                HttpStatus.BAD_REQUEST,
+                MessageEnum.ServerGroupDeleteDefault.getId());
     }
 
     /**

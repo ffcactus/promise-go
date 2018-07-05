@@ -83,7 +83,7 @@ func (c *RootController) Post() {
 // Get is the default implementation for GET method.
 func (c *RootController) Get() {
 	var (
-		start, count, filter string = c.GetString("start"), c.GetString("count"), c.GetString("$filter")
+		start, count, filter string = c.GetString("start"), c.GetString("count"), c.GetString("filter")
 		startInt, countInt   int64  = 0, -1
 		parameterError       bool
 	)

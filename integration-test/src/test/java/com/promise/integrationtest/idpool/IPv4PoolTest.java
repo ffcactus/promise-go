@@ -122,8 +122,11 @@ public class IPv4PoolTest extends PromiseIntegrationTest
         request1.setDnsServers(Arrays.asList(dns));
 
         IPv4PoolAssertUtil.assertIPv4PoolPosted(request1);
-        PromiseAssertUtil
-                .assertPostMessage("/promise/v1/id-pool/ipv4", MessageEnum.Duplicate.getId(), request1);
+        PromiseAssertUtil.assertPostMessage(
+                "/promise/v1/id-pool/ipv4",
+                HttpStatus.BAD_REQUEST,
+                MessageEnum.Duplicate.getId(),
+                request1);
     }
 
     /**
@@ -134,19 +137,23 @@ public class IPv4PoolTest extends PromiseIntegrationTest
     {
         PromiseAssertUtil.assertDeleteMessage(
                 "/promise/v1/id-pool/ipv4/i_am_not_exist",
+                HttpStatus.NOT_FOUND,
                 MessageEnum.NotExist.getId());
         PromiseAssertUtil.assertGetMessage(
                 "/promise/v1/id-pool/ipv4/i_am_not_exist",
+                HttpStatus.NOT_FOUND,
                 MessageEnum.NotExist.getId());
         final AllocateIPv4Request request1 = new AllocateIPv4Request();
         PromiseAssertUtil.assertPostMessage(
                 "/promise/v1/id-pool/ipv4/i_am_not_exist/action/allocate",
+                HttpStatus.NOT_FOUND,
                 MessageEnum.NotExist.getId(),
                 request1);
         final FreeIPv4Request request2 = new FreeIPv4Request();
         request2.setAddress("0.0.0.0");
         PromiseAssertUtil.assertPostMessage(
                 "/promise/v1/id-pool/ipv4/i_am_not_exist/action/free",
+                HttpStatus.NOT_FOUND,
                 MessageEnum.NotExist.getId(),
                 request2);
     }
@@ -281,22 +288,26 @@ public class IPv4PoolTest extends PromiseIntegrationTest
         request.setName("pool1");
         PromiseAssertUtil.assertPostMessage(
                 "/promise/v1/id-pool/ipv4",
+                HttpStatus.BAD_REQUEST,
                 MessageEnum.IPv4PoolRangeCountError.getId(),
                 request);
 
         request.setRanges(ranges1);
         PromiseAssertUtil.assertPostMessage(
                 "/promise/v1/id-pool/ipv4",
+                HttpStatus.BAD_REQUEST,
                 MessageEnum.IPv4PoolFormatError.getId(),
                 request);
         request.setRanges(ranges2);
         PromiseAssertUtil.assertPostMessage(
                 "/promise/v1/id-pool/ipv4",
+                HttpStatus.BAD_REQUEST,
                 MessageEnum.IPv4PoolRangeEndAddressError.getId(),
                 request);
         request.setRanges(ranges3);
         PromiseAssertUtil.assertPostMessage(
                 "/promise/v1/id-pool/ipv4",
+                HttpStatus.BAD_REQUEST,
                 MessageEnum.IPv4PoolRangeSizeError.getId(),
                 request);
     }
@@ -311,6 +322,7 @@ public class IPv4PoolTest extends PromiseIntegrationTest
         request.setAddress("a.a.a.a");
         PromiseAssertUtil.assertPostMessage(
                 "/promise/v1/id-pool/ipv4/any" + "/action/free",
+                HttpStatus.BAD_REQUEST,
                 MessageEnum.IPv4PoolFormatError.getId(),
                 request);
     }

@@ -52,7 +52,7 @@ public class ServerTest extends PromiseIntegrationTest
             throws Exception
     {
     }
-    
+
     /**
      * Happy path test add, get and delete operation.
      *
