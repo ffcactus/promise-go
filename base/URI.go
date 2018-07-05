@@ -6,6 +6,8 @@ const (
 	// RootURL is the root URI for all the service.
 	RootURL = "/promise/v1"
 
+	// DirectorBaseURI is director base URI.
+	DirectorBaseURI = "/director"
 	// ServerBaseURI is server base URI.
 	ServerBaseURI = "/server"
 	// ServerGroupBaseURI is servergroup base URI.

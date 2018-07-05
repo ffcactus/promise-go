@@ -166,6 +166,7 @@ definitions:
     required:
     - ID
     - URL
+    - Category
     - Hostname
     - Status
     - Availibility
@@ -177,6 +178,9 @@ definitions:
       URL:
         type: "string"
         example: "/rest/director/node/1"
+      Category:
+        type: "string"
+        example: "Node"
       Hostname:
         type: "string"
         example: "hostname1"
@@ -194,7 +198,11 @@ definitions:
     required:
     - ID
     - URL
+    - Category
     - Hostname
+    - Status
+    - Availibility
+    - ManagerStatus    
     properties:
       ID:
         type: "string"
@@ -202,9 +210,21 @@ definitions:
       URL:
         type: "string"
         example: "/rest/director/node/1"
+      Category:
+        type: "string"
+        example: "Node"        
       Hostname:
         type: "string"
         example: "hostname1"
+      Status:
+        type: "string"
+        example: "Ready"
+      Availibility:
+        type: "string"
+        example: "Active"
+      ManagerStatus:
+        type: "string"
+        example: "Leader"        
   NodeCollection:
     type: "object"
     required:
@@ -250,6 +270,7 @@ definitions:
     required:
     - ID
     - URL
+    - Category
     - Name
     - Replicas
     - Dependency
@@ -260,6 +281,9 @@ definitions:
       URL:
         type: "string"
         example: "/rest/director/service/1"
+      Category:
+        type: "string"
+        example: "Service"
       Name:
         type: "string"
         example: "Task"
@@ -278,6 +302,7 @@ definitions:
     required:
     - ID
     - URL
+    - Category
     - Name
     - Replicas
     properties:
@@ -287,6 +312,9 @@ definitions:
       URL:
         type: "string"
         example: "/rest/director/node/1"
+      Category:
+        type: "string"
+        example: "Service"        
       Name:
         type: "string"
         example: "Task"
@@ -313,4 +341,4 @@ definitions:
       Members:
         type: "array"
         items:
-          $ref: "#/definitions/ServiceCollectionMember"           
+          $ref: "#/definitions/ServiceCollectionMember"

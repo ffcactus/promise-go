@@ -1,6 +1,8 @@
 package base
 
 const (
+	// CategoryNode is a category name.
+	CategoryNode = "Node"
 	// CategoryAA is a category name.
 	CategoryAA = "AA"
 	// CategoryTask is a category name.

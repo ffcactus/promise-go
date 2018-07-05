@@ -4,7 +4,7 @@ import (
 	"promise/base"
 )
 
-// ServerGroup is the model of servergroup.
+// ServerGroup is the model.
 type ServerGroup struct {
 	base.Model
 	Name        string

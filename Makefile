@@ -1,5 +1,7 @@
-all: global auth ws task server pool
+all: director global auth ws task server pool
 
+director:
+	$(MAKE) -C director
 global:
 	$(MAKE) -C global
 auth:
@@ -14,6 +16,7 @@ pool:
 	$(MAKE) -C pool
  
 clean:
+	$(MAKE) -C director clean
 	$(MAKE) -C global clean
 	$(MAKE) -C auth clean
 	$(MAKE) -C task clean
@@ -22,6 +25,7 @@ clean:
 	$(MAKE) -C pool clean
 
 image:
+	$(MAKE) -C director image
 	$(MAKE) -C platform image
 	$(MAKE) -C global image
 	$(MAKE) -C auth image
@@ -36,4 +40,4 @@ deploy:
 undeploy:
 	docker stack rm promise
 
-.PHONY: global auth task ws server pool all clean image deploy undeploy
+.PHONY: director global auth task ws server pool all clean image deploy undeploy

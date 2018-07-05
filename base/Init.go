@@ -19,6 +19,7 @@ func Init(appName string) {
 	// }
 	// beego.BConfig.Listen.HTTPPort = port
 	beego.BConfig.Listen.HTTPPort = 80
+	beego.BConfig.CopyRequestBody = true
 	log.SetFormatter(&LogTextFormatter{App: appName, ForceColors: true, DisableSorting: false})
 	log.SetLevel(log.InfoLevel)
 	file, err := os.OpenFile("/tmp/promise.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
