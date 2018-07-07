@@ -21,8 +21,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
 	for _, container := range containers {
 		fmt.Printf("%s %s\n", container.ID[:10], container.Image)
 	}
+
+	nodes, err := cli.NodeList(context.Background(), types.NodeListOptions{})
+	if err != nil {
+		panic(err)
+	}
+	for _, node := range nodes {
+		fmt.Printf("%s %v %v\n", node.ID[:10], node.Status.State, node.ManagerStatus.Leader)
+	}
+
 }

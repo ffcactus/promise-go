@@ -1,16 +1,34 @@
 package service
 
 import (
+	"context"
 	log "github.com/sirupsen/logrus"
+	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 	"promise/base"
 	"promise/director/object/dto"
+	"promise/director/object/model"
 )
+
+var _client *client.Client
+
+// The init of service package.
+func init() {
+	var err error
+	if _client, err = client.NewClientWithOpts(
+		// TODO do not hard write the default gwbridge IP.
+		client.WithHost("http://172.18.0.1:2376"),
+		client.WithVersion("1.35"),
+	); err != nil {
+		log.WithFields(log.Fields{
+			"err": err,
+		}).Error("Service failed to create client.")
+	}
+}
 
 // Node is the service
 type Node struct {
 	base.CRUDService
-	client *client.Client
 }
 
 // Category returns the category of this service.
@@ -34,26 +52,36 @@ func (s *Node) EventService() base.EventServiceInterface {
 	return eventService
 }
 
-// Client initialize the client if hasn't yet.
-func (s *Node) Client() *client.Client {
-	if s.client == nil {
-		var err error
-		if s.client, err = client.NewClientWithOpts(client.WithVersion("1.35")); err != nil {
-			log.WithFields(log.Fields{
-				"err": err,
-			}).Info("Service failed to create client.")
-		}
-	}
-	return s.client
-}
-
 // GetCollection get the Node collection.
 func (s *Node) GetCollection(start int64, count int64, filter string) (*base.CollectionModel, []base.Message) {
-	var cli = s.Client()
-
-	if cli == nil {
+	if _client == nil {
 		return nil, []base.Message{*base.NewMessageInternalError()}		
 	}
-
-	return nil, nil
+	if start != 0 || count != -1 || filter != "" {
+		return nil, []base.Message{*base.NewMessageInvalidRequest()}
+	}
+	nodes, err := _client.NodeList(context.Background(), types.NodeListOptions{})
+	if err != nil {
+		panic(err)
+	}
+	collection := base.CollectionModel{
+		Start: 0,
+		Count: int64(len(nodes)),
+		Total: int64(len(nodes)),
+	}
+	for _, node := range nodes {
+		n := model.NodeCollectionMember{}
+		n.ID = node.ID
+		n.Category = base.CategoryNode
+		n.Hostname = node.Description.Hostname
+		n.Status = string(node.Status.State)
+		n.Availibility = string(node.Spec.Availability)
+		if node.ManagerStatus.Leader {
+			n.ManagerStatus = "Leader"
+		} else {
+			n.ManagerStatus = string(node.ManagerStatus.Reachability)
+		}
+		collection.Members = append(collection.Members, &n)
+	}
+	return &collection, nil
 }

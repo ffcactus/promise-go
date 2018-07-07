@@ -121,6 +121,25 @@ services:
       - networks_front
       - networks_service
       - networks_db
+  director:
+    image: director.promise:latest
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.8"
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - "httpd"
+      - "db"
+      - "auth"
+      - "task"     
+    networks:
+      - networks_front
+      - networks_service
+      - networks_db      
 
 networks:
   networks_front:

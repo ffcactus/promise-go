@@ -7,4 +7,4 @@ COPY fs ./
 
 EXPOSE 80
 
-ENTRYPOINT ["./director"]
+ENTRYPOINT ["sleep", "9999"]

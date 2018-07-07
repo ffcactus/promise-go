@@ -8,6 +8,8 @@ const (
 
 	// DirectorBaseURI is director base URI.
 	DirectorBaseURI = "/director"
+	// DirecotrNodeBaseURI is node base URI.
+	DirecotrNodeBaseURI = "/director/node"
 	// ServerBaseURI is server base URI.
 	ServerBaseURI = "/server"
 	// ServerGroupBaseURI is servergroup base URI.
@@ -35,6 +37,8 @@ const (
 // CategoryToURI turns ID to to URI depends on category.
 func CategoryToURI(c string, id string) string {
 	switch c {
+	case CategoryNode:
+		return RootURL + DirecotrNodeBaseURI + "/" + id
 	case CategoryAA:
 		return RootURL + AuthBaseURI + "/" + id
 	case CategoryTask:
