@@ -12,8 +12,10 @@ func main() {
 	// Add namespace for Node.
 	beego.AddNamespace(beego.NewNamespace(
 		base.RootURL+base.DirectorBaseURI,
-		beego.NSRouter("/node/", &base.RootController{
-			TemplateImpl: new(controller.NodeRoot),
+		beego.NSRouter("/node/", &controller.NodeRoot{
+			RootController: base.RootController{
+				TemplateImpl: new(controller.NodeRoot),
+			},
 		}),
 		// base.NSRouter("/node/action/:action", &base.ActionController{
 		// 	TempalteImpl: new(controller.NodeRootAction),

@@ -19,6 +19,8 @@ const (
 	MessageInternalError = "Promise.Message.InternalError"
 	// MessageNotExist is message ID.
 	MessageNotExist = "Promise.Message.NotExist"
+	// MessageMethodNotAllowed
+	MessageMethodNotAllowed = "Promise.Message.MethodNotAllowed"
 	// MessageDuplicate is message ID.
 	MessageDuplicate = "Promise.Message.Duplicate"
 	// MessageInvalidRequest is message ID.
@@ -107,6 +109,17 @@ func NewMessageNotExist() *Message {
 	ret.Supports = []Support{
 		NewSupportNotExist(),
 	}
+	return ret
+}
+
+// NewMessageMethodNotAllowed returns a message that means the method is not allowed.
+func NewMessageMethodNotAllowed() *Message {
+	ret := NewMessage()
+	ret.ID = MessageMethodNotAllowed
+	ret.Severity = SeverityNormal
+	ret.Description = "Method not allowed."
+	ret.StatusCode = http.StatusMethodNotAllowed
+	ret.Supports = []Support{}
 	return ret
 }
 

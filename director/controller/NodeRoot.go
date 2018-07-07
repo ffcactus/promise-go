@@ -16,6 +16,7 @@ var (
 
 // NodeRoot is the root controller for Node.
 type NodeRoot struct {
+	base.RootController
 }
 
 // ResourceName returns the name this controller handle of.
@@ -46,4 +47,22 @@ func (c *NodeRoot) ConvertCollectionModel(m *base.CollectionModel) (interface{},
 		return nil, err
 	}
 	return ret, nil
+}
+
+// Post override the default behavior
+func (c *NodeRoot) Post() {
+	messages := []base.Message{*base.NewMessageMethodNotAllowed()}
+	c.Data["json"] = &messages
+	c.Ctx.Output.SetStatus(messages[0].StatusCode)
+	c.ServeJSON()
+	return
+}
+
+// Delete override the default behavior
+func (c *NodeRoot) Delete() {
+	messages := []base.Message{*base.NewMessageMethodNotAllowed()}
+	c.Data["json"] = &messages
+	c.Ctx.Output.SetStatus(messages[0].StatusCode)
+	c.ServeJSON()
+	return
 }
