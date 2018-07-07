@@ -21,6 +21,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Printf("=== container ===\n")
 	for _, container := range containers {
 		fmt.Printf("%s %s\n", container.ID[:10], container.Image)
 	}
@@ -29,8 +30,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Printf("=== node ===\n")
 	for _, node := range nodes {
-		fmt.Printf("%s %v %v\n", node.ID[:10], node.Status.State, node.ManagerStatus.Leader)
+		fmt.Printf("%s %v %v %v\n", node.ID[:10], node.Status.State, node.ManagerStatus.Leader, node.ManagerStatus.Addr)
 	}
+
+	swarm, err := cli.SwarmInspect(context.Background())
+	fmt.Printf("=== join token ===\n")
+	fmt.Printf("Worker = %s\n", swarm.JoinTokens.Worker)
+	fmt.Printf("Manager = %s\n", swarm.JoinTokens.Manager)
 
 }
