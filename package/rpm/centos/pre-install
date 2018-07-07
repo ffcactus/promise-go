@@ -1,0 +1,3 @@
+# Enable connection from swarm container to host.
+sudo firewall-cmd --permanent --zone=trusted --change-interface=docker_gwbridge
+sudo systemctl restart firewalld

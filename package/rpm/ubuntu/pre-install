@@ -1,0 +1,4 @@
+# Enable connection from swarm container to host.
+sudo ufw allow in on docker_gwbridge
+sudo ufw allow out on docker_gwbridge
+sudo ufw enable

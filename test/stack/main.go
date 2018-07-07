@@ -9,7 +9,10 @@ import (
 )
 
 func main() {
-	cli, err := client.NewEnvClient()
+	cli, err := client.NewClientWithOpts(
+		client.WithHost("http://localhost:2376"),
+		client.WithVersion("1.35"),
+	)
 	if err != nil {
 		panic(err)
 	}
