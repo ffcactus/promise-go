@@ -9,9 +9,9 @@ import (
 // NodeCollectionMember is the DTO used in collection response.
 type NodeCollectionMember struct {
 	base.CollectionMemberResponse
-	Hostname string `json:"Hostname"`
-	Status string `json:"Status"`
-	Availibility string `json:"Availibility"`
+	Hostname      string `json:"Hostname"`
+	Status        string `json:"Status"`
+	Availibility  string `json:"Availibility"`
 	ManagerStatus string `json:"ManagerStatus"`
 }
 

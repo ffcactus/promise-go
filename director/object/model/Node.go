@@ -7,9 +7,9 @@ import (
 // Node is the model.
 type Node struct {
 	base.Model
-	Hostname string
-	Status string
-	Availibility string
+	Hostname      string
+	Status        string
+	Availibility  string
 	ManagerStatus string
 }
 
@@ -26,9 +26,9 @@ func (m *Node) ValueForDuplicationCheck() string {
 // NodeCollectionMember is the member in collection.
 type NodeCollectionMember struct {
 	base.CollectionMemberModel
-	Hostname string
-	Status string
-	Availibility string
+	Hostname      string
+	Status        string
+	Availibility  string
 	ManagerStatus string
 }
 

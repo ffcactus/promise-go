@@ -9,9 +9,9 @@ import (
 // GetNodeResponse is DTO.
 type GetNodeResponse struct {
 	base.GetResponse
-	Hostname string `json:"Hostname"`
-	Status string `json:"Status"`
-	Availibility string `json:"Availibility"`
+	Hostname      string `json:"Hostname"`
+	Status        string `json:"Status"`
+	Availibility  string `json:"Availibility"`
 	ManagerStatus string `json:"ManagerStatus"`
 }
 
@@ -31,6 +31,6 @@ func (dto *GetNodeResponse) Load(data base.ModelInterface) error {
 	dto.Hostname = m.Hostname
 	dto.Status = m.Status
 	dto.Availibility = m.Availibility
-	dto.ManagerStatus = m.ManagerStatus	
+	dto.ManagerStatus = m.ManagerStatus
 	return nil
 }

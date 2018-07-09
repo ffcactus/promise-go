@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/plugins/cors"	
+	"github.com/astaxie/beego/plugins/cors"
 	"promise/base"
 	"promise/director/controller"
 )
@@ -22,7 +22,7 @@ func main() {
 		// }),
 		// beego.NSRouter("node/:id", &base.IDController{
 		// 	TemplateImpl: new(controller.NodeID),
-		// }),	
+		// }),
 	))
 	// Add namespace for Service.
 	// beego.AddNamespace(beego.NewNamespace(
@@ -44,5 +44,5 @@ func main() {
 	}))
 
 	// Start.
-	beego.Run()	
+	beego.Run()
 }

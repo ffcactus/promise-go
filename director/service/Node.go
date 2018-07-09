@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	log "github.com/sirupsen/logrus"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
+	log "github.com/sirupsen/logrus"
 	"promise/base"
 	"promise/director/object/dto"
 	"promise/director/object/model"
@@ -55,7 +55,7 @@ func (s *Node) EventService() base.EventServiceInterface {
 // GetCollection get the Node collection.
 func (s *Node) GetCollection(start int64, count int64, filter string) (*base.CollectionModel, []base.Message) {
 	if _client == nil {
-		return nil, []base.Message{*base.NewMessageInternalError()}		
+		return nil, []base.Message{*base.NewMessageInternalError()}
 	}
 	if start != 0 || count != -1 || filter != "" {
 		return nil, []base.Message{*base.NewMessageInvalidRequest()}

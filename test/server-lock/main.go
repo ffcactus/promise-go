@@ -8,9 +8,9 @@ import (
 )
 
 type Table struct {
-	ID uint64 `gorm:"column:ID;primary_key"`
+	ID    uint64 `gorm:"column:ID;primary_key"`
 	State string `gorm:"column:State"`
-	Value int `gorm:"column:Value"`
+	Value int    `gorm:"column:Value"`
 }
 
 func (Table) TableName() string {
@@ -18,7 +18,7 @@ func (Table) TableName() string {
 }
 
 var (
-	instance = 2
+	instance   = 2
 	connection *gorm.DB
 	done       = make(chan bool)
 )
@@ -71,7 +71,7 @@ func GetAndLock(instance int) {
 	table.Value = instance
 	if err := tx.Save(table).Error; err != nil {
 		fmt.Printf("%d Save() failed.\n", instance)
-		tx.Rollback()	
+		tx.Rollback()
 		done <- false
 		return
 	}

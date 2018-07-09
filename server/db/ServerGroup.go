@@ -8,7 +8,6 @@ import (
 	"promise/server/object/message"
 )
 
-
 var (
 	// DefaultServerGroupID records the ID of default servergroup. We don't have to retrieve it each time.
 	DefaultServerGroupID    string
