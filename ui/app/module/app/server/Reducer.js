@@ -1,6 +1,6 @@
 import {
   ActionType,
-  ServerAppState,
+  AppState,
   ServerDetailState,
   ServerTabState,
   ServerOrderByState,
@@ -48,7 +48,7 @@ function getOrderByComparator(orderBy) {
 }
 
 const defaultState = {
-  appState: ServerAppState.LOADING,
+  appState: AppState.LOADING,
   serverDetailState: ServerDetailState.EMPTY,
   // We need record the default servergroup because of it's special role.
   defaultServerGroupUri: null,  // The default servergroup, the one named 'all'.
@@ -85,7 +85,7 @@ export const serverApp = (state = defaultState, action) => {
     case ActionType.APP_INIT_START:
       return {
         ...state,
-        appState: ServerAppState.LOADING,
+        appState: AppState.LOADING,
         defaultServerGroupUri: null,
         currentServer: null,
         currentServerSet: new Set(),
@@ -129,7 +129,7 @@ export const serverApp = (state = defaultState, action) => {
       }
       return {
         ...state,
-        appState: ServerAppState.NORMAL,
+        appState: AppState.NORMAL,
         defaultServerGroupUri: tempDefaultServerGroupUri,
         currentServerGroupUri: tempCurrentServerGroupUri,
         currentServerUri: tempCurrentServerUri,
@@ -146,7 +146,7 @@ export const serverApp = (state = defaultState, action) => {
     case ActionType.APP_INIT_FAILURE:
       return {
         ...state,
-        appState: ServerAppState.FAILURE,
+        appState: AppState.FAILURE,
         serverDetailState: ServerDetailState.FAILURE,
       };
     case ActionType.APP_EXIT:
