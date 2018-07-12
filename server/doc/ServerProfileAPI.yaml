@@ -141,7 +141,7 @@ paths:
         '400':
           description: "Invalid ID supplied."
         '404':
-          description: "ServerHardwareModel not found."
+          description: "Not Found."
     delete:
       tags:
       - "ServerHardwareModel"    
@@ -162,7 +162,7 @@ paths:
         '400':
           description: "Invalid ID supplied."
         '404':
-          description: "ServerHardwareModel not found."
+          description: "Not Found."
   /ServerHardwareModel/{id}/ServerAssociation:
     get:
       tags:
@@ -187,8 +187,8 @@ paths:
               type: "string"
               example: "/Server/1"
         '404':
-          description: "ServerHardwareModel not found."      
-  /ServerHardwareModel/{id}/Action/ParseNetworkAdapterPortConnection:
+          description: "Not Found."      
+  /ServerHardwareModel/{id}/Actions/ParseNetworkAdapterPortConnection:
     post:
       tags:
       - "ServerHardwareModel"
@@ -284,7 +284,7 @@ paths:
         '400':
           description: "Invalid ID supplied."
         '404':
-          description: "ServerProfile not found."
+          description: "Not Found."
     delete:
       tags:
       - "ServerProfile"    
@@ -305,7 +305,7 @@ paths:
         '400':
           description: "Invalid ID supplied."
         '404':
-          description: "ServerProfile not found."
+          description: "Not Found."
   /ServerProfile/{id}/Action/Apply:
     post:
       tags:
@@ -358,7 +358,7 @@ paths:
         '400':
           description: "Invalid ID supplied."
         '404':
-          description: "ServerProfile not found."
+          description: "Not Found."
 definitions:
   AdapterHardwareCapability:
     type: "object"
@@ -516,9 +516,9 @@ definitions:
       ServerType:
         type: "string"
         enum:
-        - "blade"
-        - "rack"
-        example: "blade"
+        - "Blade"
+        - "Rack"
+        example: "Blade"
       ProductName:
         type: "string"
         example: "CH121 V5"
