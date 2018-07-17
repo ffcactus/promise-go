@@ -49,6 +49,32 @@ services:
     networks:
       - networks_front
       - networks_service
+  rabbitmq:
+    image: rabbitmq:alpine
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+    networks:
+      - networks_service
+  mq:
+    image: mq.promise:latest
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - "rabbitmq"
+    networks:
+      - networks_service
   auth:
     image: auth.promise:latest
     deploy:
