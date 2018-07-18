@@ -5,10 +5,6 @@ services:
     image: postgres:latest
     deploy:
       replicas: 1
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 2G
       restart_policy:
         condition: on-failure
     environment:
@@ -23,10 +19,6 @@ services:
       replicas: 1
       placement:
         constraints: [node.role == manager]
-      resources:
-        limits:
-          cpus: "0.2"
-          memory: 100M
       restart_policy:
         condition: on-failure
     ports:
@@ -38,10 +30,6 @@ services:
     image: ws.promise:latest
     deploy:
       replicas: 1
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 512M
       restart_policy:
         condition: on-failure
     depends_on:
@@ -53,10 +41,6 @@ services:
     image: rabbitmq:alpine
     deploy:
       replicas: 1
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 512M
       restart_policy:
         condition: on-failure
     networks:
@@ -65,10 +49,6 @@ services:
     image: mq.promise:latest
     deploy:
       replicas: 2
-      resources:
-        limits:
-          cpus: "0.2"
-          memory: 512M
       restart_policy:
         condition: on-failure
     depends_on:
@@ -79,10 +59,6 @@ services:
     image: auth.promise:latest
     deploy:
       replicas: 1
-      resources:
-        limits:
-          cpus: "0.2"
-          memory: 512M
       restart_policy:
         condition: on-failure
     depends_on:
@@ -96,10 +72,6 @@ services:
     image: task.promise:latest
     deploy:
       replicas: 1
-      resources:
-        limits:
-          cpus: "0.8"
-          memory: 512M
       restart_policy:
         condition: on-failure
     depends_on:
@@ -114,10 +86,6 @@ services:
     image: pool.promise:latest
     deploy:
       replicas: 1
-      resources:
-        limits:
-          cpus: "0.2"
-          memory: 256M
       restart_policy:
         condition: on-failure
     depends_on:
@@ -132,10 +100,6 @@ services:
     image: server.promise:latest
     deploy:
       replicas: 1
-      resources:
-        limits:
-          cpus: "0.8"
-          memory: 512M
       restart_policy:
         condition: on-failure
     depends_on:
@@ -151,10 +115,6 @@ services:
     image: director.promise:latest
     deploy:
       replicas: 1
-      resources:
-        limits:
-          cpus: "0.8"
-          memory: 512M
       restart_policy:
         condition: on-failure
     depends_on:
