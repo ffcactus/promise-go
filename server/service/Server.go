@@ -2,7 +2,6 @@ package service
 
 import (
 	"promise/base"
-	"promise/sdk/event"
 	"promise/server/db"
 	"promise/server/object/dto"
 )
@@ -13,8 +12,6 @@ var (
 			TemplateImpl: new(db.Server),
 		},
 	}
-
-	eventService event.Service
 )
 
 // Server is the server service
@@ -37,11 +34,6 @@ func (s *Server) DB() base.DBInterface {
 	return serverDB
 }
 
-// EventService returns the event service implementation.
-func (s *Server) EventService() base.EventServiceInterface {
-	return eventService
-}
-
 // Delete will override the default process.
 // We not only remove the server but the server-servergroup.
 func (s *Server) Delete(id string) []base.Message {
@@ -57,9 +49,9 @@ func (s *Server) Delete(id string) []base.Message {
 	for _, v := range ssg {
 		ssgResponse := dto.GetServerServerGroupResponse{}
 		ssgResponse.Load(v)
-		s.EventService().DispatchDeleteEvent(&ssgResponse)
+		base.PublishDeleteMessage(&ssgResponse)
 	}
-	s.EventService().DispatchDeleteEvent(response)
+	base.PublishDeleteMessage(response)
 	return nil
 }
 
@@ -73,13 +65,13 @@ func (s *Server) DeleteCollection() []base.Message {
 	for _, v := range records {
 		response := s.TemplateImpl.Response()
 		response.Load(v)
-		s.TemplateImpl.EventService().DispatchDeleteEvent(response)
+		base.PublishDeleteMessage(response)
 	}
 	for _, v := range ssg {
 		ssgResponse := dto.GetServerServerGroupResponse{}
 		ssgResponse.Load(v)
-		s.EventService().DispatchDeleteEvent(&ssgResponse)
+		base.PublishDeleteMessage(&ssgResponse)
 	}
-	s.TemplateImpl.EventService().DispatchDeleteCollectionEvent(s.TemplateImpl.Category())
+	base.PublishDeleteCollectionMessage(s.TemplateImpl.Category())
 	return nil
 }

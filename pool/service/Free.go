@@ -25,6 +25,6 @@ func (s *Free) Perform(id string, request base.ActionRequestInterface) (base.Res
 		return nil, []base.Message{*message}
 	}
 	response.Load(updatedPool)
-	eventService.DispatchUpdateEvent(&response)
+	base.PublishUpdateMessage(&response)
 	return &response, nil
 }

@@ -32,6 +32,8 @@ func initDB() {
 
 func main() {
 	base.Init("IDPoolApp")
+	base.InitMQService()
+	defer base.StopMQService()
 	initDB()
 	ipv4 := beego.NewNamespace(
 		base.RootURL+base.IDPoolBaseURI,

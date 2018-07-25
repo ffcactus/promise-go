@@ -1,13 +1,10 @@
 package controller
 
 import (
-	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	"promise/base"
-	"promise/ws/object/dto"
 	"promise/ws/service"
 )
 
@@ -42,28 +39,4 @@ func (c *RootController) Get() {
 		"count":  count,
 		"remote": c.Ctx.Request.RemoteAddr,
 	}).Info("Websocket add a listener.")
-}
-
-// Post handles POST requests.
-func (c *RootController) Post() {
-	var request dto.PostEventRequest
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &request); err != nil {
-		log.WithFields(log.Fields{
-			"error": err,
-		}).Warn("Post ws failed, unable to unmarshal request.")
-		messages := []base.Message{}
-		messages = append(messages, *base.NewMessageInvalidRequest())
-		c.Data["json"] = &messages
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
-		c.ServeJSON()
-		return
-	}
-	service.DispatchEvent(&request)
-	c.Ctx.Output.SetStatus(http.StatusCreated)
-	log.WithFields(log.Fields{
-		"category": request.Category,
-		"type":     request.Type,
-		"resource": request.ResourceID,
-	}).Debug("Post ws message done.")
-	c.ServeJSON()
 }

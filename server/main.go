@@ -35,6 +35,8 @@ func initDB() {
 
 func main() {
 	base.Init("ServerApp")
+	base.InitMQService()
+	defer base.StopMQService()
 	initDB()
 	bgRefresh := service.Refresh{}
 	bgRefresh.StartBackgroundRefresh()

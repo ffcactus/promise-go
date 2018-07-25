@@ -39,11 +39,6 @@ func (s *AdapterModel) DB() base.DBInterface {
 	return adapterModelDB
 }
 
-// EventService returns the event service implementation.
-func (s *AdapterModel) EventService() base.EventServiceInterface {
-	return eventService
-}
-
 // LoadModel will load the model from local files.
 func LoadModel() {
 	var (
@@ -73,7 +68,7 @@ func LoadModel() {
 		save, message := adapterModelDB.Create(&m)
 		if message == nil {
 			response.Load(&m)
-			eventService.DispatchCreateEvent(&response)
+			base.PublishCreateMessage(&response)
 			log.WithFields(log.Fields{
 				"id": save.GetID(),
 			}).Info("Service save adapter model to DB.")

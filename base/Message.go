@@ -19,7 +19,7 @@ const (
 	MessageInternalError = "Promise.Message.InternalError"
 	// MessageNotExist is message ID.
 	MessageNotExist = "Promise.Message.NotExist"
-	// MessageMethodNotAllowed
+	// MessageMethodNotAllowed is message ID.
 	MessageMethodNotAllowed = "Promise.Message.MethodNotAllowed"
 	// MessageDuplicate is message ID.
 	MessageDuplicate = "Promise.Message.Duplicate"

@@ -7,4 +7,4 @@ COPY fs ./
 
 EXPOSE 80
 
-ENTRYPOINT ["sleep", "9999"]
+ENTRYPOINT ["sleep", "9999m"]

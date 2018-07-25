@@ -5,7 +5,6 @@ type CRUDServiceTemplateInterface interface {
 	DB() DBInterface
 	Response() GetResponseInterface
 	Category() string
-	EventService() EventServiceInterface
 }
 
 // CRUDServiceInterface is the interface that a CRUD Service have.
@@ -36,7 +35,7 @@ func (s *CRUDService) Create(request PostRequestInterface) (ModelInterface, []Me
 		return nil, []Message{*message}
 	}
 	response.Load(posted)
-	s.TemplateImpl.EventService().DispatchCreateEvent(response)
+	PublishCreateMessage(response)
 	return posted, nil
 }
 
@@ -64,7 +63,7 @@ func (s *CRUDService) Delete(id string) []Message {
 		return []Message{*message}
 	}
 	response.Load(model)
-	s.TemplateImpl.EventService().DispatchDeleteEvent(response)
+	PublishDeleteMessage(response)
 	return nil
 }
 
@@ -92,9 +91,9 @@ func (s *CRUDService) DeleteCollection() []Message {
 	for _, v := range records {
 		response := s.TemplateImpl.Response()
 		response.Load(v)
-		s.TemplateImpl.EventService().DispatchDeleteEvent(response)
+		PublishDeleteMessage(response)
 	}
-	s.TemplateImpl.EventService().DispatchDeleteCollectionEvent(s.TemplateImpl.Category())
+	PublishDeleteCollectionMessage(s.TemplateImpl.Category())
 	return nil
 }
 
@@ -115,6 +114,6 @@ func (s *CRUDService) Update(id string, request UpdateRequestInterface) (GetResp
 		return nil, []Message{*message}
 	}
 	response.Load(updatedTask)
-	s.TemplateImpl.EventService().DispatchUpdateEvent(response)
+	PublishUpdateMessage(response)
 	return response, nil
 }

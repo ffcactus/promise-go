@@ -31,6 +31,6 @@ func (s *Allocate) Perform(id string, request base.ActionRequestInterface) (base
 	if err := response.Pool.Load(updatedPool); err != nil {
 		return nil, []base.Message{*base.NewMessageInternalError()}
 	}
-	eventService.DispatchUpdateEvent(&response.Pool)
+	base.PublishUpdateMessage(&response.Pool)
 	return &response, nil
 }

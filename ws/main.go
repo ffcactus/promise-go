@@ -11,7 +11,7 @@ import (
 func main() {
 	base.Init("WSApp")
 
-	go service.StartEventDispatcher()
+	go service.StartDispatcher()
 
 	// ws namesapce.
 	wsNS := beego.NewNamespace(
@@ -19,13 +19,6 @@ func main() {
 		beego.NSRouter("/", &controller.RootController{}),
 	)
 	beego.AddNamespace(wsNS)
-
-	// ws-sender namespace.
-	wsSenderNS := beego.NewNamespace(
-		base.RootURL+base.WSSenderBaseURI,
-		beego.NSRouter("/", &controller.WsSenderRootController{}),
-	)
-	beego.AddNamespace(wsSenderNS)
 
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins:  true,

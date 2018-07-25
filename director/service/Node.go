@@ -10,7 +10,9 @@ import (
 	"promise/director/object/model"
 )
 
-var _client *client.Client
+var (
+	_client *client.Client
+)
 
 // The init of service package.
 func init() {
@@ -45,11 +47,6 @@ func (s *Node) Response() base.GetResponseInterface {
 // DB is not need.
 func (s *Node) DB() base.DBInterface {
 	return nil
-}
-
-// EventService returns the event service implementation.
-func (s *Node) EventService() base.EventServiceInterface {
-	return eventService
 }
 
 // GetCollection get the Node collection.

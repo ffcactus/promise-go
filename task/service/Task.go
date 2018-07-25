@@ -2,7 +2,6 @@ package service
 
 import (
 	"promise/base"
-	"promise/sdk/event"
 	"promise/task/db"
 	"promise/task/object/dto"
 )
@@ -13,8 +12,6 @@ var (
 			TemplateImpl: new(db.Task),
 		},
 	}
-
-	eventService event.Service
 )
 
 // Task is the concrete service.
@@ -34,9 +31,4 @@ func (s *Task) Response() base.GetResponseInterface {
 // DB returns the DB implementation.
 func (s *Task) DB() base.DBInterface {
 	return taskDB
-}
-
-// EventService returns the event service implementation.
-func (s *Task) EventService() base.EventServiceInterface {
-	return eventService
 }

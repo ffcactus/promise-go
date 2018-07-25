@@ -32,8 +32,3 @@ func (s *ServerServerGroup) Response() base.GetResponseInterface {
 func (s *ServerServerGroup) DB() base.DBInterface {
 	return serverServerGroupDB
 }
-
-// EventService returns the event service implementation.
-func (s *ServerServerGroup) EventService() base.EventServiceInterface {
-	return eventService
-}

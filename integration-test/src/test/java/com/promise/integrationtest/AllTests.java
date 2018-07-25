@@ -9,11 +9,9 @@ import com.promise.integrationtest.server.ServerGroupTest;
 import com.promise.integrationtest.server.ServerServerGroupTest;
 import com.promise.integrationtest.server.ServerTest;
 import com.promise.integrationtest.task.TaskTest;
-import com.promise.integrationtest.ws.WsTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        WsTest.class,
         TaskTest.class,
         IPv4PoolTest.class,
         ServerTest.class,

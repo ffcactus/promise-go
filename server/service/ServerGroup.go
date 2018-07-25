@@ -30,7 +30,7 @@ func CreateDefaultServerGroup() {
 	sg, message := serverGroupDB.Create(request.ToModel())
 	if message == nil {
 		response.Load(sg)
-		eventService.DispatchCreateEvent(&response)
+		base.PublishCreateMessage(&response)
 		log.WithFields(log.Fields{
 			"id": sg.GetID(),
 		}).Info("Service create the default servergroup created.")
@@ -57,9 +57,4 @@ func (s *ServerGroup) Response() base.GetResponseInterface {
 // DB returns the DB implementation.
 func (s *ServerGroup) DB() base.DBInterface {
 	return serverGroupDB
-}
-
-// EventService returns the event service implementation.
-func (s *ServerGroup) EventService() base.EventServiceInterface {
-	return eventService
 }

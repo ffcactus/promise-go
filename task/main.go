@@ -11,6 +11,8 @@ import (
 
 func main() {
 	base.Init("TaskApp")
+	base.InitMQService()
+	defer base.StopMQService()
 	initDB()
 	ns := beego.NewNamespace(
 		base.RootURL+base.TaskBaseURI,

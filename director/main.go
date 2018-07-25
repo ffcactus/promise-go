@@ -17,23 +17,8 @@ func main() {
 				TemplateImpl: new(controller.NodeRoot),
 			},
 		}),
-		// base.NSRouter("/node/action/:action", &base.ActionController{
-		// 	TempalteImpl: new(controller.NodeRootAction),
-		// }),
-		// beego.NSRouter("node/:id", &base.IDController{
-		// 	TemplateImpl: new(controller.NodeID),
-		// }),
 	))
-	// Add namespace for Service.
-	// beego.AddNamespace(beego.NewNamespace(
-	// 	base.RootURL+base.DirectorBaseURI,
-	// 	beego.NSRouter("/service/", &base.RootController{
-	// 		TemplateImpl: new(controller.NodeRoot),
-	// 	}),
-	// 	beego.NSRouter("service/:id", &base.IDController{
-	// 		TemplateImpl: new(controller.NodeID),
-	// 	}),
-	// ))
+
 	// Enable CORS.
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins:  true,

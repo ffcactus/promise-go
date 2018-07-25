@@ -9,6 +9,7 @@ type ModelInterface interface {
 	ValueForDuplicationCheck() string
 	DebugInfo() string
 	GetID() string
+	GetCategory() string
 }
 
 // Model is the model object used in Promise project.
@@ -19,9 +20,14 @@ type Model struct {
 	UpdatedAt time.Time
 }
 
-// GetID returns the ID of the model.
+// GetID returns the category of the model.
 func (m *Model) GetID() string {
 	return m.ID
+}
+
+// GetCategory returns the ID of the model.
+func (m *Model) GetCategory() string {
+	return m.Category
 }
 
 // CollectionMemberModelInterface is the interface a Member should have

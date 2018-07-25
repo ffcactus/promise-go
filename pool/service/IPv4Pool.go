@@ -4,7 +4,6 @@ import (
 	"promise/base"
 	"promise/pool/db"
 	"promise/pool/object/dto"
-	"promise/sdk/event"
 )
 
 var (
@@ -13,8 +12,6 @@ var (
 			TemplateImpl: new(db.IPv4Pool),
 		},
 	}
-
-	eventService event.Service
 )
 
 // IPv4Pool is the concrete service.
@@ -34,9 +31,4 @@ func (s *IPv4Pool) Response() base.GetResponseInterface {
 // DB returns the DB implementation.
 func (s *IPv4Pool) DB() base.DBInterface {
 	return ipv4PoolDB
-}
-
-// EventService returns the event service implementation.
-func (s *IPv4Pool) EventService() base.EventServiceInterface {
-	return eventService
 }

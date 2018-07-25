@@ -32,8 +32,3 @@ func (s *AdapterConfig) Response() base.GetResponseInterface {
 func (s *AdapterConfig) DB() base.DBInterface {
 	return adapterConfigDB
 }
-
-// EventService returns the event service implementation.
-func (s *AdapterConfig) EventService() base.EventServiceInterface {
-	return eventService
-}

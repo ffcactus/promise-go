@@ -4,6 +4,7 @@ import (
 	"container/list"
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
+	"github.com/streadway/amqp"
 	"promise/base"
 	"promise/ws/object/dto"
 )
@@ -20,37 +21,31 @@ func AddListener(listener *websocket.Conn) int {
 	return wsConnection.Len()
 }
 
-// StartEventDispatcher Start the event dispater.
-func StartEventDispatcher() {
-	for {
-		e := <-EventChannel
-		count := 0
-		var next *list.Element
-		for each := wsConnection.Front(); each != nil; each = next {
-			next = each.Next()
-			if err := each.Value.(*websocket.Conn).WriteMessage(websocket.TextMessage, []byte(base.StructToString(e))); err != nil {
-				log.WithFields(log.Fields{
-					"error":  err,
-					"remain": wsConnection.Len(),
-				}).Info("Send message to the listener failed, remove the listener.")
-				wsConnection.Remove(each)
-
-			} else {
-				count++
-			}
-		}
-		if count > 0 {
-			log.WithFields(log.Fields{
-				"count":    count,
-				"type":     e.Type,
-				"category": e.Category,
-				"resource": e.ResourceID,
-			}).Debug("Event dispatched.")
-		}
-	}
+// StartDispatcher will recieve all the message and dispatch them as websocket.
+func StartDispatcher() {
+	base.InitMQService()
+	defer base.StopMQService()
+	base.Subscribe([]string{"*.*"}, handler)
 }
 
-// DispatchEvent will push the event to the pipe.
-func DispatchEvent(e *dto.PostEventRequest) {
-	EventChannel <- e
+// handler will handle the event.
+func handler(d *amqp.Delivery) {
+	count := 0
+	var next *list.Element
+	for each := wsConnection.Front(); each != nil; each = next {
+		next = each.Next()
+		if err := each.Value.(*websocket.Conn).WriteMessage(websocket.TextMessage, d.Body); err != nil {
+			log.WithFields(log.Fields{
+				"error":  err,
+				"remain": wsConnection.Len(),
+			}).Info("Send message to the listener failed, remove the listener.")
+			wsConnection.Remove(each)
+
+		} else {
+			count++
+		}
+	}
+	if count > 0 {
+		log.WithFields(log.Fields{"count": count}).Info("Event dispatched.")
+	}
 }

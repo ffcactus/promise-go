@@ -3,7 +3,6 @@ package strategy
 import (
 	log "github.com/sirupsen/logrus"
 	"promise/base"
-	"promise/sdk/event"
 	"promise/server/context"
 	"promise/server/object/dto"
 )
@@ -33,7 +32,7 @@ func (s *ServerEvent) dispatchServerEvent(c *context.Base, eventType string, ser
 		}).Warn("Strategy dispatch server event failed, create event failed.")
 		return
 	}
-	messages, err := event.DispatchResourceEvent(eventType, serverDTO)
+	err := base.PublishResourceMessage(eventType, serverDTO)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"id":    server.GetID(),
@@ -41,34 +40,27 @@ func (s *ServerEvent) dispatchServerEvent(c *context.Base, eventType string, ser
 			"error": err,
 		}).Warn("Strategy dispatch server event failed, event dispatching failed.")
 	}
-	if messages != nil {
-		log.WithFields(log.Fields{
-			"id":      server.GetID(),
-			"type":    eventType,
-			"message": messages[0].ID,
-		}).Warn("Strategy dispatch server create event failed, message returned, event dispatching failed.")
-	}
 }
 
 // DispatchServerCreate will send server create event.
 // Generally we don't care much about the error while sending event.
 // If the server created, but event failed to dispatch, the error won't return to user.
 func (s *ServerEvent) DispatchServerCreate(c *context.Base, server base.ModelInterface) {
-	s.dispatchServerEvent(c, base.CreateEvent, server)
+	s.dispatchServerEvent(c, base.CreateOperation, server)
 }
 
 // DispatchServerUpdate will send server update event.
 // Generally we don't care much about the error while sending event.
 // If the server created, but event failed to dispatch, the error won't return to user.
 func (s *ServerEvent) DispatchServerUpdate(c *context.Base, server base.ModelInterface) {
-	s.dispatchServerEvent(c, base.UpdateEvent, server)
+	s.dispatchServerEvent(c, base.UpdateOperation, server)
 }
 
 // DispatchServerDelete will send server delete event.
 // Generally we don't care much about the error while sending event.
 // If the server created, but event failed to dispatch, the error won't return to user.
 func (s *ServerEvent) DispatchServerDelete(c *context.Base, server base.ModelInterface) {
-	s.dispatchServerEvent(c, base.DeleteEvent, server)
+	s.dispatchServerEvent(c, base.DeleteOperation, server)
 }
 
 func (s *ServerEvent) dispatchServerServerGroupEvent(c *context.Base, eventType string, ssg base.ModelInterface) {
@@ -81,7 +73,7 @@ func (s *ServerEvent) dispatchServerServerGroupEvent(c *context.Base, eventType 
 		}).Warn("Strategy dispatch server-servergroup event failed, create event failed.")
 		return
 	}
-	messages, err := event.DispatchResourceEvent(eventType, ssgDTO)
+	err := base.PublishResourceMessage(eventType, ssgDTO)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"id":    ssg.GetID(),
@@ -89,25 +81,18 @@ func (s *ServerEvent) dispatchServerServerGroupEvent(c *context.Base, eventType 
 			"error": err,
 		}).Warn("Strategy dispatch server-servergroup event failed, event dispatching failed.")
 	}
-	if messages != nil {
-		log.WithFields(log.Fields{
-			"id":      ssg.GetID(),
-			"type":    eventType,
-			"message": messages[0].ID},
-		).Warn("Strategy dispatch server-servergroup create event failed, message returned, event dispatching failed.")
-	}
 }
 
 // DispatchServerServerGroupCreate will send server-servergroup create event.
 // Generally we don't care much about the error while sending event.
 // If the server created, but event failed to dispatch, the error won't return to user.
 func (s *ServerEvent) DispatchServerServerGroupCreate(c *context.Base, ssg base.ModelInterface) {
-	s.dispatchServerServerGroupEvent(c, base.CreateEvent, ssg)
+	s.dispatchServerServerGroupEvent(c, base.CreateOperation, ssg)
 }
 
 // DispatchServerServerGroupDelete will send server-servergroup create event.
 // Generally we don't care much about the error while sending event.
 // If the server created, but event failed to dispatch, the error won't return to user.
 func (s *ServerEvent) DispatchServerServerGroupDelete(c *context.Base, ssg base.ModelInterface) {
-	s.dispatchServerServerGroupEvent(c, base.DeleteEvent, ssg)
+	s.dispatchServerServerGroupEvent(c, base.DeleteOperation, ssg)
 }
