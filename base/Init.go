@@ -22,7 +22,7 @@ func Init(appName string) {
 	beego.BConfig.CopyRequestBody = true
 	log.SetFormatter(&LogTextFormatter{App: appName, ForceColors: true, DisableSorting: false})
 	log.SetLevel(log.InfoLevel)
-	file, err := os.OpenFile("/tmp/promise.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
+	file, err := os.OpenFile("/opt/promise/log/promise.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 	if err == nil {
 		mw := io.MultiWriter(os.Stdout, file)
 		log.SetOutput(mw)

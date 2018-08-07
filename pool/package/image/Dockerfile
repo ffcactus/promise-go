@@ -1,7 +1,8 @@
 FROM alpine
 
 RUN mkdir -p /opt/promise
-RUN touch /tmp/promise.log
+RUN mkdir -p /opt/promise/log
+RUN touch /opt/promise/log/promise.log
 WORKDIR /opt/promise
 COPY fs ./
 

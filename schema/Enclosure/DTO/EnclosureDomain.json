@@ -1,8 +1,0 @@
-{
-    "SharedResource": {
-        "ManagementIPPool": "/redfish/v1/id-pool/ipv4-pool/xxxx-xxxx",
-        "ServiceIPPool": "/redfish/v1/id-pool/ipv4-pool/xxxx-xxxx",
-        "MACPool": "/redfish/v1/id-pool/mac-pool/xxxx-xxxx",
-        "WWNPool": "/redfish/v1/id-pool/wwn-pool/xxxx-xxxx"
-    }
-}

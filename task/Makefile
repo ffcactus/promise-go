@@ -7,6 +7,7 @@ clean:
 
 image: all
 	mv ./task ./package/image/fs/
+	cp ../package/docker/script/wait-for.sh ./package/image/fs/
 	docker build  -t task.promise ./package/image
 
 .PHONY: all clean start image
