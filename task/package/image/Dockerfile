@@ -8,4 +8,4 @@ COPY fs ./
 
 EXPOSE 80
 
-ENTRYPOINT ["./task"]
+# ENTRYPOINT ["./task"]

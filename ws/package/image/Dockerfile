@@ -9,4 +9,4 @@ COPY fs ./
 
 EXPOSE 80
 
-ENTRYPOINT ["./ws"]
+# ENTRYPOINT ["./ws"]
