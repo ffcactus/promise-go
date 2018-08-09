@@ -5,6 +5,7 @@ RUN mkdir -p /opt/promise/log
 RUN touch /opt/promise/log/promise.log
 WORKDIR /opt/promise
 COPY fs ./
+RUN chmod a+x ./task ./wait-for.sh
 
 EXPOSE 80
 
