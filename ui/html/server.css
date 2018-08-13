@@ -1,0 +1,39 @@
+.full {
+    background-color: aquamarine;
+}
+
+.app {
+    margin: 0px;
+    height: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    display: block;
+}
+
+.app-header {
+    background-color: #ebeae6;
+    height: 40px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    left: 0px;
+}
+
+.app-main {
+    background-color: white;
+    position: absolute;
+    top: 40px;
+    right: 0px;
+    bottom: 40px;
+    left: 0px;
+    border-top: 1px solid #adc4dd;
+}
+
+.app-footer {
+    background-color: aquamarine;
+    height: 40px;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+}
