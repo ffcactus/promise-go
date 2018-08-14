@@ -4,11 +4,11 @@ import styles from './Server.css';
 
 function ServerSearchArea() {
   return (
-    <div styleName="ServerSearchArea">
+    <div styleName="ColumnFlexItem PromiseBoarder" style={{height: '40px'}}>
       <input />
     </div>
   );
 }
 
-export default CSSModules(ServerSearchArea, styles);
+export default CSSModules(ServerSearchArea, styles, {allowMultiple: true});
 

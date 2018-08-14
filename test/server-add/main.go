@@ -39,6 +39,7 @@ func main() {
 		Client   = &http.Client{}
 	)
 	groupID = make([]string, count)
+	fmt.Printf("--- begin ---\n")
 	// Create 10 server group.
 	for i := 0; i < 10; i++ {
 		dto := AddServerGroupRequest{
@@ -46,9 +47,10 @@ func main() {
 		}
 		b := new(bytes.Buffer)
 		json.NewEncoder(b).Encode(dto)
-		req, _ := http.NewRequest(http.MethodPost, "http://localhost/promise/v1/servergroup", b)
+		req, _ := http.NewRequest(http.MethodPost, "http://10.93.81.79/promise/v1/servergroup", b)
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("Accept", "application/json")
+		fmt.Printf("%d\n", i)
 		if resp, err := Client.Do(req); err != nil {
 			fmt.Printf("Post group %s failed. error = %s, response = %#v\n", dto.Name, err, resp)
 			return
@@ -78,7 +80,7 @@ func main() {
 		}
 		b := new(bytes.Buffer)
 		json.NewEncoder(b).Encode(dto)
-		req, _ := http.NewRequest(http.MethodPost, "http://localhost/promise/v1/server/action/discover", b)
+		req, _ := http.NewRequest(http.MethodPost, "http://10.93.81.79/promise/v1/server/action/discover", b)
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("Accept", "application/json")
 		if resp, err := Client.Do(req); err != nil {
@@ -106,7 +108,7 @@ func main() {
 		}
 		b := new(bytes.Buffer)
 		json.NewEncoder(b).Encode(dto)
-		req, _ := http.NewRequest(http.MethodPost, "http://localhost/promise/v1/server-servergroup", b)
+		req, _ := http.NewRequest(http.MethodPost, "http://10.93.81.79/promise/v1/server-servergroup", b)
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("Accept", "application/json")
 		if resp, err := Client.Do(req); err != nil {
@@ -126,7 +128,7 @@ func main() {
 		}
 		b := new(bytes.Buffer)
 		json.NewEncoder(b).Encode(dto)
-		req, _ := http.NewRequest(http.MethodPost, "http://localhost/promise/v1/server-servergroup", b)
+		req, _ := http.NewRequest(http.MethodPost, "http://10.93.81.79/promise/v1/server-servergroup", b)
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("Accept", "application/json")
 		if resp, err := Client.Do(req); err != nil {
@@ -146,7 +148,7 @@ func main() {
 		}
 		b := new(bytes.Buffer)
 		json.NewEncoder(b).Encode(dto)
-		req, _ := http.NewRequest(http.MethodPost, "http://localhost/promise/v1/server-servergroup", b)
+		req, _ := http.NewRequest(http.MethodPost, "http://10.93.81.79/promise/v1/server-servergroup", b)
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("Accept", "application/json")
 		if resp, err := Client.Do(req); err != nil {
@@ -166,7 +168,7 @@ func main() {
 		}
 		b := new(bytes.Buffer)
 		json.NewEncoder(b).Encode(dto)
-		req, _ := http.NewRequest(http.MethodPost, "http://localhost/promise/v1/server-servergroup", b)
+		req, _ := http.NewRequest(http.MethodPost, "http://10.93.81.79/promise/v1/server-servergroup", b)
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("Accept", "application/json")
 		if resp, err := Client.Do(req); err != nil {
@@ -186,7 +188,7 @@ func main() {
 		}
 		b := new(bytes.Buffer)
 		json.NewEncoder(b).Encode(dto)
-		req, _ := http.NewRequest(http.MethodPost, "http://localhost/promise/v1/server-servergroup", b)
+		req, _ := http.NewRequest(http.MethodPost, "http://10.93.81.79/promise/v1/server-servergroup", b)
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("Accept", "application/json")
 		if resp, err := Client.Do(req); err != nil {
@@ -206,7 +208,7 @@ func main() {
 		}
 		b := new(bytes.Buffer)
 		json.NewEncoder(b).Encode(dto)
-		req, _ := http.NewRequest(http.MethodPost, "http://localhost/promise/v1/server-servergroup", b)
+		req, _ := http.NewRequest(http.MethodPost, "http://10.93.81.79/promise/v1/server-servergroup", b)
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("Accept", "application/json")
 		if resp, err := Client.Do(req); err != nil {
@@ -226,7 +228,7 @@ func main() {
 		}
 		b := new(bytes.Buffer)
 		json.NewEncoder(b).Encode(dto)
-		req, _ := http.NewRequest(http.MethodPost, "http://localhost/promise/v1/server-servergroup", b)
+		req, _ := http.NewRequest(http.MethodPost, "http://10.93.81.79/promise/v1/server-servergroup", b)
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("Accept", "application/json")
 		if resp, err := Client.Do(req); err != nil {
@@ -246,7 +248,7 @@ func main() {
 		}
 		b := new(bytes.Buffer)
 		json.NewEncoder(b).Encode(dto)
-		req, _ := http.NewRequest(http.MethodPost, "http://localhost/promise/v1/server-servergroup", b)
+		req, _ := http.NewRequest(http.MethodPost, "http://10.93.81.79/promise/v1/server-servergroup", b)
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("Accept", "application/json")
 		if resp, err := Client.Do(req); err != nil {
@@ -266,7 +268,7 @@ func main() {
 		}
 		b := new(bytes.Buffer)
 		json.NewEncoder(b).Encode(dto)
-		req, _ := http.NewRequest(http.MethodPost, "http://localhost/promise/v1/server-servergroup", b)
+		req, _ := http.NewRequest(http.MethodPost, "http://10.93.81.79/promise/v1/server-servergroup", b)
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("Accept", "application/json")
 		if resp, err := Client.Do(req); err != nil {

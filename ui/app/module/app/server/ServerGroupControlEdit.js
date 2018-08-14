@@ -11,7 +11,7 @@ class ServerGroupControlEdit extends React.Component {
   render() {
     const icon = require('../../promise/common/img/icon/Navigation_Compose_2x.png');
     return (
-      <div styleName="ServerGroupControlButton">
+      <div styleName="ListControlAreaButton" style={{float: 'left'}}>
         <CenterDiv><img src={icon} style={{display: 'block', margin: 'auto', height: '30px'}}/></CenterDiv>
       </div>
     );

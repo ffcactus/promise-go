@@ -19,7 +19,8 @@
     border: solid 0 transparent;
 }
 
-.ServerGroupControlArea {
+/* ListControlArea contains button like "Add" and "Sort" */
+.ListControlArea {
     border: solid 0 transparent;
     border-bottom: 1px solid rgb(11, 188, 233);
     overflow: hidden;
@@ -27,26 +28,24 @@
     padding: 0px;
     position: relative;
     height: 40px;
-    display: flex;
+    display: block;
 }
 
-.ServerGroupControlButton {
+/* The buttons in ListControlArea */
+.ListControlAreaButton {
     border: 0px;
-    float: left;
     margin: 0px 10px 0px 10px;
     padding: 0px;
     cursor: pointer;
-    flex: 1;
     height: 100%;
-    max-width: 40px;
+    width: 40px;
     position: relative;
 }
 
-.ServerGroupControlButton .img {
+.ListControlAreaButton .img {
     display: block;
     margin: auto;
 }
-
 
 .ServerGroupList {
     margin: 0px;
@@ -95,6 +94,49 @@
     transform: translate(-50%, -50%)
 }
 
+.ListControlArea {
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    display: flex;
+    flex-flow: column;
+    position: absolute;
+    padding: 0px;
+    margin: 0px;
+    border: solid 0 transparent;
+}
+
+.PromiseBoarder {
+    border: 1px transparent;
+}
+
+.ColumnFlex {
+    display: flex;
+    flex-flow: column;
+}
+
+.ColumnFlexItem {
+    flex: 1 1 none;
+}
+
+.ColumnFlexLastItem {
+    flex: 1 1 auto;
+}
+
+.Full {
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin: 0px;
+    height: 100%;
+    width: 100%;
+}
+
+
+
+/* ServerListArea contains search area, control area and server list area. */
 .ServerListArea {
     top: 0px;
     bottom: 0px;
@@ -119,19 +161,6 @@
     min-height: 40px;
     display: flex;
     flex: 1 1 none;
-}
-
-.ServerListControlArea {
-    border: solid 0 transparent;
-    border-bottom: 1px solid rgb(11, 188, 233);
-    overflow: hidden;
-    margin: 0px;
-    padding: 0px;
-    position: relative;
-    height: 40px;
-    min-height: 40px;
-    display: flex;
-    flex: 1 1 none; 
 }
 
 .ServerList {

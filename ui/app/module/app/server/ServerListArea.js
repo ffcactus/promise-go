@@ -33,7 +33,7 @@ class ServerListArea extends React.Component {
       }
     }
     return (
-      <div styleName="ServerListArea">
+      <div styleName="ColumnFlex Full PromiseBoarder">
         <ServerSearchArea />
         <ServerListControlArea listRef={this.listRef}/>
         <div style={{ flex: '1 1 auto' }}>
@@ -59,5 +59,5 @@ ServerListArea.propTypes = {
   dispatch: PropTypes.func,
 };
 
-export default connect(mapStateToProps)(CSSModules(ServerListArea, styles));
+export default connect(mapStateToProps)(CSSModules(ServerListArea, styles, {allowMultiple: true}));
 

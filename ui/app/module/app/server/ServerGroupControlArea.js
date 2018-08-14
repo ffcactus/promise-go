@@ -11,7 +11,7 @@ class ServerGroupControlArea extends React.Component {
 
   render() {
     return (
-      <div styleName="ServerGroupControlArea">
+      <div styleName="ListControlArea">
         <ServerGroupControlCreate />
         <ServerGroupControlEdit />
       </div>

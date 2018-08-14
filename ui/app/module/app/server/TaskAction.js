@@ -22,6 +22,8 @@ function onTaskDelete(task) {
 }
 
 export function onTaskMessage(message) {
+  console.info(message.Data.Percentage);
+
   switch (message.Type) {
     case 'Create':
       return onTaskCreate(message.Data);

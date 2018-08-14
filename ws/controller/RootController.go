@@ -19,7 +19,7 @@ func (c *RootController) Get() {
 	log.WithFields(log.Fields{
 		"remote": c.Ctx.Request.RemoteAddr,
 	}).Info("There is a websocket connection request.")
-	ws, err := websocket.Upgrade(c.Ctx.ResponseWriter, c.Ctx.Request, nil, 1024, 1024)
+	ws, err := websocket.Upgrade(c.Ctx.ResponseWriter, c.Ctx.Request, nil, 1024 * 64, 1024 * 64)
 
 	if _, ok := err.(websocket.HandshakeError); ok {
 		http.Error(c.Ctx.ResponseWriter, "Not a websocket handshake", 400)
