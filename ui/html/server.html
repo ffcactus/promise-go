@@ -9,12 +9,41 @@
 
 <body class="app">
     <header class="app-header">
+        <section class="section-selector">
+            <p>Promise</p>
+        </section>
     </header>
     <main class="app-main">
-        <h1>Main</h1>
+        <section id="category" class="main-category">
+        </section>
+        <section id="category-resizer" class="main-resizer" draggable=true>
+        </section>
+        <section class="main-list">
+            <div class="flex-column-container" style="height: 100%">
+                <div id="search" class="flex-item flex-row-container border-column-first" style="max-height: 40px">
+                    <div id="search-input" class="flex-item border-row-first" style="max-width: 40px">
+
+                    </div>
+                    <div id="search-button" class="flex-item border-row" style="max-width: 40px">
+
+                    </div>
+                </div>
+                <div id="control" class="flex-item border-column" style="max-height: 40px">
+
+                </div>
+                <div id="list" class="flex-item-last border-column">
+
+                </div>
+            </div>
+        </section>
+        <section id="list-resizer" class="main-resizer" draggable=true>
+        </section>
+        <section class="main-detail">
+        </section>
     </main>
     <footer class="app-footer">
     </footer>
+    <script src="./server.js"></script>
 </body>
 
 </html>

@@ -1,7 +1,3 @@
-.full {
-    background-color: aquamarine;
-}
-
 .app {
     margin: 0px;
     height: 100%;
@@ -27,6 +23,8 @@
     bottom: 40px;
     left: 0px;
     border-top: 1px solid #adc4dd;
+    border-bottom: 1px solid #adc4dd;
+    display: flex;
 }
 
 .app-footer {
@@ -37,3 +35,66 @@
     bottom: 0px;
     left: 0px;
 }
+
+.main-resizer {
+    flex-basis: 3px;
+    background-color: #adc4dd;
+    cursor: col-resize;
+}
+
+.main-category {
+    flex-basis: 14.6%;
+    min-width: 200px;
+}
+
+.main-list {
+    flex-basis: 23.6%;
+    min-width: 200px;
+}
+
+.main-detail {
+   
+}
+
+.full {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+}
+
+.flex-column-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-item {
+    flex: 1;
+}
+
+.flex-item-last {
+    flex: 1 1 auto;
+}
+
+.border-column-first {
+    border-top: 0px transparent;
+}
+
+.border-column {
+    border-top: 1px solid #adc4dd;
+}
+
+.border-row-first {
+    border-left: 0px solid transparent;
+}
+
+.border-row {
+    border-left: 1px solid #adc4dd;
+}
+
