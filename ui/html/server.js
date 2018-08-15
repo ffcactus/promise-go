@@ -1,26 +1,22 @@
 const resizer = document.getElementById('category-resizer');
 const target = document.getElementById('category');
+const parent = resizer.parentElement;
 
-// resizer.addEventListener('mouseenter', e =>{
-//   e.currentTarget.style.cssText = 'flex-basis: 10px';
-// });
+// this listener is required.
+resizer.addEventListener('dragstart', ()=> {
+});
 
-// resizer.addEventListener('mouseout', e => {
-//   e.currentTarget.style.cssText = 'flex-basis: ;';
-// });
-
-resizer.addEventListener('dragstart', e=> {
-  // const parentWidth = e.currentTarget.parentElement.clientWidth;
-  // const targetWitdh = e.clientX / parentWidth;
-  // target.style.cssText = 'flex-basis: ' + targetWitdh + ';';
-  // console.info(targetWitdh);
+parent.addEventListener('dragover', e=> {
+  const parentWidth = e.currentTarget.parentElement.clientWidth;
+  const targetWitdh = e.clientX * 100 / parentWidth;
+  const css = targetWitdh + '%';
+  target.style.flexBasis = css;
 });
 
 resizer.addEventListener('dragend', e=> {
   const parentWidth = e.currentTarget.parentElement.clientWidth;
   const targetWitdh = e.clientX * 100 / parentWidth;
-  const css = 'flex-basis: ' + targetWitdh + '%;';
-  target.style.cssText = css;
-  console.info(targetWitdh);
+  const css = targetWitdh + '%';
+  target.style.flexBasis = css;
 });
 

@@ -39,7 +39,7 @@
 .main-resizer {
     flex-basis: 3px;
     background-color: #adc4dd;
-    cursor: col-resize;
+    cursor: ew-resize;
 }
 
 .main-category {
