@@ -1,12 +1,4 @@
-.app {
-    margin: 0px;
-    height: 100%;
-    overflow: hidden;
-    box-sizing: border-box;
-    display: block;
-}
-
-.app-header {
+.header {
     background-color: #ebeae6;
     height: 40px;
     position: absolute;
@@ -16,7 +8,7 @@
     display: flex;
 }
 
-.app-main {
+.main {
     background-color: white;
     position: absolute;
     top: 40px;
@@ -26,7 +18,7 @@
     display: flex;
 }
 
-.app-footer {
+.footer {
     background-color: aquamarine;
     height: 40px;
     position: absolute;
@@ -41,7 +33,7 @@
     cursor: ew-resize;
 }
 
-.main-category, .header-main {
+.main-group, .header-home {
     flex-basis: 14.6%;
     min-width: 200px;
 }
@@ -52,7 +44,7 @@
 }
 
 .main-detail {
-   
+   min-width: 380px;
 }
 
 .full {
