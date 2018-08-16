@@ -11,7 +11,7 @@ class ServerGroupControlArea extends React.Component {
 
   render() {
     return (
-      <div styleName="ListControlArea">
+      <div styleName="flex-item flex-row-container border-column-first" style={{maxHeight: '40px'}}>
         <ServerGroupControlCreate />
         <ServerGroupControlEdit />
       </div>
@@ -19,5 +19,5 @@ class ServerGroupControlArea extends React.Component {
   }
 }
 
-export default CSSModules(ServerGroupControlArea, styles);
+export default CSSModules(ServerGroupControlArea, styles, {allowMultiple: true});
 

@@ -13,7 +13,7 @@ class ServerListControlArea extends React.Component {
 
   render() {
     return (
-      <div styleName="ColumnFlexItem PromiseBoarder" style={{height: '40px'}} >
+      <div styleName="flex-item flex-row-container border-column-first" style={{maxHeight: '40px'}}>
         <ServerSortOrderSelect listRef={this.props.listRef} options={['Name', 'Health']} />
         <ServerControlAdd />
         <ServerControlEdit />

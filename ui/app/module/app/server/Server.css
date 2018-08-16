@@ -11,9 +11,9 @@
     bottom: 0px;
     left: 0px;
     right: 0px;
+    height: 100%;
     display: flex;
     flex-flow: column;
-    position: absolute;
     padding: 0px;
     margin: 0px;
     border: solid 0 transparent;
@@ -107,7 +107,7 @@
     border: solid 0 transparent;
 }
 
-.PromiseBoarder {
+/* .PromiseBoarder {
     border: 1px transparent;
 }
 
@@ -122,7 +122,7 @@
 
 .ColumnFlexLastItem {
     flex: 1 1 auto;
-}
+} */
 
 .Full {
     top: 0px;
@@ -256,3 +256,98 @@ th.level1 {
 th.level2 {
     background-color: lightgreen
 }
+
+/* Put them here for test only, the following should put into a dedicated css file. */
+.header {
+    background-color: #ebeae6;
+    height: 40px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    left: 0px;
+    display: flex;
+}
+
+.main {
+    background-color: white;
+    position: absolute;
+    top: 40px;
+    right: 0px;
+    bottom: 40px;
+    left: 0px;
+    display: flex;
+}
+
+.footer {
+    background-color: aquamarine;
+    height: 40px;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+}
+
+.main-resizer {
+    flex-basis: 3px;
+    background-color: #adc4dd;
+    cursor: ew-resize;
+}
+
+.main-group, .header-home {
+    flex-basis: 14.6%;
+    min-width: 200px;
+}
+
+.main-list {
+    flex-basis: 23.6%;
+    min-width: 200px;
+}
+
+.main-detail {
+    flex: 1 1 auto;
+    min-width: 380px;   
+}
+
+.full {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    height: 100%;
+}
+
+.flex-column-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-item {
+    flex: 1;
+}
+
+.flex-item-last {
+    flex: 1 1 auto;
+}
+
+.border-column-first {
+    border-top: 0px transparent;
+}
+
+.border-column {
+    border-top: 1px solid #adc4dd;
+}
+
+.border-row-first {
+    border-left: 0px solid transparent;
+}
+
+.border-row {
+    border-left: 1px solid #adc4dd;
+}
+

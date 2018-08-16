@@ -21,5 +21,6 @@ render(
       <Desktop />
     </ConnectedRouter>
   </Provider>,
-  document.getElementById('root')
+  document.body,
+  // document.getElementById('root')
 );

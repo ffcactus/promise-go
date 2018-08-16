@@ -8,13 +8,13 @@ import ServerGroupControlArea from './ServerGroupControlArea';
 
 function ServerGroupArea() {
   return (
-    <div styleName="ServerGroupArea">
-      <AppCollectionMenu action={{type: ActionType.APP_EXIT}} />
+    <div styleName="flex-column-container" style={{height: '100%'}}>
+      {/* <AppCollectionMenu action={{type: ActionType.APP_EXIT}} /> */}
       <ServerGroupControlArea />
       <ServerGroupList />
     </div>
   );
 }
 
-export default CSSModules(ServerGroupArea, styles);
+export default CSSModules(ServerGroupArea, styles, {allowMultiple: true});
 

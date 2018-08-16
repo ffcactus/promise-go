@@ -9,6 +9,33 @@ import styles from './GroupFrame.css';
 class GroupFrame extends React.Component {
   constructor(props) {
     super(props);
+    this.groupResizerDragStart.bind(this);
+    this.groupResizerDragover.bind(this);
+    this.listResizerDragStart.bind(this);
+  }
+
+  groupResizerDragStart() {
+
+  }
+
+  groupResizerDragover(e) {
+    const target = document.getElementById('group');
+    const parentWidth = e.currentTarget.parentElement.clientWidth;
+    const targetWitdh = e.clientX * 100 / parentWidth;
+    const css = targetWitdh + '%';
+    target.style.flexBasis = css;
+  }
+
+  listResizerDragover(e) {
+    const target = document.getElementById('list');
+    const parentWidth = e.currentTarget.parentElement.clientWidth;
+    const targetWitdh = e.clientX * 100 / parentWidth;
+    const css = targetWitdh + '%';
+    target.style.flexBasis = css;
+  }
+
+  listResizerDragStart() {
+
   }
 
   render() {
@@ -19,15 +46,15 @@ class GroupFrame extends React.Component {
             <p>Promise</p>
           </section>
         </header>
-        <main styleName="main border-column">
+        <main styleName="main border-column" onDragOver={this.groupResizerDragover}>
           <section id="group" styleName="main-group">
             {this.props.groupSection}
           </section>
-          <section id="group-resizer" styleName="main-resizer" draggble />
-          <section styleName="main-list">
+          <section id="group-resizer" styleName="main-resizer" draggble="true" onDragStart={this.listResizerDragStart}/>
+          <section id="list" styleName="main-list">
             {this.props.listSection}
           </section>
-          <section id="list-resizer" styleName="main-resizer" draggble />
+          <section id="list-resizer" styleName="main-resizer" draggble="true" />
           <section styleName="main-detail">
             {this.props.detailSection}
           </section>

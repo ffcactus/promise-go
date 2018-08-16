@@ -33,10 +33,10 @@ class ServerListArea extends React.Component {
       }
     }
     return (
-      <div styleName="ColumnFlex Full PromiseBoarder">
+      <div styleName="flex-column-container" style={{height: '100%'}}>
         <ServerSearchArea />
         <ServerListControlArea listRef={this.listRef}/>
-        <div style={{ flex: '1 1 auto' }}>
+        <div styleName="flex-item-last border-column">
           <ServerList setListRef={this.setListRef} serverList={serverList} serverIndex={this.props.serverIndex}/>
         </div>
       </div>

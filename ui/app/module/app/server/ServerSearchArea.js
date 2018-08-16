@@ -4,7 +4,7 @@ import styles from './Server.css';
 
 function ServerSearchArea() {
   return (
-    <div styleName="ColumnFlexItem PromiseBoarder" style={{height: '40px'}}>
+    <div styleName="flex-item flex-row-container border-column-first" style={{maxHeight: '40px'}}>
       <input />
     </div>
   );

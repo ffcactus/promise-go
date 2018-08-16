@@ -17,7 +17,7 @@ class ServerGroupList extends React.Component {
       const each = this.props.serverGroupList.get(i);
       list.push(<ServerGroupElement key={each.URI} servergroup={each}/>);
     }
-    return <div styleName="ServerGroupList">{list}</div>;
+    return <div styleName="flex-item-last border-column">{list}</div>;
   }
 }
 
@@ -30,5 +30,5 @@ ServerGroupList.propTypes = {
   serverGroupList: PropTypes.object,
 };
 
-export default connect(mapStateToProps)(CSSModules(ServerGroupList, styles));
+export default connect(mapStateToProps)(CSSModules(ServerGroupList, styles, {allowMultiple: true}));
 
