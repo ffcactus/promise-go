@@ -9,25 +9,25 @@ import styles from './GroupFrame.css';
 class GroupFrame extends React.Component {
   constructor(props) {
     super(props);
+    this.mainDragover.bind(this);
     this.groupResizerDragStart.bind(this);
-    this.groupResizerDragover.bind(this);
     this.listResizerDragStart.bind(this);
   }
 
-  groupResizerDragStart() {
-
-  }
-
-  groupResizerDragover(e) {
-    const target = document.getElementById('group');
-    const parentWidth = e.currentTarget.parentElement.clientWidth;
-    const targetWitdh = e.clientX * 100 / parentWidth;
-    const css = targetWitdh + '%';
-    target.style.flexBasis = css;
-  }
-
-  listResizerDragover(e) {
-    const target = document.getElementById('list');
+  mainDragover(e) {
+    let target;
+    e.preventDefault();
+    console.info(e.target.getAttribute('data-id'));
+    switch (e.target.dataset.text) {
+      case 'group-resize':
+        target = document.getElementById('group');
+        break;
+      case 'list-resize':
+        target = document.getElementById('list');
+        break;
+      default:
+        return;
+    }
     const parentWidth = e.currentTarget.parentElement.clientWidth;
     const targetWitdh = e.clientX * 100 / parentWidth;
     const css = targetWitdh + '%';
@@ -35,7 +35,9 @@ class GroupFrame extends React.Component {
   }
 
   listResizerDragStart() {
+  }
 
+  groupResizerDragStart() {
   }
 
   render() {
@@ -46,16 +48,16 @@ class GroupFrame extends React.Component {
             <p>Promise</p>
           </section>
         </header>
-        <main styleName="main border-column" onDragOver={this.groupResizerDragover}>
+        <main data-id="main" styleName="main border-column" onDragOver={this.mainDragover}>
           <section id="group" styleName="main-group">
             {this.props.groupSection}
           </section>
-          <section id="group-resizer" styleName="main-resizer" draggble="true" onDragStart={this.listResizerDragStart}/>
+          <section data-id="group-resizer" id="group-resizer" styleName="main-resizer" draggble="true" onDragStart={()=>{}}/>
           <section id="list" styleName="main-list">
             {this.props.listSection}
           </section>
-          <section id="list-resizer" styleName="main-resizer" draggble="true" />
-          <section styleName="main-detail">
+          <section data-id="list-resizer" id="list-resizer" styleName="main-resizer" draggble="true" onDragStart={this.listResizerDragStart}/>
+          <section id="detail" styleName="main-detail">
             {this.props.detailSection}
           </section>
         </main>
