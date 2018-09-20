@@ -28,7 +28,7 @@
 }
 
 .main-resizer {
-    flex-basis: 3px;
+    flex-basis: 5px;
     background-color: #adc4dd;
     cursor: ew-resize;
 }
@@ -90,3 +90,48 @@
 .border-row {
     border-left: 1px solid #adc4dd;
 }
+
+
+
+
+
+.Resizer {
+    box-sizing: border-box;
+    background: #adc4dd;
+    opacity: 0.5;
+    z-index: 1;
+    background-clip: padding-box;
+}
+  
+.Resizer:hover {
+    -webkit-transition: all 2s ease;
+    transition: all 2s ease;
+}
+
+.Resizer.horizontal {
+    height: 11px;
+    margin: -5px 0;
+    border-top: 5px solid rgba(173, 196, 221, 0);
+    border-bottom: 5px solid rgba(173, 196, 221, 0);
+    cursor: ns-resize;
+    width: 100%;
+}
+
+.Resizer.horizontal:hover {
+    border-top: 5px solid rgba(173, 196, 221, 0.5);
+    border-bottom: 5px solid rgba(173, 196, 221, 0.5);
+}
+
+.Resizer.vertical {
+    width: 11px;
+    margin: 0 -5px;
+    border-left: 5px solid rgba(173, 196, 221, 0);
+    border-right: 5px solid rgba(173, 196, 221, 0);
+    cursor: ew-resize;
+}
+
+.Resizer.vertical:hover {
+    border-left: 5px solid rgba(173, 196, 221, 0.5);
+    border-right: 5px solid rgba(173, 196, 221, 0.5);
+}
+  
