@@ -21,11 +21,11 @@ class GroupFrame extends React.Component {
           </section>
         </header>
         <main styleName="main border-column">
-          <SplitPane split="vertical" minSize={50} defaultSize="14.6%" resizerClassName={this.props.styles.Resizer + ' ' + this.props.styles.vertical}>
-            <div>{this.props.groupSection}</div>
-            <SplitPane split="vertical" minSize={50} defaultSize="27.6%" resizerClassName={this.props.styles.Resizer + ' ' + this.props.styles.vertical}>
-              <div>{this.props.listSection}</div>
-              <div>{this.props.detailSection}</div>
+          <SplitPane split="vertical" minSize={50} defaultSize="14.6%" resizerClassName={styles.Resizer + ' ' + styles.vertical}>
+            {this.props.groupSection}
+            <SplitPane split="vertical" minSize={50} defaultSize="27.6%" resizerClassName={styles.Resizer + ' ' + styles.vertical}>
+              {this.props.listSection}
+              {this.props.detailSection}
             </SplitPane>
           </SplitPane>
         </main>
