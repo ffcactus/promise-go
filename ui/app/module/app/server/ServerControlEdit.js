@@ -15,7 +15,7 @@ class ServerControlEdit extends React.Component {
   }
 
   render() {
-    const icon = require('../../promise/common/img/icon/Navigation_Add_2x.png');
+    const icon = require('../../promise/common/img/icon/Navigation_Compose_2x.png');
     return (
       <div styleName="ListControlAreaButton" style={{float: 'right'}}>
         <CenterDiv><img src={icon} onClick={this.onClick} style={{display: 'block', margin: 'auto', height: '30px'}}/></CenterDiv>
