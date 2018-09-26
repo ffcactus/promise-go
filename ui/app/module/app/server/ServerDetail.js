@@ -6,6 +6,8 @@ import ServerDetailTabSystem from './ServerDetailTabSystem';
 import ServerDetailTabChassis from './ServerDetailTabChassis';
 import ServerDetailTabBasic from './ServerDetailTabBasic';
 import { ActionType } from './ConstValue';
+import CSSModules from 'react-css-modules';
+import styles from './Server.css';
 
 const ServerDetail = props => {
   if (!props.server) {
@@ -32,7 +34,11 @@ const ServerDetail = props => {
     });
   };
 
-  return <Tab pages={pages} handler={handler} defaultOpen={props.currentServerTab} />;
+  return (
+    <div styleName="flex-item border-column" style={{height: '100%'}}>
+      <Tab pages={pages} handler={handler} defaultOpen={props.currentServerTab} />
+    </div>
+  );
 };
 
 ServerDetail.propTypes = {
@@ -47,4 +53,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(ServerDetail);
+export default connect(mapStateToProps)(CSSModules(ServerDetail, styles, {allowMultiple: true}));

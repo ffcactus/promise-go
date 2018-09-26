@@ -11,7 +11,7 @@ class ServerGroupControlArea extends React.Component {
 
   render() {
     return (
-      <div styleName="flex-item flex-row-container border-column-first" style={{maxHeight: '40px'}}>
+      <div styleName="flex-item flex-row-container border-column" style={{maxHeight: '40px'}}>
         <ServerGroupControlCreate />
         <ServerGroupControlEdit />
       </div>

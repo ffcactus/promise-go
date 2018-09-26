@@ -1,15 +1,15 @@
 import React from 'react';
 import CSSModules from 'react-css-modules';
-import styles from './Server.css';
 import AppCollectionMenu from '../../promise/app/AppCollectionMenu';
 import { ActionType } from './ConstValue';
 import ServerGroupList from './ServerGroupList';
 import ServerGroupControlArea from './ServerGroupControlArea';
+import styles from './Server.css';
 
 function ServerGroupArea() {
   return (
-    <div styleName="flex-column-container" style={{height: '100%'}}>
-      {/* <AppCollectionMenu action={{type: ActionType.APP_EXIT}} /> */}
+    <div styleName="flex-column-container group-area">
+      <AppCollectionMenu action={{type: ActionType.APP_EXIT}} />
       <ServerGroupControlArea />
       <ServerGroupList />
     </div>

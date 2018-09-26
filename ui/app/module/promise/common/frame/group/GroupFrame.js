@@ -14,25 +14,15 @@ class GroupFrame extends React.Component {
 
   render() {
     return (
-      <React.Fragment>
-        <header styleName="header">
-          <section styleName="header-home">
-            <p>Promise</p>
-          </section>
-        </header>
-        <main styleName="main border-column">
-          <SplitPane split="vertical" minSize={50} defaultSize="14.6%" resizerClassName={styles.Resizer + ' ' + styles.vertical}>
-            {this.props.groupSection}
-            <SplitPane split="vertical" minSize={50} defaultSize="27.6%" resizerClassName={styles.Resizer + ' ' + styles.vertical}>
-              {this.props.listSection}
-              {this.props.detailSection}
-            </SplitPane>
+      <main styleName="main border-column">
+        <SplitPane split="vertical" minSize={50} defaultSize="14.6%" resizerClassName={styles.Resizer + ' ' + styles.vertical}>
+          {this.props.groupSection}
+          <SplitPane split="vertical" minSize={50} defaultSize="27.6%" resizerClassName={styles.Resizer + ' ' + styles.vertical}>
+            {this.props.listSection}
+            {this.props.detailSection}
           </SplitPane>
-        </main>
-        <footer styleName="footer border-column">
-          {this.props.footer}
-        </footer>
-      </React.Fragment>
+        </SplitPane>
+      </main>
     );
   }
 }

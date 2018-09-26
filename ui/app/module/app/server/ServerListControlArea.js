@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import CSSModules from 'react-css-modules';
 import styles from './Server.css';
 import ServerSortOrderSelect from './ServerSortOrderSelect';
-import ServerControlDiscover from './ServerControlDiscover';
-import ServerControlEdit from './ServerControlEdit';
 
 class ServerListControlArea extends React.Component {
   constructor(props) {
@@ -13,10 +11,8 @@ class ServerListControlArea extends React.Component {
 
   render() {
     return (
-      <div styleName="flex-item flex-row-container border-column-first" style={{maxHeight: '40px'}}>
+      <div styleName="flex-item flex-row-container border-column" style={{maxHeight: '40px'}}>
         <ServerSortOrderSelect listRef={this.props.listRef} options={['Name', 'Health']} />
-        <ServerControlDiscover />
-        <ServerControlEdit />
       </div>
     );
   }

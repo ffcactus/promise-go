@@ -11,9 +11,9 @@
 .main {
     background-color: white;
     position: absolute;
-    top: 40px;
+    top: 0px;
     right: 0px;
-    bottom: 40px;
+    bottom: 0px;
     left: 0px;
     display: flex;
 }

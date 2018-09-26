@@ -351,3 +351,32 @@ th.level2 {
     border-left: 1px solid #adc4dd;
 }
 
+.group-area {
+    height: 100%;
+    background-color: #dfeefc;
+}
+
+.detail-area {
+    height: 100%;
+}
+
+.list-area {
+    height: 100%;
+    background-color: #f9f9f9;
+}
+
+.border-column-first {
+    border-top: 0px transparent;
+}
+
+.border-column {
+    border-top: 1px solid #adc4dd;
+}
+
+.border-row-first {
+    border-left: 0px solid transparent;
+}
+
+.border-row {
+    border-left: 1px solid #adc4dd;
+}
