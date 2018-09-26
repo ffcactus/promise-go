@@ -86,6 +86,7 @@ export function doGet(url, request) {
 
 /**
  * The common runtine to perform GET method and dispatch Action.
+ * It returns a function that take a dispatch and getState as argument.
  * @param {string} uri The URI to perform GET method. Do not paass hostname.
  * @param {ActionType} start The ActionType when start.
  * @param {ActionType} success The ActionType when success.
@@ -112,13 +113,13 @@ export function createGetAction(uri, start, success, message, exception) {
 
 /**
  * The common runtine to perform POST method and dispatch Action.
+ * It returns a function that take a dispatch and getState as argument.
  * @param {string} uri The URI to perform POST method. Do not pass hostname.
  * @param {object} request The request body.
  * @param {ActionType} start The ActionType when start.
  * @param {ActionType} success The ActionType when success.
  * @param {ActionType} message The ActionType when message returned.
  * @param {ActionType} exception The ActionType when exception returned.
-
  */
 export function createPostAction(uri, request, start, success, message, exception) {
   return (dispatch, getState) => {

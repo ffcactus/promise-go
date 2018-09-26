@@ -62,7 +62,7 @@ const defaultState = {
   serverList: new List(),       // To record all the servers
   serverTask: new Map(),        // To record all the tasks whos target is the servers in the list.
   openCreateServerGroupDialog: false,
-  openAddServerDialog: false,
+  openDiscoverServerDialog: false,
   serverExist: false,
   serverGroupExist: false,
   serverIndex: undefined,
@@ -177,6 +177,18 @@ export const serverApp = (state = defaultState, action) => {
     case ActionType.SERVER_REST_GETLIST_MESSAGE:
     case ActionType.SERVER_REST_GETLIST_EXCEPTION:
       return state;
+    // Server.REST.Discover
+    case ActionType.SERVER_REST_DISCOVER_START:
+      return state;
+    case ActionType.SERVER_REST_DISCOVER_SUCCESS:
+      return {
+        ...state,
+        openDiscoverServerDialog: false,
+      };
+    case ActionType.SERVER_REST_DISCOVER_MESSAGE:
+      return state;
+    case ActionType.SERVER_REST_DISCOVER_EXCEPTION:
+      return state;
     // Server.WS
     case ActionType.SERVER_WS_CREATE:
       // It indicates the a server is created, but we won't do anything here. we don't know if the server belongs to the current list.
@@ -227,10 +239,18 @@ export const serverApp = (state = defaultState, action) => {
         currentServerUri: action.info,
       };
     // Server.UI.Dialog
-    // Server.UI.Dialog.Add
-    case ActionType.SERVER_UI_DIALOG_ADD_OPEN:
-    case ActionType.SERVER_UI_DIALOG_ADD_CLOSE:
-      return state;
+    // Server.UI.Dialog.Discover
+    case ActionType.SERVER_UI_DIALOG_DISCOVER_OPEN:
+      return {
+        ...state,
+        openCreateServerGroupDialog: false,
+        openDiscoverServerDialog: true
+      };
+    case ActionType.SERVER_UI_DIALOG_DISCOVER_CLOSE:
+      return {
+        ...state,
+        openDiscoverServerDialog: false,
+      };
     // Server.UI.Tab
     case ActionType.SERVER_UI_TAB_CHANGE:
       return {
@@ -305,7 +325,7 @@ export const serverApp = (state = defaultState, action) => {
       return {
         ...state,
         openCreateServerGroupDialog: true,
-        openAddServerDialog: false
+        openDiscoverServerDialog: false
       };
     case ActionType.SG_UI_DIALOG_ADD_CLOSE:
       return {

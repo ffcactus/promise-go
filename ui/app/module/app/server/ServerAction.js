@@ -1,5 +1,5 @@
 import { ActionType } from './ConstValue';
-import { createGetAction } from '../../promise/common/Client';
+import { createGetAction, createPostAction } from '../../promise/common/Client';
 
 function onServerCreate(server) {
   return {
@@ -35,15 +35,15 @@ export function onServerMessage(message) {
   }
 }
 
-export function openAddServerDialog() {
+export function openDiscoverServerDialog() {
   return {
-    type: ActionType.SERVER_UI_DIALOG_ADD_OPEN
+    type: ActionType.SERVER_UI_DIALOG_DISCOVER_OPEN
   };
 }
 
-export function closeAddServerDialog() {
+export function closeDiscoverServerDialog() {
   return {
-    type: ActionType.SERVER_UI_DIALOG_ADD_CLOSE
+    type: ActionType.SERVER_UI_DIALOG_DISCOVER_CLOSE
   };
 }
 
@@ -89,5 +89,22 @@ export function onServerOrderChange(orderBy) {
   return {
     type: ActionType.SERVER_UI_ORDERBY_CHANGE,
     info: orderBy,
+  };
+}
+
+/**
+ * When user clicks on OK in discover server dialog.
+ * @param {object} request The request DTO.
+ */
+export function discoverServer(request) {
+  return (dispatch, getState) => {
+    createPostAction(
+      '/promise/v1/server/action/discover',
+      request,
+      ActionType.SERVER_REST_DISCOVER_START,
+      ActionType.SERVER_REST_DISCOVER_SUCCESS,
+      ActionType.SERVER_REST_DISCOVER_MESSAGE,
+      ActionType.SERVER_REST_DISCOVER_EXCEPTION,
+    )(dispatch, getState);
   };
 }
