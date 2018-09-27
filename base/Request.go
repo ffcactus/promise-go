@@ -4,5 +4,4 @@ package base
 type RequestInterface interface {
 	NewInstance() RequestInterface // Create a new instance of the request.
 	IsValid() *Message             // Check if the request is valid.
-	DebugInfo() string             // Get the debug info.
 }

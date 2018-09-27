@@ -17,8 +17,8 @@ func (AdapterConfig) TableName() string {
 	return "AdapterConfig"
 }
 
-// DebugInfo return the debug name of this entity.
-func (e *AdapterConfig) DebugInfo() string {
+// String return the debug name of this entity.
+func (e AdapterConfig) String() string {
 	return e.Name
 }
 

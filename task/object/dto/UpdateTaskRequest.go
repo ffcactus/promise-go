@@ -36,8 +36,8 @@ func (dto *UpdateTaskRequest) IsValid() *base.Message {
 	return nil
 }
 
-// DebugInfo return the name for debug.
-func (dto *UpdateTaskRequest) DebugInfo() string {
+// String return the name for debug.
+func (dto UpdateTaskRequest) String() string {
 	return ""
 }
 

@@ -59,8 +59,8 @@ func (dto *PostIPv4PoolRequest) IsValid() *base.Message {
 	return nil
 }
 
-// DebugInfo return the name for debug.
-func (dto *PostIPv4PoolRequest) DebugInfo() string {
+// String return the name for debug.
+func (dto PostIPv4PoolRequest) String() string {
 	return dto.Name
 }
 

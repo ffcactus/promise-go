@@ -57,7 +57,7 @@ func (c *RootController) Post() {
 	}
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.ResourceName(),
-		"request":  request.DebugInfo(),
+		"request":  request,
 	}).Debug("RootController post resource.")
 	model, messages := c.TemplateImpl.Service().Create(request)
 	if messages != nil {
@@ -72,7 +72,7 @@ func (c *RootController) Post() {
 	response.Load(model)
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.ResourceName(),
-		"request":  request.DebugInfo(),
+		"request":  request,
 		"ID":       response.GetID(),
 	}).Info("Post resource done.")
 	c.Data["json"] = response

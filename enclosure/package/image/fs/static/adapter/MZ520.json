@@ -1,0 +1,16 @@
+{
+    "Name": "MZ520",
+    "Type": "Mezz",
+    "Capability": {
+        "Version": 520,
+        "RAID": {
+            "Version": 520
+        },
+        "Ethernet": {
+            "Version": 520
+        },
+        "FCoE": {
+            "Version": 520
+        }
+    }
+}

@@ -12,8 +12,8 @@ type GetAdapterConfigResponse struct {
 	Name string `json:"Name"`
 }
 
-// DebugInfo return the name for debug.
-func (dto *GetAdapterConfigResponse) DebugInfo() string {
+// String return the name for debug.
+func (dto GetAdapterConfigResponse) String() string {
 	return dto.Name
 }
 

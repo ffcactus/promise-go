@@ -8,7 +8,6 @@ import (
 type EntityInterface interface {
 	TableName() string
 	PropertyNameForDuplicationCheck() string
-	DebugInfo() string
 	Preload() []string
 	Association() []interface{}
 	Tables() []interface{}

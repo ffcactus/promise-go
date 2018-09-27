@@ -122,14 +122,10 @@ func (c *ActionController) Post() {
 		}
 	}
 
-	requestDebugInfo := ""
-	if request != nil {
-		requestDebugInfo = request.DebugInfo()
-	}
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.ResourceName(),
 		"action":   action,
-		"request":  requestDebugInfo,
+		"request":  request,
 		"id":       id,
 	}).Info("ActionController perform action.")
 	// Now the request is correct, select the right runtine by action type.
@@ -186,16 +182,12 @@ func (c *ActionController) Post() {
 		c.ServeJSON()
 		return
 	}
-	responseDebugInfo := ""
-	if response != nil {
-		responseDebugInfo = response.DebugInfo()
-	}
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.ResourceName(),
 		"action":   action,
 		"type":     actionType,
 		"id":       id,
-		"response": responseDebugInfo,
+		"response": response,
 		"task":     taskURI,
 	}).Info("Perform action done.")
 	if taskURI != nil {

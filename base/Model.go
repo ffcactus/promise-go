@@ -7,7 +7,6 @@ import (
 // ModelInterface is the interface of Model.
 type ModelInterface interface {
 	ValueForDuplicationCheck() string
-	DebugInfo() string
 	GetID() string
 	GetCategory() string
 }

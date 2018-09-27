@@ -24,8 +24,8 @@ func (dto *PostServerServerGroupRequest) IsValid() *base.Message {
 	return nil
 }
 
-// DebugInfo return the name for debug.
-func (dto *PostServerServerGroupRequest) DebugInfo() string {
+// String return the name for debug.
+func (dto PostServerServerGroupRequest) String() string {
 	return dto.ServerID + " " + dto.ServerGroupID
 }
 

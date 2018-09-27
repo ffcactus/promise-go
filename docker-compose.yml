@@ -133,7 +133,29 @@ services:
     volumes:
       - type: volume
         source: logdata
-        target: /opt/promise/log 
+        target: /opt/promise/log
+  enclosure:
+    image: enclosure.promise:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - "httpd"
+      - "db"
+      - "auth"
+      - "task"
+      - "rabbitmq"
+    entrypoint: /bin/ash
+    command: "./wait-for.sh db:5432 -- ./wait-for.sh rabbitmq:5672 -- sleep 99999"
+    networks:
+      - networks_front
+      - networks_service
+      - networks_db
+    volumes:
+      - type: volume
+        source: logdata
+        target: /opt/promise/log        
   director:
     image: director.promise:latest
     deploy:

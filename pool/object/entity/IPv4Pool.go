@@ -54,8 +54,8 @@ func (IPv4Pool) TableName() string {
 	return "IPv4Pool"
 }
 
-// DebugInfo return the debug name of this entity.
-func (e *IPv4Pool) DebugInfo() string {
+// String return the debug name of this entity.
+func (e IPv4Pool) String() string {
 	return e.Name
 }
 

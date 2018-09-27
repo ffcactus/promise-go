@@ -129,7 +129,7 @@ func (impl *DB) Create(m ModelInterface) (ModelInterface, *Message) {
 			log.WithFields(log.Fields{
 				"resource": name,
 				"existed":  record.GetID(),
-				"name":     record.DebugInfo(),
+				"name":     record,
 			}).Warn("DB create resource failed, duplicated resource, transaction rollback.")
 			return nil, NewMessageDuplicate()
 		}
@@ -141,7 +141,7 @@ func (impl *DB) Create(m ModelInterface) (ModelInterface, *Message) {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
-			"name":     m.DebugInfo(),
+			"name":     m,
 			"error":    err,
 		}).Warn("DB create resource failed, create resource failed, transaction rollback.")
 		return nil, NewMessageTransactionError()
@@ -149,7 +149,7 @@ func (impl *DB) Create(m ModelInterface) (ModelInterface, *Message) {
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
-			"name":     m.DebugInfo(),
+			"name":     m,
 			"error":    err,
 		}).Warn("DB create resource failed, commit failed.")
 		return nil, NewMessageTransactionError()

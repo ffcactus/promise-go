@@ -96,8 +96,8 @@ type Task struct {
 	ExecutionResult     ExecutionResult
 }
 
-// DebugInfo return the debug name the model.
-func (m *Task) DebugInfo() string {
+// String return the debug name the model.
+func (m Task) String() string {
 	return m.Name
 }
 

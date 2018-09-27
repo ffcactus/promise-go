@@ -7,9 +7,14 @@ import (
 	"promise/server/object/entity"
 )
 
-// AdapterConfig is the concrete DB.
+// AdapterConfig is the DB implementation for adapter config.
 type AdapterConfig struct {
 	base.DB
+}
+
+// GetConnection return the DB connection.
+func (impl *AdapterConfig) GetConnection() *gorm.DB {
+	return base.GetConnection()
 }
 
 // ResourceName get the resource name.
@@ -25,11 +30,6 @@ func (impl *AdapterConfig) NewEntity() base.EntityInterface {
 // NewEntityCollection return a collection of entity.
 func (impl *AdapterConfig) NewEntityCollection() interface{} {
 	return new([]entity.AdapterConfig)
-}
-
-// GetConnection return the DB connection.
-func (impl *AdapterConfig) GetConnection() *gorm.DB {
-	return base.GetConnection()
 }
 
 // NeedCheckDuplication return if need check duplication for entity.

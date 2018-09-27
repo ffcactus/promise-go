@@ -13,6 +13,8 @@ const (
 	CategoryServerGroup = "ServerGroup"
 	// CategoryServerServerGroup is a category name.
 	CategoryServerServerGroup = "ServerServerGroup"
+	// CategoryEnclosure is a category name.
+	CategoryEnclosure = "Enclosure"
 	// CategoryAdapterConfig is a category name.
 	CategoryAdapterConfig = "AdapterConfig"
 	// CategoryAdapterModel is a category name.

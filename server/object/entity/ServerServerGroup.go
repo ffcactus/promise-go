@@ -18,8 +18,8 @@ func (ServerServerGroup) TableName() string {
 	return "ServerServerGroup"
 }
 
-// DebugInfo return the debug name of this entity.
-func (e *ServerServerGroup) DebugInfo() string {
+// String return the debug name of this entity.
+func (e ServerServerGroup) String() string {
 	return e.ServerID + " " + e.ServerGroupID
 }
 

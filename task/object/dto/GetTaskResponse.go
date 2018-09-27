@@ -24,8 +24,8 @@ type GetTaskResponse struct {
 	ExecutionResult     ExecutionResult       `json:"ExecutionResult"`
 }
 
-// DebugInfo return the name for debug.
-func (dto *GetTaskResponse) DebugInfo() string {
+// String return the name for debug.
+func (dto GetTaskResponse) String() string {
 	return dto.Name
 }
 

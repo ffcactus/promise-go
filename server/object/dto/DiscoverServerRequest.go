@@ -26,7 +26,7 @@ func (dto *DiscoverServerRequest) IsValid() *base.Message {
 	return nil
 }
 
-// DebugInfo return the name for debug.
-func (dto *DiscoverServerRequest) DebugInfo() string {
+// String return the name for debug.
+func (dto DiscoverServerRequest) String() string {
 	return dto.Hostname
 }

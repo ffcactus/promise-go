@@ -33,8 +33,8 @@ type IPv4Pool struct {
 	DNSServers  *[]string
 }
 
-// DebugInfo return the debug name the model.
-func (m *IPv4Pool) DebugInfo() string {
+// String return the debug name the model.
+func (m IPv4Pool) String() string {
 	return m.Name
 }
 

@@ -15,8 +15,8 @@ type GetNodeResponse struct {
 	ManagerStatus string `json:"ManagerStatus"`
 }
 
-// DebugInfo return the name for debug.
-func (dto *GetNodeResponse) DebugInfo() string {
+// String return the name for debug.
+func (dto GetNodeResponse) String() string {
 	return dto.Hostname
 }
 

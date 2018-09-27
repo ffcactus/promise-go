@@ -10,8 +10,8 @@ type AdapterConfig struct {
 	Name string
 }
 
-// DebugInfo return the debug name the model.
-func (m *AdapterConfig) DebugInfo() string {
+// String return the debug name the model.
+func (m AdapterConfig) String() string {
 	return m.Name
 }
 

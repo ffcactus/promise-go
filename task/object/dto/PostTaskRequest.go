@@ -31,8 +31,8 @@ func (dto *PostTaskRequest) IsValid() *base.Message {
 	return nil
 }
 
-// DebugInfo return the name for debug.
-func (dto *PostTaskRequest) DebugInfo() string {
+// String return the name for debug.
+func (dto PostTaskRequest) String() string {
 	return dto.Name
 }
 

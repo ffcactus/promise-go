@@ -13,8 +13,8 @@ type GetServerGroupResponse struct {
 	Description string `json:"Description"`
 }
 
-// DebugInfo return the name for debug.
-func (dto *GetServerGroupResponse) DebugInfo() string {
+// String return the name for debug.
+func (dto GetServerGroupResponse) String() string {
 	return dto.Name
 }
 

@@ -139,8 +139,8 @@ func (AdapterModel) TableName() string {
 	return "AdapterModel"
 }
 
-// DebugInfo return the debug name of this entity.
-func (e *AdapterModel) DebugInfo() string {
+// String return the debug name of this entity.
+func (e AdapterModel) String() string {
 	return e.Name
 }
 

@@ -20,8 +20,8 @@ func (dto *PostAdapterConfigRequest) IsValid() *base.Message {
 	return nil
 }
 
-// DebugInfo return the name for debug.
-func (dto *PostAdapterConfigRequest) DebugInfo() string {
+// String return the name for debug.
+func (dto PostAdapterConfigRequest) String() string {
 	return dto.Name
 }
 

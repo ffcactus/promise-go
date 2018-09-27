@@ -69,8 +69,8 @@ type GetAdapterModelResponse struct {
 	Capability AdapterCapability `json:"Capability"`
 }
 
-// DebugInfo return the name for debug.
-func (dto *GetAdapterModelResponse) DebugInfo() string {
+// String return the name for debug.
+func (dto GetAdapterModelResponse) String() string {
 	return dto.Name
 }
 

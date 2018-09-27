@@ -19,8 +19,8 @@ func (dto *AllocateIPv4Request) IsValid() *base.Message {
 	return nil
 }
 
-// DebugInfo return the name for debug.
-func (dto *AllocateIPv4Request) DebugInfo() string {
+// String return the name for debug.
+func (dto AllocateIPv4Request) String() string {
 	if dto.Key == nil {
 		return ""
 	}

@@ -31,8 +31,8 @@ func (Task) TableName() string {
 	return "Task"
 }
 
-// DebugInfo return the debug name of this entity.
-func (e *Task) DebugInfo() string {
+// String return the debug name of this entity.
+func (e Task) String() string {
 	return e.Name
 }
 

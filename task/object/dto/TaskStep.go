@@ -70,8 +70,8 @@ func (dto *UpdateTaskStepRequest) IsValid() *base.Message {
 	return nil
 }
 
-// DebugInfo return the name for debug.
-func (dto *UpdateTaskStepRequest) DebugInfo() string {
+// String return the name for debug.
+func (dto UpdateTaskStepRequest) String() string {
 	return dto.Name
 }
 

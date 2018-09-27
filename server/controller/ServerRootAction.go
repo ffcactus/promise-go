@@ -26,7 +26,7 @@ func (c *ServerRootAction) ResourceName() string {
 	return "server"
 }
 
-// ActionInfo returns the name this controller handle of.
+// ActionInfo returns the action this controller handle of.
 func (c *ServerRootAction) ActionInfo() []base.ActionInfo {
 	return serverRootActionInfo
 }

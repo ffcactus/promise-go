@@ -11,8 +11,8 @@ type ServerServerGroup struct {
 	ServerGroupID string
 }
 
-// DebugInfo return the debug name the model.
-func (m *ServerServerGroup) DebugInfo() string {
+// String return the debug name the model.
+func (m ServerServerGroup) String() string {
 	return m.ServerID + " " + m.ServerGroupID
 }
 

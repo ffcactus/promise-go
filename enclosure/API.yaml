@@ -1,0 +1,2269 @@
+openapi: "3.0.0"
+info:
+  title: "机框管理微服务 API"
+  description: "机框管理微服务提供所有与机框（Enclosure）有关的功能。包括最基本的对框的增删改查，对机框进行基本的设置，以及利用机框配置文件（EnclosureProfile）来配置机框。"
+  version: "1.0.0" 
+servers:
+  - url: http://localhost/promise/v1
+tags:
+- name: "Enclosure"
+  description: "Enclosure（机框）代表了一个物理机框，提供了目标对象是机框的各种操作。"
+- name: "EnclosureHardwareCapability"
+  description: "EnclosureHardwareCapability（机框硬件能力） 描述了一个物理机框的基本能力。这些能力包括了它能支持什么部件，提供什么设置。系统会提供所有支持机框的机框硬件能力。"
+- name: "EnclosureProfile"
+  description: "EnclosureProfile（机框配置文件）是机框的配置文件，描述了用户期望的配置。"
+paths:
+  /Enclosures:
+    get:
+      tags:
+      - "Enclosure"
+      summary: "返回机框的集合。"
+      description: "返回机框的集合。\n* 该接口支持$top，$skip以及简单的$filter。"
+      operationId: "getEnclosureCollection"
+      parameters:
+        - $ref: "#/components/parameters/Top"
+        - $ref: "#/components/parameters/Skip"
+        - $ref: "#/components/parameters/Filter"
+        - $ref: "#/components/parameters/Orderby"
+      responses:
+        '200':
+          description: "成功。"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetEnclosureCollectionResponse"
+        '501':
+          $ref: "#/components/responses/ErrorResponseCollection501"
+  /Enclosures/Actions/Enclosure.Discover:
+    post:
+      tags:
+      - "Enclosure"
+      summary: "添加机框。"
+      description: "添加机框。用户需要指明机框类型，管理板的登陆方式以及机框上各个部件的IP管理方式。\n* 至少允许添加20个机框。"
+      operationId: "actionEnclosureDiscover"
+      requestBody:
+        description: "添加机框所需要的参数。"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DiscoverEnclosureRequest"
+      responses:
+        '200':
+          $ref: "#/components/responses/SyncEnclosureResponse"
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+  /Enclosures/{id}:
+    get:
+      tags:
+      - "Enclosure"
+      summary: "查询指定机框。"
+      description: "查询指定机框。"
+      operationId: "getEnclosure"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      responses:
+        '200':
+          $ref: "#/components/responses/SyncEnclosureResponse"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+        '409':
+          $ref: "#/components/responses/ErrorResponseResourceInUse409"
+    delete:
+      tags:
+      - "Enclosure"
+      summary: "删除指定机框。"
+      description: "删除指定机框。在删除过程中，如果出现清除机框上设置失败的情况则该机框不会被删除。为了防止由于网络问题导致机框无法删除的情况，该接口提供强制删除选项，强制删除机框将会确保机框从数据库中删除但可能无法清除在机框上的设置。\n* 如果机框在已经关联机框配置文件则不能被删除。\n* 该操作要求机框不处于Locked状态。\n* 该操作是异步操作。"
+      operationId: "deleteEnclosure"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+        - in: "query"
+          name: "force"
+          description: "为true时，强制删除机框。"
+          required: false
+          schema:
+            type: "boolean"
+            default: false
+      responses:
+        '202':
+          $ref: "#/components/responses/AsyncEnclosureResponse"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+  /Enclosures/{id}/Actions/Enclosure.Refresh:
+    post:
+      tags:
+      - "Enclosure"
+      summary: "刷新指定机框。"
+      description: "刷新指定机框。某些情况下可能出现系统中的数据与实际数据不一致的情况，例如系统维护过程中机框状态发生了变化，此时用户可以刷新机框以同步数据。根据参数的不同，刷新机框可以对机框重新进行设置，可以刷新机框部件信息等。某些情况下用户必须刷新机框，例如由于账号原因系统无法连接机框内部管理系统，此时用户需要重新提供机框管理系统的登陆信息。\n* 该操作要求机框处于Ready或Unmanaged状态。\n* 该操作会锁定机框。\n* 该操作是异步操作。"
+      operationId: "actionEnclosureRefresh"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      requestBody:
+        description: "刷新机框所需要的参数。"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshEnclosureRequest"                 
+      responses:
+        '202':
+          $ref: "#/components/responses/AsyncEnclosureResponse"
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+        '409':
+          $ref: "#/components/responses/ErrorResponseResourceInUse409"
+  /Enclosures/{id}/Actions/Enclosure.Unlock:
+    post:
+      tags:
+      - "Enclosure"
+      summary: "解除机框的Locked状态。"
+      description: "解除机框的Locked状态。某些情况下机框会一直处于Locked状态，例如在刷新机框的时候系统出现内部故障导致。用户可以调用此接口手动解除机框Locked状态。成功后机框处于Ready状态。"
+      operationId: "actionEnclosureUnlock"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      responses:
+        '200':
+          $ref: "#/components/responses/SyncEnclosureResponse"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+  /Enclosures/{id}/Actions/Enclosure.UpgradeComponent:
+    post:
+      tags:
+      - "Enclosure"
+      summary: "升级指定机框部件的固件。"
+      description: "升级指定机框部件的固件。部件包括EM、Appliance1和Appliance2。\n* 该操作要求机框不处于Locked或Added状态。\n* 该操作会锁定机框。\n* 该操作是异步操作。"
+      operationId: "actionEnclosureUpgrade"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      requestBody:
+        description: "升级机框所需要的参数。"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpgradeComponentRequest"            
+      responses:
+        '202':
+          $ref: "#/components/responses/AsyncEnclosureResponse"
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+        '409':
+          $ref: "#/components/responses/ErrorResponseResourceInUse409"
+  /Enclosures/{id}/Actions/Enclosure.RebootComponent:
+    post:
+      tags:
+      - "Enclosure"
+      summary: "重启机框管理板的部件。"
+      description: "重启机框管理板的部件。部件包括EM1、EM2、Appliance1和Appliance2。\n* 该操作要求机框不处于Locked或Added状态。"
+      operationId: "actionEnclosureRebootManager"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      requestBody:
+        description: "重启机框管理板所需要的参数。"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RebootEnclosureComponentRequest"               
+      responses:
+        '200':
+          description: "成功。"
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+        '409':
+          $ref: "#/components/responses/ErrorResponseResourceInUse409"
+  /Enclosures/{id}/Actions/Enclosure.SwitchMasterManager:
+    post:
+      tags:
+      - "Enclosure"
+      summary: "切换机框管理板。"
+      description: "切换机框管理板。该操作仅对于支持管理板主备倒换的机框有效。\n* 该操作要求机框不处于Locked或Added状态。\n* 该操作会锁定机框。\n* 该操作是异步操作。"
+      operationId: "actionEnclosureSwtichManager"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      responses:
+        '202':
+          $ref: "#/components/responses/AsyncEnclosureResponse"
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+        '409':
+          $ref: "#/components/responses/ErrorResponseResourceInUse409"          
+  /Enclosures/{id}/Actions/Enclosure.DumpComponentLog:
+    post:
+      tags:
+      - "Enclosure"
+      summary: "收集机框部件日志。"
+      description: "收集机框部件日志。部件包括EM、Appliance1和Appliance2。\n* 该操作要求机框不处于Locked或Added状态。\n* 该操作会锁定机框。\n* 该操作是异步操作。"
+      operationId: "actionEnclosureDumpComponentLog"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      requestBody:
+        description: "收集机框管理板日志所需要的参数。"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DumpComponentLogRequest"                  
+      responses:
+        '202':
+          $ref: "#/components/responses/AsyncEnclosureResponse"
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+        '409':
+          $ref: "#/components/responses/ErrorResponseResourceInUse409"         
+  /Enclosures/{id}/Actions/Enclosure.SetUIDState:
+    post:
+      tags:
+      - "Enclosure"
+      summary: "设置机框的UID灯。"
+      description: "设置指定机框的UID灯。"
+      operationId: "actionEnclosureSetUIDState"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      requestBody:
+        description: "设置机框UID灯所需要的参数。"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetUIDStateRequest"              
+      responses:
+        '200':
+          $ref: "#/components/responses/SyncEnclosureResponse"    
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+        '409':
+          $ref: "#/components/responses/ErrorResponseResourceInUse409"         
+  /Enclosures/{id}/Actions/Enclosure.SetChassisID:
+    post:
+      tags:
+      - "Enclosure"
+      summary: "设置机框的机框编号。"
+      description: "设置指定机框的机框编号。\n* 该操作要求机框处于Ready状态。"
+      operationId: "actionEnclosureSetChassisID"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      requestBody:
+        description: "设置机框的机框编号所需要的参数。"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetChassisIDRequest"              
+      responses:
+        '200':
+          $ref: "#/components/responses/SyncEnclosureResponse" 
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+        '409':
+          $ref: "#/components/responses/ErrorResponseResourceInUse409"         
+  /Enclosures/{id}/Actions/Enclosure.SetName:
+    post:
+      tags:
+      - "Enclosure"
+      summary: "设置指定机框的名称和描述。"
+      description: "设置指定机框的名称和描述。"
+      operationId: "actionEnclosureSetName"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      requestBody:
+        description: "设置机框名称和描述所需要的参数。"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetNameRequest"              
+      responses:
+        '200':
+          $ref: "#/components/responses/SyncEnclosureResponse"           
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+  /Enclosures/{id}/Actions/Enclosure.SetFanSetting:
+    post:
+      tags:
+      - "Enclosure"
+      summary: "设置机框的风扇设置。"
+      description: "设置指定机框的风扇设置。\n* 该操作要求机框处于Ready状态。"
+      operationId: "actionEnclosureSetFanSetting"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      requestBody:
+        description: "设置机框风扇设置所需要的参数。"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FanSetting"               
+      responses:
+        '200':
+          $ref: "#/components/responses/SyncEnclosureResponse"
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+        '409':
+          $ref: "#/components/responses/ErrorResponseResourceInUse409"         
+  /Enclosures/{id}/Actions/Enclosure.SetPowerCapping:
+    post:
+      tags:
+      - "Enclosure"
+      summary: "设置机框的功率封顶设置。"
+      description: "设置指定机框的功率封顶设置。\n* 该操作要求机框处于Ready状态。"
+      operationId: "actionEnclosureSetPowerCapping"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      requestBody:
+        description: "设置机框功率封顶设置所需要的参数。"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PowerCapping"              
+      responses:
+        '200':
+          $ref: "#/components/responses/SyncEnclosureResponse"
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+        '409':
+          $ref: "#/components/responses/ErrorResponseResourceInUse409"         
+  /Enclosures/{id}/Actions/Enclosure.SetPSUSetting:
+    post:
+      tags:
+      - "Enclosure"
+      summary: "设置指定机框的电源设置。"
+      description: "设置指定机框的电源设置。\n* 该操作要求机框处于Ready状态。"
+      operationId: "actionEnclosureSetPSUSetting"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      requestBody:
+        description: "设置机框电源设置所需要的参数。"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PSUSetting"               
+      responses:
+        '200':
+          $ref: "#/components/responses/SyncEnclosureResponse"            
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"  
+        '409':
+          $ref: "#/components/responses/ErrorResponseResourceInUse409"       
+  /Enclosures/{id}/Actions/Enclosure.CreateEnclosureProfile:
+    post:
+      tags:
+      - "Enclosure"
+      summary: "给指定机框创建机框配置文件。"
+      description: "给指定机框创建机框配置文件。机框的配置和能力会保存到新建的配置文件中。\n* 该操作要求机框不处于Added或Locked的状态。\n* 系统至少允许创建100个机框配置文件。"
+      operationId: "actionEnclosureCreateProfile"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      requestBody:
+        description: "给指定机框创建机框配置文件所需要的参数。"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEnclosureProfileRequest"               
+      responses:
+        '200':
+          $ref: "#/components/responses/SyncEnclosureProfileResponse" 
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+        '409':
+          $ref: "#/components/responses/ErrorResponseResourceInUse409"         
+  /Enclosures/{id}/Actions/Enclosure.AssociateEnclosureProfile:
+    post:
+      tags:
+      - "Enclosure"
+      summary: "给指定机框关联的机框配置文件。"
+      description: "给指定机框关联的机框配置文件。如果该机框位置文件为空则相当于取消关联。\n* 该操作要求机框不能处于Added或Locked的状态。"
+      operationId: "actionEnclosureAssociateEnclosureProfile"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      requestBody:
+        description: "给指定机框关联的机框配置文件所需要的参数。"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssociateEnclosureProfileRequest"               
+      responses:
+        '200':
+          $ref: "#/components/responses/SyncEnclosureResponse"
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+        '409':
+          $ref: "#/components/responses/ErrorResponseResourceInUse409"      
+  /Enclosures/{id}/Actions/Enclosure.ApplyEnclosureProfile:
+    post:
+      tags:
+      - "Enclosure"
+      summary: "给指定机框下发机框配置文件。"
+      description: "给指定机框下发机框配置文件。机框配置文件必须已经与该机框关联。\n* 该操作要求机框处于Ready状态。\n* 该操作会锁定机框。\n* 该操作是异步操作。"
+      operationId: "actionApplyEnclosureProfile"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      requestBody:
+        description: "给指定机框下发机框配置文件所需要的参数。"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplyEnclosureProfileRequest"               
+      responses:
+        '202':
+          $ref: "#/components/responses/AsyncEnclosureResponse"
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+        '409':
+          $ref: "#/components/responses/ErrorResponseResourceInUse409"         
+  /Enclosures/{id}/Actions/Enclosure.AllocateDynamicValue:
+    post:
+      tags:
+      - "Enclosure"
+      summary: "给指定机框的部件申请动态资源。"
+      description: "给指定机框的部件申请动态资源。这些动态资源当前包括GUID、 MAC、WWN和VLAN。\n申请时用户输入一批键值，每一个不同的键都会对应到一个不同的值。对于不同的动态资源，这些键应该有其特殊的格式。\n对于GUID来说，键可以是空字符串，因为每一个服务器只有一个GUID。\n对于MAC, WWN或VLAN来说，键值应该由适配器的槽位，端口号和PF组成。\n对于没有关联机框配置文件的机框，该操作会返回失败。"
+      operationId: "actionAllocateDynamicValue"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      requestBody:
+        description: "给指定机框的部件申请动态资源所需要的参数。"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AllocateDynamicValueRequest"              
+      responses:
+        '200':
+          description: "成功。"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AllocateDynamicValueResponse"        
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+  /EnclosureProfiles:
+    post:
+      tags:
+      - "EnclosureProfile"
+      summary: "创建机框配置文件。"
+      description: "创建机框配置文件。\n最多允许100个机框配置文件。"
+      operationId: "postServerHardwareModel"
+      requestBody:
+        description: "创建机框配置文件所需要的参数。"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostEnclosureProfileRequest"             
+      responses:
+        '201':
+          description: "创建成功。"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetEnclosureProfileResponse"
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+    get:
+      tags:
+      - "EnclosureProfile"
+      summary: "返回机框配置文件的集合。"
+      description: "返回机框配置文件的集合。\n该接口支持$top，$skip以及简单的$filter。"
+      operationId: "getEnclosureProfileCollection"
+      parameters:
+        - $ref: "#/components/parameters/Top"
+        - $ref: "#/components/parameters/Skip"
+        - $ref: "#/components/parameters/Filter"
+        - $ref: "#/components/parameters/Orderby"
+      responses:
+        '200':
+          description: "成功。"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetEnclosureProfileCollectionResponse"
+        '501':
+          $ref: "#/components/responses/ErrorResponseCollection501"                
+  /EnclosureProfiles/{id}:
+    get:
+      tags:
+      - "EnclosureProfile"
+      summary: "查询指定的机框配置文件。"
+      description: "查询指定的机框配置文件。"
+      operationId: "getEnclosureProfile"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框配置文件的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      responses:
+        '200':
+          $ref: "#/components/responses/SyncEnclosureProfileResponse"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+    patch:
+      tags:
+      - "EnclosureProfile"
+      summary: "更新指定机框配置文件。"
+      description: "更新机框配置文件。\n* 该操作要求机框配置文件不处于Applying状态。"
+      operationId: "actionEnclosureProfileUpdate"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框配置文件的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      requestBody:
+        description: "更新指定机框配置文件所需要的参数。"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostEnclosureProfileRequest"             
+      responses:
+        '200':
+          $ref: "#/components/responses/SyncEnclosureProfileResponse"
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+        '404':
+          description: "* 资源不存在。"
+        '409':
+          $ref: "#/components/responses/ErrorResponseResourceInUse409"    
+    delete:
+      tags:
+      - "EnclosureProfile"
+      summary: "删除指定的机框配置文件。"
+      description: "删除指定的机框配置文件。\n* 该操作要求机框配置文件处于Unassigned状态。"
+      operationId: "deleteEnclosureProfile"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框配置文件的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      responses:
+        '200':
+          $ref: "#/components/responses/SyncEnclosureProfileResponse"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+        '409':
+          $ref: "#/components/responses/ErrorResponseResourceInUse409"       
+  /EnclosureProfiles/{id}/Actions/EnclosureProfile.Copy:
+    post:
+      tags:
+      - "EnclosureProfile"
+      summary: "复制指定机框配置文件。"
+      description: "复制指定机框配置文件，返回新创建的机框配置文件。\n* 新创建的机框配置文件处于Unassigned状态。\n* 系统至少允许创建100个机框配置文件。"
+      operationId: "actionEnclosureProfileCopy"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框配置文件的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      requestBody:
+        description: "复制指定机框配置文件所需要的参数。"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CopyEnclosureProfileRequest"               
+      responses:
+        '200':
+          $ref: "#/components/responses/SyncEnclosureResponse"
+        '400':
+          $ref: "#/components/responses/ErrorResponse400"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+  /EnclosureProfiles/{id}/Actions/EnclosureProfile.ParseServerPorts:
+    post:
+      tags:
+      - "EnclosureProfile"
+      summary: "解析指定机框配置文件中的服务器网络适配器的端口信息。"
+      description: "解析指定机框配置文件中的服务器网络适配器的端口信息。机框配置文件可以指定每个槽位所关联的服务器配置文件（ServerProfile)，该操作将据此解析出每个槽位的服务器网络适配器的端口信息。"
+      operationId: "actionEnclosureProfileParseServerPorts"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框配置文件的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      responses:
+        '200':
+          description: "成功。"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ParseServerPortsResponse"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+  /EnclosureHardwareCapabilities:
+    get:
+      tags:
+      - "EnclosureHardwareCapability"
+      summary: "返回机框硬件能力的集合。"
+      description: "返回机框硬件能力的集合。\n* 该接口支持$top，$skip以及简单的$filter。"
+      operationId: "getEnclosureHardwareCapabilityCollection"
+      parameters:
+        - $ref: "#/components/parameters/Top"
+        - $ref: "#/components/parameters/Skip"
+        - $ref: "#/components/parameters/Filter"
+        - $ref: "#/components/parameters/Orderby"
+      responses:
+        '200':
+          description: "成功。"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetEnclosureHardwareCapabilityCollectionResponse"
+        '501':
+          $ref: "#/components/responses/ErrorResponseCollection501"                
+  /EnclosureHardwareCapabilities/{id}:
+    get:
+      tags:
+      - "EnclosureHardwareCapability"
+      summary: "查询指定的机框硬件能力。"
+      description: "查询指定的机框硬件能力。可以将EnclosureType作为ID。"
+      operationId: "getEnclosureHardwareCapability"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "机框硬件能力的ID。"
+          required: true
+          schema:
+            type: "string"
+            example: "1"
+      responses:
+        '200':
+          description: "成功。"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetEnclosureHardwareCapabilityResponse"
+        '404':
+          $ref: "#/components/responses/ErrorResponse404"
+components:
+  parameters:
+    Top:
+      name: "$top"
+      in: "query"
+      description: "$top 查询参数指明返回的集合中应该包含的个数。最小值为1。未提供该选项则返回所有数据。"
+      required: false
+      schema:
+        type : "integer"
+        format: "int64"
+        minimum: 1
+        example: 100
+    Skip:
+        name: "$skip"
+        in: "query"
+        description: "$skip 查询参数指明在查询的集合中有多少个需要从头部跳过不被包含在返回中。"
+        required: false
+        schema:
+          type : "integer"
+          format: "int64"
+          minimum: 0
+          example: 0
+    Filter:
+        in: "query"
+        name: "$filter"
+        description: "查询中使用的过滤器，例如 $filter=Name eq 'MyName' 。"
+        required: false
+        schema:
+          type: "string"
+          example: "Name eq 'MyName'"
+    Orderby:
+        in: query
+        name: $orderby
+        description: "$orderby 查询参数允许客户端指明返回的元素应该依据元素的某属性按升（asc）序或降序（desc）排列。例如 $orderby=Name asc 。当没有指明升序还是降序这按升序排列。"
+        required: false
+        schema:
+          type: string
+          example: "Name asc"    
+  responses:
+    SyncEnclosureResponse:
+      description: "成功。"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetEnclosureResponse"
+    AsyncEnclosureResponse:
+      description: "接受请求。"
+      headers:
+        Location:
+          schema:
+            type: "string"
+            description: "所创建任务的链接。"
+            example: "/redfish/v1/Tasks/01234567-1111-1111-1111-0123456789ab"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetEnclosureResponse"            
+    SyncEnclosureProfileResponse:
+      description: "成功。"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetEnclosureProfileResponse"
+    ErrorResponse400:
+      description: "错误的请求体。可能是由以下一种或多种原因导致，并包含在@Message.ExtendedInfo中：\n* 无法识别的参数。\n* 参数类型不合法。\n* 参数格式错误。\n* 参数的值不在枚举范围内。\n* 必选参数缺失。\n* 参数不可修改。\n* JSON格式错误。"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            code: "Base.1.0.GeneralError"
+            message: "A general error has occurred. See ExtendedInfo for more information."
+            "@Message.ExtendedInfo":
+              - MessageId: "Base.1.0.PropertyUnknown"
+                Message: "The property AnUnknownProperty is not in the list of valid properties for the resource."
+                Severity: "Warning"
+                MessageArgs:
+                  - "AnUnknownProperty"
+                Resolution: "Remove the unknown property from the request body and resubmit the request if the operation failed." 
+              - MessageId: "Base.1.0.PropertyValueTypeError"
+                Message: "The value 999 for the property StringProperty is of a different type than the property can accept."
+                Severity: "Warning"
+                MessageArgs:
+                  - '999'
+                  - 'StringProperty'
+                Resolution: "Correct the value for the property in the request body and resubmit the request if the operation failed." 
+              - MessageId: "Base.1.0.PropertyValueFormatError"
+                Message: "The value 192/168/1/10 for the property IPv4Property is of a different format than the property can accept."
+                Severity: "Warning"
+                MessageArgs:
+                  - '192/168/1/10'
+                  - 'IPv4Property'
+                Resolution: "Correct the value for the property in the request body and resubmit the request if the operation failed."
+              - MessageId: "Base.1.0.PropertyValueNotInList"
+                Message: "The value Bird for the property FruitEnum is not in the list of acceptable values."
+                Severity: "Warning"
+                MessageArgs:
+                  - 'Bird'
+                  - 'FruitEnum'
+                Resolution: "Choose a value from the enumeration list that the implementation can support and resubmit the request if the operation failed."
+              - MessageId: "Base.1.0.PropertyMissing"
+                Message: "The property Name is a required property and must be included in the request."
+                Severity: "Warning"
+                MessageArgs:
+                  - 'Name'
+                Resolution: "Ensure that the property is in the request body and has a valid value and resubmit the request if the operation failed."
+              - MessageId: "Base.1.0.PropertyNotWritable"
+                Message: "The property CurrentState is a read only property and cannot be assigned a value."
+                Severity: "Warning"
+                MessageArgs:
+                  - 'CurrentState'
+                Resolution: "Remove the property from the request body and resubmit the request if the operation failed."
+              - MessageId: "Base.1.0.MalformedJSON"
+                Message: "The request body submitted was malformed JSON and could not be parsed by the receiving service."
+                Severity: "Critical"
+                MessageArgs:
+                  - 'CurrentState'
+                Resolution: "Ensure that the request body is valid JSON and resubmit the request."
+    ErrorResponse404:
+      description: "在URL中的资源对象不存在。"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            code: "Base.1.0.GeneralError"
+            message: "A general error has occurred. See ExtendedInfo for more information."
+            "@Message.ExtendedInfo":
+              - MessageId: "Base.1.0.ResourceMissingAtURI"
+                Message: "The resource at the URI %1 was not found."
+                Severity: "Critical"
+                MessageArgs:
+                  - "01234567-1111-1111-1111-0123456789ab"
+                Resolution: "Place a valid resource at thr URI or correct the URI and resubmit the request."
+    ErrorResponseResourceInUse409:
+      description: "被请求的资源正在使用。"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            code: "Base.1.0.GeneralError"
+            message: "A general error has occurred. See ExtendedInfo for more information."
+            "@Message.ExtendedInfo":
+              - MessageId: "Base.1.0.ResourceInUse"
+                Message: "The change to the requested resource failed because the resource is in use or in transition."
+                Severity: "Warning"
+                Resolution: "Remove the condition and resubmit the request if the operation failed."      
+    ErrorResponseCollection501:
+      description: "查询参数不支持。"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            code: "Base.1.0.GeneralError"
+            message: "A general error has occurred. See ExtendedInfo for more information."
+            "@Message.ExtendedInfo":
+              - MessageId: "Base.1.0.QueryNotSupported"
+                Message: "Querying is not supported by the implementation."
+                Severity: "Warning"
+                Resolution: "Remove the query parameters and resubmit the request if the operation failed."
+    ErrorResponse409:
+      description: "状态冲突。"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            code: "Base.1.0.GeneralError"
+            message: "A general error has occurred. See ExtendedInfo for more information."
+            "@Message.ExtendedInfo":
+              - MessageId: "Base.1.0.QueryNotSupported"
+                Message: "Querying is not supported by the implementation."
+                Severity: "Warning"
+                Resolution: "Remove the query parameters and resubmit the request if the operation failed."    
+  schemas:
+    DiscoverEnclosureRequest:
+      type: "object"
+      required:
+        - Username
+        - Password
+        - Hostname
+        - Type
+        - Name
+        - ManagementNetworkSetting
+      properties:
+        Username:
+          type: "string"
+          description: "用于登陆管理板的用户名。"
+          example: "root"
+        Password:
+          type: "string"
+          format: "password"
+          description: "用于登陆管理板的密码。"
+          example: "password"
+        Hostname:
+          type: "string"
+          description: "管理板的主机地址。对于E9000来说需要填写浮动IP地址。"
+          example: "192.168.100.100"
+        Type:
+          $ref: "#/components/schemas/EnclosureType"
+        Name:
+          type: "string"
+          description: "资源的名字。1-32个字符，字符集只能由英文字符、双字节字符、数字、中划线、下划线、英文点组成。"
+          example: "E9000 No.1"
+          minLength: 1
+          maxLength: 32
+        ManagementNetworkSetting:
+          $ref: "#/components/schemas/ManagementNetworkSetting"
+        Description:
+          type: "string"
+          description: "资源的描述。最大255字节。"
+          default: ""
+          example: "E9000 No.1 in room 1."
+          maxLength: 256
+        Protocol:
+          type: "string"
+          description: "登陆协议。\nhttp 以HTTP协议登陆。\nhttps 以HTTPS协议登陆。"
+          default: "https"
+          enum:
+          - "http"
+          - "https"
+          example: "https"
+        Port:
+          type: "integer"
+          description: "管理板主机地址端口号"
+          default: 443
+          example: 443
+        Force:
+          type: "boolean"
+          description: "某些情况下会出现机框已经被管理的情况，例如系统连接机框的网络出现故障，用户强制从系统中删除了该机框，但是该机框依然会保留被管理的标志，此时用户可以使用该选项将机框强制添加进来。但是如果该机框已经被系统添加则无法强制添加。"
+          default: false
+          example: false    
+    RefreshEnclosureRequest:
+      type: "object"
+      description: "刷新机框的请求体。"
+      properties:
+        Targets:
+          type: "array"
+          description: "刷新的目标。\nAll 刷新全部。\nEvent 刷新告警。\nSetting 刷新设置。\nManager 刷新管理板。\nServer 刷新服务器设备。\nSwitch 刷新交换设备。\nPower 刷新电源设备。\nFan 刷新风扇设备。"
+          items:
+            type: "string"
+            enum:
+            - "All"
+            - "Event"
+            - "Setting"
+            - "Manager"
+            - "Server"
+            - "Switch"
+            - "Power"
+            - "Fan"
+            default: "All"
+            example: "All"
+        Username:
+          type: "string"
+          description: "用于登陆管理板的用户名。当机框由于无法登陆处于Unmanaged状态时可以需要重新指定用户名和密码。"
+          example: "root"
+        Password:
+          type: "string"
+          format: "password"
+          description: "用于登陆管理板的密码。当机框由于无法登陆处于Unmanaged状态时可以需要重新指定用户名和密码。"
+          example: "password"          
+    DumpComponentLogRequest:
+      type: "object"
+      description: "收集机框部件日志的请求体。"
+      required:
+        - EnclosureComponent
+        - Destination
+      properties:
+        EnclosureComponent:
+          $ref: "#/components/schemas/EnclosureComponent"
+        Destination:
+          type: "string"
+          description: "远程传输的目的地址。文件传输协议包括sftp、https、nfs、cifs和scp。文件格式为tar.gz"
+          example: "sftp://username:passwd@host:port/folder/filename.tar.gz"
+    UpgradeComponentRequest:
+      type: "object"
+      description: "升级机框固件的请求体。"
+      required:
+        - EnclosureComponent
+        - ImageURL
+        - TransferProtocol    
+      properties:
+        EnclosureComponent:
+          $ref: "#/components/schemas/EnclosureComponent"        
+        ImageURL:
+          type: "string"
+          description: "用于下载固件的地址。"
+          example: "sftp://username:password@host:/tmp/cpldimage.hpm"
+        TransferProtocol:
+          type: "string"
+          description: "用于下载固件的协议。"
+          enum:
+          - "SFTP"
+          - "TFTP"
+          - "NFS"
+          - "HTTPS"
+          - "SCP"
+          - "CIFS"
+          example: "SFTP"
+    RebootEnclosureComponentRequest:
+      type: "object"
+      description: "重启机框部件的请求体。"
+      required:
+      - EnclosureComponent      
+      properties:
+        EnclosureComponent:
+          $ref: "#/components/schemas/EnclosureComponent"
+    SetUIDStateRequest:
+      type: "object"
+      description: "设置机框UID灯的请求体。"
+      required:
+      - UIDState
+      properties:
+        UIDState:
+          $ref: "#/components/schemas/UIDState"
+    SetChassisIDRequest:
+      type: "object"
+      description: "设置机框编号的请求体。"
+      required:
+      - ChassisID
+      properties:
+        ChassisID:
+          type: "string"
+          description: "机框编号。机框编号为字符串表示的整数，范围是0-999999。"
+          example: "123456"          
+    SetNameRequest:
+      type: "object"
+      description: "设置机框名称和描述的请求体。"
+      required:
+      - Name
+      properties:
+        Name:
+          type: "string"
+          description: "资源的名字。"
+          minLength: 1
+          maxLength: 255
+          example: "New name"
+        Description:
+          type: "string"
+          description: "资源的描述。最大255字节。"
+          default: ""
+          example: "New description"
+    CreateEnclosureProfileRequest:
+      type: "object"
+      description: "给指定机框创建配置文件的请求体。"
+      required:
+      - Name
+      properties:
+        Name:
+          type: "string"
+          description: "资源的名字。"
+          minLength: 1
+          maxLength: 255
+          example: "E9000 No.1 profile"
+        Description:
+          type: "string"
+          description: "资源的描述。最大255字节。"
+          default: ""
+          example: "E9000 No.1 profile"
+    AssociateEnclosureProfileRequest:
+      type: "object"
+      description: "给指定机框关联机框配置文件的请求体。"
+      required:
+      - EnclosureProfileURL
+      properties:
+        EnclosureProfileURL:
+          type: "string"
+          description: "机框配置文件的链接，如果为null则表示删除配置文件。"
+          example: "/redfish/v1/rich/EnclosureProfiles/01234567-1111-1111-1111-0123456789ab"
+        FreeIDResource:
+          type: "boolean"
+          description: "是否删除ID资源。当EnclosureProfileURL为null时该值才有意义。"
+          example: true
+    ApplyEnclosureProfileRequest:
+      type: "object"
+      description: "给指定机框下发机框配置文件的请求体。"
+      properties:
+        ActivateType:
+          type: "string"
+          description: "配置生效的方式。\nAfterApplyForce 下发完毕后系统主动重启设备生效。\nManual 用户自己手动重启设备生效。"
+          enum:
+          - "AfterApplyForce"
+          - "Manual"
+          default: "Manual"
+    AllocateDynamicValueRequest:
+      type: "object"
+      description: "给指定机框的部件申请动态资源的请求体。"
+      required:
+      - ServerURL
+      - Keys
+      - Type
+      properties:
+        ServerURL:
+          type: "string"
+          description: "服务器设备的链接。"
+          example: "/redfish/v1/rich/Nodes/01234567-1111-1111-1111-0123456789ab"
+        Type:
+          $ref: "#/components/schemas/DynamicValueType"
+        Keys:
+          type: "array"
+          description: "键的集合。"
+          items:
+            type: "string"
+            maxItems: 255
+            example: "mezz1-port1-pf1"          
+    PostEnclosureProfileRequest:
+      type: "object"
+      required:
+      - Name
+      - EnclosureHardwareCapabilityURL
+      properties:
+        Name:
+          type: "string"
+          description: "资源的名字。1-32个字符，字符集只能由英文字符、双字节字符、数字、中划线、下划线、英文点组成。"
+          minLength: 1
+          maxLength: 32
+          example: "My E9000 profile"
+        Description:
+          type: "string"
+          description: "资源的描述。最大255字节。"
+          default: ""
+          example: "My E9000 profile for networking."
+          maxLength: 256
+        EnclosureHardwareCapabilityURL:
+          type: "string"
+          description: "机框硬件能力的链接。"
+          example: "/redfish/v1/rich/EnclosureHardwareCapabilities/E9000"
+        ServerSetting:
+          $ref: "#/components/schemas/ServerSetting"
+        EnclosureSetting:
+          $ref: "#/components/schemas/EnclosureProfileEnclosureSetting"
+    CopyEnclosureProfileRequest:
+      type: "object"
+      required:
+      - Name
+      properties:
+        Name:
+          type: "string"
+          description: "资源的名字。"
+          minLength: 1
+          maxLength: 255
+          example: "Enclosure profile backup."
+        Description:
+          type: "string"
+          description: "资源的描述。最大255字节。"
+          default: ""
+          example: "Enclosure profile backup."   
+    GetEnclosureResponse:
+      type: "object"
+      description: "该资源表明了一台物理机框以及它的各种信息。"
+      properties:
+        Id:
+          type: "string"
+          format: "uuid"
+          description: "资源唯一标识符。"
+          example: "1"
+        '@odata.id':
+          type: "string"
+          description: "用于odata的资源唯一标识符。"
+          example: "/redfish/v1/rich/Enclosure/01234567-1111-1111-1111-0123456789ab"
+        Name:
+          type: "string"
+          description: "资源的名字。"
+          example: "My Enclosure"
+          minLength: 1
+          maxLength: 255
+        Type:
+          $ref: "#/components/schemas/EnclosureType"
+        CreatedAt:
+          type: "string"
+          description: "资源的创建的时间。"
+          example: "2018-06-26 10:09:15.406668 +0800 CST"
+        UpdatedAt:
+          type: "string"
+          description: "资源的更新的时间。"
+          example: "2018-06-26 10:09:15.406668 +0800 CST"
+        Description:
+          type: "string"
+          description: "资源的描述。最大255字节。"
+          default: ""
+          example: "This is my E9000 enclosure."
+        Hostname:
+          type: "string"
+          description: "管理板的主机地址。"
+          example: "192.168.100.100"
+        Port:
+          type: "integer"
+          description: "添加机框时使用的Port。"
+          example: "443"
+        Protocol:
+          type: "string"
+          description: "添加机框时使用的通讯协议。"
+          example: "https"
+        State:
+          $ref: "#/components/schemas/EnclosureState"
+        StateReason:
+          type: "string"
+          description: "机框处于某种状态的原因，例如当机框处于Locked状态时，原因可能是正在下发机框配置。"
+          example: "AutoChange"
+        Health:
+          $ref: "#/components/schemas/Health"          
+        ChassisID:
+          type: "string"
+          description: "机框编号。机框编号为字符串表示的整数，范围是0-999999。"
+          example: "123456"
+        SerialNumber:
+          type: "string"
+          description: "资源的序列号。"
+          example: "210230102810H5000285"
+        PartNumber:
+          type: "string"
+          description: "资源的部件码。"
+          example: "93021MFG"
+        ChassisType:
+          type: "string"
+          description: "机框硬件类型编号。"
+          example: "IT1K20E9000"
+        LCDVersion:
+          type: "string"
+          description: "LCD的版本号。"
+          example: "1.0"
+        UIDState:
+          $ref: "#/components/schemas/UIDState"
+        EnclosureProfileUsageState:
+          $ref: "#/components/schemas/EnclosureProfileUsageState"
+        EnclosureProfileURL:
+          type: "string"
+          description: "机框配置文件的链接。"
+          example: "/redfish/v1/rich/EnclosureProfiles/01234567-1111-1111-1111-0123456789ab"
+        EnclosureHardwareCapabilityURL:
+          type: "string"
+          description: "机框硬件能力的链接。"
+          example: "/redfish/v1/rich/EnclosureHardwareCapabilities/E9000"
+        Slot:
+          $ref: "#/components/schemas/Slot"
+        EnclosureSetting:
+          $ref: "#/components/schemas/EnclosureSetting"
+    GetEnclosureCollectionResponse:
+      type: "object"
+      properties:
+        '@odata.id':
+          type: "string"
+          description: "用于odata的资源唯一标识符。"
+          example: "/redfish/v1/rich/Enclosures"
+        'Members@odata.count':
+          type: "integer"
+          description: "系统中该资源的总数。"
+          example: 100
+        Top:
+          type: "integer"
+          description: "$top 参数的值。"
+          example: 10
+        Skip:
+          type: "integer"
+          description: "$skip 参数的值。"
+          example: 0
+        Members:
+          type: "array"
+          description: "满足查询条件的资源集合。"
+          items:
+            $ref: "#/components/schemas/EnclosureCollectionMember"
+    GetEnclosureProfileResponse:
+      type: "object"
+      description: "该资源描述了用户期望的机框配置。"
+      properties:
+        Id:
+          type: "string"
+          format: "uuid"
+          description: "资源唯一标识符。"
+          example: "1"
+        '@odata.id':
+          type: "string"
+          description: "用于odata的资源唯一标识符。"
+          example: "/redfish/v1/rich/EnclosureProfile/01234567-1111-1111-1111-0123456789ab"
+        Name:
+          type: "string"
+          description: "资源的名字。"
+          example: "My E9000 profile"
+        CreatedAt:
+          type: "string"
+          description: "资源的创建的时间。"
+          example: "2018-06-26 10:09:15.406668 +0800 CST"
+        UpdatedAt:
+          type: "string"
+          description: "资源的更新的时间。"
+          example: "2018-06-26 10:09:15.406668 +0800 CST"
+        AppliedAt:
+          type: "string"
+          description: "机框配置文件最后下发时间。为null则没有下发过。"
+          example: "2018-06-26 10:09:15.406668 +0800 CST"          
+        Description:
+          type: "string"
+          description: "资源的描述。"
+          default: ""
+          example: "My E9000 profile for networking."
+        EnclosureHardwareCapabilityURL:
+          type: "string"
+          description: "机框硬件能力的链接。"
+          example: "/redfish/v1/rich/EnclosureHardwareCapabilities/E9000"
+        State:
+          $ref: "#/components/schemas/EnclosureProfileState"
+        Conflict:
+          type: "boolean"
+          description: "指明机框配置文件内部是否有冲突。"
+          example: false
+        GUIDPoolURL:
+          type: "string"
+          description: "GUID资源池的链接。"
+          example: "/redfish/v1/rich/IDPoolService/GUID/01234567-1111-1111-1111-0123456789ab"
+        WWNPoolURL:
+          type: "string"
+          description: "WWN资源池的链接。"
+          example: "/redfish/v1/rich/IDPoolService/WWN/01234567-1111-1111-1111-0123456789ab"
+        MACPoolURL:
+          type: "string"
+          description: "MAC资源池的链接。"
+          example: "/redfish/v1/rich/IDPoolService/MAC/01234567-1111-1111-1111-0123456789ab"
+        ServerSetting:
+          $ref: "#/components/schemas/ServerSetting"
+        SwitchProfileURL:
+          type: "string"
+          description: "交换配置文件的链接。"
+          example: "/redfish/v1/rich/SwitchProfile/01234567-1111-1111-1111-0123456789ab"
+        EnclosureSetting:
+          $ref: "#/components/schemas/EnclosureProfileEnclosureSetting"
+    GetEnclosureProfileCollectionResponse:
+      type: "object"
+      properties:
+        '@odata.id':
+          type: "string"
+          description: "用于odata的资源唯一标识符。"
+          example: "/redfish/v1/rich/EnclosureProfiles"    
+        'Members@odata.count':
+          type: "integer"
+          description: "系统中该资源的总数。"
+          example: 100
+        Top:
+          type: "integer"
+          description: "$top 参数的值。"
+          example: 10
+        Skip:
+          type: "integer"
+          description: "$skip 参数的值。"
+          example: 0
+        Members:
+          type: "array"
+          description: "满足查询条件的资源集合。"
+          items:
+            $ref: "#/components/schemas/EnclosureProfileCollectionMember"          
+    GetEnclosureHardwareCapabilityResponse:
+      type: "object"
+      description: "该资源描述了机框硬件能力。"
+      properties:
+        Id:
+          type: "string"
+          format: "uuid"
+          description: "资源唯一标识符。"
+          example: "E9000"
+        '@odata.id':
+          type: "string"
+          description: "用于odata的资源唯一标识符。"
+          example: "/redfish/v1/rich/EnclosureHardwareCapabilities/E9000"
+        Name:
+          type: "string"
+          description: "资源的名字。"
+          example: "EnclosureHardwareCapability_E9000"
+        CreatedAt:
+          type: "string"
+          description: "资源的创建的时间。"
+          example: "2018-06-26 10:09:15.406668 +0800 CST"
+        UpdatedAt:
+          type: "string"
+          description: "资源的更新的时间。"
+          example: "2018-06-26 10:09:15.406668 +0800 CST"
+        Type:
+          $ref: "#/components/schemas/EnclosureType"
+        SubType:
+          type: "string"
+          description: "机框类型子型号。"
+          example: "1000"
+        ServerSlotCount:
+          type: "integer"
+          description: "机框中服务器槽位个数。"
+          example: 16
+        SwitchSlotCount:
+          type: "integer"
+          description: "机框中交换槽位个数。"
+          example: 4
+        ManagerSlotCount:
+          type: "integer"
+          description: "机框中管理板的个数。"
+          example: 2
+        FanSlotCount:
+          type: "integer"
+          description: "机框中风扇槽位个数。"
+          example: 14
+        PowerSlotCount:
+          type: "integer"
+          description: "机框中电源槽位个数。"
+          example: 6
+        ServerSlot:
+          type: "array"
+          description: "各个服务器设备槽位的能力。"
+          items:
+            type: "object"
+            properties:
+              Slot:
+                type: "integer"
+                description: "槽位号。"
+                example: 1
+              MaxWidth:
+                type: "integer"
+                description: "允许插入的设备的最大宽度。"
+                example: 2
+              MaxHeight:
+                type: "integer"
+                description: "允许插入的设备的最大高度。"
+                example: 1
+              Sharable:
+                type: "boolean"
+                description: "槽位能否共享。"
+                example: true
+              SupportedModel:
+                type: "array"
+                description: "槽位所支持设备的产品名。"
+                items:
+                  type: "string"
+                  description: "设备的产品名。"
+                  example: "CH121 V5"
+        SwitchSlot:
+          type: "array"
+          description: "各个交换设备槽位的能力。"
+          items:
+            type: "object"
+            properties:
+              Slot:
+                type: "integer"
+                description: "槽位号。"
+                example: 1
+              SupportedModel:
+                type: "array"
+                description: "槽位所支持设备的产品名。"
+                items:
+                  type: "string"
+                  description: "设备的产品名。"
+                  example: "CX710 40GE"                
+    GetEnclosureHardwareCapabilityCollectionResponse:
+      type: "object"
+      properties:
+        '@odata.id':
+          type: "string"
+          description: "用于odata的资源唯一标识符。"
+          example: "/redfish/v1/rich/EnclosureHardwareCapability"    
+        'Members@odata.count':
+          type: "integer"
+          description: "系统中该资源的总数。"
+          example: 100
+        Top:
+          type: "integer"
+          description: "$top 参数的值。"
+          example: 10
+        Skip:
+          type: "integer"
+          description: "$skip 参数的值。"
+          example: 0
+        Members:
+          type: "array"
+          description: "满足查询条件的资源集合。"
+          items:
+            $ref: "#/components/schemas/EnclosureHardwareCapabilityCollectionMember"          
+    AllocateDynamicValueResponse:
+      type: "object"
+      description: "给指定机框的部件申请动态资源的返回体。"
+      properties:
+        Type:
+          $ref: "#/components/schemas/DynamicValueType"
+        Result:
+          type: "array"
+          items:
+            type: "object"
+            maxItems: 255
+            description: "根据请求的不同，GUID、MAC、WWN和VLAN只有一项会出现。"
+            properties:
+              Key: 
+                type: "string"
+                description: "对应于申请的键。"
+                example: "Mezz1-PF1"
+              GUID:
+                type: "string"
+                description: "GUID的值。"
+                example: "123e4567-e89b-12d3-a456-426655440000"
+              MAC:
+                type: "string"
+                description: "MAC的值。"
+                example: "28-6E-D4-88-E2-00"
+              WWN:
+                type: "string"
+                description: "WWN的值。"
+                example: "0x500277a4100c4e00"
+              VLAN:
+                type: "object"
+                description: "VLAN的设置。"
+                properties:
+                  VlanMode:
+                    type: "string"
+                    description: "VLAN模式。"
+                    enum:
+                    - "FILTERING"
+                    - "NORMAL"
+                    - "QINQ"
+                    example: "QINQ"
+                  VlanId:
+                    type: "integer"
+                    description: "VLAN的ID。"
+                    example: 4094
+                  VlanPriority:
+                    type: "integer"
+                    description: "VLAN的优先级。"
+                    example: 7
+                  VlanTrunkRange:
+                    type: "string"
+                    description: "VLAN Trunk的范围。"
+                    example: "3,5,7-20"
+    ParseServerPortsResponse:
+      type: "object"
+      description: "解析指定机框配置文件中的服务器网络适配器的端口信息的返回体。"
+      properties:
+        ServerPorts:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              ServerPortID:
+                type: "string"
+                example: "1-1-0-0"
+              ServerSlotID:
+                type: "string"
+                example: "1"
+              NetCardSlotID:
+                type: "string"
+                example: "1"
+              NetCardPortID:
+                type: "string"
+                example: "0"
+              PfID:
+                type: "string"
+                example: "0"
+              BladeWidth:
+                type: "string"
+                example: "2"
+              BladeHeight:
+                type: "string"
+                example: "1"
+              LogicalServerSlotID:
+                type: "string"
+                example: "1"
+              SwitchSlotID:
+                type: "string"
+                example: "2"
+              SwitchPlane:
+                type: "string"
+                example: "MEZZ"
+              SwitchPortIndex:
+                type: "string"
+                example: "1"
+              SwitchPortID:
+                type: "string"
+                example: ""
+              NetCardName:
+                type: "string"
+                example: "MZ520"
+              UMCEnable:
+                type: "string"
+                example: "NO"
+              PortType:
+                type: "string"
+                example: "ETH"
+              Speed:
+                type: "string"
+                example: "10GE"              
+    EnclosureCollectionMember:
+      type: "object"
+      description: "集合资源中的单个对象。"
+      properties:
+        '@odata.id':
+          type: "string"
+          description: "用于odata的资源唯一标识符。"
+          example: "/redfish/v1/rich/Enclosure/01234567-1111-1111-1111-0123456789ab"
+        Name:
+          type: "string"
+          description: "资源的名字。"
+          example: "My Enclosure"
+        State:
+          $ref: "#/components/schemas/EnclosureState"
+        StateReason:
+          type: "string"
+          example: "AutoChange"
+        Health:
+          $ref: "#/components/schemas/Health"
+        EnclosureProfileUsageState:
+          $ref: "#/components/schemas/EnclosureProfileUsageState"
+        EnclosureProfileURL:
+          type: "string"
+          description: "机框配置文件的链接。"
+          example: "/redfish/v1/rich/EnclosureProfiles/01234567-1111-1111-1111-0123456789ab"   
+    EnclosureProfileCollectionMember:
+      type: "object"
+      properties:
+        '@odata.id':
+          type: "string"
+          description: "用于odata的资源唯一标识符。"
+          example: "/redfish/v1/rich/EnclosureProfile/01234567-1111-1111-1111-0123456789ab"
+        Name:
+          type: "string"
+          description: "资源的名字。"
+          example: "My E9000 profile"
+        State:
+          $ref: "#/components/schemas/EnclosureProfileState" 
+    EnclosureHardwareCapabilityCollectionMember:
+      type: "object"
+      properties:
+        '@odata.id':
+          type: "string"
+          description: "用于odata的资源唯一标识符。"
+          example: "/redfish/v1/rich/EnclosureHardwareCapabilities/E9000"
+        Name:
+          type: "string"
+          description: "资源的名字。"
+          example: "EnclosureHardwareCapability_E9000"
+        Type:
+          $ref: "#/components/schemas/EnclosureType"
+        SubType:
+          type: "string"
+          description: "机框类型子型号。"
+          example: "1000"                                     
+    ServerSetting:
+      type: "array"
+      description: "机框配置文件中服务器的设置。"
+      items:
+        type: "object"
+        maxItems: 16
+        properties:
+          Slot:
+            type: "integer"
+            description: "服务器槽位号。"
+            example: 1
+          ServerProfileURL:
+            type: "string"
+            description: "服务器配置文件的链接。"
+            example: "/redfish/v1/rich/ServerProfile/01234567-1111-1111-1111-0123456789ab"
+    Slot:
+      type: "object"
+      properties:
+        ServerSlot:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ServerSlot"
+        SwitchSlot:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SwitchSlot"
+        ManagerSlot:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ManagerSlot"
+        FanSlot:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FanSlot"
+        PowerSlot:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PowerSlot"
+    ServerSlot:
+      type: "object"
+      description: "服务器槽位信息。"
+      properties:
+        Index:
+          type: "integer"
+          description: "槽位号。"
+          example: 1
+        State:
+          $ref: "#/components/schemas/SlotState"
+        ProductName:
+          type: "string"
+          description: "产品名。"
+          example: "CH121 V5"
+        SerialNumber:
+          type: "string"
+          description: "序列号。"
+          example: "12345678"
+        PhysicalUUID:
+          type: "string"
+          format: "uuid"
+          description: "物理UUID。"
+          example: "1111-2222-3333-4444"
+        Height:
+          type: "integer"
+          description: "高。"
+          example: 1
+        Width:
+          type: "integer"
+          description: "宽。"
+          example: 1
+        ResourceURL:
+          type: "string"
+          description: "设备详细信息的链接。"
+          example: "/redfish/v1/rich/Nodes/01234567-1111-1111-1111-0123456789ab"
+    SwitchSlot:
+      type: "object"
+      description: "交换槽位信息。"
+      properties:
+        Index:
+          type: "integer"
+          description: "槽位号。"
+          example: 1
+        State:
+          $ref: "#/components/schemas/SlotState"
+        ProductName:
+          type: "string"
+          description: "产品名。"
+          example: "CX915"
+        SerialNumber:
+          type: "string"
+          description: "序列号。"
+          example: "12345678"
+        PhysicalUUID:
+          type: "string"
+          format: "uuid"
+          description: "物理UUID。"
+          example: "1111-2222-3333-4444"
+        ResourceURL:
+          type: "string"
+          description: "设备详细信息的链接。"
+          example: "/redfish/v1/rich/Nodes/01234567-1111-1111-1111-0123456789ab"
+    ManagerSlot:
+      type: "object"
+      description: "管理板槽位信息。"
+      properties:
+        Index:
+          type: "integer"
+          description: "槽位号。"
+          example: 1
+        State:
+          $ref: "#/components/schemas/SlotState"
+        Health:
+          $ref: "#/components/schemas/Health"
+        ProductName:
+          type: "string"
+          description: "产品名。"
+          example: "MM920"
+        SerialNumber:
+          type: "string"
+          description: "序列号。"
+          example: "12345678"
+        PhysicalUUID:
+          type: "string"
+          description: "物理UUID。"
+          example: "1111-2222-3333-4444"
+        FirmwareVersion:
+          type: "string"
+          description: "固件版本。"
+          example: "2.96"
+        CPLDVersion:
+          type: "string"
+          description: "CPLD版本。"
+          example: "1.0"
+        StaticIPv4Address:
+          $ref: "#/components/schemas/IPv4Address"
+        FloatIPv4Address:
+          $ref: "#/components/schemas/IPv4Address"
+        ApplianceIPv4Address:
+          $ref: "#/components/schemas/IPv4Address"
+        ApplianceFirmwareVersion:
+          type: "string"
+          description: "Appliance的BMC固件版本。"
+        ApplianceBIOSVersion:
+          type: "string"
+          description: "Appliance的BIOS固件版本。"
+    FanSlot:
+      type: "object"
+      description: "风扇槽位信息。"
+      properties:
+        Index:
+          type: "integer"
+          description: "槽位号。"
+          example: 1
+        State:
+          $ref: "#/components/schemas/SlotState"
+        Health:
+          $ref: "#/components/schemas/Health"           
+        PcbVersion:
+          type: "string"
+          description: "PCB版本号。"
+          example: "A"
+        SoftwareVersion:
+          type: "string"
+          description: "软件版本号。"
+          example: "206"
+    PowerSlot:
+      type: "object"
+      description: "电源槽位信息。"
+      properties:
+        Index:
+          type: "integer"
+          description: "槽位号。"
+          example: 1
+        State:
+          $ref: "#/components/schemas/SlotState"
+        Health:
+          $ref: "#/components/schemas/Health"        
+        PowerSupplyType:
+          type: "string"
+          description: "电源类型。"
+          example: "ACoDC"
+        SerialNumber:
+          type: "string"
+          description: "序列号。"
+          example: "1234"        
+        FirmwareVersion:
+          type: "string"
+          description: "固件版本。"
+          example: "105"
+        HardwareVersion:
+          type: "string"
+          description: "硬件版本。"
+          example: "A"
+        SleepStatus:
+          type: "string"
+          description: "休眠状态。"
+          example: "Enabled"
+    EnclosureComponent:
+      type: "string"
+      description: "机框上的部件。\nEM 两个管理板的整体。 \nEM1 第一个管理板。\nEM2 第二个管理板。\nAppliance1 第一个一体机。\nAppliance2 第二个一体机。"
+      enum:
+        - "EM"
+        - "EM1"
+        - "EM2"
+        - "Appliance1"
+        - "Appliance2"
+      example: "EM1"
+    SlotState:
+      type: "string"
+      description: "槽位的状态。\nEnabled 槽位上有设备。\nAbsent 槽位上没设备。\nStandbySpare 设备处于备用状态。"
+      enum:
+      - "Enabled"
+      - "Absent"
+      - "StandbySpare"
+      example: "Enabled"
+    EnclosureProfileEnclosureSetting:
+      type: "object"
+      description: "机框配置文件中的机框设置。相对于机框的机框配置来说会少一些属性。"
+      properties:
+        PSUSetting:
+          $ref: "#/components/schemas/EnclosureProfilePSUSetting"
+        PowerCapping:
+          $ref: "#/components/schemas/EnclosureProfilePowerCapping"
+        FanSetting:
+          $ref: "#/components/schemas/EnclosureProfileFanSetting"
+    EnclosureSetting:
+      type: "object"
+      description: "机框设置。这些设置主要包括了设备IP分配设置，电源、功率、散热设置。"
+      properties:
+        ManagementNetworkSetting:
+          $ref: "#/components/schemas/ManagementNetworkSetting"
+        PSUSetting:
+          $ref: "#/components/schemas/PSUSetting"
+        PowerCapping:
+          $ref: "#/components/schemas/PowerCapping"
+        FanSetting:
+          $ref: "#/components/schemas/FanSetting"          
+    ManagementNetworkSetting:
+      type: "object"
+      description: "机框管理网络的设置。"
+      properties:
+        Mode:
+          type: "string"
+          description: "机框管理网络的模式。\nManual 用户自己维护各个设备的管理网络。\nDHCP 系统将打开设备的DHCP服务，由对应的DHCP服务来设置管理网络。\nPool 使用系统的IP资源池来为设备分配管理网络。"
+          enum:
+          - "Manual"
+          - "DHCP"
+          - "Pool"
+          example: "Pool"
+        BMCIPPoolURL:
+          type: "string"
+          description: "BMC系统的IP资源池链接。仅当Mode为Pool该属性有意义。"
+          example: "/redfish/v1/rich/IDPoolService/IPv4/01234567-1111-1111-1111-0123456789ab"
+        ServiceIPPoolURL:
+          type: "string"
+          description: "带内系统(主要是交换设备的带内系统）的IP资源池链接。仅当Mode为Pool时该属性有意义。"
+          example: "/redfish/v1/rich/IDPoolService/IPv4/01234567-2222-2222-2222-0123456789ab"
+    EnclosureProfileSettingEnable:
+      type: "boolean"
+      description: "是否下发该配置。用户可以添加该属性使得配置不下发，但得以保留在机框配置里。"
+      example: true
+      default: false
+    PSUSetting:
+      type: "object"
+      description: "电源设备的设置。"
+      properties:
+        Mode:
+          type: "string"
+          description: "电源设备的工作模式。"
+          enum:
+          - "N+1"
+          - "N+N"
+          example: "N+N"
+        EnableSleep:
+          type: "boolean"
+          description: "电源设备是否使能睡眠模式。true使能。"
+          example: true
+    EnclosureProfilePSUSetting:
+      type: "object"
+      description: "电源设备的设置。"
+      properties:
+        "@enable":
+          $ref: "#/components/schemas/EnclosureProfileSettingEnable"
+        Mode:
+          type: "string"
+          description: "电源设备的工作模式。"
+          enum:
+          - "N+1"
+          - "N+N"
+          example: "N+N"
+        EnableSleep:
+          type: "boolean"
+          description: "电源设备是否使能睡眠模式。true使能。"
+          example: true           
+    PowerCapping:
+      type: "object"
+      description: "功率封顶设置。"
+      required:
+        - Enable
+      properties:
+        Enable: 
+          type: "boolean"
+          description: "功率封顶使能。true使能。"
+          example: true
+        LimitInWatts:
+          type: "integer"
+          description: "功率封顶的瓦数。"
+          example: 5000
+        PowerLimitMode:
+          type: "string"
+          description: "功率封顶的模式。\nEqual 所有设备均匀分配功率。\nManual 手动每个设备的功率封顶值。\nProportion 按当前比例设置每个设备的功率封顶值。"
+          enum:
+          - "Equal"
+          - "Manual"
+          - "Proportion"
+          example: "Equal"
+        PowerLimitThreshold:
+          type: "integer"
+          description: "功率封顶启用阀值，范围0-70，当功率大于等于该值乘以LimitInWatts时，功率封顶开始起效。"
+          example: 50
+        ServerPowerLimit:
+          type: "array"
+          description: "每个槽位的功率封顶值，仅当PowerLimitMode为Manual时有效。"
+          items:
+            properties:
+              Slot:
+                type: "integer"
+                description: "槽位号。"
+                example: 1
+              Value:
+                type: "integer"
+                description: "功率封顶值。设置0表示该槽位的功率封顶值使用均分算法自动分配。"
+                example: 1000
+    EnclosureProfilePowerCapping:
+      type: "object"
+      description: "功率封顶设置。"
+      required:
+        - Enable
+      properties:
+        "@enable":
+          $ref: "#/components/schemas/EnclosureProfileSettingEnable"      
+        Enable: 
+          type: "boolean"
+          description: "功率封顶使能。true使能。"
+          example: true
+        LimitInWatts:
+          type: "integer"
+          description: "功率封顶的瓦数。"
+          example: 5000
+        PowerLimitMode:
+          type: "string"
+          description: "功率封顶的模式。\nEqual 所有设备均匀分配功率。\nManual 手动每个设备的功率封顶值。\nProportion 按当前比例设置每个设备的功率封顶值。"
+          enum:
+          - "Equal"
+          - "Manual"
+          - "Proportion"
+          example: "Equal"
+        PowerLimitThreshold:
+          type: "integer"
+          description: "功率封顶启用阀值，范围0-70，当功率大于等于该值乘以LimitInWatts时，功率封顶开始起效。"
+          example: 50
+        ServerPowerLimit:
+          type: "array"
+          description: "每个槽位的功率封顶值，仅当PowerLimitMode为Manual时有效。"
+          items:
+            properties:
+              Slot:
+                type: "integer"
+                description: "槽位号。"
+                example: 1
+              Value:
+                type: "integer"
+                description: "功率封顶值。设置0表示该槽位的功率封顶值使用均分算法自动分配。"
+                example: 1000                
+    FanSetting:
+      type: "object"
+      description: "风扇散热设置。"
+      properties:
+        FanSmartCoolingMode:
+          type: "string"
+          description: "智能风扇散热模式。\nHighPerformance 高性能。\nEnergeSaving 节能。\nLowNoise 低噪音。"
+          enum:
+          - "HighPerformance"
+          - "EnergySaving"
+          - "LowNoise"
+          example: "LowNoise"
+    EnclosureProfileFanSetting:
+      type: "object"
+      description: "风扇散热设置。"
+      properties:
+        "@enable":
+          $ref: "#/components/schemas/EnclosureProfileSettingEnable"      
+        FanSmartCoolingMode:
+          type: "string"
+          description: "智能风扇散热模式。\nHighPerformance 高性能。\nEnergeSaving 节能。\nLowNoise 低噪音。"
+          enum:
+          - "HighPerformance"
+          - "EnergySaving"
+          - "LowNoise"
+          example: "LowNoise"          
+    IPv4Address:
+      type: "object"
+      description: "IPv4 地址信息。"
+      properties:
+        Address:
+          type: "string"
+          description: "IPv4地址。"
+          example: "192.168.10.10"
+        SubnetMask:
+          type: "string"
+          description: "子网掩码。"
+          example: "255.255.255.0"
+        Gateway:
+          type: "string"
+          description: "网关。"
+          example: "192.168.10.1"
+        AddressOrigin:
+          type: "string"
+          description: "地址源"
+          example: "Static"
+    EnclosureState:
+      type: "string"
+      description: "机框的状态。\nAdded 机框已经被添加，但还没准备就绪。\nReady 机框已经准备就绪，可以进行操作。\nLocked机框因执行任务被锁定。\nUnmanaged 机框处于未被管理的状态。"
+      enum:
+      - "Added"
+      - "Ready"
+      - "Locked"
+      - "Unmanaged"
+      example: "Ready"       
+    Health:
+      type: "string"
+      description: "健康状态。\nOK 健康。\nWarning 有轻微健康问题。\nCritical 有严重健康问题。"
+      enum:
+      - "OK"
+      - "Warning"
+      - "Critical"
+      example: "OK"
+    EnclosureProfileUsageState:
+      type: "string"
+      description: "机框配置文件的使用状态。\nEmpty 没有关联机框配置文件。\nConsistent 机框上的实际配置与机框配置文件一致。\nInconsistent 机框上的实际配置与机框配置文件不一致。"
+      enum:
+      - "Empty"
+      - "Consistent"
+      - "Inconsistent"
+      example: "Consistent"   
+    EnclosureProfileState:
+      description: "机框配置文件的状态。\nUnassigned 未关联机框。\nBinded 已经关联机框。\nApplying 正在下发。"
+      type: "string"
+      enum:
+      - "Unassigned"
+      - "Binded"
+      - "Applying"    
+    UIDState:
+      type: "string"
+      description: "机框UID灯的状态。\nLit 灯亮。\nOff 灯灭。"
+      enum:
+      - "Lit"
+      - "Off"
+      example: "Off"
+    EnclosureType:
+      type: "string"
+      description: "机框的类型。\nE9000 E9000机框。\nX6000 X6000系列机框。\nKunlun Kunlun系列机框。"
+      enum:
+      - "E9000"
+      - "X6000"
+      - "Kunlun"
+      example: "E9000"
+    DynamicValueType:
+      type: "string"
+      description: "动态资源的类型。\nGUID GUID资源。\nMAC MAC资源。\nWWN WWN资源。\nVLAN VLAN设置。"
+      enum:
+      - "GUID"
+      - "MAC"
+      - "WWN"
+      - "VLAN"
+      example: "MAC"
+    MessageExtendedInfo:
+      type: "object"
+      description: "额外的消息描述。"
+      required:
+        - "MessageId"
+      properties:
+        MessageId:
+          type: "string"
+          description: "已经注册了的消息ID。"
+          example: "Base.1.0.ResourceMissingAtURI"
+        Message:
+          type: "string"
+          description: "可读的错误描述。"
+          example: "Resource not exist."
+        RelatedProperties:
+          type: "array"
+          description: "与该消息有关的属性。"
+          items:
+            type: "string"
+          example: ["Name", "Description"]
+        MessageArgs:
+          type: "array"
+          description: "错误描述中所涉及的参数，只有当错误描述中涉及到参数时才需要提供该信息。"
+          items:
+            type: "string"
+          example: ["MyName", "MyDescription"]
+        Severity:
+          type: "string"
+          description: "严重性。\nOK 正常。\nWarning 轻微。\nCritical 严重。"
+          enum:
+            - "OK"
+            - "Warning"
+            - "Critical"
+          example: "Critical"
+        Resolution:
+          type: "string"
+          description: "解决方法的描述。"
+          example: "Try again."
+    ErrorResponse:
+      type: "object"
+      description: "错误返回体."
+      required:
+        - "code"
+      properties:
+        error:
+          type: "object"
+          required:
+            - "code"
+            - "message"
+          properties:
+            code:
+              type: "string"
+              description: "错误唯一标示符。"
+              example: "Base.1.0.GeneralError"
+            message:
+              type: "string"
+              description: "可读的错误描述。"
+              example: "A general error has occurred. See ExtendedInfo for more information."
+
+            "@Message.ExtendedInfo":
+              type: "array"
+              description: "关于错误的额外信息。"
+              items:
+                $ref: "#/components/schemas/MessageExtendedInfo"          
