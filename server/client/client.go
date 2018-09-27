@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// ServerClientInterface is the server client interface.
+// ServerClientInterface is the client interface for server device.
 type ServerClientInterface interface {
 	Support() bool
 	GetProtocol() string
