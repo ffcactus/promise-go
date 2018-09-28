@@ -9,10 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.promise.integrationtest.base.MessageEnum;
+import com.promise.integrationtest.base.ErrorResponseEnum;
 import com.promise.integrationtest.dto.DeleteResourceResponse;
 import com.promise.integrationtest.dto.MemberResponse;
-import com.promise.integrationtest.dto.Message;
+import com.promise.integrationtest.dto.ErrorResponse;
 import com.promise.integrationtest.dto.ResourceCollectionResponse;
 import com.promise.integrationtest.dto.ResourceResponse;
 
@@ -68,20 +68,20 @@ public class PromiseAssertUtil
      * Assert the POST action should fail.
      * 
      * @param url The URL to post.
-     * @param expectedMessageID The expected message's ID.
+     * @param expectedErrorResponseID The expected message's ID.
      * @param request The request DTO.
      */
-    public static <R> void assertActionMessage(String url, HttpStatus expectedStatus, String expectedMessageID, R request)
+    public static <R> void assertActionErrorResponse(String url, HttpStatus expectedStatus, String expectedErrorResponseID, R request)
     {
-        final ResponseEntity<List<Message>> response = RestClient.post(
+        final ResponseEntity<List<ErrorResponse>> response = RestClient.post(
                 url,
                 request,
-                new TypeReference<List<Message>>()
+                new TypeReference<List<ErrorResponse>>()
                 {
                 });
         Assert.assertEquals(expectedStatus, response.getStatusCode());
-        final List<Message> message = response.getBody();
-        Assert.assertEquals(expectedMessageID, message.get(0).getId());
+        final List<ErrorResponse> message = response.getBody();
+        Assert.assertEquals(expectedErrorResponseID, message.get(0).getId());
     }
 
     /**
@@ -108,20 +108,20 @@ public class PromiseAssertUtil
      * Assert the POST should fail.
      * 
      * @param url The URL to post.
-     * @param expectedMessageID The expected message's ID.
+     * @param expectedErrorResponseID The expected message's ID.
      * @param request The request DTO.
      */
-    public static <R> void assertPostMessage(String url, HttpStatus expectedStatus, String expectedMessageID, R request)
+    public static <R> void assertPostErrorResponse(String url, HttpStatus expectedStatus, String expectedErrorResponseID, R request)
     {
-        final ResponseEntity<List<Message>> response = RestClient.post(
+        final ResponseEntity<List<ErrorResponse>> response = RestClient.post(
                 url,
                 request,
-                new TypeReference<List<Message>>()
+                new TypeReference<List<ErrorResponse>>()
                 {
                 });
         Assert.assertEquals(expectedStatus, response.getStatusCode());
-        final List<Message> message = response.getBody();
-        Assert.assertEquals(expectedMessageID, message.get(0).getId());
+        final List<ErrorResponse> message = response.getBody();
+        Assert.assertEquals(expectedErrorResponseID, message.get(0).getId());
     }
 
     /**
@@ -147,18 +147,18 @@ public class PromiseAssertUtil
      * match.
      * 
      * @param url The URL to GET.
-     * @param expectedMessageID The expected message ID.
+     * @param expectedErrorResponseID The expected message ID.
      */
-    public static void assertGetMessage(String url, HttpStatus expectedStatus, String expectedMessageID)
+    public static void assertGetErrorResponse(String url, HttpStatus expectedStatus, String expectedErrorResponseID)
     {
-        final ResponseEntity<List<Message>> response = RestClient.get(
+        final ResponseEntity<List<ErrorResponse>> response = RestClient.get(
                 url,
-                new TypeReference<List<Message>>()
+                new TypeReference<List<ErrorResponse>>()
                 {
                 });
         Assert.assertEquals(expectedStatus, response.getStatusCode());
-        final List<Message> message = response.getBody();
-        Assert.assertEquals(expectedMessageID, message.get(0).getId());
+        final List<ErrorResponse> message = response.getBody();
+        Assert.assertEquals(expectedErrorResponseID, message.get(0).getId());
     }
 
     /**
@@ -171,14 +171,14 @@ public class PromiseAssertUtil
         final ResponseEntity<DeleteResourceResponse> response1 = RestClient.delete(url, DeleteResourceResponse.class);
         Assert.assertEquals(HttpStatus.ACCEPTED, response1.getStatusCode());
 
-        final ResponseEntity<List<Message>> response2 = RestClient.get(
+        final ResponseEntity<List<ErrorResponse>> response2 = RestClient.get(
                 url,
-                new TypeReference<List<Message>>()
+                new TypeReference<List<ErrorResponse>>()
                 {
                 });
         Assert.assertEquals(HttpStatus.NOT_FOUND, response2.getStatusCode());
-        final List<Message> message = response2.getBody();
-        Assert.assertEquals(MessageEnum.NotExist.getId(), message.get(0).getId());
+        final List<ErrorResponse> message = response2.getBody();
+        Assert.assertEquals(ErrorResponseEnum.NotExist.getId(), message.get(0).getId());
     }
 
     /**
@@ -187,15 +187,15 @@ public class PromiseAssertUtil
      * 
      * @param url The URL to DELETE.
      */
-    public static void assertDeleteMessage(String url, HttpStatus expectedStatus, String expectedMessageID)
+    public static void assertDeleteErrorResponse(String url, HttpStatus expectedStatus, String expectedErrorResponseID)
     {
-        final ResponseEntity<List<Message>> response = RestClient.delete(url, new TypeReference<List<Message>>()
+        final ResponseEntity<List<ErrorResponse>> response = RestClient.delete(url, new TypeReference<List<ErrorResponse>>()
         {
         });
 
         Assert.assertEquals(expectedStatus, response.getStatusCode());
-        final List<Message> message = response.getBody();
-        Assert.assertEquals(expectedMessageID, message.get(0).getId());
+        final List<ErrorResponse> message = response.getBody();
+        Assert.assertEquals(expectedErrorResponseID, message.get(0).getId());
     }
 
     /**
@@ -298,7 +298,7 @@ public class PromiseAssertUtil
     {
         String filter1 = URLEncoder.encode(name + " eq '" + value + "'", "UTF-8");
         PromiseAssertUtil
-                .assertGetMessage(url + "?filter=" + filter1, HttpStatus.BAD_REQUEST, MessageEnum.UnknownFilterName.getId());
+                .assertGetErrorResponse(url + "?filter=" + filter1, HttpStatus.BAD_REQUEST, ErrorResponseEnum.UnknownFilterName.getId());
     }
 
     public static void assertSameElements(List<?> firstList, List<?> secondList)

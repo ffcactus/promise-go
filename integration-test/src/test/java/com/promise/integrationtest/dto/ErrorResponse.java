@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Message
+public class ErrorResponse
 {
     @JsonProperty(value = "ID", required = true)
     private String id;
@@ -89,9 +89,9 @@ public class Message
             return false;
         if (obj == this)
             return true;
-        if (!(obj instanceof Message))
+        if (!(obj instanceof ErrorResponse))
             return false;
-        Message other = (Message) obj;
+        ErrorResponse other = (ErrorResponse) obj;
         if (!other.id.equals(this.id))
             return false;
         if (!other.severity.equals(this.severity))

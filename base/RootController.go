@@ -29,29 +29,29 @@ func (c *RootController) Post() {
 	var (
 		request  = c.TemplateImpl.Request()
 		response = c.TemplateImpl.Response()
-		messages []Message
+		errorResps []ErrorResponse
 	)
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
-		messages = append(messages, *NewMessageInvalidRequest())
+		errorResps = append(errorResps, *NewErrorResponseInvalidRequest())
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),
 			"error":    err,
-			"message":  messages[0].ID,
+			"errorResp":  errorResps[0].ID,
 		}).Warn("RootController post resource failed, bad request.")
-		c.Data["json"] = &messages
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.Data["json"] = &errorResps
+		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
 		c.ServeJSON()
 		return
 	}
 
-	if message := request.IsValid(); message != nil {
-		messages = append(messages, *message)
+	if errorResp := request.IsValid(); errorResp != nil {
+		errorResps = append(errorResps, *errorResp)
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),
-			"message":  messages[0].ID,
+			"errorResp":  errorResps[0].ID,
 		}).Warn("RootController post resource failed, request validation failed.")
-		c.Data["json"] = &messages
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.Data["json"] = &errorResps
+		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
 		c.ServeJSON()
 		return
 	}
@@ -59,13 +59,13 @@ func (c *RootController) Post() {
 		"resource": c.TemplateImpl.ResourceName(),
 		"request":  request,
 	}).Debug("RootController post resource.")
-	model, messages := c.TemplateImpl.Service().Create(request)
-	if messages != nil {
+	model, errorResps := c.TemplateImpl.Service().Create(request)
+	if errorResps != nil {
 		log.WithFields(log.Fields{
-			"message": messages[0].ID,
-		}).Warn("RootController post resource failed, POST callback return message.")
-		c.Data["json"] = messages
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+			"errorResp": errorResps[0].ID,
+		}).Warn("RootController post resource failed, POST callback return errorResp.")
+		c.Data["json"] = errorResps
+		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
 		c.ServeJSON()
 		return
 	}
@@ -115,37 +115,37 @@ func (c *RootController) Get() {
 	}
 
 	if parameterError {
-		messages := []Message{*NewMessageInvalidRequest()}
+		errorResps := []ErrorResponse{*NewErrorResponseInvalidRequest()}
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),
-			"message":  messages[0].ID,
+			"errorResp":  errorResps[0].ID,
 		}).Warn("RootController get resource collection failed, parameter error.")
-		c.Data["json"] = &messages
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.Data["json"] = &errorResps
+		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
 		c.ServeJSON()
 		return
 	}
-	collection, messages := c.TemplateImpl.Service().GetCollection(startInt, countInt, filter)
-	if messages != nil {
+	collection, errorResps := c.TemplateImpl.Service().GetCollection(startInt, countInt, filter)
+	if errorResps != nil {
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),
-			"message":  messages[0].ID,
+			"errorResp":  errorResps[0].ID,
 		}).Warn("RootController get resource collection failed.")
-		c.Data["json"] = &messages
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.Data["json"] = &errorResps
+		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
 		c.ServeJSON()
 		return
 	}
 	response, err := c.TemplateImpl.ConvertCollectionModel(collection)
 	if err != nil {
-		messages := []Message{*NewMessageTransactionError()}
+		errorResps := []ErrorResponse{*NewErrorResponseTransactionError()}
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),
-			"message":  messages[0].ID,
+			"errorResp":  errorResps[0].ID,
 			"error":    err,
 		}).Warn("RootController convert resource collection response failed.")
-		c.Data["json"] = &messages
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.Data["json"] = &errorResps
+		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
 		c.ServeJSON()
 		return
 	}
@@ -162,10 +162,10 @@ func (c *RootController) Get() {
 
 // Delete is the default DELETE method on root controller.
 func (c *RootController) Delete() {
-	messages := c.TemplateImpl.Service().DeleteCollection()
-	if messages != nil {
-		c.Data["json"] = &messages
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+	errorResps := c.TemplateImpl.Service().DeleteCollection()
+	if errorResps != nil {
+		c.Data["json"] = &errorResps
+		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
 		c.ServeJSON()
 		return
 	}

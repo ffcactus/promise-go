@@ -13,15 +13,15 @@ type Base struct {
 }
 
 // LockServer Lock the server.
-func (s *Base) LockServer(c *context.Base, server *model.Server) *base.Message {
+func (s *Base) LockServer(c *context.Base, server *model.Server) *base.ErrorResponse {
 	success, lockedServer := c.DB.GetAndLockServer(server.ID)
 	if lockedServer == nil {
 		log.WithFields(log.Fields{"id": server.ID}).Info("Can not get and lock server, server not exist.")
-		return base.NewMessageNotExist()
+		return base.NewErrorResponseNotExist()
 	}
 	if !success {
 		log.WithFields(log.Fields{"id": server.ID, "state": server.State}).Info("Can not get and lock server.")
-		return base.NewMessageErrorState()
+		return base.NewErrorResponseErrorState()
 	}
 	s.DispatchServerUpdate(c, server)
 	return nil

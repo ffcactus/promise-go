@@ -6,37 +6,37 @@ import (
 )
 
 const (
-	// SeverityNormal is the message severity level.
+	// SeverityNormal is the errorResp severity level.
 	SeverityNormal = "Normal"
-	// SeverityWarning is the message severity level.
+	// SeverityWarning is the errorResp severity level.
 	SeverityWarning = "Warning"
-	// SeverityCritical is the message severity level.
+	// SeverityCritical is the errorResp severity level.
 	SeverityCritical = "Critical"
 )
 
 const (
-	// MessageInternalError is message ID.
-	MessageInternalError = "Promise.Message.InternalError"
-	// MessageNotExist is message ID.
-	MessageNotExist = "Promise.Message.NotExist"
-	// MessageMethodNotAllowed is message ID.
-	MessageMethodNotAllowed = "Promise.Message.MethodNotAllowed"
-	// MessageDuplicate is message ID.
-	MessageDuplicate = "Promise.Message.Duplicate"
-	// MessageInvalidRequest is message ID.
-	MessageInvalidRequest = "Promise.Message.InvalidRequest"
-	// MessageUnknownPropertyValue is message ID.
-	MessageUnknownPropertyValue = "Promise.Message.UnknownPropertyValue"
-	// MessageTimeout is message ID.
-	MessageTimeout = "Promise.Message.Timeout"
-	// MessageTransactionError is message ID.
-	MessageTransactionError = "Promise.Message.TransactionError"
-	// MessageUnknownFilterName is message ID.
-	MessageUnknownFilterName = "Promise.Message.UnknownFilterName"
-	// MessageBusy is message ID.
-	MessageBusy = "Promise.Message.Busy"
-	// MessageErrorState is message ID.
-	MessageErrorState = "Promise.Message.ErrorState"
+	// ErrorResponseInternalError is errorResp ID.
+	ErrorResponseInternalError = "Promise.ErrorResponse.InternalError"
+	// ErrorResponseNotExist is errorResp ID.
+	ErrorResponseNotExist = "Promise.ErrorResponse.NotExist"
+	// ErrorResponseMethodNotAllowed is errorResp ID.
+	ErrorResponseMethodNotAllowed = "Promise.ErrorResponse.MethodNotAllowed"
+	// ErrorResponseDuplicate is errorResp ID.
+	ErrorResponseDuplicate = "Promise.ErrorResponse.Duplicate"
+	// ErrorResponseInvalidRequest is errorResp ID.
+	ErrorResponseInvalidRequest = "Promise.ErrorResponse.InvalidRequest"
+	// ErrorResponseUnknownPropertyValue is errorResp ID.
+	ErrorResponseUnknownPropertyValue = "Promise.ErrorResponse.UnknownPropertyValue"
+	// ErrorResponseTimeout is errorResp ID.
+	ErrorResponseTimeout = "Promise.ErrorResponse.Timeout"
+	// ErrorResponseTransactionError is errorResp ID.
+	ErrorResponseTransactionError = "Promise.ErrorResponse.TransactionError"
+	// ErrorResponseUnknownFilterName is errorResp ID.
+	ErrorResponseUnknownFilterName = "Promise.ErrorResponse.UnknownFilterName"
+	// ErrorResponseBusy is errorResp ID.
+	ErrorResponseBusy = "Promise.ErrorResponse.Busy"
+	// ErrorResponseErrorState is errorResp ID.
+	ErrorResponseErrorState = "Promise.ErrorResponse.ErrorState"
 )
 
 const (
@@ -79,10 +79,10 @@ type Support struct {
 	SolutionArguments []Argument `json:"SolutionArguments"`
 }
 
-// Message is the message used in Promise project.
-type Message struct {
+// ErrorResponse is the errorResp used in Promise project.
+type ErrorResponse struct {
 	ID          string     `json:"ID"` // The unique ID within a micro service.
-	StatusCode  int        `json:"-"`  // The HTTP status code along with this message.
+	StatusCode  int        `json:"-"`  // The HTTP status code along with this errorResp.
 	Severity    string     `json:"Severity"`
 	CreatedAt   time.Time  `json:"CreatedAt"`
 	Description string     `json:"Description"`
@@ -90,19 +90,19 @@ type Message struct {
 	Supports    []Support  `json:"Supports"`
 }
 
-// NewMessage create a message with default value.
-func NewMessage() *Message {
-	ret := Message{
+// NewErrorResponse create a errorResp with default value.
+func NewErrorResponse() *ErrorResponse {
+	ret := ErrorResponse{
 		CreatedAt:  time.Now(),
 		StatusCode: http.StatusBadRequest,
 	}
 	return &ret
 }
 
-// NewMessageNotExist returns a message that means the resource does not exist.
-func NewMessageNotExist() *Message {
-	ret := NewMessage()
-	ret.ID = MessageNotExist
+// NewErrorResponseNotExist returns a errorResp that means the resource does not exist.
+func NewErrorResponseNotExist() *ErrorResponse {
+	ret := NewErrorResponse()
+	ret.ID = ErrorResponseNotExist
 	ret.Severity = SeverityNormal
 	ret.Description = "Resource does not exist."
 	ret.StatusCode = http.StatusNotFound
@@ -112,10 +112,10 @@ func NewMessageNotExist() *Message {
 	return ret
 }
 
-// NewMessageMethodNotAllowed returns a message that means the method is not allowed.
-func NewMessageMethodNotAllowed() *Message {
-	ret := NewMessage()
-	ret.ID = MessageMethodNotAllowed
+// NewErrorResponseMethodNotAllowed returns a errorResp that means the method is not allowed.
+func NewErrorResponseMethodNotAllowed() *ErrorResponse {
+	ret := NewErrorResponse()
+	ret.ID = ErrorResponseMethodNotAllowed
 	ret.Severity = SeverityNormal
 	ret.Description = "Method not allowed."
 	ret.StatusCode = http.StatusMethodNotAllowed
@@ -123,10 +123,10 @@ func NewMessageMethodNotAllowed() *Message {
 	return ret
 }
 
-// NewMessageDuplicate returns a message that means resource duplication happened.
-func NewMessageDuplicate() *Message {
-	ret := NewMessage()
-	ret.ID = MessageDuplicate
+// NewErrorResponseDuplicate returns a errorResp that means resource duplication happened.
+func NewErrorResponseDuplicate() *ErrorResponse {
+	ret := NewErrorResponse()
+	ret.ID = ErrorResponseDuplicate
 	ret.Severity = SeverityNormal
 	ret.Description = "Resource duplicated."
 	ret.Supports = []Support{
@@ -135,10 +135,10 @@ func NewMessageDuplicate() *Message {
 	return ret
 }
 
-// NewMessageInvalidRequest returns a message that means the request is Invalid.
-func NewMessageInvalidRequest() *Message {
-	ret := NewMessage()
-	ret.ID = MessageInvalidRequest
+// NewErrorResponseInvalidRequest returns a errorResp that means the request is Invalid.
+func NewErrorResponseInvalidRequest() *ErrorResponse {
+	ret := NewErrorResponse()
+	ret.ID = ErrorResponseInvalidRequest
 	ret.Severity = SeverityNormal
 	ret.Description = "The request is invalid."
 	ret.Supports = []Support{
@@ -147,20 +147,20 @@ func NewMessageInvalidRequest() *Message {
 	return ret
 }
 
-// NewMessageUnknownPropertyValue returns a message that means the property in the request have unknown value.
-func NewMessageUnknownPropertyValue() *Message {
-	ret := NewMessage()
-	ret.ID = MessageUnknownPropertyValue
+// NewErrorResponseUnknownPropertyValue returns a errorResp that means the property in the request have unknown value.
+func NewErrorResponseUnknownPropertyValue() *ErrorResponse {
+	ret := NewErrorResponse()
+	ret.ID = ErrorResponseUnknownPropertyValue
 	ret.Severity = SeverityNormal
 	ret.Description = "Unknown property value."
 	ret.Supports = []Support{}
 	return ret
 }
 
-// NewMessageInternalError returns a message that means there is a internal error happened.
-func NewMessageInternalError() *Message {
-	ret := NewMessage()
-	ret.ID = MessageInternalError
+// NewErrorResponseInternalError returns a errorResp that means there is a internal error happened.
+func NewErrorResponseInternalError() *ErrorResponse {
+	ret := NewErrorResponse()
+	ret.ID = ErrorResponseInternalError
 	ret.Severity = SeverityNormal
 	ret.Description = "Internal error happened while process the request."
 	ret.Supports = []Support{
@@ -169,10 +169,10 @@ func NewMessageInternalError() *Message {
 	return ret
 }
 
-// NewMessageTimeout returns a message that means there is a timeout happend.
-func NewMessageTimeout() *Message {
-	ret := NewMessage()
-	ret.ID = MessageTimeout
+// NewErrorResponseTimeout returns a errorResp that means there is a timeout happend.
+func NewErrorResponseTimeout() *ErrorResponse {
+	ret := NewErrorResponse()
+	ret.ID = ErrorResponseTimeout
 	ret.Severity = SeverityNormal
 	ret.Description = "I/O operation timeout."
 	ret.Supports = []Support{
@@ -181,10 +181,10 @@ func NewMessageTimeout() *Message {
 	return ret
 }
 
-// NewMessageTransactionError returns a message that means transaction error.
-func NewMessageTransactionError() *Message {
-	ret := NewMessage()
-	ret.ID = MessageTransactionError
+// NewErrorResponseTransactionError returns a errorResp that means transaction error.
+func NewErrorResponseTransactionError() *ErrorResponse {
+	ret := NewErrorResponse()
+	ret.ID = ErrorResponseTransactionError
 	ret.Severity = SeverityNormal
 	ret.Description = "Transaction error."
 	ret.Supports = []Support{
@@ -193,20 +193,20 @@ func NewMessageTransactionError() *Message {
 	return ret
 }
 
-// NewMessageUnknownFilterName returns a new message.
-func NewMessageUnknownFilterName() *Message {
-	ret := NewMessage()
-	ret.ID = MessageUnknownFilterName
+// NewErrorResponseUnknownFilterName returns a new errorResp.
+func NewErrorResponseUnknownFilterName() *ErrorResponse {
+	ret := NewErrorResponse()
+	ret.ID = ErrorResponseUnknownFilterName
 	ret.Severity = SeverityNormal
 	ret.Description = "Unknown filter name."
 	ret.Supports = []Support{}
 	return ret
 }
 
-// NewMessageBusy returns a new message.
-func NewMessageBusy() *Message {
-	ret := NewMessage()
-	ret.ID = MessageBusy
+// NewErrorResponseBusy returns a new errorResp.
+func NewErrorResponseBusy() *ErrorResponse {
+	ret := NewErrorResponse()
+	ret.ID = ErrorResponseBusy
 	ret.Severity = SeverityNormal
 	ret.Description = "The system is busy."
 	ret.Supports = []Support{
@@ -215,10 +215,10 @@ func NewMessageBusy() *Message {
 	return ret
 }
 
-// NewMessageErrorState returns a new message.
-func NewMessageErrorState() *Message {
-	ret := NewMessage()
-	ret.ID = MessageErrorState
+// NewErrorResponseErrorState returns a new errorResp.
+func NewErrorResponseErrorState() *ErrorResponse {
+	ret := NewErrorResponse()
+	ret.ID = ErrorResponseErrorState
 	ret.Severity = SeverityNormal
 	ret.Description = "The operation is failed due to resource state."
 	ret.Supports = []Support{
@@ -235,7 +235,7 @@ func NewSupport() Support {
 	return ret
 }
 
-// NewSupportNotExist will returns a support message.
+// NewSupportNotExist will returns a support errorResp.
 func NewSupportNotExist() Support {
 	ret := NewSupport()
 	ret.ID = SupportNotExist
@@ -244,7 +244,7 @@ func NewSupportNotExist() Support {
 	return ret
 }
 
-// NewSupportDuplicate will returns a support message.
+// NewSupportDuplicate will returns a support errorResp.
 func NewSupportDuplicate() Support {
 	ret := NewSupport()
 	ret.ID = SupportDuplicate
@@ -253,7 +253,7 @@ func NewSupportDuplicate() Support {
 	return ret
 }
 
-// NewSupportInvalidRequest will returns a support message.
+// NewSupportInvalidRequest will returns a support errorResp.
 func NewSupportInvalidRequest() Support {
 	ret := NewSupport()
 	ret.ID = SupportInvalidRequest
@@ -262,7 +262,7 @@ func NewSupportInvalidRequest() Support {
 	return ret
 }
 
-// NewSupportInternalError will returns a support message.
+// NewSupportInternalError will returns a support errorResp.
 func NewSupportInternalError() Support {
 	ret := NewSupport()
 	ret.ID = SupportInternalError
@@ -271,7 +271,7 @@ func NewSupportInternalError() Support {
 	return ret
 }
 
-// NewSupportTimeout will returns a support message.
+// NewSupportTimeout will returns a support errorResp.
 func NewSupportTimeout() Support {
 	ret := NewSupport()
 	ret.ID = SupportTimeout
@@ -280,7 +280,7 @@ func NewSupportTimeout() Support {
 	return ret
 }
 
-// NewSupportTransactionError will returns a support message.
+// NewSupportTransactionError will returns a support errorResp.
 func NewSupportTransactionError() Support {
 	ret := NewSupport()
 	ret.ID = SupportTransactionError
@@ -289,7 +289,7 @@ func NewSupportTransactionError() Support {
 	return ret
 }
 
-// NewSupportBusy will returns a support message.
+// NewSupportBusy will returns a support errorResp.
 func NewSupportBusy() Support {
 	ret := NewSupport()
 	ret.ID = SupportBusy
@@ -298,7 +298,7 @@ func NewSupportBusy() Support {
 	return ret
 }
 
-// NewSupportErrorState will returns a support message.
+// NewSupportErrorState will returns a support errorResp.
 func NewSupportErrorState() Support {
 	ret := NewSupport()
 	ret.ID = SupportErrorState

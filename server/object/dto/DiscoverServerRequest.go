@@ -19,9 +19,9 @@ func (dto *DiscoverServerRequest) NewInstance() base.RequestInterface {
 }
 
 // IsValid return if the request is valid.
-func (dto *DiscoverServerRequest) IsValid() *base.Message {
+func (dto *DiscoverServerRequest) IsValid() *base.ErrorResponse {
 	if dto.Hostname == "" || dto.Username == "" || dto.Password == "" {
-		return base.NewMessageInvalidRequest()
+		return base.NewErrorResponseInvalidRequest()
 	}
 	return nil
 }

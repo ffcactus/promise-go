@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.promise.integrationtest.base.MessageEnum;
+import com.promise.integrationtest.base.ErrorResponseEnum;
 import com.promise.integrationtest.base.PromiseIntegrationTest;
 import com.promise.integrationtest.dto.DeleteResourceResponse;
 import com.promise.integrationtest.idpool.dto.AllocateIPv4Request;
@@ -122,10 +122,10 @@ public class IPv4PoolTest extends PromiseIntegrationTest
         request1.setDnsServers(Arrays.asList(dns));
 
         IPv4PoolAssertUtil.assertIPv4PoolPosted(request1);
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 "/promise/v1/id-pool/ipv4",
                 HttpStatus.BAD_REQUEST,
-                MessageEnum.Duplicate.getId(),
+                ErrorResponseEnum.Duplicate.getId(),
                 request1);
     }
 
@@ -135,26 +135,26 @@ public class IPv4PoolTest extends PromiseIntegrationTest
     @Test
     public void testPoolNotExist()
     {
-        PromiseAssertUtil.assertDeleteMessage(
+        PromiseAssertUtil.assertDeleteErrorResponse(
                 "/promise/v1/id-pool/ipv4/i_am_not_exist",
                 HttpStatus.NOT_FOUND,
-                MessageEnum.NotExist.getId());
-        PromiseAssertUtil.assertGetMessage(
+                ErrorResponseEnum.NotExist.getId());
+        PromiseAssertUtil.assertGetErrorResponse(
                 "/promise/v1/id-pool/ipv4/i_am_not_exist",
                 HttpStatus.NOT_FOUND,
-                MessageEnum.NotExist.getId());
+                ErrorResponseEnum.NotExist.getId());
         final AllocateIPv4Request request1 = new AllocateIPv4Request();
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 "/promise/v1/id-pool/ipv4/i_am_not_exist/action/allocate",
                 HttpStatus.NOT_FOUND,
-                MessageEnum.NotExist.getId(),
+                ErrorResponseEnum.NotExist.getId(),
                 request1);
         final FreeIPv4Request request2 = new FreeIPv4Request();
         request2.setAddress("0.0.0.0");
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 "/promise/v1/id-pool/ipv4/i_am_not_exist/action/free",
                 HttpStatus.NOT_FOUND,
-                MessageEnum.NotExist.getId(),
+                ErrorResponseEnum.NotExist.getId(),
                 request2);
     }
 
@@ -260,11 +260,11 @@ public class IPv4PoolTest extends PromiseIntegrationTest
         IPv4PoolAssertUtil.assertIPv4Allocate(response1.getId(), "key", "0.0.0.2", 2, 0, 0);
         // Now do the free.
         IPv4PoolAssertUtil.assertIPv4Free(response1.getId(), "0.0.0.1", 2, 1, 1);
-        // Free the same key should show error message.
+        // Free the same key should show errorResp.
         IPv4PoolAssertUtil.assertIPv4AddressNotAllocated(response1.getId(), "0.0.0.1");
         // Since one of the IPs has no key, so after all the IP return to the pool, one of the IP should marked as free.
         IPv4PoolAssertUtil.assertIPv4Free(response1.getId(), "0.0.0.2", 2, 1, 2);
-        // Free a IP which doesn't belong to the pool should show error message.
+        // Free a IP which doesn't belong to the pool should show errorResp.
         IPv4PoolAssertUtil.assertIPv4PoolAddressNotBelong(response1.getId(), "1.1.1.1");
     }
 
@@ -286,29 +286,29 @@ public class IPv4PoolTest extends PromiseIntegrationTest
 
         final PostIPv4PoolRequest request = new PostIPv4PoolRequest();
         request.setName("pool1");
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 "/promise/v1/id-pool/ipv4",
                 HttpStatus.BAD_REQUEST,
-                MessageEnum.IPv4PoolRangeCountError.getId(),
+                ErrorResponseEnum.IPv4PoolRangeCountError.getId(),
                 request);
 
         request.setRanges(ranges1);
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 "/promise/v1/id-pool/ipv4",
                 HttpStatus.BAD_REQUEST,
-                MessageEnum.IPv4PoolFormatError.getId(),
+                ErrorResponseEnum.IPv4PoolFormatError.getId(),
                 request);
         request.setRanges(ranges2);
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 "/promise/v1/id-pool/ipv4",
                 HttpStatus.BAD_REQUEST,
-                MessageEnum.IPv4PoolRangeEndAddressError.getId(),
+                ErrorResponseEnum.IPv4PoolRangeEndAddressError.getId(),
                 request);
         request.setRanges(ranges3);
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 "/promise/v1/id-pool/ipv4",
                 HttpStatus.BAD_REQUEST,
-                MessageEnum.IPv4PoolRangeSizeError.getId(),
+                ErrorResponseEnum.IPv4PoolRangeSizeError.getId(),
                 request);
     }
 
@@ -320,10 +320,10 @@ public class IPv4PoolTest extends PromiseIntegrationTest
     {
         final FreeIPv4Request request = new FreeIPv4Request();
         request.setAddress("a.a.a.a");
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 "/promise/v1/id-pool/ipv4/any" + "/action/free",
                 HttpStatus.BAD_REQUEST,
-                MessageEnum.IPv4PoolFormatError.getId(),
+                ErrorResponseEnum.IPv4PoolFormatError.getId(),
                 request);
     }
 }

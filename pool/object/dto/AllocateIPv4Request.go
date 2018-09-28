@@ -15,7 +15,7 @@ func (dto *AllocateIPv4Request) NewInstance() base.RequestInterface {
 }
 
 // IsValid return if the request is valid.
-func (dto *AllocateIPv4Request) IsValid() *base.Message {
+func (dto *AllocateIPv4Request) IsValid() *base.ErrorResponse {
 	return nil
 }
 

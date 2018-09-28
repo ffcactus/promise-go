@@ -18,9 +18,9 @@ func (dto *DiscoverEnclosureRequest) NewInstance() base.RequestInterface {
 }
 
 // IsValid return if the request is valid.
-func (dto *DiscoverEnclosureRequest) IsValid() *base.Message {
+func (dto *DiscoverEnclosureRequest) IsValid() *base.ErrorResponse {
 	if dto.Address == "" || dto.Username == "" || dto.Password == "" {
-		return base.NewMessageInvalidRequest()
+		return base.NewErrorResponseInvalidRequest()
 	}
 	return nil
 }

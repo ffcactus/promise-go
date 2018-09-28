@@ -23,14 +23,14 @@ func (s *Refresh) FindServerStateAdded() {
 	for {
 		seconds := 5
 		if id := serverDB.FindServerStateAdded(); id != "" {
-			_, _, message := s.PerformAsych(id, nil)
-			if message != nil {
-				if message[0].ID == base.MessageBusy {
+			_, _, errorResp := s.PerformAsych(id, nil)
+			if errorResp != nil {
+				if errorResp[0].ID == base.ErrorResponseBusy {
 					seconds = 1
 				} else {
 					log.WithFields(log.Fields{
 						"server":  id,
-						"message": message[0].ID,
+						"errorResp": errorResp[0].ID,
 					}).Info("Service auto-refresh server failed.")
 					seconds = 5
 				}
@@ -45,20 +45,20 @@ func (s *Refresh) FindServerStateAdded() {
 }
 
 // PerformAsych will process the refresh action.
-func (s *Refresh) PerformAsych(id string, request base.AsychActionRequestInterface) (base.ResponseInterface, *string, []base.Message) {
-	modelInterface, message := serverDB.Get(id)
-	if message != nil {
-		return nil, nil, []base.Message{*message}
+func (s *Refresh) PerformAsych(id string, request base.AsychActionRequestInterface) (base.ResponseInterface, *string, []base.ErrorResponse) {
+	modelInterface, errorResp := serverDB.Get(id)
+	if errorResp != nil {
+		return nil, nil, []base.ErrorResponse{*errorResp}
 	}
 	server, ok := modelInterface.(*model.Server)
 	if !ok {
-		return nil, nil, []base.Message{*base.NewMessageInternalError()}
+		return nil, nil, []base.ErrorResponse{*base.NewErrorResponseInternalError()}
 	}
 	ctx := context.CreateRefreshServerContext(server)
 	st := strategy.CreateRefreshServerStrategy(server)
-	task, messages := st.Execute(ctx, server)
-	if messages != nil {
-		return nil, nil, messages
+	task, errorResps := st.Execute(ctx, server)
+	if errorResps != nil {
+		return nil, nil, errorResps
 	}
 	return nil, task, nil
 }

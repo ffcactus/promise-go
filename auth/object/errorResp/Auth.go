@@ -1,20 +1,20 @@
-package message
+package errorResp
 
 import (
 	"promise/base"
 )
 
 const (
-	// MessageAuthSuccess Success
-	MessageAuthSuccess = "Auth.Message.Success"
-	// MessageAuthInternalError Internel error
-	MessageAuthInternalError = "Auth.Message.InternalError"
-	// MessageAuthBadRequest Bad request
-	MessageAuthBadRequest = "Auth.Message.BadRequest"
-	// MessageAuthIncorrectCredential Incorrect credential
-	MessageAuthIncorrectCredential = "Auth.Message.IncorrectCredential"
-	// MessageAuthNotFoundSession Session not found
-	MessageAuthNotFoundSession = "Auth.Message.NotFoundSession"
+	// ErrorResponseAuthSuccess Success
+	ErrorResponseAuthSuccess = "Auth.ErrorResponse.Success"
+	// ErrorResponseAuthInternalError Internel error
+	ErrorResponseAuthInternalError = "Auth.ErrorResponse.InternalError"
+	// ErrorResponseAuthBadRequest Bad request
+	ErrorResponseAuthBadRequest = "Auth.ErrorResponse.BadRequest"
+	// ErrorResponseAuthIncorrectCredential Incorrect credential
+	ErrorResponseAuthIncorrectCredential = "Auth.ErrorResponse.IncorrectCredential"
+	// ErrorResponseAuthNotFoundSession Session not found
+	ErrorResponseAuthNotFoundSession = "Auth.ErrorResponse.NotFoundSession"
 )
 
 const (
@@ -28,10 +28,10 @@ const (
 	SupportAuthNotFoundSession = "Auth.Support.NotFoundSession"
 )
 
-// NewMessageAuthInternalError Internel error
-func NewMessageAuthInternalError() *base.Message {
-	ret := base.NewMessage()
-	ret.ID = MessageAuthInternalError
+// NewErrorResponseAuthInternalError Internel error
+func NewErrorResponseAuthInternalError() *base.ErrorResponse {
+	ret := base.NewErrorResponse()
+	ret.ID = ErrorResponseAuthInternalError
 	ret.Severity = base.SeverityCritical
 	ret.Description = "Internal error."
 	ret.Supports = []base.Support{
@@ -40,10 +40,10 @@ func NewMessageAuthInternalError() *base.Message {
 	return ret
 }
 
-// NewMessageAuthBadRequest Bad request
-func NewMessageAuthBadRequest() *base.Message {
-	m := base.NewMessage()
-	m.ID = MessageAuthBadRequest
+// NewErrorResponseAuthBadRequest Bad request
+func NewErrorResponseAuthBadRequest() *base.ErrorResponse {
+	m := base.NewErrorResponse()
+	m.ID = ErrorResponseAuthBadRequest
 	m.Severity = base.SeverityNormal
 	m.Description = "Bad request."
 	m.Supports = []base.Support{
@@ -52,10 +52,10 @@ func NewMessageAuthBadRequest() *base.Message {
 	return m
 }
 
-// NewMessageAuthIncorrectCredential Incorrect credential
-func NewMessageAuthIncorrectCredential() *base.Message {
-	m := base.NewMessage()
-	m.ID = MessageAuthIncorrectCredential
+// NewErrorResponseAuthIncorrectCredential Incorrect credential
+func NewErrorResponseAuthIncorrectCredential() *base.ErrorResponse {
+	m := base.NewErrorResponse()
+	m.ID = ErrorResponseAuthIncorrectCredential
 	m.Severity = base.SeverityNormal
 	m.Description = "Incorrect credential."
 	m.Supports = []base.Support{
@@ -64,10 +64,10 @@ func NewMessageAuthIncorrectCredential() *base.Message {
 	return m
 }
 
-// NewMessageAuthNotFoundSession Session not found
-func NewMessageAuthNotFoundSession() *base.Message {
-	m := base.NewMessage()
-	m.ID = MessageAuthNotFoundSession
+// NewErrorResponseAuthNotFoundSession Session not found
+func NewErrorResponseAuthNotFoundSession() *base.ErrorResponse {
+	m := base.NewErrorResponse()
+	m.ID = ErrorResponseAuthNotFoundSession
 	m.Severity = base.SeverityNormal
 	m.Description = "Session not found."
 	m.Supports = []base.Support{

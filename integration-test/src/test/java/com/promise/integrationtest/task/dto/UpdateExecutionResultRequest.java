@@ -1,14 +1,14 @@
 package com.promise.integrationtest.task.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.promise.integrationtest.dto.Message;
+import com.promise.integrationtest.dto.ErrorResponse;
 
 public class UpdateExecutionResultRequest
 {
     @JsonProperty(value = "State", required = false)
     private String state;
-    @JsonProperty(value = "Message", required = false)
-    private Message message;
+    @JsonProperty(value = "ErrorResponse", required = false)
+    private ErrorResponse errorResp;
 
     public String getState()
     {
@@ -20,13 +20,13 @@ public class UpdateExecutionResultRequest
         this.state = state;
     }
 
-    public Message getMessage()
+    public ErrorResponse getErrorResponse()
     {
-        return message;
+        return errorResp;
     }
 
-    public void setMessage(Message message)
+    public void setErrorResponse(ErrorResponse errorResp)
     {
-        this.message = message;
+        this.errorResp = errorResp;
     }
 }

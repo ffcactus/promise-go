@@ -6,7 +6,7 @@ import (
 	"promise/base"
 	"promise/server/context"
 	"promise/server/object/constvalue"
-	"promise/server/object/message"
+	"promise/server/object/errorResp"
 	"promise/server/object/model"
 )
 
@@ -20,27 +20,27 @@ type RefreshRackServer struct {
 var executor = make(chan bool, 5)
 
 // Execute will execute all the steps.
-func (s *RefreshRackServer) Execute(c *context.RefreshServer, server *model.Server) (*string, []base.Message) {
+func (s *RefreshRackServer) Execute(c *context.RefreshServer, server *model.Server) (*string, []base.ErrorResponse) {
 	select {
 	case executor <- true:
 		return s.execute(c, server)
 	default:
-		return nil, []base.Message{*base.NewMessageBusy()}
+		return nil, []base.ErrorResponse{*base.NewErrorResponseBusy()}
 	}
 }
 
-func (s *RefreshRackServer) execute(c *context.RefreshServer, server *model.Server) (*string, []base.Message) {
+func (s *RefreshRackServer) execute(c *context.RefreshServer, server *model.Server) (*string, []base.ErrorResponse) {
 	log.WithFields(log.Fields{"id": server.ID}).Info("Refresh server.")
 	// Lock server.
-	if message := s.LockServer(&c.Base, server); message != nil {
+	if errorResp := s.LockServer(&c.Base, server); errorResp != nil {
 		<-executor
-		return nil, []base.Message{*message}
+		return nil, []base.ErrorResponse{*errorResp}
 	}
 
 	taskID, err := s.CreateRefreshServerTask(&c.Base, server)
 	if err != nil {
 		<-executor
-		return nil, []base.Message{*message.NewMessageServerRefreshTaskFailed()}
+		return nil, []base.ErrorResponse{*errorResp.NewErrorResponseServerRefreshTaskFailed()}
 	}
 
 	go s._execute(taskID, c, server)

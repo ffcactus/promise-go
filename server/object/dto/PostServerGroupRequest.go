@@ -17,7 +17,7 @@ func (dto *PostServerGroupRequest) NewInstance() base.RequestInterface {
 }
 
 // IsValid return if the request is valid.
-func (dto *PostServerGroupRequest) IsValid() *base.Message {
+func (dto *PostServerGroupRequest) IsValid() *base.ErrorResponse {
 	return nil
 }
 

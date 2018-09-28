@@ -23,8 +23,8 @@ func test(name string) {
 		Name:                "Step",
 		ExpectedExecutionMs: 1000,
 	}}
-	response, message, err := task.CreateTask(&create)
-	if message != nil || err != nil {
+	response, errorResp, err := task.CreateTask(&create)
+	if errorResp != nil || err != nil {
 		fmt.Printf("Create %s failed.\n", name)
 		done <- name
 		<-concurrent
@@ -33,8 +33,8 @@ func test(name string) {
 	fmt.Printf("Create %s.\n", name)
 	for _, v := range percentage {
 		update.Percentage = &v
-		_, message, err := task.UpdateTask(response.ID, &update)
-		if message != nil || err != nil {
+		_, errorResp, err := task.UpdateTask(response.ID, &update)
+		if errorResp != nil || err != nil {
 			fmt.Printf("Update %s to %d failed.\n", name, *update.Percentage)
 			done <- name
 			<-concurrent

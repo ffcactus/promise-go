@@ -1,4 +1,4 @@
-package message
+package errorResp
 
 import (
 	"promise/base"
@@ -6,12 +6,12 @@ import (
 )
 
 const (
-	// MessageServerDiscoverFailed Message ID
-	MessageServerDiscoverFailed = "Server.Message.DiscoverFailed"
-	// MessageServerAccountExist Message ID
-	MessageServerAccountExist = "Server.Message.AccountExist"
-	// MessageServerRefreshTaskFailed Message ID
-	MessageServerRefreshTaskFailed = "Server.Message.RefreshTaskFailed"
+	// ErrorResponseServerDiscoverFailed ErrorResponse ID
+	ErrorResponseServerDiscoverFailed = "Server.ErrorResponse.DiscoverFailed"
+	// ErrorResponseServerAccountExist ErrorResponse ID
+	ErrorResponseServerAccountExist = "Server.ErrorResponse.AccountExist"
+	// ErrorResponseServerRefreshTaskFailed ErrorResponse ID
+	ErrorResponseServerRefreshTaskFailed = "Server.ErrorResponse.RefreshTaskFailed"
 )
 
 const (
@@ -34,10 +34,10 @@ func NewArgumentServerID(s *model.Server) base.Argument {
 	return base.Argument{Type: "URI", Name: s.Name, Value: base.ToServerURI(s.ID)}
 }
 
-// NewMessageServerDiscoverFailed create new message.
-func NewMessageServerDiscoverFailed() *base.Message {
-	ret := base.NewMessage()
-	ret.ID = MessageServerDiscoverFailed
+// NewErrorResponseServerDiscoverFailed create new an error response.
+func NewErrorResponseServerDiscoverFailed() *base.ErrorResponse {
+	ret := base.NewErrorResponse()
+	ret.ID = ErrorResponseServerDiscoverFailed
 	ret.Severity = base.SeverityWarning
 	ret.Description = "Post server failed."
 	ret.Supports = []base.Support{
@@ -48,10 +48,10 @@ func NewMessageServerDiscoverFailed() *base.Message {
 	return ret
 }
 
-// NewMessageServerAccountExist create new message.
-func NewMessageServerAccountExist(s *model.Server) *base.Message {
-	ret := base.NewMessage()
-	ret.ID = MessageServerAccountExist
+// NewErrorResponseServerAccountExist create new an error response.
+func NewErrorResponseServerAccountExist(s *model.Server) *base.ErrorResponse {
+	ret := base.NewErrorResponse()
+	ret.ID = ErrorResponseServerAccountExist
 	ret.Severity = base.SeverityNormal
 	ret.Description = "Server {0} failed to create management account."
 	ret.Arguments = []base.Argument{
@@ -64,10 +64,10 @@ func NewMessageServerAccountExist(s *model.Server) *base.Message {
 	return ret
 }
 
-// NewMessageServerRefreshTaskFailed create new message.
-func NewMessageServerRefreshTaskFailed() *base.Message {
-	ret := base.NewMessage()
-	ret.ID = MessageServerRefreshTaskFailed
+// NewErrorResponseServerRefreshTaskFailed create new an error response.
+func NewErrorResponseServerRefreshTaskFailed() *base.ErrorResponse {
+	ret := base.NewErrorResponse()
+	ret.ID = ErrorResponseServerRefreshTaskFailed
 	ret.Severity = base.SeverityNormal
 	ret.Description = "Failed to create refresh task"
 	ret.Supports = []base.Support{

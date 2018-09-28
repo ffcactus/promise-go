@@ -10,26 +10,26 @@ type Allocate struct {
 }
 
 // Perform the allocate IPv4 action.
-func (s *Allocate) Perform(id string, request base.ActionRequestInterface) (base.ResponseInterface, []base.Message) {
+func (s *Allocate) Perform(id string, request base.ActionRequestInterface) (base.ResponseInterface, []base.ErrorResponse) {
 	var (
 		response dto.AllocateIPv4Response
 	)
 
 	allocateRequest, ok := request.(*dto.AllocateIPv4Request)
 	if !ok {
-		return nil, []base.Message{*base.NewMessageInternalError()}
+		return nil, []base.ErrorResponse{*base.NewErrorResponseInternalError()}
 	}
 	key := ""
 	if allocateRequest.Key != nil {
 		key = *allocateRequest.Key
 	}
-	address, updatedPool, message := ipv4PoolDB.AllocateIPv4Address(id, key)
-	if message != nil {
-		return nil, []base.Message{*message}
+	address, updatedPool, errorResp := ipv4PoolDB.AllocateIPv4Address(id, key)
+	if errorResp != nil {
+		return nil, []base.ErrorResponse{*errorResp}
 	}
 	response.Address = address
 	if err := response.Pool.Load(updatedPool); err != nil {
-		return nil, []base.Message{*base.NewMessageInternalError()}
+		return nil, []base.ErrorResponse{*base.NewErrorResponseInternalError()}
 	}
 	base.PublishUpdateMessage(&response.Pool)
 	return &response, nil

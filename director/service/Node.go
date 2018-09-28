@@ -50,12 +50,12 @@ func (s *Node) DB() base.DBInterface {
 }
 
 // GetCollection get the Node collection.
-func (s *Node) GetCollection(start int64, count int64, filter string) (*base.CollectionModel, []base.Message) {
+func (s *Node) GetCollection(start int64, count int64, filter string) (*base.CollectionModel, []base.ErrorResponse) {
 	if _client == nil {
-		return nil, []base.Message{*base.NewMessageInternalError()}
+		return nil, []base.ErrorResponse{*base.NewErrorResponseInternalError()}
 	}
 	if start != 0 || count != -1 || filter != "" {
-		return nil, []base.Message{*base.NewMessageInvalidRequest()}
+		return nil, []base.ErrorResponse{*base.NewErrorResponseInvalidRequest()}
 	}
 	nodes, err := _client.NodeList(context.Background(), types.NodeListOptions{})
 	if err != nil {

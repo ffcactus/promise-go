@@ -36,14 +36,14 @@ func (s *Server) DB() base.DBInterface {
 
 // Delete will override the default process.
 // We not only remove the server but the server-servergroup.
-func (s *Server) Delete(id string) []base.Message {
+func (s *Server) Delete(id string) []base.ErrorResponse {
 	var (
 		response = s.Response()
 	)
 
-	server, ssg, message := serverDB.DeleteServer(id)
-	if message != nil {
-		return []base.Message{*message}
+	server, ssg, errorResp := serverDB.DeleteServer(id)
+	if errorResp != nil {
+		return []base.ErrorResponse{*errorResp}
 	}
 	response.Load(server)
 	for _, v := range ssg {
@@ -57,10 +57,10 @@ func (s *Server) Delete(id string) []base.Message {
 
 // DeleteCollection will override the default process.
 // We not only remove the server but the server-servergroup.
-func (s *Server) DeleteCollection() []base.Message {
-	records, ssg, message := serverDB.DeleteServerCollection()
-	if message != nil {
-		return []base.Message{*message}
+func (s *Server) DeleteCollection() []base.ErrorResponse {
+	records, ssg, errorResp := serverDB.DeleteServerCollection()
+	if errorResp != nil {
+		return []base.ErrorResponse{*errorResp}
 	}
 	for _, v := range records {
 		response := s.TemplateImpl.Response()

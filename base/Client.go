@@ -50,7 +50,7 @@ func isExpectedStatusCode(expectStatusCode []int, realStatusCode int) bool {
 }
 
 // REST perform the REST operations.
-func REST(method string, uri string, requestDto interface{}, responseDtoP interface{}, expectStatusCode []int) ([]Message, error) {
+func REST(method string, uri string, requestDto interface{}, responseDtoP interface{}, expectStatusCode []int) ([]ErrorResponse, error) {
 	var (
 		resp *http.Response
 		err  error
@@ -76,7 +76,7 @@ func REST(method string, uri string, requestDto interface{}, responseDtoP interf
 	}
 	// Only when err == nil should the resp can be dereferenced.
 	defer resp.Body.Close()
-	// If is expected status code, turn the response to expectedDto, or turn to []Message.
+	// If is expected status code, turn the response to expectedDto, or turn to []ErrorResponse.
 	if isExpectedStatusCode(expectStatusCode, resp.StatusCode) {
 		if resp.Body == nil && responseDtoP != nil {
 			log.WithFields(log.Fields{
@@ -103,21 +103,21 @@ func REST(method string, uri string, requestDto interface{}, responseDtoP interf
 		"status": resp.StatusCode,
 		"expect": expectStatusCode,
 	}).Info("Not the expected http status code.")
-	// TODO Not all the response body can be translate to messages.
-	message := new([]Message)
+	// TODO Not all the response body can be translate to errorResps.
+	errorResp := new([]ErrorResponse)
 	if resp.Body == nil {
 		log.WithFields(log.Fields{
 			"method": method,
 			"uri":    uri,
-		}).Warn("REST call failed, message is empty.")
+		}).Warn("REST call failed, errorResp is empty.")
 		return nil, errors.New("response body is empty")
 	}
-	if err := json.NewDecoder(resp.Body).Decode(message); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(errorResp); err != nil {
 		log.WithFields(log.Fields{
 			"method": method,
 			"uri":    uri,
-		}).Warn("REST call failed, can not decode message.")
+		}).Warn("REST call failed, can not decode errorResp.")
 		return nil, err
 	}
-	return *message, nil
+	return *errorResp, nil
 }

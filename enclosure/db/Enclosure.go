@@ -38,11 +38,11 @@ func (impl *Enclosure) NeedCheckDuplication() bool {
 }
 
 // ConvertFindResultToCollection convert the Find() result to collection mode.
-func (impl *Enclosure) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.Message) {
+func (impl *Enclosure) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.ErrorResponse) {
 	collection, ok := result.(*[]entity.Enclosure)
 	if !ok {
 		log.Error("Enclosure.ConvertFindResult() failed, convert data failed.")
-		return nil, base.NewMessageInternalError()
+		return nil, base.NewErrorResponseInternalError()
 	}
 	ret := base.CollectionModel{}
 	ret.Start = start
@@ -55,11 +55,11 @@ func (impl *Enclosure) ConvertFindResultToCollection(start int64, total int64, r
 }
 
 // ConvertFindResultToModel convert the Find() result to model slice
-func (impl *Enclosure) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.Message) {
+func (impl *Enclosure) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.ErrorResponse) {
 	collection, ok := result.(*[]entity.Enclosure)
 	if !ok {
 		log.Error("Enclosure.ConvertFindResult() failed, convert data failed.")
-		return nil, base.NewMessageInternalError()
+		return nil, base.NewErrorResponseInternalError()
 	}
 	ret := make([]base.ModelInterface, 0)
 	for _, v := range *collection {

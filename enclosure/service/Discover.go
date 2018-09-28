@@ -11,7 +11,7 @@ type Discover struct {
 }
 
 // Perform will process the discover action.
-func (s *Discover) Perform(id string, request base.ActionRequestInterface) (base.ResponseInterface, []base.Message) {
+func (s *Discover) Perform(id string, request base.ActionRequestInterface) (base.ResponseInterface, []base.ErrorResponse) {
 	var (
 		response dto.GetEnclosureResponse
 	)
@@ -19,7 +19,7 @@ func (s *Discover) Perform(id string, request base.ActionRequestInterface) (base
 	_, ok := request.(*dto.DiscoverEnclosureRequest)
 	if !ok {
 		log.Error("Service perform discover enclosure failed, convert request failed.")
-		return nil, []base.Message{*base.NewMessageInternalError()}
+		return nil, []base.ErrorResponse{*base.NewErrorResponseInternalError()}
 	}
 	return &response, nil
 }

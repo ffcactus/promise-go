@@ -2,7 +2,7 @@ package dto
 
 import (
 	"promise/base"
-	"promise/task/object/message"
+	"promise/task/object/errorResp"
 	"promise/task/object/model"
 )
 
@@ -24,9 +24,9 @@ func (dto *PostTaskRequest) NewInstance() base.RequestInterface {
 }
 
 // IsValid return if the request is valid.
-func (dto *PostTaskRequest) IsValid() *base.Message {
+func (dto *PostTaskRequest) IsValid() *base.ErrorResponse {
 	if len(dto.TaskSteps) == 0 {
-		return message.NewMessageTaskNoStep()
+		return errorResp.NewErrorResponseTaskNoStep()
 	}
 	return nil
 }

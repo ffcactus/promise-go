@@ -59,13 +59,13 @@ func (dto *UpdateTaskStepRequest) NewInstance() base.RequestInterface {
 }
 
 // IsValid return if the request is valid.
-func (dto *UpdateTaskStepRequest) IsValid() *base.Message {
-	message := base.NewMessageUnknownPropertyValue()
+func (dto *UpdateTaskStepRequest) IsValid() *base.ErrorResponse {
+	errorResp := base.NewErrorResponseUnknownPropertyValue()
 	if dto.ExecutionState != nil && !model.IsValidExecutionState(*dto.ExecutionState) {
-		return message
+		return errorResp
 	}
 	if dto.ExecutionResult != nil && dto.ExecutionResult.State != nil && !model.IsValidExecutionResultState(*dto.ExecutionResult.State) {
-		return message
+		return errorResp
 	}
 	return nil
 }

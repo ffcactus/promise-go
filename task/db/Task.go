@@ -38,11 +38,11 @@ func (impl *Task) NeedCheckDuplication() bool {
 }
 
 // ConvertFindResultToCollection convert the Find() result to collection mode.
-func (impl *Task) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.Message) {
+func (impl *Task) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.ErrorResponse) {
 	collection, ok := result.(*[]entity.Task)
 	if !ok {
 		log.Error("Task.ConvertFindResult() failed.")
-		return nil, base.NewMessageInternalError()
+		return nil, base.NewErrorResponseInternalError()
 	}
 	ret := base.CollectionModel{}
 	ret.Start = start
@@ -55,11 +55,11 @@ func (impl *Task) ConvertFindResultToCollection(start int64, total int64, result
 }
 
 // ConvertFindResultToModel convert the Find() result to model slice
-func (impl *Task) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.Message) {
+func (impl *Task) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.ErrorResponse) {
 	collection, ok := result.(*[]entity.Task)
 	if !ok {
 		log.Error("Task.ConvertFindResult() failed.")
-		return nil, base.NewMessageInternalError()
+		return nil, base.NewErrorResponseInternalError()
 	}
 	ret := make([]base.ModelInterface, 0)
 	for _, v := range *collection {

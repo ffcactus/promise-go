@@ -5,7 +5,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"promise/base"
 	"promise/server/object/entity"
-	"promise/server/object/message"
+	"promise/server/object/errorResp"
 )
 
 // ServerServerGroup is the concrete DB.
@@ -39,11 +39,11 @@ func (impl *ServerServerGroup) NeedCheckDuplication() bool {
 }
 
 // ConvertFindResultToCollection convert the Find() result to collection mode.
-func (impl *ServerServerGroup) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.Message) {
+func (impl *ServerServerGroup) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.ErrorResponse) {
 	collection, ok := result.(*[]entity.ServerServerGroup)
 	if !ok {
 		log.Error("ServerServerGroup.ConvertFindResult() failed, convert data failed.")
-		return nil, base.NewMessageInternalError()
+		return nil, base.NewErrorResponseInternalError()
 	}
 	ret := base.CollectionModel{}
 	ret.Start = start
@@ -56,11 +56,11 @@ func (impl *ServerServerGroup) ConvertFindResultToCollection(start int64, total 
 }
 
 // ConvertFindResultToModel convert the Find() result to model slice
-func (impl *ServerServerGroup) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.Message) {
+func (impl *ServerServerGroup) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.ErrorResponse) {
 	collection, ok := result.(*[]entity.ServerServerGroup)
 	if !ok {
 		log.Error("ServerServerGroup.ConvertFindResult() failed, convert data failed.")
-		return nil, base.NewMessageInternalError()
+		return nil, base.NewErrorResponseInternalError()
 	}
 	ret := make([]base.ModelInterface, 0)
 	for _, v := range *collection {
@@ -73,7 +73,7 @@ func (impl *ServerServerGroup) ConvertFindResultToModel(result interface{}) ([]b
 // Delete will override the default process.
 // We should not delete the default server-servergroup relationship, since a server
 // should always in the default servergroup.
-func (impl *ServerServerGroup) Delete(id string) (base.ModelInterface, *base.Message) {
+func (impl *ServerServerGroup) Delete(id string) (base.ModelInterface, *base.ErrorResponse) {
 	var (
 		ssg, previous entity.ServerServerGroup
 		c             = impl.GetConnection()
@@ -85,21 +85,21 @@ func (impl *ServerServerGroup) Delete(id string) (base.ModelInterface, *base.Mes
 			"id":    id,
 			"error": err}).
 			Warn("Delete server-servergroup in DB failed, start transaction failed.")
-		return nil, base.NewMessageTransactionError()
+		return nil, base.NewErrorResponseTransactionError()
 	}
 	if tx.Where("\"ID\" = ?", id).First(&previous).RecordNotFound() {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": id}).
 			Warn("Delete server-servergroup in DB failed, resource does not exist, transaction rollback.")
-		return nil, base.NewMessageNotExist()
+		return nil, base.NewErrorResponseNotExist()
 	}
 	if previous.ServerGroupID == DefaultServerGroupID {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": id}).
 			Warn("Delete server-servergroup in DB failed, delete default server-servergroup, transaction rollback.")
-		return nil, message.NewMessageServerServerGroupDeleteDefault()
+		return nil, errorResp.NewErrorResponseServerServerGroupDeleteDefault()
 	}
 	ssg.ID = id
 	if err := tx.Delete(&ssg).Error; err != nil {
@@ -107,14 +107,14 @@ func (impl *ServerServerGroup) Delete(id string) (base.ModelInterface, *base.Mes
 		log.WithFields(log.Fields{
 			"id": id}).
 			Warn("Delete server-servergroup in DB failed, delete resource failed, transaction rollback.")
-		return nil, base.NewMessageTransactionError()
+		return nil, base.NewErrorResponseTransactionError()
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"id":    id,
 			"error": err}).
 			Warn("Delete server-servergroup in DB failed, commit failed.")
-		return nil, base.NewMessageTransactionError()
+		return nil, base.NewErrorResponseTransactionError()
 	}
 	return previous.ToModel(), nil
 }
@@ -122,7 +122,7 @@ func (impl *ServerServerGroup) Delete(id string) (base.ModelInterface, *base.Mes
 // DeleteCollection will override the default process.
 // We should not delete the default server-servergroup relationship, since a server
 // should always in the default servergroup.
-func (impl *ServerServerGroup) DeleteCollection() ([]base.ModelInterface, *base.Message) {
+func (impl *ServerServerGroup) DeleteCollection() ([]base.ModelInterface, *base.ErrorResponse) {
 	var (
 		name             = impl.ResourceName()
 		recordCollection = impl.NewEntityCollection()
@@ -136,7 +136,7 @@ func (impl *ServerServerGroup) DeleteCollection() ([]base.ModelInterface, *base.
 			"resource": name,
 			"error":    err,
 		}).Warn("Delete collection in DB failed, start transaction failed.")
-		return nil, base.NewMessageTransactionError()
+		return nil, base.NewErrorResponseTransactionError()
 	}
 
 	if err := tx.Where("\"ServerGroupID\" <> ?", DefaultServerGroupID).Find(recordCollection).Error; err != nil {
@@ -144,7 +144,7 @@ func (impl *ServerServerGroup) DeleteCollection() ([]base.ModelInterface, *base.
 			"resource": name,
 			"error":    err,
 		}).Warn("Delete collection in DB failed, find resource failed.")
-		return nil, base.NewMessageTransactionError()
+		return nil, base.NewErrorResponseTransactionError()
 	}
 
 	if err := tx.Where("\"ServerGroupID\" <> ?", DefaultServerGroupID).Delete(entity.ServerServerGroup{}).Error; err != nil {
@@ -153,23 +153,23 @@ func (impl *ServerServerGroup) DeleteCollection() ([]base.ModelInterface, *base.
 			"resource": name,
 			"error":    err,
 		}).Warn("Delete collection in DB failed, delete resources failed, transaction rollback.")
-		return nil, base.NewMessageTransactionError()
+		return nil, base.NewErrorResponseTransactionError()
 	}
-	ret, message := impl.TemplateImpl.ConvertFindResultToModel(recordCollection)
-	if message != nil {
+	ret, errorResp := impl.TemplateImpl.ConvertFindResultToModel(recordCollection)
+	if errorResp != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
-			"message":  message.ID,
+			"errorResp":  errorResp.ID,
 		}).Warn("Delete collection in DB failed, convert find result failed, transaction rollback.")
-		return nil, message
+		return nil, errorResp
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
 			"error":    err,
 		}).Warn("Delete collection in DB failed, commit failed.")
-		return nil, base.NewMessageTransactionError()
+		return nil, base.NewErrorResponseTransactionError()
 	}
 	return ret, nil
 }

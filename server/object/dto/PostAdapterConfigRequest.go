@@ -16,7 +16,7 @@ func (dto *PostAdapterConfigRequest) NewInstance() base.RequestInterface {
 }
 
 // IsValid return if the request is valid.
-func (dto *PostAdapterConfigRequest) IsValid() *base.Message {
+func (dto *PostAdapterConfigRequest) IsValid() *base.ErrorResponse {
 	return nil
 }
 

@@ -41,11 +41,11 @@ func (impl *Server) NeedCheckDuplication() bool {
 }
 
 // ConvertFindResultToCollection convert the Find() result to collection mode.
-func (impl *Server) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.Message) {
+func (impl *Server) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.ErrorResponse) {
 	collection, ok := result.(*[]entity.Server)
 	if !ok {
 		log.Error("Server.ConvertFindResult() failed, convert data failed.")
-		return nil, base.NewMessageInternalError()
+		return nil, base.NewErrorResponseInternalError()
 	}
 	ret := base.CollectionModel{}
 	ret.Start = start
@@ -58,11 +58,11 @@ func (impl *Server) ConvertFindResultToCollection(start int64, total int64, resu
 }
 
 // ConvertFindResultToModel convert the Find() result to model slice
-func (impl *Server) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.Message) {
+func (impl *Server) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.ErrorResponse) {
 	collection, ok := result.(*[]entity.Server)
 	if !ok {
 		log.Error("Server.ConvertFindResult() failed, convert data failed.")
-		return nil, base.NewMessageInternalError()
+		return nil, base.NewErrorResponseInternalError()
 	}
 	ret := make([]base.ModelInterface, 0)
 	for _, v := range *collection {
@@ -1102,7 +1102,7 @@ func (impl *Server) UpdatePCIeDevices(ID string, pcieDevices []model.PCIeDevice)
 
 // DeleteServer will override the default process.
 // When delete a server we should delete all the associations too and return the association back.
-func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelInterface, *base.Message) {
+func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelInterface, *base.ErrorResponse) {
 	var (
 		name             = impl.ResourceName()
 		record           = new(entity.Server)
@@ -1119,15 +1119,15 @@ func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelIn
 			"id":       id,
 			"error":    err,
 		}).Warn("DB delete resource failed, start transaction failed.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 	exist, err := impl.GetInternal(tx, id, previous)
 	// Rollback in GetInternal.
 	if !exist {
-		return nil, nil, base.NewMessageNotExist()
+		return nil, nil, base.NewErrorResponseNotExist()
 	}
 	if err != nil {
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 
 	record.SetID(id)
@@ -1139,7 +1139,7 @@ func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelIn
 				"id":       id,
 				"error":    err,
 			}).Warn("DB delete resource failed, delete association failed, transaction rollback.")
-			return nil, nil, base.NewMessageTransactionError()
+			return nil, nil, base.NewErrorResponseTransactionError()
 		}
 	}
 	if err := tx.Delete(record).Error; err != nil {
@@ -1149,7 +1149,7 @@ func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelIn
 			"id":       id,
 			"error":    err,
 		}).Warn("DB delete resource failed, delete resource failed, transaction rollback.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 
 	// Delete the server-servergroup association.
@@ -1161,7 +1161,7 @@ func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelIn
 			"id":       id,
 			"error":    err,
 		}).Warn("DB delete resource failed, record server-servergroup association failed, transaction rollback.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 	for _, each := range deletedSSGEntity {
 		deletedSSG = append(deletedSSG, each.ToModel())
@@ -1173,7 +1173,7 @@ func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelIn
 			"id":       id,
 			"error":    err,
 		}).Warn("DB delete resource failed, delete server-servergroup association failed, transaction rollback.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 
 	if err := tx.Commit().Error; err != nil {
@@ -1182,7 +1182,7 @@ func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelIn
 			"id":       id,
 			"error":    err,
 		}).Warn("DB delete resource failed, commit failed.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 	return previous.ToModel(), deletedSSG, nil
 }
@@ -1192,7 +1192,7 @@ func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelIn
 // It returns all the deleted resources,
 // It returnes if committed.
 // It returens error if any.
-func (impl *Server) DeleteServerCollection() ([]base.ModelInterface, []base.ModelInterface, *base.Message) {
+func (impl *Server) DeleteServerCollection() ([]base.ModelInterface, []base.ModelInterface, *base.ErrorResponse) {
 	var (
 		name             = impl.TemplateImpl.ResourceName()
 		recordCollection = impl.TemplateImpl.NewEntityCollection()
@@ -1209,7 +1209,7 @@ func (impl *Server) DeleteServerCollection() ([]base.ModelInterface, []base.Mode
 			"resource": name,
 			"error":    err,
 		}).Warn("DB delete collection failed, start transaction failed.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 
 	if err := tx.Find(recordCollection).Error; err != nil {
@@ -1217,7 +1217,7 @@ func (impl *Server) DeleteServerCollection() ([]base.ModelInterface, []base.Mode
 			"resource": name,
 			"error":    err,
 		}).Warn("DB delete collection failed, find resource failed.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 	for _, v := range tables {
 		if err := tx.Delete(v).Error; err != nil {
@@ -1226,7 +1226,7 @@ func (impl *Server) DeleteServerCollection() ([]base.ModelInterface, []base.Mode
 				"resource": name,
 				"error":    err,
 			}).Warn("DB delete collection failed, delete resources failed, transaction rollback.")
-			return nil, nil, base.NewMessageTransactionError()
+			return nil, nil, base.NewErrorResponseTransactionError()
 		}
 	}
 	// When we delete all the servers we also need delete all the server-servergroup.
@@ -1236,7 +1236,7 @@ func (impl *Server) DeleteServerCollection() ([]base.ModelInterface, []base.Mode
 			"resource": name,
 			"error":    err,
 		}).Warn("DB delete resource failed, record server-servergroup association failed, transaction rollback.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 	for _, each := range deletedSSGEntity {
 		deletedSSG = append(deletedSSG, each.ToModel())
@@ -1246,23 +1246,23 @@ func (impl *Server) DeleteServerCollection() ([]base.ModelInterface, []base.Mode
 		log.WithFields(log.Fields{
 			"error": err}).
 			Warn("Delete server collection in DB failed, delete server-servergroup collection failed, transaction rollback.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
-	ret, message := impl.TemplateImpl.ConvertFindResultToModel(recordCollection)
-	if message != nil {
+	ret, errorResp := impl.TemplateImpl.ConvertFindResultToModel(recordCollection)
+	if errorResp != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
-			"message":  message.ID,
+			"errorResp":  errorResp.ID,
 		}).Warn("DB delete collection failed, convert find result failed, transaction rollback.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
 			"error":    err,
 		}).Warn("DB delete collection failed, commit failed.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 	return ret, deletedSSG, nil
 }

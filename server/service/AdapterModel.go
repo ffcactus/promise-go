@@ -65,20 +65,20 @@ func LoadModel() {
 		}
 		// Don't forget to set the category here.
 		m.Category = base.CategoryAdapterModel
-		save, message := adapterModelDB.Create(&m)
-		if message == nil {
+		save, errorResp := adapterModelDB.Create(&m)
+		if errorResp == nil {
 			response.Load(&m)
 			base.PublishCreateMessage(&response)
 			log.WithFields(log.Fields{
 				"id": save.GetID(),
 			}).Info("Service save adapter model to DB.")
-		} else if message.ID == base.MessageDuplicate {
+		} else if errorResp.ID == base.ErrorResponseDuplicate {
 			log.WithFields(log.Fields{
 				"name": file.Name(),
 			}).Info("Service found the adapter model exist.")
 		} else {
 			log.WithFields(log.Fields{
-				"message": message.ID,
+				"errorResp": errorResp.ID,
 				"name":    file.Name(),
 			}).Info("Service failed to create adapter model to DB.")
 		}

@@ -30,15 +30,15 @@ func (c *IDController) Get() {
 		"resource": c.TemplateImpl.ResourceName(),
 		"id":       id,
 	}).Debug("IDController get resource.")
-	model, messages := c.TemplateImpl.Service().Get(id)
-	if messages != nil {
+	model, errorResps := c.TemplateImpl.Service().Get(id)
+	if errorResps != nil {
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),
 			"id":       id,
-			"message":  messages[0].ID,
+			"errorResp":  errorResps[0].ID,
 		}).Warn("IDController get resource failed.")
-		c.Data["json"] = &messages
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.Data["json"] = &errorResps
+		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
 		c.ServeJSON()
 		return
 	}
@@ -53,14 +53,14 @@ func (c *IDController) Delete() {
 	var (
 		id = c.Ctx.Input.Param(":id")
 	)
-	if messages := c.TemplateImpl.Service().Delete(id); messages != nil {
+	if errorResps := c.TemplateImpl.Service().Delete(id); errorResps != nil {
 		log.WithFields(log.Fields{
 			"resource": c.TemplateImpl.ResourceName(),
 			"id":       id,
-			"message":  messages[0].ID,
+			"errorResp":  errorResps[0].ID,
 		}).Warn("IDController delete resource failed.")
-		c.Data["json"] = &messages
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.Data["json"] = &errorResps
+		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
 		c.ServeJSON()
 		return
 	}
