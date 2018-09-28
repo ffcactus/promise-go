@@ -15,17 +15,26 @@ const (
 // Enclosure is the model of enclosure.
 type Enclosure struct {
 	base.Model
-	Name          string
-	Description   string
-	Type          string
-	State         string
-	Health        string
-	Addresses     []string
-	BladeSlots    []BladeSlot
-	SwitchSlots   []SwitchSlot
-	FanSlots      []FanSlot
-	PowerSlot     []PowerSlot
-	ApplianceSlot []ApplianceSlot
+	Name           string
+	Description    string
+	Type           string
+	State          string
+	Health         string
+	Addresses      []string // The addresses that can be used to connect to enclosure.
+	DeviceIdentity base.DeviceIdentity
+	Credential     Credential
+	BladeSlots     []BladeSlot
+	SwitchSlots    []SwitchSlot
+	FanSlots       []FanSlot
+	PowerSlot      []PowerSlot
+	ApplianceSlot  []ApplianceSlot
+}
+
+// Credential should contains URL that can retrieve the cridentail or username and password
+type Credential struct {
+	URL      string
+	Username string
+	Password string
 }
 
 // String return the debug name the model.

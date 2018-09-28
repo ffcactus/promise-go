@@ -6,37 +6,43 @@ import (
 )
 
 const (
-	// SeverityNormal is the errorResp severity level.
+	// SeverityNormal is the error response severity level.
 	SeverityNormal = "Normal"
-	// SeverityWarning is the errorResp severity level.
+	// SeverityWarning is the error response severity level.
 	SeverityWarning = "Warning"
-	// SeverityCritical is the errorResp severity level.
+	// SeverityCritical is the error response severity level.
 	SeverityCritical = "Critical"
 )
 
 const (
-	// ErrorResponseInternalError is errorResp ID.
+	// ErrorResponseInternalError is error response ID.
 	ErrorResponseInternalError = "Promise.ErrorResponse.InternalError"
-	// ErrorResponseNotExist is errorResp ID.
+	// ErrorResponseNotExist is error response ID.
 	ErrorResponseNotExist = "Promise.ErrorResponse.NotExist"
-	// ErrorResponseMethodNotAllowed is errorResp ID.
+	// ErrorResponseMethodNotAllowed is error response ID.
 	ErrorResponseMethodNotAllowed = "Promise.ErrorResponse.MethodNotAllowed"
-	// ErrorResponseDuplicate is errorResp ID.
+	// ErrorResponseDuplicate is error response ID.
 	ErrorResponseDuplicate = "Promise.ErrorResponse.Duplicate"
-	// ErrorResponseInvalidRequest is errorResp ID.
+	// ErrorResponseInvalidRequest is error response ID.
 	ErrorResponseInvalidRequest = "Promise.ErrorResponse.InvalidRequest"
-	// ErrorResponseUnknownPropertyValue is errorResp ID.
+	// ErrorResponseUnknownPropertyValue is error response ID.
 	ErrorResponseUnknownPropertyValue = "Promise.ErrorResponse.UnknownPropertyValue"
-	// ErrorResponseTimeout is errorResp ID.
+	// ErrorResponseTimeout is error response ID.
 	ErrorResponseTimeout = "Promise.ErrorResponse.Timeout"
-	// ErrorResponseTransactionError is errorResp ID.
+	// ErrorResponseTransactionError is error response ID.
 	ErrorResponseTransactionError = "Promise.ErrorResponse.TransactionError"
-	// ErrorResponseUnknownFilterName is errorResp ID.
+	// ErrorResponseUnknownFilterName is error response ID.
 	ErrorResponseUnknownFilterName = "Promise.ErrorResponse.UnknownFilterName"
-	// ErrorResponseBusy is errorResp ID.
+	// ErrorResponseBusy is error response ID.
 	ErrorResponseBusy = "Promise.ErrorResponse.Busy"
-	// ErrorResponseErrorState is errorResp ID.
+	// ErrorResponseErrorState is error response ID.
 	ErrorResponseErrorState = "Promise.ErrorResponse.ErrorState"
+	// ErrorResponseDeviceConnection is error response ID.
+	ErrorResponseDeviceConnection = "Promise.ErrorResponse.DeviceConnection"
+	// ErrorResponseDeviceCredential is error response ID.
+	ErrorResponseDeviceCredential = "Promise.ErrorResponse.DeviceCredential"
+	// ErrorResponseDeviceTimeout is error response ID.
+	ErrorResponseDeviceTimeout = "Promise.ErrorResponse.DeviceTimeout"	
 )
 
 const (
@@ -56,6 +62,12 @@ const (
 	SupportBusy = "Promise.Support.Busy"
 	// SupportErrorState is Support ID.
 	SupportErrorState = "Promise.Support.ErrorState"
+	// SupportDeviceConnection is Support ID.
+	SupportDeviceConnection = "Promise.Support.DeviceConnection"
+	// SupportDeviceCredential is Support ID.
+	SupportDeviceCredential = "Promise.Support.DeviceCredential"
+	// SupportDeviceTimeout is Support ID.
+	SupportDeviceTimeout = "Promise.Support.DeviceTimeout"	
 )
 
 // For auth.
@@ -227,6 +239,45 @@ func NewErrorResponseErrorState() *ErrorResponse {
 	return ret
 }
 
+// NewErrorResponseDeviceConnection returns a new errorResp.
+func NewErrorResponseDeviceConnection() *ErrorResponse {
+	ret := NewErrorResponse()
+	ret.ID = ErrorResponseDeviceConnection
+	ret.StatusCode = http.StatusInternalServerError
+	ret.Severity = SeverityNormal
+	ret.Description = "Unable to connect to the device."
+	ret.Supports = []Support{
+		NewSupportDeviceConnection(),
+	}
+	return ret
+}
+
+// NewErrorResponseDeviceCredential returns a new errorResp.
+func NewErrorResponseDeviceCredential() *ErrorResponse {
+	ret := NewErrorResponse()
+	ret.ID = ErrorResponseDeviceCredential
+	ret.StatusCode = http.StatusInternalServerError
+	ret.Severity = SeverityNormal
+	ret.Description = "Invalid device credential."
+	ret.Supports = []Support{
+		NewSupportDeviceCredential(),
+	}
+	return ret
+}
+
+// NewErrorResponseDeviceTimeout returns a new errorResp.
+func NewErrorResponseDeviceTimeout() *ErrorResponse {
+	ret := NewErrorResponse()
+	ret.ID = ErrorResponseDeviceTimeout
+	ret.StatusCode = http.StatusInternalServerError
+	ret.Severity = SeverityNormal
+	ret.Description = "Device response timeout."
+	ret.Supports = []Support{
+		NewSupportDeviceTimeout(),
+	}
+	return ret
+}
+
 // NewSupport create a new Support.
 func NewSupport() Support {
 	ret := Support{}
@@ -235,7 +286,7 @@ func NewSupport() Support {
 	return ret
 }
 
-// NewSupportNotExist will returns a support errorResp.
+// NewSupportNotExist will returns a support.
 func NewSupportNotExist() Support {
 	ret := NewSupport()
 	ret.ID = SupportNotExist
@@ -244,7 +295,7 @@ func NewSupportNotExist() Support {
 	return ret
 }
 
-// NewSupportDuplicate will returns a support errorResp.
+// NewSupportDuplicate will returns a support.
 func NewSupportDuplicate() Support {
 	ret := NewSupport()
 	ret.ID = SupportDuplicate
@@ -253,7 +304,7 @@ func NewSupportDuplicate() Support {
 	return ret
 }
 
-// NewSupportInvalidRequest will returns a support errorResp.
+// NewSupportInvalidRequest will returns a support.
 func NewSupportInvalidRequest() Support {
 	ret := NewSupport()
 	ret.ID = SupportInvalidRequest
@@ -262,7 +313,7 @@ func NewSupportInvalidRequest() Support {
 	return ret
 }
 
-// NewSupportInternalError will returns a support errorResp.
+// NewSupportInternalError will returns a support.
 func NewSupportInternalError() Support {
 	ret := NewSupport()
 	ret.ID = SupportInternalError
@@ -271,7 +322,7 @@ func NewSupportInternalError() Support {
 	return ret
 }
 
-// NewSupportTimeout will returns a support errorResp.
+// NewSupportTimeout will returns a support.
 func NewSupportTimeout() Support {
 	ret := NewSupport()
 	ret.ID = SupportTimeout
@@ -280,7 +331,7 @@ func NewSupportTimeout() Support {
 	return ret
 }
 
-// NewSupportTransactionError will returns a support errorResp.
+// NewSupportTransactionError will returns a support.
 func NewSupportTransactionError() Support {
 	ret := NewSupport()
 	ret.ID = SupportTransactionError
@@ -289,7 +340,7 @@ func NewSupportTransactionError() Support {
 	return ret
 }
 
-// NewSupportBusy will returns a support errorResp.
+// NewSupportBusy will returns a support.
 func NewSupportBusy() Support {
 	ret := NewSupport()
 	ret.ID = SupportBusy
@@ -298,11 +349,38 @@ func NewSupportBusy() Support {
 	return ret
 }
 
-// NewSupportErrorState will returns a support errorResp.
+// NewSupportErrorState will returns a support.
 func NewSupportErrorState() Support {
 	ret := NewSupport()
 	ret.ID = SupportErrorState
 	ret.Reason = "The operation is not allowed during resource state."
 	ret.Solution = "Make sure the resource is in a suitable state."
+	return ret
+}
+
+// NewSupportDeviceConnection will returns a support.
+func NewSupportDeviceConnection() Support {
+	ret := NewSupport()
+	ret.ID = SupportDeviceConnection
+	ret.Reason = "Unable connect to device."
+	ret.Solution = "Make sure the connection is OK and try again."
+	return ret
+}
+
+// NewSupportDeviceCredential will returns a support.
+func NewSupportDeviceCredential() Support {
+	ret := NewSupport()
+	ret.ID = SupportDeviceCredential
+	ret.Reason = "The operation is not allowed during resource state."
+	ret.Solution = "Provide the valid credential and try again."
+	return ret
+}
+
+// NewSupportDeviceTimeout will returns a support.
+func NewSupportDeviceTimeout() Support {
+	ret := NewSupport()
+	ret.ID = SupportDeviceTimeout
+	ret.Reason = "Device operation timeout."
+	ret.Solution = "Make sure the device is OK and try again."
 	return ret
 }

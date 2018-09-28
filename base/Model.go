@@ -52,3 +52,10 @@ type CollectionModel struct {
 type SubModel struct {
 	ID uint64
 }
+
+// DeviceIdentity contains the information that is used to distinguish device among a certain type.
+type DeviceIdentity struct {
+	SerialNumber string
+	PartNumber   string
+	UUID         string
+}

@@ -1,27 +1,17 @@
-package client
+package enclosure
 
 import (
-	log "github.com/sirupsen/logrus"
-	"promise/enclosure/client/mm920"
-	"promise/enclosure/client/mock"
-	"promise/enclosure/object/dto"
+	// log "github.com/sirupsen/logrus"
+	"promise/enclosure/client/enclosure/mm920"
+	"promise/enclosure/client/enclosure/mock"
 	"promise/enclosure/object/model"
+	"promise/base"
 	"fmt"
 )
 
-// Error represents the error in client.
-type Error Interface {
-	Status() int
-	Body() []byte
-	ConnectionError() bool
-	Timeout() bool
-	LoginFailure() bool
-	String() string
-}
-
 // ErrorImpl holds the error info.
 // ErrorImpl implements Error interface.
-type ErrorImpl {
+type ErrorImpl struct {
 	status int
 	body []byte
 	connectionError bool
@@ -31,29 +21,32 @@ type ErrorImpl {
 
 // String returns the debug info for the client error.
 func (e ErrorImpl) String() string {
-	fmt.Sprintf("status = %d, timeout = %v, loginFailure = %v", e.status, e.timeout, e.loginFailure)
+	return fmt.Sprintf("status = %d, timeout = %v, loginFailure = %v", e.status, e.timeout, e.loginFailure)
 }
 
 // Client is the client interface for enclosure device.
 type Client interface {
-	BladeSlot() ([]model.BladeSlot, Error)
-	SwitchSlot() ([]model.SwitchSlot, Error)
-	FanSlot() ([]model.FanSlot, Error)
-	PowerSlot() ([]model.PowerSlot, Error)
-	ManagerSlot() ([]model.ManagerSlot, Error)
-	ApplianceSlot() ([]model.ApplianceSlot, Error)
+	DeviceIdentity() (*base.DeviceIdentity, base.ClientError)
+	BladeSlot() ([]model.BladeSlot, base.ClientError)
+	SwitchSlot() ([]model.SwitchSlot, base.ClientError)
+	FanSlot() ([]model.FanSlot, base.ClientError)
+	PowerSlot() ([]model.PowerSlot, base.ClientError)
+	ManagerSlot() ([]model.ManagerSlot, base.ClientError)
+	ApplianceSlot() ([]model.ApplianceSlot, base.ClientError)
 }
 
 // NewClient creates a enclosure client by enclosure.
-func NewClient(enclosure model.Enclosure) (Client, error) {
+func NewClient(enclosure *model.Enclosure) (Client) {
 	switch enclosure.Type {
 	case model.EnclosureTypeMock:
-		return nil, nil
+		return mock.NewClient(enclosure)
+	case model.EnclosureTypeE9000:
+		return mm920.NewClient(enclosure)
 	default:
-		return nil, nil
+		return nil
 	}
 }
 
-func getCredential(enclosure model.Enclosure) (username, password string, base.ServiceError) {
-	
+func getCredential(enclosure model.Enclosure) (string, string, base.ServiceError) {
+	return enclosure.Credential.Username, enclosure.Credential.Password, nil
 }

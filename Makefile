@@ -1,4 +1,4 @@
-all: director global auth ws task server pool
+all: director global auth ws task server enclosure pool
 
 director:
 	$(MAKE) -C director
