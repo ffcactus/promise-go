@@ -3,8 +3,8 @@ package service
 import (
 	log "github.com/sirupsen/logrus"
 	"promise/base"
-	"promise/enclosure/object/dto"
 	enclosureClient "promise/enclosure/client/enclosure"
+	"promise/enclosure/object/dto"
 )
 
 // Discover is the service for discover enclosure action.
@@ -35,5 +35,15 @@ func (s *Discover) Perform(id string, request base.ActionRequestInterface) (base
 		return nil, []base.ErrorResponse{*base.NewErrorResponseFromClientError(clientError)}
 	}
 	enclosure.DeviceIdentity = *identity
+	if exist, _ := enclosureDB.Exist(enclosure); exist {
+		return nil, []base.ErrorResponse{*base.NewErrorResponseDuplicate()}
+	}
+	created, errResp := enclosureDB.Create(enclosure)
+	if errResp != nil {
+		return nil, []base.ErrorResponse{*errResp}
+	}
+	if err := response.Load(created); err != nil {
+		return nil, []base.ErrorResponse{*base.NewErrorResponseInternalError()}
+	}
 	return &response, nil
 }

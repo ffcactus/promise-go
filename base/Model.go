@@ -1,6 +1,7 @@
 package base
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -58,4 +59,9 @@ type DeviceIdentity struct {
 	SerialNumber string
 	PartNumber   string
 	UUID         string
+}
+
+// String returns the debug info.
+func (d DeviceIdentity) String() string {
+	return fmt.Sprintf("(serial = %s, part = %s, UUID = %s)", d.SerialNumber, d.PartNumber, d.UUID)
 }

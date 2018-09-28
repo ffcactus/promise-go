@@ -1,20 +1,20 @@
 package mm920
 
 import (
-	"promise/enclosure/object/model"
-	log "github.com/sirupsen/logrus"
-	"promise/base"
-	"net/http"
 	"crypto/tls"
+	log "github.com/sirupsen/logrus"
+	"net/http"
+	"promise/base"
+	"promise/enclosure/object/model"
 )
 
 // Client implements EnclosureClient interface.
 type Client struct {
-	_client *http.Client
+	_client          *http.Client
 	PreferredAddress string
-	Addresses []string
-	Username string
-	Password string
+	Addresses        []string
+	Username         string
+	Password         string
 }
 
 // NewClient creates a client for enclosure.
@@ -37,6 +37,21 @@ func NewClient(enclosure *model.Enclosure) *Client {
 // String returns the debug info of the client.
 func (c Client) String() string {
 	return c.PreferredAddress
+}
+
+// Ready returns if the enclosure is ready.
+func (c Client) Ready() bool {
+	return false
+}
+
+// Claim should make make a flag on the enclosure that indicate it is exclusively managed by this system.
+func (c Client) Claim() base.ClientError {
+	return nil
+}
+
+// Unclaim should remove the flag that indicate the enclosure is managed by this system.
+func (c Client) Unclaim() base.ClientError {
+	return nil
 }
 
 // DeviceIdentity returns the device identity.

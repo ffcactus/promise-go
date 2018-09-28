@@ -2,14 +2,15 @@ version: "3.2"
 
 services:
   db:
-    image: postgres:latest
+    image: postgres.promise:latest
     deploy:
       replicas: 1
       restart_policy:
         condition: on-failure
     environment:
       - POSTGRES_PASSWORD=iforgot
-      - POSTGRES_DB=promise
+      # - POSTGRES_DB=promise
+      - POSTGRES_MULTIPLE_DATABASES=promise,enclosure,server,task,pool
     networks:
       - networks_service
       - networks_db

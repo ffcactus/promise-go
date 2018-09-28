@@ -2,21 +2,21 @@ package enclosure
 
 import (
 	// log "github.com/sirupsen/logrus"
+	"fmt"
+	"promise/base"
 	"promise/enclosure/client/enclosure/mm920"
 	"promise/enclosure/client/enclosure/mock"
 	"promise/enclosure/object/model"
-	"promise/base"
-	"fmt"
 )
 
 // ErrorImpl holds the error info.
 // ErrorImpl implements Error interface.
 type ErrorImpl struct {
-	status int
-	body []byte
+	status          int
+	body            []byte
 	connectionError bool
-	timeout bool
-	loginFailure bool
+	timeout         bool
+	loginFailure    bool
 }
 
 // String returns the debug info for the client error.
@@ -26,6 +26,9 @@ func (e ErrorImpl) String() string {
 
 // Client is the client interface for enclosure device.
 type Client interface {
+	Ready() bool
+	Claim() base.ClientError
+	Unclaim() base.ClientError
 	DeviceIdentity() (*base.DeviceIdentity, base.ClientError)
 	BladeSlot() ([]model.BladeSlot, base.ClientError)
 	SwitchSlot() ([]model.SwitchSlot, base.ClientError)
@@ -36,7 +39,7 @@ type Client interface {
 }
 
 // NewClient creates a enclosure client by enclosure.
-func NewClient(enclosure *model.Enclosure) (Client) {
+func NewClient(enclosure *model.Enclosure) Client {
 	switch enclosure.Type {
 	case model.EnclosureTypeMock:
 		return mock.NewClient(enclosure)

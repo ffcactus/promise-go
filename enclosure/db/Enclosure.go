@@ -4,7 +4,8 @@ import (
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 	"promise/base"
-	"promise/enclosure/object/entity"	
+	"promise/enclosure/object/entity"
+	"promise/enclosure/object/model"
 )
 
 // Enclosure is the DB implementation for enclosure.
@@ -67,4 +68,10 @@ func (impl *Enclosure) ConvertFindResultToModel(result interface{}) ([]base.Mode
 		ret = append(ret, m)
 	}
 	return ret, nil
+}
+
+// Exist returns if the enclosure already exist in the DB.
+// If it exists, return it.
+func (impl *Enclosure) Exist(e *model.Enclosure) (bool, base.ModelInterface) {
+	return false, nil
 }

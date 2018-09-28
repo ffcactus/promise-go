@@ -9,10 +9,11 @@ import (
 // Enclosure is the entity.
 type Enclosure struct {
 	base.Entity
-	Name        string `gorm:"column:Name"`
-	Description string `gorm:"column:Description"`
-	State       string `gorm:"column:State"`
-	Health      string `gorm:"column:Health"`
+	Name           string              `gorm:"column:Name"`
+	Description    string              `gorm:"column:Description"`
+	State          string              `gorm:"column:State"`
+	Health         string              `gorm:"column:Health"`
+	DeviceIdentity base.DeviceIdentity `gorm:"column:DeviceIdentity;ForeignKey:EnclosureRef"`
 }
 
 // TableName will set the table name.
