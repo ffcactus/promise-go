@@ -37,6 +37,7 @@ func (dto DiscoverEnclosureRequest) String() string {
 // NewEnclosure creates a enclosure model based on the discover request.
 func (dto DiscoverEnclosureRequest) NewEnclosure() *model.Enclosure {
 	enclosure := model.Enclosure{}
+	enclosure.Category = base.CategoryEnclosure
 	enclosure.Name = dto.Name
 	enclosure.Description = dto.Description
 	enclosure.Type = dto.Type

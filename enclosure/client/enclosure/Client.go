@@ -9,19 +9,32 @@ import (
 	"promise/enclosure/object/model"
 )
 
-// ErrorImpl holds the error info.
-// ErrorImpl implements Error interface.
-type ErrorImpl struct {
+// ClientErrorImpl holds the error info.
+// ClientErrorImpl implements Error interface.
+type ClientErrorImpl struct {
 	status          int
 	body            []byte
 	connectionError bool
+	requestError	error
 	timeout         bool
 	loginFailure    bool
 }
 
 // String returns the debug info for the client error.
-func (e ErrorImpl) String() string {
-	return fmt.Sprintf("status = %d, timeout = %v, loginFailure = %v", e.status, e.timeout, e.loginFailure)
+func (e ClientErrorImpl) String() string {
+	if e.requestError != nil {
+		return fmt.Sprintf("%v", e.requestError)
+	}
+	if timeout {
+		return "timeout"
+	}
+	if connectionError {
+		return fmt.Sprintf("(connection error, status = %d)", e.status)
+	}
+	if loginFailure {
+		return fmt.Sprintf("(login failure, status = %d)", e.status)
+	}
+	return fmt.Sprintf("status = %d", e.status)
 }
 
 // Client is the client interface for enclosure device.

@@ -9,11 +9,11 @@ import (
 // Enclosure is the entity.
 type Enclosure struct {
 	base.Entity
+	base.DeviceIdentity
 	Name           string              `gorm:"column:Name"`
 	Description    string              `gorm:"column:Description"`
 	State          string              `gorm:"column:State"`
 	Health         string              `gorm:"column:Health"`
-	DeviceIdentity base.DeviceIdentity `gorm:"column:DeviceIdentity;ForeignKey:EnclosureRef"`
 }
 
 // TableName will set the table name.
@@ -60,6 +60,7 @@ func (e *Enclosure) Load(i base.ModelInterface) error {
 		return base.ErrorDataConvert
 	}
 	base.EntityLoad(&e.Entity, &m.Model)
+	e.DeviceIdentity = m.DeviceIdentity
 	e.Name = m.Name
 	e.Description = m.Description
 	e.State = m.State
@@ -71,6 +72,7 @@ func (e *Enclosure) Load(i base.ModelInterface) error {
 func (e *Enclosure) ToModel() base.ModelInterface {
 	m := model.Enclosure{}
 	base.EntityToModel(&e.Entity, &m.Model)
+	m.DeviceIdentity = e.DeviceIdentity
 	m.Name = e.Name
 	m.Description = e.Description
 	m.State = e.State

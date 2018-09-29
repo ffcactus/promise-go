@@ -56,9 +56,9 @@ type SubModel struct {
 
 // DeviceIdentity contains the information that is used to distinguish device among a certain type.
 type DeviceIdentity struct {
-	SerialNumber string
-	PartNumber   string
-	UUID         string
+	SerialNumber string `gorm:"column:SerialNumber"`
+	PartNumber   string `gorm:"column:PartNumber"`
+	UUID         string `gorm:"column:UUID"`
 }
 
 // String returns the debug info.

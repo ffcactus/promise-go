@@ -8,11 +8,12 @@ import (
 
 // GetEnclosureResponse is the DTO.
 type GetEnclosureResponse struct {
-	base.GetResponse
+	base.GetResponse	
 	Name        string
 	Description string
 	State       string
 	Health      string
+	base.DeviceIdentity
 	Addresses   []string
 }
 
@@ -29,6 +30,7 @@ func (dto *GetEnclosureResponse) Load(data base.ModelInterface) error {
 		return base.ErrorDataConvert
 	}
 	dto.GetResponse.Load(&m.Model)
+	dto.DeviceIdentity = m.DeviceIdentity
 	dto.Name = m.Name
 	dto.Description = m.Description
 	dto.State = m.State

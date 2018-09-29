@@ -11,10 +11,12 @@ func RandUUID() string {
 	return uuid.New().String()
 }
 
+// RandIPv4 generates a rand IPv4 address.
 func RandIPv4() string {
 	return fmt.Sprintf("%d.%d.%d.%d", rand.Intn(255), rand.Intn(255), rand.Intn(255), rand.Intn(255))
 }
 
+// RandIPv6 generates a rand IPv6 address.
 func RandIPv6() string {
 	return fmt.Sprintf("%d:%d:%d:%d:%d:%d", rand.Intn(99), rand.Intn(99), rand.Intn(99), rand.Intn(99), rand.Intn(99), rand.Intn(99))
 }

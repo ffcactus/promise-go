@@ -15,13 +15,13 @@ const (
 // Enclosure is the model of enclosure.
 type Enclosure struct {
 	base.Model
+	base.DeviceIdentity
 	Name           string
 	Description    string
 	Type           string
 	State          string
 	Health         string
 	Addresses      []string // The addresses that can be used to connect to enclosure.
-	DeviceIdentity base.DeviceIdentity
 	Credential     Credential
 	BladeSlots     []BladeSlot
 	SwitchSlots    []SwitchSlot
