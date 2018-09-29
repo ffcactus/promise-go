@@ -7,9 +7,26 @@ import (
 const (
 	// EnclosureTypeMock is the enum represents mock enclosure.
 	EnclosureTypeMock = "Mock"
-
 	// EnclosureTypeE9000 is the enum represents E9000 enclosure.
 	EnclosureTypeE9000 = "E9000"
+)
+
+const (
+	// StateAdded means enclosure is just added.
+	StateAdded = "Added"
+	// StateReady means enclosure is ready to take an action.
+	StateReady = "Ready"
+	// StateLocked means enclosure is under an action.
+	StateLocked = "Locked"
+	// StateUnmanaged means enclosure is unmanaged.
+	StateUnmanaged = "Unmanaged"
+
+	// HealthOK means enclosure has no alarm.
+	HealthOK = "OK"
+	// HealthWarning means enclosure has warning alarm.
+	HealthWarning = "Warning"
+	// HealthCritical means enclosure has critical alarm.
+	HealthCritical = "Critical"
 )
 
 // Enclosure is the model of enclosure.
@@ -25,9 +42,10 @@ type Enclosure struct {
 	Credential     Credential
 	BladeSlots     []BladeSlot
 	SwitchSlots    []SwitchSlot
+	ManagerSlots   []ManagerSlot
+	ApplianceSlots []ApplianceSlot
 	FanSlots       []FanSlot
-	PowerSlot      []PowerSlot
-	ApplianceSlot  []ApplianceSlot
+	PowerSlots     []PowerSlot
 }
 
 // Credential should contains URL that can retrieve the cridentail or username and password

@@ -42,7 +42,7 @@ const (
 	// ErrorResponseDeviceCredential is error response ID.
 	ErrorResponseDeviceCredential = "Promise.ErrorResponse.DeviceCredential"
 	// ErrorResponseDeviceTimeout is error response ID.
-	ErrorResponseDeviceTimeout = "Promise.ErrorResponse.DeviceTimeout"	
+	ErrorResponseDeviceTimeout = "Promise.ErrorResponse.DeviceTimeout"
 )
 
 const (
@@ -67,7 +67,7 @@ const (
 	// SupportDeviceCredential is Support ID.
 	SupportDeviceCredential = "Promise.Support.DeviceCredential"
 	// SupportDeviceTimeout is Support ID.
-	SupportDeviceTimeout = "Promise.Support.DeviceTimeout"	
+	SupportDeviceTimeout = "Promise.Support.DeviceTimeout"
 )
 
 // For auth.

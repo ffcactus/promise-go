@@ -2,7 +2,6 @@ package model
 
 // PowerSlot represents the power slot info.
 type PowerSlot struct {
-	Index     int
-	Inserted  bool
-	DeviceURL string
+	Index    int
+	Inserted bool
 }

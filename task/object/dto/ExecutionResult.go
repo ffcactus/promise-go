@@ -7,8 +7,8 @@ import (
 
 // ExecutionResult Execution result DTO.
 type ExecutionResult struct {
-	State   model.ExecutionResultState `json:"State"`
-	ErrorResponse *base.ErrorResponse              `json:"ErrorResponse"`
+	State         model.ExecutionResultState `json:"State"`
+	ErrorResponse *base.ErrorResponse        `json:"ErrorResponse"`
 }
 
 // Load Load from model.
@@ -19,8 +19,8 @@ func (o *ExecutionResult) Load(m *model.ExecutionResult) {
 
 // UpdateExecutionResultRequest Update execution result step request DTO.
 type UpdateExecutionResultRequest struct {
-	State   *model.ExecutionResultState `json:"State"`
-	ErrorResponse *base.ErrorResponse               `json:"ErrorResponse"`
+	State         *model.ExecutionResultState `json:"State"`
+	ErrorResponse *base.ErrorResponse         `json:"ErrorResponse"`
 }
 
 // UpdateModel Update from model.

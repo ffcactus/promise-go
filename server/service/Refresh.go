@@ -29,7 +29,7 @@ func (s *Refresh) FindServerStateAdded() {
 					seconds = 1
 				} else {
 					log.WithFields(log.Fields{
-						"server":  id,
+						"server":    id,
 						"errorResp": errorResp[0].ID,
 					}).Info("Service auto-refresh server failed.")
 					seconds = 5

@@ -9,8 +9,7 @@ services:
         condition: on-failure
     environment:
       - POSTGRES_PASSWORD=iforgot
-      # - POSTGRES_DB=promise
-      - POSTGRES_MULTIPLE_DATABASES=promise,enclosure,server,task,pool
+      - POSTGRES_MULTIPLE_DATABASES=auth,enclosure,pool,server,task
     networks:
       - networks_service
       - networks_db

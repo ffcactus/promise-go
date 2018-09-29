@@ -27,16 +27,16 @@ type RootController struct {
 // Post is the default implementation for POST method.
 func (c *RootController) Post() {
 	var (
-		request  = c.TemplateImpl.Request()
-		response = c.TemplateImpl.Response()
+		request    = c.TemplateImpl.Request()
+		response   = c.TemplateImpl.Response()
 		errorResps []ErrorResponse
 	)
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
 		errorResps = append(errorResps, *NewErrorResponseInvalidRequest())
 		log.WithFields(log.Fields{
-			"resource": c.TemplateImpl.ResourceName(),
-			"error":    err,
-			"errorResp":  errorResps[0].ID,
+			"resource":  c.TemplateImpl.ResourceName(),
+			"error":     err,
+			"errorResp": errorResps[0].ID,
 		}).Warn("RootController post resource failed, bad request.")
 		c.Data["json"] = &errorResps
 		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
@@ -47,8 +47,8 @@ func (c *RootController) Post() {
 	if errorResp := request.IsValid(); errorResp != nil {
 		errorResps = append(errorResps, *errorResp)
 		log.WithFields(log.Fields{
-			"resource": c.TemplateImpl.ResourceName(),
-			"errorResp":  errorResps[0].ID,
+			"resource":  c.TemplateImpl.ResourceName(),
+			"errorResp": errorResps[0].ID,
 		}).Warn("RootController post resource failed, request validation failed.")
 		c.Data["json"] = &errorResps
 		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
@@ -117,8 +117,8 @@ func (c *RootController) Get() {
 	if parameterError {
 		errorResps := []ErrorResponse{*NewErrorResponseInvalidRequest()}
 		log.WithFields(log.Fields{
-			"resource": c.TemplateImpl.ResourceName(),
-			"errorResp":  errorResps[0].ID,
+			"resource":  c.TemplateImpl.ResourceName(),
+			"errorResp": errorResps[0].ID,
 		}).Warn("RootController get resource collection failed, parameter error.")
 		c.Data["json"] = &errorResps
 		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
@@ -128,8 +128,8 @@ func (c *RootController) Get() {
 	collection, errorResps := c.TemplateImpl.Service().GetCollection(startInt, countInt, filter)
 	if errorResps != nil {
 		log.WithFields(log.Fields{
-			"resource": c.TemplateImpl.ResourceName(),
-			"errorResp":  errorResps[0].ID,
+			"resource":  c.TemplateImpl.ResourceName(),
+			"errorResp": errorResps[0].ID,
 		}).Warn("RootController get resource collection failed.")
 		c.Data["json"] = &errorResps
 		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
@@ -140,9 +140,9 @@ func (c *RootController) Get() {
 	if err != nil {
 		errorResps := []ErrorResponse{*NewErrorResponseTransactionError()}
 		log.WithFields(log.Fields{
-			"resource": c.TemplateImpl.ResourceName(),
-			"errorResp":  errorResps[0].ID,
-			"error":    err,
+			"resource":  c.TemplateImpl.ResourceName(),
+			"errorResp": errorResps[0].ID,
+			"error":     err,
 		}).Warn("RootController convert resource collection response failed.")
 		c.Data["json"] = &errorResps
 		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)

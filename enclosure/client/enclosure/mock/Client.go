@@ -1,14 +1,14 @@
 package mock
 
 import (
-	"promise/enclosure/object/model"
 	log "github.com/sirupsen/logrus"
 	"promise/base"
+	"promise/enclosure/object/model"
 )
 
 // Client implements EnclosureClient interface.
 type Client struct {
-	Address string
+	Address  string
 	Username string
 	Password string
 }
@@ -19,7 +19,7 @@ func NewClient(enclosure *model.Enclosure) *Client {
 	if len(enclosure.Addresses) > 0 {
 		client.Address = enclosure.Addresses[0]
 	}
-	return &client	
+	return &client
 }
 
 // String returns the debug info of the client.

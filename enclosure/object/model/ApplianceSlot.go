@@ -5,5 +5,4 @@ type ApplianceSlot struct {
 	Index     int
 	Inserted  bool
 	DeviceURL string
-	SwitchURL string
 }

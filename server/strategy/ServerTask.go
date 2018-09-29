@@ -196,8 +196,8 @@ func (s *ServerTask) createTask(request *taskDTO.PostTaskRequest, server *model.
 	}
 	if errorResp != nil {
 		log.WithFields(log.Fields{
-			"server":  server.ID,
-			"name":    request.Name,
+			"server":    server.ID,
+			"name":      request.Name,
 			"errorResp": errorResp[0].ID}).
 			Warn("Create server task failed.")
 		return "", fmt.Errorf("create task failed")
@@ -228,10 +228,10 @@ func (s *ServerTask) UpdateStepExecutionState(id string, stepName string, state 
 	}
 	if errorResp != nil {
 		log.WithFields(log.Fields{
-			"server":  server.ID,
-			"task":    id,
-			"step":    stepName,
-			"state":   state,
+			"server":    server.ID,
+			"task":      id,
+			"step":      stepName,
+			"state":     state,
 			"errorResp": errorResp[0].ID}).
 			Warn("Update task step execution state failed.")
 	}
@@ -251,10 +251,10 @@ func (s *ServerTask) UpdateStepExecutionResultState(c *context.Base, id string, 
 	}
 	if errorResp != nil {
 		log.WithFields(log.Fields{
-			"server":  server.ID,
-			"task":    id,
-			"step":    stepName,
-			"state":   state,
+			"server":    server.ID,
+			"task":      id,
+			"step":      stepName,
+			"state":     state,
 			"errorResp": errorResp[0].ID}).
 			Warn("Update task step execution result state failed.")
 	}
@@ -278,9 +278,9 @@ func (s *ServerTask) SetTaskStepRunning(c *context.Base, id string, stepName str
 	}
 	if errorResp != nil {
 		log.WithFields(log.Fields{
-			"server":  server.ID,
-			"task":    id,
-			"step":    stepName,
+			"server":    server.ID,
+			"task":      id,
+			"step":      stepName,
 			"errorResp": errorResp[0].ID}).
 			Warn("Set task step to running failed.")
 	}
@@ -297,9 +297,9 @@ func (s *ServerTask) logUpdateStepResult(c *context.Base, id string, stepName st
 	}
 	if errorResp != nil {
 		log.WithFields(log.Fields{
-			"server":  server.ID,
-			"task":    id,
-			"step":    stepName,
+			"server":    server.ID,
+			"task":      id,
+			"step":      stepName,
 			"errorResp": errorResp[0].ID,
 		}).Warn("Set task step to finished failed.")
 	}

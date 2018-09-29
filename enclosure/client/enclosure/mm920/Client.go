@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
-	"io/ioutil"
 	"fmt"
 	log "github.com/sirupsen/logrus"
+	"io/ioutil"
 	"net/http"
+	"net/url"
 	"promise/base"
 	"promise/enclosure/object/model"
 )
@@ -66,8 +67,8 @@ func (e ClientErrorImpl) LoginFailure() bool {
 	return e.loginFailure
 }
 
-// String returns the debug info for the client error.
-func (e ClientErrorImpl) String() string {
+// Error implements the error interface.
+func (e ClientErrorImpl) Error() string {
 	if e.jsonError != nil {
 		return fmt.Sprintf("json error = %v", e.jsonError)
 	}
@@ -93,8 +94,10 @@ func (e ClientErrorImpl) String() string {
 func ToClientError(err error) base.ClientError {
 	var errorImpl ClientErrorImpl
 	errorImpl.responseError = err
-	if err.Timeout() {
-		errorImpl.timeout = true
+	if urlError, ok := err.(*url.Error); ok {
+		if urlError.Timeout() {
+			errorImpl.timeout = true
+		}
 	}
 	return &errorImpl
 }
@@ -251,19 +254,15 @@ func (c Client) Unclaim() base.ClientError {
 // DeviceIdentity returns the device identity.
 func (c Client) DeviceIdentity() (*base.DeviceIdentity, base.ClientError) {
 	var (
-		httpRequest      *http.Request
-		httpResponse     *http.Response
 		identity         base.DeviceIdentity
 		redfishV1        GetRedfishV1Response
 		chassisEnclosure GetChassisEnclosureResponse
 	)
-
 	// Get UUID.
 	if err := c.Get("/redfish/v1", &redfishV1); err != nil {
 		return nil, err
 	}
 	identity.UUID = redfishV1.UUID
-
 	// Get SerialNumber and PartNumber
 	if err := c.Get("/redfish/v1/Chassis/Enclosure", &chassisEnclosure); err != nil {
 		return nil, err

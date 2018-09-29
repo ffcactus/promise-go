@@ -41,7 +41,7 @@ type ActionController struct {
 // Post is the default method to handle POST method.
 func (c *ActionController) Post() {
 	var (
-		errorResps   []ErrorResponse
+		errorResps []ErrorResponse
 		action     = c.Ctx.Input.Param(":action")
 		id         = c.Ctx.Input.Param(":id")
 		actionInfo = c.TemplateImpl.ActionInfo()
@@ -77,11 +77,11 @@ func (c *ActionController) Post() {
 	if service == nil {
 		errorResps = append(errorResps, *NewErrorResponseInvalidRequest())
 		log.WithFields(log.Fields{
-			"resource": c.TemplateImpl.ResourceName(),
-			"action":   action,
-			"type":     actionType,
-			"id":       id,
-			"errorResp":  errorResps[0].ID,
+			"resource":  c.TemplateImpl.ResourceName(),
+			"action":    action,
+			"type":      actionType,
+			"id":        id,
+			"errorResp": errorResps[0].ID,
 		}).Warn("ActionController perform action failed, unknown action.")
 		c.Data["json"] = &errorResps
 		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
@@ -93,12 +93,12 @@ func (c *ActionController) Post() {
 		if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
 			errorResps = append(errorResps, *NewErrorResponseInvalidRequest())
 			log.WithFields(log.Fields{
-				"resource": c.TemplateImpl.ResourceName(),
-				"action":   action,
-				"type":     actionType,
-				"id":       id,
-				"error":    err,
-				"errorResp":  errorResps[0].ID,
+				"resource":  c.TemplateImpl.ResourceName(),
+				"action":    action,
+				"type":      actionType,
+				"id":        id,
+				"error":     err,
+				"errorResp": errorResps[0].ID,
 			}).Warn("ActionController perform action failed, bad request.")
 			c.Data["json"] = &errorResps
 			c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
@@ -109,11 +109,11 @@ func (c *ActionController) Post() {
 		if errorResp := request.IsValid(); errorResp != nil {
 			errorResps = append(errorResps, *errorResp)
 			log.WithFields(log.Fields{
-				"resource": c.TemplateImpl.ResourceName(),
-				"action":   action,
-				"type":     actionType,
-				"id":       id,
-				"errorResp":  errorResps[0].ID,
+				"resource":  c.TemplateImpl.ResourceName(),
+				"action":    action,
+				"type":      actionType,
+				"id":        id,
+				"errorResp": errorResps[0].ID,
 			}).Warn("ActionController perform action failed, request validation failed.")
 			c.Data["json"] = &errorResps
 			c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
@@ -158,11 +158,11 @@ func (c *ActionController) Post() {
 	if !ok {
 		errorResps = []ErrorResponse{*NewErrorResponseInternalError()}
 		log.WithFields(log.Fields{
-			"resource": c.TemplateImpl.ResourceName(),
-			"action":   action,
-			"type":     actionType,
-			"id":       id,
-			"errorResp":  errorResps[0].ID,
+			"resource":  c.TemplateImpl.ResourceName(),
+			"action":    action,
+			"type":      actionType,
+			"id":        id,
+			"errorResp": errorResps[0].ID,
 		}).Warn("ActionController perform action failed, convert request and service failed.")
 		c.Data["json"] = &errorResps
 		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
@@ -171,11 +171,11 @@ func (c *ActionController) Post() {
 	}
 	if errorResps != nil {
 		log.WithFields(log.Fields{
-			"resource": c.TemplateImpl.ResourceName(),
-			"action":   action,
-			"type":     actionType,
-			"id":       id,
-			"errorResp":  errorResps[0].ID,
+			"resource":  c.TemplateImpl.ResourceName(),
+			"action":    action,
+			"type":      actionType,
+			"id":        id,
+			"errorResp": errorResps[0].ID,
 		}).Warn("ActionController perform action failed.")
 		c.Data["json"] = &errorResps
 		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)

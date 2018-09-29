@@ -1,6 +1,7 @@
 package base
 
 import (
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -428,8 +429,8 @@ func (impl *DB) DeleteCollection() ([]ModelInterface, *ErrorResponse) {
 	if errorResp != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
-			"resource": name,
-			"errorResp":  errorResp.ID,
+			"resource":  name,
+			"errorResp": errorResp.ID,
 		}).Warn("DB delete collection failed, convert find result failed, transaction rollback.")
 		return nil, errorResp
 	}
@@ -452,10 +453,10 @@ type TableInfo struct {
 var connection *gorm.DB
 
 // InitConnection Init the DB connection. Each service have to call the method first.
-func InitConnection() error {
+func InitConnection(dbname string) error {
 	if connection == nil {
 		log.Info("Init DB connection.")
-		args := "host=db port=5432 user=postgres dbname=promise sslmode=disable password=iforgot"
+		args := fmt.Sprintf("host=db port=5432 user=postgres dbname=%s sslmode=disable password=iforgot", dbname)
 		db, err := gorm.Open("postgres", args)
 		// args := "host=100.100.194.103 port=5432 user=gaussdba dbname=NETADAPTOR sslmode=disable password=Huawei12#$"
 		// db, err := gorm.Open("gauss", args)

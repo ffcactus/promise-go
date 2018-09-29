@@ -10,7 +10,7 @@ import (
 
 var (
 	// DefaultServerGroupID records the ID of default servergroup. We don't have to retrieve it each time.
-	DefaultServerGroupID    string
+	DefaultServerGroupID      string
 	errorRespTransactionError = base.NewErrorResponseTransactionError()
 )
 
@@ -122,8 +122,8 @@ func (impl *ServerGroup) DeleteCollection() ([]base.ModelInterface, *base.ErrorR
 	if errorResp != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
-			"resource": name,
-			"errorResp":  errorResp.ID,
+			"resource":  name,
+			"errorResp": errorResp.ID,
 		}).Warn("Delete collection in DB failed, convert find result failed, transaction rollback.")
 		return nil, errorResp
 	}

@@ -63,7 +63,7 @@ func IsValidExecutionResultState(state string) bool {
 
 // ExecutionResult Used by Task and it's TaskStep
 type ExecutionResult struct {
-	State   ExecutionResultState
+	State         ExecutionResultState
 	ErrorResponse *base.ErrorResponse
 }
 

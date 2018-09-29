@@ -10,10 +10,17 @@ import (
 type Enclosure struct {
 	base.Entity
 	base.DeviceIdentity
-	Name           string              `gorm:"column:Name"`
-	Description    string              `gorm:"column:Description"`
-	State          string              `gorm:"column:State"`
-	Health         string              `gorm:"column:Health"`
+	Name           string          `gorm:"column:Name"`
+	Description    string          `gorm:"column:Description"`
+	State          string          `gorm:"column:State"`
+	Health         string          `gorm:"column:Health"`
+	BladeSlots     []BladeSlot     `gorm:"column:BladeSlots;ForeignKey:EnclosureRef"`
+	SwitchSlots    []SwitchSlot    `gorm:"column:SwitchSlots;ForeignKey:EnclosureRef"`
+	ManagerSlots   []ManagerSlot   `gorm:"column:ManagerSlots;ForeignKey:EnclosureRef"`
+	ApplianceSlots []ApplianceSlot `gorm:"column:ApplianceSlots;ForeignKey:EnclosureRef"`
+	FanSlots       []FanSlot       `gorm:"column:FanSlots;ForeignKey:EnclosureRef"`
+	PowerSlots     []PowerSlot     `gorm:"column:PowerSlots;ForeignKey:EnclosureRef"`
+	CredentialURL  string          `gorm:"column:CredentialURL"`
 }
 
 // TableName will set the table name.
@@ -33,23 +40,56 @@ func (e *Enclosure) PropertyNameForDuplicationCheck() string {
 
 // Preload return the property names that need to be preload.
 func (e *Enclosure) Preload() []string {
-	return []string{}
+	return []string{
+		"BladeSlots",
+		"SwitchSlots",
+		"ManagerSlots",
+		"ApplianceSlots",
+		"FanSlots",
+		"PowerSlots",
+	}
 }
 
 // Association return all the assocations that need to delete when deleting a resource.
 func (e *Enclosure) Association() []interface{} {
 	ret := []interface{}{}
+	for _, v := range e.PowerSlots {
+		ret = append(ret, v)
+	}
+	for _, v := range e.FanSlots {
+		ret = append(ret, v)
+	}
+	for _, v := range e.ApplianceSlots {
+		ret = append(ret, v)
+	}
+	for _, v := range e.ManagerSlots {
+		ret = append(ret, v)
+	}
+	for _, v := range e.SwitchSlots {
+		ret = append(ret, v)
+	}
+	for _, v := range e.BladeSlots {
+		ret = append(ret, v)
+	}
 	return ret
 }
 
 // Tables returns the tables to delete when you want delete all the resources.
 func (e *Enclosure) Tables() []interface{} {
-	return []interface{}{new(Enclosure)}
+	return []interface{}{
+		new(PowerSlot),
+		new(FanSlot),
+		new(ApplianceSlot),
+		new(ManagerSlot),
+		new(SwitchSlot),
+		new(BladeSlot),
+		new(Enclosure),
+	}
 }
 
 // FilterNameList return all the property name that can be used in filter.
 func (e *Enclosure) FilterNameList() []string {
-	return []string{"Name"}
+	return []string{"Name", "State", "State", "Health", "UUID", "SerialNumber", "PartNumber"}
 }
 
 // Load will load data from model. this function is used on POST.
@@ -65,6 +105,49 @@ func (e *Enclosure) Load(i base.ModelInterface) error {
 	e.Description = m.Description
 	e.State = m.State
 	e.Health = m.Health
+	// blade
+	e.BladeSlots = make([]BladeSlot, 0)
+	for _, v := range m.BladeSlots {
+		k := BladeSlot{}
+		k.Load(&v)
+		e.BladeSlots = append(e.BladeSlots, k)
+	}
+	// switch
+	e.SwitchSlots = make([]SwitchSlot, 0)
+	for _, v := range m.SwitchSlots {
+		k := SwitchSlot{}
+		k.Load(&v)
+		e.SwitchSlots = append(e.SwitchSlots, k)
+	}
+	// manager
+	e.ManagerSlots = make([]ManagerSlot, 0)
+	for _, v := range m.ManagerSlots {
+		k := ManagerSlot{}
+		k.Load(&v)
+		e.ManagerSlots = append(e.ManagerSlots, k)
+	}
+	// appliance
+	e.ApplianceSlots = make([]ApplianceSlot, 0)
+	for _, v := range m.ApplianceSlots {
+		k := ApplianceSlot{}
+		k.Load(&v)
+		e.ApplianceSlots = append(e.ApplianceSlots, k)
+	}
+	// fan
+	e.FanSlots = make([]FanSlot, 0)
+	for _, v := range m.FanSlots {
+		k := FanSlot{}
+		k.Load(&v)
+		e.FanSlots = append(e.FanSlots, k)
+	}
+	// power
+	e.PowerSlots = make([]PowerSlot, 0)
+	for _, v := range m.PowerSlots {
+		k := PowerSlot{}
+		k.Load(&v)
+		e.PowerSlots = append(e.PowerSlots, k)
+	}
+	e.CredentialURL = m.Credential.URL
 	return nil
 }
 
@@ -77,6 +160,37 @@ func (e *Enclosure) ToModel() base.ModelInterface {
 	m.Description = e.Description
 	m.State = e.State
 	m.Health = e.Health
+	// blade
+	m.BladeSlots = make([]model.BladeSlot, 0)
+	for _, v := range e.BladeSlots {
+		m.BladeSlots = append(m.BladeSlots, *v.ToModel())
+	}
+	// switch
+	m.SwitchSlots = make([]model.SwitchSlot, 0)
+	for _, v := range e.SwitchSlots {
+		m.SwitchSlots = append(m.SwitchSlots, *v.ToModel())
+	}
+	// manager
+	m.ManagerSlots = make([]model.ManagerSlot, 0)
+	for _, v := range e.ManagerSlots {
+		m.ManagerSlots = append(m.ManagerSlots, *v.ToModel())
+	}
+	// appliance
+	m.ApplianceSlots = make([]model.ApplianceSlot, 0)
+	for _, v := range e.ApplianceSlots {
+		m.ApplianceSlots = append(m.ApplianceSlots, *v.ToModel())
+	}
+	// fan
+	m.FanSlots = make([]model.FanSlot, 0)
+	for _, v := range e.FanSlots {
+		m.FanSlots = append(m.FanSlots, *v.ToModel())
+	}
+	// power
+	m.PowerSlots = make([]model.PowerSlot, 0)
+	for _, v := range e.PowerSlots {
+		m.PowerSlots = append(m.PowerSlots, *v.ToModel())
+	}
+	e.CredentialURL = m.Credential.URL
 	return &m
 }
 

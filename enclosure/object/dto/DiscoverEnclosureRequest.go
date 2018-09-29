@@ -7,13 +7,13 @@ import (
 
 // DiscoverEnclosureRequest is the DTO.
 type DiscoverEnclosureRequest struct {
-	Name string
+	Name        string
 	Description string
-	Type string
-	Address  string
-	Username string
-	Password string
-	Force    bool
+	Type        string
+	Address     string
+	Username    string
+	Password    string
+	Force       bool
 }
 
 // NewInstance returns a new instance.
@@ -38,6 +38,8 @@ func (dto DiscoverEnclosureRequest) String() string {
 func (dto DiscoverEnclosureRequest) NewEnclosure() *model.Enclosure {
 	enclosure := model.Enclosure{}
 	enclosure.Category = base.CategoryEnclosure
+	enclosure.State = model.StateAdded
+	enclosure.Health = model.HealthOK
 	enclosure.Name = dto.Name
 	enclosure.Description = dto.Description
 	enclosure.Type = dto.Type

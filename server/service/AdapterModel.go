@@ -79,7 +79,7 @@ func LoadModel() {
 		} else {
 			log.WithFields(log.Fields{
 				"errorResp": errorResp.ID,
-				"name":    file.Name(),
+				"name":      file.Name(),
 			}).Info("Service failed to create adapter model to DB.")
 		}
 	}

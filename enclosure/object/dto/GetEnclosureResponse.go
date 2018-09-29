@@ -8,13 +8,13 @@ import (
 
 // GetEnclosureResponse is the DTO.
 type GetEnclosureResponse struct {
-	base.GetResponse	
+	base.GetResponse
 	Name        string
 	Description string
 	State       string
 	Health      string
 	base.DeviceIdentity
-	Addresses   []string
+	Addresses []string
 }
 
 // String return the name for debug.

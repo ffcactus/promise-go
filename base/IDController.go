@@ -33,9 +33,9 @@ func (c *IDController) Get() {
 	model, errorResps := c.TemplateImpl.Service().Get(id)
 	if errorResps != nil {
 		log.WithFields(log.Fields{
-			"resource": c.TemplateImpl.ResourceName(),
-			"id":       id,
-			"errorResp":  errorResps[0].ID,
+			"resource":  c.TemplateImpl.ResourceName(),
+			"id":        id,
+			"errorResp": errorResps[0].ID,
 		}).Warn("IDController get resource failed.")
 		c.Data["json"] = &errorResps
 		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
@@ -55,9 +55,9 @@ func (c *IDController) Delete() {
 	)
 	if errorResps := c.TemplateImpl.Service().Delete(id); errorResps != nil {
 		log.WithFields(log.Fields{
-			"resource": c.TemplateImpl.ResourceName(),
-			"id":       id,
-			"errorResp":  errorResps[0].ID,
+			"resource":  c.TemplateImpl.ResourceName(),
+			"id":        id,
+			"errorResp": errorResps[0].ID,
 		}).Warn("IDController delete resource failed.")
 		c.Data["json"] = &errorResps
 		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)

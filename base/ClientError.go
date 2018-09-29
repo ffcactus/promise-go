@@ -2,12 +2,12 @@ package base
 
 // ClientError represents the error in client operation.
 type ClientError interface {
+	error
 	Status() int
 	Body() []byte
 	ConnectionError() bool
 	Timeout() bool
 	LoginFailure() bool
-	String() string
 }
 
 // NewErrorResponseFromClientError creates error response depends on the client error.

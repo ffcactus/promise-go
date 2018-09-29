@@ -2,40 +2,11 @@ package enclosure
 
 import (
 	// log "github.com/sirupsen/logrus"
-	"fmt"
 	"promise/base"
 	"promise/enclosure/client/enclosure/mm920"
 	"promise/enclosure/client/enclosure/mock"
 	"promise/enclosure/object/model"
 )
-
-// ClientErrorImpl holds the error info.
-// ClientErrorImpl implements Error interface.
-type ClientErrorImpl struct {
-	status          int
-	body            []byte
-	connectionError bool
-	requestError	error
-	timeout         bool
-	loginFailure    bool
-}
-
-// String returns the debug info for the client error.
-func (e ClientErrorImpl) String() string {
-	if e.requestError != nil {
-		return fmt.Sprintf("%v", e.requestError)
-	}
-	if timeout {
-		return "timeout"
-	}
-	if connectionError {
-		return fmt.Sprintf("(connection error, status = %d)", e.status)
-	}
-	if loginFailure {
-		return fmt.Sprintf("(login failure, status = %d)", e.status)
-	}
-	return fmt.Sprintf("status = %d", e.status)
-}
 
 // Client is the client interface for enclosure device.
 type Client interface {

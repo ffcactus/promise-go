@@ -4,7 +4,7 @@ package mm920
 // Represents response from get /redfish/v1/Chassis/Enclosure
 type GetChassisEnclosureResponse struct {
 	SerialNumber string
-	PartNumber string
+	PartNumber   string
 }
 
 // GetRedfishV1Response is DTO.

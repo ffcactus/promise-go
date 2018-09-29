@@ -3,11 +3,11 @@ package controller
 import (
 	"promise/base"
 	"promise/enclosure/object/dto"
-	"promise/enclosure/service"	
+	"promise/enclosure/service"
 )
 
 var (
-	enclosureService = &service.Enclosure {
+	enclosureService = &service.Enclosure{
 		CRUDService: base.CRUDService{
 			TemplateImpl: new(service.Enclosure),
 		},
@@ -16,7 +16,6 @@ var (
 
 // EnclosureRoot is the root controller for enclosure.
 type EnclosureRoot struct {
-
 }
 
 // ResourceName returns the name this controller handle of.

@@ -1252,8 +1252,8 @@ func (impl *Server) DeleteServerCollection() ([]base.ModelInterface, []base.Mode
 	if errorResp != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
-			"resource": name,
-			"errorResp":  errorResp.ID,
+			"resource":  name,
+			"errorResp": errorResp.ID,
 		}).Warn("DB delete collection failed, convert find result failed, transaction rollback.")
 		return nil, nil, base.NewErrorResponseTransactionError()
 	}
