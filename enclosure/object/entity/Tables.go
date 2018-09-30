@@ -8,7 +8,7 @@ var (
 	// Tables The tables used by this project.
 	Tables = []base.TableInfo{
 		{Name: "Enclosure", Info: new(Enclosure)},
-		{Name: "BladeSlot", Info: new(BladeSlot)},
+		{Name: "ServerSlot", Info: new(ServerSlot)},
 		{Name: "SwitchSlot", Info: new(SwitchSlot)},
 		{Name: "ManagerSlot", Info: new(ManagerSlot)},
 		{Name: "ApplianceSlot", Info: new(ApplianceSlot)},

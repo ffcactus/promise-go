@@ -9,9 +9,7 @@ import (
 type SwitchSlot struct {
 	base.ElementEntity
 	EnclosureRef base.EntityRefType `gorm:"column:EnclosureRef"`
-	Index        int                `gorm:"column:Index"`
-	Inserted     bool               `gorm:"column:Inserted"`
-	SwitchURL    string             `gorm:"column:SwitchURL"`
+	model.SwitchSlotCommon
 }
 
 // TableName will set the table name.
@@ -22,13 +20,11 @@ func (SwitchSlot) TableName() string {
 // ToModel converts entity to model.
 func (e SwitchSlot) ToModel() *model.SwitchSlot {
 	m := model.SwitchSlot{}
-	m.Index = e.Index
-	m.Inserted = e.Inserted
+	m.SwitchSlotCommon = e.SwitchSlotCommon
 	return &m
 }
 
 // Load loads the model to entity.
-func (e SwitchSlot) Load(m *model.SwitchSlot) {
-	e.Index = m.Index
-	e.Inserted = m.Inserted
+func (e *SwitchSlot) Load(m *model.SwitchSlot) {
+	e.SwitchSlotCommon = m.SwitchSlotCommon
 }

@@ -9,8 +9,7 @@ import (
 type PowerSlot struct {
 	base.ElementEntity
 	EnclosureRef base.EntityRefType `gorm:"column:EnclosureRef"`
-	Index        int                `gorm:"column:Index"`
-	Inserted     bool               `gorm:"column:Inserted"`
+	model.PowerSlotCommon
 }
 
 // TableName will set the table name.
@@ -21,13 +20,11 @@ func (PowerSlot) TableName() string {
 // ToModel converts entity to model.
 func (e PowerSlot) ToModel() *model.PowerSlot {
 	m := model.PowerSlot{}
-	m.Index = e.Index
-	m.Inserted = e.Inserted
+	m.PowerSlotCommon = e.PowerSlotCommon
 	return &m
 }
 
 // Load loads the model to entity.
-func (e PowerSlot) Load(m *model.PowerSlot) {
-	e.Index = m.Index
-	e.Inserted = m.Inserted
+func (e *PowerSlot) Load(m *model.PowerSlot) {
+	e.PowerSlotCommon = m.PowerSlotCommon
 }

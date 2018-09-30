@@ -14,7 +14,7 @@ type Client interface {
 	Claim() base.ClientError
 	Unclaim() base.ClientError
 	DeviceIdentity() (*base.DeviceIdentity, base.ClientError)
-	BladeSlot() ([]model.BladeSlot, base.ClientError)
+	ServerSlot() ([]model.ServerSlot, base.ClientError)
 	SwitchSlot() ([]model.SwitchSlot, base.ClientError)
 	FanSlot() ([]model.FanSlot, base.ClientError)
 	PowerSlot() ([]model.PowerSlot, base.ClientError)

@@ -14,7 +14,7 @@ type Enclosure struct {
 	Description    string          `gorm:"column:Description"`
 	State          string          `gorm:"column:State"`
 	Health         string          `gorm:"column:Health"`
-	BladeSlots     []BladeSlot     `gorm:"column:BladeSlots;ForeignKey:EnclosureRef"`
+	ServerSlots    []ServerSlot    `gorm:"column:ServerSlots;ForeignKey:EnclosureRef"`
 	SwitchSlots    []SwitchSlot    `gorm:"column:SwitchSlots;ForeignKey:EnclosureRef"`
 	ManagerSlots   []ManagerSlot   `gorm:"column:ManagerSlots;ForeignKey:EnclosureRef"`
 	ApplianceSlots []ApplianceSlot `gorm:"column:ApplianceSlots;ForeignKey:EnclosureRef"`
@@ -41,7 +41,7 @@ func (e *Enclosure) PropertyNameForDuplicationCheck() string {
 // Preload return the property names that need to be preload.
 func (e *Enclosure) Preload() []string {
 	return []string{
-		"BladeSlots",
+		"ServerSlots",
 		"SwitchSlots",
 		"ManagerSlots",
 		"ApplianceSlots",
@@ -68,7 +68,7 @@ func (e *Enclosure) Association() []interface{} {
 	for _, v := range e.SwitchSlots {
 		ret = append(ret, v)
 	}
-	for _, v := range e.BladeSlots {
+	for _, v := range e.ServerSlots {
 		ret = append(ret, v)
 	}
 	return ret
@@ -82,7 +82,7 @@ func (e *Enclosure) Tables() []interface{} {
 		new(ApplianceSlot),
 		new(ManagerSlot),
 		new(SwitchSlot),
-		new(BladeSlot),
+		new(ServerSlot),
 		new(Enclosure),
 	}
 }
@@ -106,11 +106,11 @@ func (e *Enclosure) Load(i base.ModelInterface) error {
 	e.State = m.State
 	e.Health = m.Health
 	// blade
-	e.BladeSlots = make([]BladeSlot, 0)
-	for _, v := range m.BladeSlots {
-		k := BladeSlot{}
+	e.ServerSlots = make([]ServerSlot, 0)
+	for _, v := range m.ServerSlots {
+		k := ServerSlot{}
 		k.Load(&v)
-		e.BladeSlots = append(e.BladeSlots, k)
+		e.ServerSlots = append(e.ServerSlots, k)
 	}
 	// switch
 	e.SwitchSlots = make([]SwitchSlot, 0)
@@ -161,9 +161,9 @@ func (e *Enclosure) ToModel() base.ModelInterface {
 	m.State = e.State
 	m.Health = e.Health
 	// blade
-	m.BladeSlots = make([]model.BladeSlot, 0)
-	for _, v := range e.BladeSlots {
-		m.BladeSlots = append(m.BladeSlots, *v.ToModel())
+	m.ServerSlots = make([]model.ServerSlot, 0)
+	for _, v := range e.ServerSlots {
+		m.ServerSlots = append(m.ServerSlots, *v.ToModel())
 	}
 	// switch
 	m.SwitchSlots = make([]model.SwitchSlot, 0)

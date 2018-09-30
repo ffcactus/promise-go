@@ -15,6 +15,8 @@ type Discover struct {
 func (s *Discover) Perform(id string, request base.ActionRequestInterface) (base.ResponseInterface, []base.ErrorResponse) {
 	var (
 		response dto.GetEnclosureResponse
+		clientError base.ClientError
+		identity *base.DeviceIdentity
 	)
 
 	discoverRequest, ok := request.(*dto.DiscoverEnclosureRequest)
@@ -29,7 +31,8 @@ func (s *Discover) Perform(id string, request base.ActionRequestInterface) (base
 		log.Warn("Service discover enclosure failed, create client failed, discover abort.")
 		return nil, []base.ErrorResponse{*base.NewErrorResponseInternalError()}
 	}
-	identity, clientError := client.DeviceIdentity()
+	// get identity and check existance.
+	identity, clientError = client.DeviceIdentity()
 	if clientError != nil {
 		log.WithFields(log.Fields{"error": clientError}).Warn("Service discover enclosure failed, get device identity failed, discover abort.")
 		return nil, []base.ErrorResponse{*base.NewErrorResponseFromClientError(clientError)}
@@ -37,6 +40,12 @@ func (s *Discover) Perform(id string, request base.ActionRequestInterface) (base
 	enclosure.DeviceIdentity = *identity
 	if exist, _ := enclosureDB.Exist(enclosure); exist {
 		return nil, []base.ErrorResponse{*base.NewErrorResponseDuplicate()}
+	}
+	// get server slot.
+	enclosure.ServerSlots, clientError = client.ServerSlot()
+	if clientError != nil {
+		log.WithFields(log.Fields{"error": clientError}).Warn("Service discover enclosure failed, get server slot failed, discover abort.")
+		return nil, []base.ErrorResponse{*base.NewErrorResponseFromClientError(clientError)}
 	}
 	created, errResp := enclosureDB.Create(enclosure)
 	if errResp != nil {

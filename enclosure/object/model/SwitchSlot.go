@@ -2,8 +2,12 @@ package model
 
 // SwitchSlot represents the switch slot info.
 type SwitchSlot struct {
-	Index     int
-	Inserted  bool
-	DeviceURL string
-	SwitchURL string
+	SwitchSlotCommon
+}
+
+// SwitchSlotCommon holds the common properties for model, dto and entity.
+type SwitchSlotCommon struct {
+	Index       int    `gorm:"column:Index"`
+	Inserted    bool   `gorm:"column:Inserted"`
+	ProductName string `gorm:"column:ProductName" json:",omitempty"`
 }

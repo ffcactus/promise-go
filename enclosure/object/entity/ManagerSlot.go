@@ -9,8 +9,7 @@ import (
 type ManagerSlot struct {
 	base.ElementEntity
 	EnclosureRef base.EntityRefType `gorm:"column:EnclosureRef"`
-	Index        int                `gorm:"column:Index"`
-	Inserted     bool               `gorm:"column:Inserted"`
+	model.ManagerSlotCommon
 }
 
 // TableName will set the table name.
@@ -21,13 +20,11 @@ func (ManagerSlot) TableName() string {
 // ToModel converts entity to model.
 func (e ManagerSlot) ToModel() *model.ManagerSlot {
 	m := model.ManagerSlot{}
-	m.Index = e.Index
-	m.Inserted = e.Inserted
+	m.ManagerSlotCommon = e.ManagerSlotCommon
 	return &m
 }
 
 // Load loads the model to entity.
-func (e ManagerSlot) Load(m *model.ManagerSlot) {
-	e.Index = m.Index
-	e.Inserted = m.Inserted
+func (e *ManagerSlot) Load(m *model.ManagerSlot) {
+	e.ManagerSlotCommon = m.ManagerSlotCommon
 }

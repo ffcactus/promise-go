@@ -52,10 +52,21 @@ func (c Client) DeviceIdentity() (*base.DeviceIdentity, base.ClientError) {
 	return &identity, nil
 }
 
-// BladeSlot returns the blade slot info.
-func (c Client) BladeSlot() ([]model.BladeSlot, base.ClientError) {
+// ServerSlot returns the blade slot info.
+func (c Client) ServerSlot() ([]model.ServerSlot, base.ClientError) {
+	slots := make([]model.ServerSlot, 0)
+	for i:=1; i <= 8; i++ {
+		slot := model.ServerSlot{}
+		slot.Index = i
+		slot.Inserted = true
+		slot.ProductName = "CH121 V5"
+		slot.SerialNumber = base.RandString(12)
+		slot.Height = 1
+		slot.Width = 1
+		slots = append(slots, slot) 
+	}
 	log.WithFields(log.Fields{"client": c}).Info("Client get blade slot.")
-	return nil, nil
+	return slots, nil
 }
 
 // SwitchSlot returns the switch ade slot info.

@@ -12,3 +12,20 @@ type GetChassisEnclosureResponse struct {
 type GetRedfishV1Response struct {
 	UUID string
 }
+
+// GetBladeChassisResponse is DTO.
+// Represents response from get /redfish/v1/chassis/blade{:id}
+type GetBladeChassisResponse struct {
+	Status struct {
+		State string
+	}
+	Model        string
+	SerialNumber string
+	PartNumber   string
+	Oem          struct {
+		Huawei struct {
+			Width  int
+			Height int
+		}
+	}
+}

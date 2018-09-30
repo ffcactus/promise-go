@@ -121,6 +121,7 @@ func NewClient(enclosure *model.Enclosure) *Client {
 func (c Client) GetRequest(url string) (*http.Request, base.ClientError) {
 	var errorImpl ClientErrorImpl
 
+	url = "https://" + c.currentAddress + url
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		errorImpl.requestError = err
@@ -135,6 +136,7 @@ func (c Client) GetRequest(url string) (*http.Request, base.ClientError) {
 func (c Client) DeleteRequest(url string) (*http.Request, base.ClientError) {
 	var errorImpl ClientErrorImpl
 
+	url = "https://" + c.currentAddress + url
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
 		errorImpl.requestError = err
@@ -149,6 +151,7 @@ func (c Client) DeleteRequest(url string) (*http.Request, base.ClientError) {
 func (c Client) PostRequest(url string, dto interface{}) (*http.Request, base.ClientError) {
 	var errorImpl ClientErrorImpl
 
+	url = "https://" + c.currentAddress + url
 	b := new(bytes.Buffer)
 	if err := json.NewEncoder(b).Encode(dto); err != nil {
 		errorImpl.jsonError = err
@@ -170,6 +173,7 @@ func (c Client) PostRequest(url string, dto interface{}) (*http.Request, base.Cl
 func (c Client) PatchRequest(url, etag string, dto interface{}) (*http.Request, base.ClientError) {
 	var errorImpl ClientErrorImpl
 
+	url = "https://" + c.currentAddress + url
 	b := new(bytes.Buffer)
 	if err := json.NewEncoder(b).Encode(dto); err != nil {
 		errorImpl.jsonError = err
@@ -215,8 +219,10 @@ func (c Client) Unmarshal(resp *http.Response, dto interface{}) base.ClientError
 // Do is will call http.Client.Do() and unmarshal the response.
 // It helps on unify the error process.
 func (c Client) Do(request *http.Request, dto interface{}) base.ClientError {
+	log.WithFields(log.Fields{"method": request.Method, "URL": request.URL}).Info("MM920 client operation.")
 	httpResponse, err := _client.Do(request)
 	if err != nil {
+		log.WithFields(log.Fields{"method": request.Method, "URL": request.URL, "error": err}).Warn("Client operation failed.")
 		return ToClientError(err)
 	}
 	return c.Unmarshal(httpResponse, dto)
@@ -224,11 +230,11 @@ func (c Client) Do(request *http.Request, dto interface{}) base.ClientError {
 
 // Get do http GET to uri, and unmarshal the response to dto.
 func (c Client) Get(uri string, dto interface{}) base.ClientError {
-	if httpRequest, err := c.GetRequest(uri); err != nil {
+	httpRequest, err := c.GetRequest(uri)
+	if err != nil {
 		return err
-	} else {
-		return c.Do(httpRequest, dto)
 	}
+	return c.Do(httpRequest, dto)
 }
 
 // String returns the debug info of the client.
@@ -273,10 +279,31 @@ func (c Client) DeviceIdentity() (*base.DeviceIdentity, base.ClientError) {
 	return &identity, nil
 }
 
-// BladeSlot returns the blade slot info.
-func (c Client) BladeSlot() ([]model.BladeSlot, base.ClientError) {
-	log.WithFields(log.Fields{"client": c}).Info("Client get blade slot.")
-	return nil, nil
+// ServerSlot returns the blade slot info.
+func (c Client) ServerSlot() ([]model.ServerSlot, base.ClientError) {
+	var (
+		slots []model.ServerSlot
+		inserted int
+	)
+	for i:=1; i < 16; i++ {
+		chassis := GetBladeChassisResponse{}
+		slot := model.ServerSlot{}
+		if err := c.Get(fmt.Sprintf("/redfish/v1/Chassis/Blade%d", i), &chassis); err != nil {
+			return nil, err
+		}
+		slot.Index = i
+		slot.Inserted = (chassis.Status.State == "Enabled")
+		if slot.Inserted {
+			inserted++
+		}
+		slot.ProductName = chassis.Model
+		slot.SerialNumber = chassis.SerialNumber
+		slot.Height = chassis.Oem.Huawei.Height / 2
+		slot.Width = chassis.Oem.Huawei.Width
+		slots = append(slots, slot)
+	}
+	log.WithFields(log.Fields{"inserted":inserted, "client": c}).Info("Client get blade slot.")
+	return slots, nil
 }
 
 // SwitchSlot returns the switch ade slot info.

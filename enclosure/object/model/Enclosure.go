@@ -40,7 +40,7 @@ type Enclosure struct {
 	Health         string
 	Addresses      []string // The addresses that can be used to connect to enclosure.
 	Credential     Credential
-	BladeSlots     []BladeSlot
+	ServerSlots    []ServerSlot
 	SwitchSlots    []SwitchSlot
 	ManagerSlots   []ManagerSlot
 	ApplianceSlots []ApplianceSlot

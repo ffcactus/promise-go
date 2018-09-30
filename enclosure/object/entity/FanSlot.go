@@ -9,8 +9,7 @@ import (
 type FanSlot struct {
 	base.ElementEntity
 	EnclosureRef base.EntityRefType `gorm:"column:EnclosureRef"`
-	Index        int                `gorm:"column:Index"`
-	Inserted     bool               `gorm:"column:Inserted"`
+	model.FanSlotCommon
 }
 
 // TableName will set the table name.
@@ -21,13 +20,11 @@ func (FanSlot) TableName() string {
 // ToModel converts entity to model.
 func (e FanSlot) ToModel() *model.FanSlot {
 	m := model.FanSlot{}
-	m.Index = e.Index
-	m.Inserted = e.Inserted
+	m.FanSlotCommon = e.FanSlotCommon
 	return &m
 }
 
 // Load loads the model to entity.
-func (e FanSlot) Load(m *model.FanSlot) {
-	e.Index = m.Index
-	e.Inserted = m.Inserted
+func (e *FanSlot) Load(m *model.FanSlot) {
+	e.FanSlotCommon = m.FanSlotCommon
 }

@@ -8,6 +8,7 @@ services:
       restart_policy:
         condition: on-failure
     environment:
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=iforgot
       - POSTGRES_MULTIPLE_DATABASES=auth,enclosure,pool,server,task
     networks:
