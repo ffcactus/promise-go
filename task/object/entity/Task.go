@@ -9,9 +9,9 @@ import (
 // Task is the entity of the task.
 type Task struct {
 	base.Entity
-	MessageID           *string              `gorm:"column:MessageID"`
+	MessageID           string               `gorm:"column:MessageID"`
 	Name                string               `gorm:"column:Name"`
-	Description         *string              `gorm:"column:Description"`
+	Description         string               `gorm:"column:Description"`
 	ExecutionState      model.ExecutionState `gorm:"column:ExecutionState"`
 	CreatedByName       string               `gorm:"column:CreatedByName"`
 	CreatedByURI        string               `gorm:"column:CreatedByURI"`

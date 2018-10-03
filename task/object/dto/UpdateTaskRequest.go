@@ -9,7 +9,7 @@ import (
 // UpdateTaskRequest UpdateTaskRequest that only includes the changable properties.
 // Note: Update sub task not use this request.
 type UpdateTaskRequest struct {
-	Description         *string                       `json:"Description"`
+	Description         string                        `json:"Description"`
 	ExecutionState      *model.ExecutionState         `json:"ExecutionState"`
 	ExpectedExecutionMs *uint64                       `json:"ExpectedExecutionMs"`
 	Percentage          *uint32                       `json:"Percentage"`
@@ -48,9 +48,7 @@ func (dto *UpdateTaskRequest) UpdateModel(i base.ModelInterface) error {
 		log.Error("UpdateTaskRequest.UpdateModel() convert interface failed.")
 		return base.ErrorDataConvert
 	}
-	if dto.Description != nil {
-		m.Description = dto.Description
-	}
+	m.Description = dto.Description
 	if dto.ExecutionState != nil {
 		m.ExecutionState = *dto.ExecutionState
 	}

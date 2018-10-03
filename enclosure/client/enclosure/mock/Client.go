@@ -46,7 +46,7 @@ func (c Client) Unclaim() base.ClientError {
 func (c Client) DeviceIdentity() (*base.DeviceIdentity, base.ClientError) {
 	identity := base.DeviceIdentity{}
 	identity.UUID = base.RandUUID()
-	identity.SerialNumber = base.RandString(12)
+	identity.SerialNumber = base.RandString(10)
 	identity.PartNumber = base.RandString(10)
 	log.WithFields(log.Fields{"client": c, "identity": identity}).Info("Client get device identity.")
 	return &identity, nil
@@ -55,15 +55,15 @@ func (c Client) DeviceIdentity() (*base.DeviceIdentity, base.ClientError) {
 // ServerSlot returns the blade slot info.
 func (c Client) ServerSlot() ([]model.ServerSlot, base.ClientError) {
 	slots := make([]model.ServerSlot, 0)
-	for i:=1; i <= 8; i++ {
+	for i := 1; i <= 8; i++ {
 		slot := model.ServerSlot{}
 		slot.Index = i
 		slot.Inserted = true
 		slot.ProductName = "CH121 V5"
-		slot.SerialNumber = base.RandString(12)
+		slot.SerialNumber = base.RandString(10)
 		slot.Height = 1
 		slot.Width = 1
-		slots = append(slots, slot) 
+		slots = append(slots, slot)
 	}
 	log.WithFields(log.Fields{"client": c}).Info("Client get blade slot.")
 	return slots, nil
@@ -71,30 +71,82 @@ func (c Client) ServerSlot() ([]model.ServerSlot, base.ClientError) {
 
 // SwitchSlot returns the switch ade slot info.
 func (c Client) SwitchSlot() ([]model.SwitchSlot, base.ClientError) {
+	slots := make([]model.SwitchSlot, 0)
+	for i := 1; i <= 8; i++ {
+		slot := model.SwitchSlot{}
+		slot.Index = i
+		slot.Inserted = true
+		slot.ProductName = "CH121 V5"
+		slot.SerialNumber = base.RandString(10)
+		slots = append(slots, slot)
+	}
 	log.WithFields(log.Fields{"client": c}).Info("Client get switch slot.")
-	return nil, nil
+	return slots, nil
 }
 
 // FanSlot returns the fan slot info.
 func (c Client) FanSlot() ([]model.FanSlot, base.ClientError) {
+	slots := make([]model.FanSlot, 0)
+	for i := 1; i <= 14; i++ {
+		slot := model.FanSlot{}
+		slot.Index = i
+		slot.Inserted = true
+		slot.Health = "OK"
+		slot.PCBVersion = base.RandString(10)
+		slot.SoftwareVersion = base.RandString(10)
+		slots = append(slots, slot)
+	}
 	log.WithFields(log.Fields{"client": c}).Info("Client get fan slot.")
-	return nil, nil
+	return slots, nil
 }
 
 // PowerSlot returns the power slot info.
 func (c Client) PowerSlot() ([]model.PowerSlot, base.ClientError) {
+	slots := make([]model.PowerSlot, 0)
+	for i := 1; i <= 6; i++ {
+		slot := model.PowerSlot{}
+		slot.Index = i
+		slot.Inserted = true
+		slot.Health = "OK"
+		slot.PowerSupplyType = "AC"
+		slot.SerialNumber = base.RandString(10)
+		slot.FirmwareVersion = base.RandString(10)
+		slot.SleepStatus = "Enable"
+		slots = append(slots, slot)
+	}
 	log.WithFields(log.Fields{"client": c}).Info("Client get power slot.")
-	return nil, nil
+	return slots, nil
 }
 
 // ManagerSlot returns the manager slot info.
 func (c Client) ManagerSlot() ([]model.ManagerSlot, base.ClientError) {
+	slots := make([]model.ManagerSlot, 0)
+	for i := 1; i <= 2; i++ {
+		slot := model.ManagerSlot{}
+		slot.Index = i
+		slot.Inserted = true
+		slot.ProductName = "MM920"
+		slot.SerialNumber = base.RandString(10)
+		slot.FirmwareVersion = base.RandString(10)
+		slot.CPLDVersion = base.RandString(10)
+		slots = append(slots, slot)
+	}
 	log.WithFields(log.Fields{"client": c}).Info("Client get manager slot.")
-	return nil, nil
+	return slots, nil
 }
 
 // ApplianceSlot returns the manager slot info.
 func (c Client) ApplianceSlot() ([]model.ApplianceSlot, base.ClientError) {
+	slots := make([]model.ApplianceSlot, 0)
+	for i := 1; i <= 2; i++ {
+		slot := model.ApplianceSlot{}
+		slot.Index = i
+		slot.Inserted = true
+		slot.SerialNumber = base.RandString(10)
+		slot.FirmwareVersion = base.RandString(10)
+		slot.BIOSVersion = base.RandString(10)
+		slots = append(slots, slot)
+	}
 	log.WithFields(log.Fields{"client": c}).Info("Client get appliance slot.")
-	return nil, nil
+	return slots, nil
 }

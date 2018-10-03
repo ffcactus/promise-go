@@ -69,9 +69,9 @@ type ExecutionResult struct {
 
 // TaskStep The TaskStep represents each planned steps in a task.
 type TaskStep struct {
-	MessageID           *string
+	MessageID           string
 	Name                string
-	Description         *string
+	Description         string
 	ExpectedExecutionMs uint64
 	ExecutionState      ExecutionState
 	ExecutionResult     ExecutionResult
@@ -80,10 +80,10 @@ type TaskStep struct {
 // Task Task object.
 type Task struct {
 	base.Model
-	MessageID           *string
+	MessageID           string
 	Name                string
-	ParentTask          *string
-	Description         *string
+	ParentTask          string
+	Description         string
 	ExecutionState      ExecutionState
 	CreatedByName       string
 	CreatedByURI        string
@@ -110,7 +110,7 @@ func (m *Task) ValueForDuplicationCheck() string {
 type TaskCollectionMember struct {
 	base.CollectionMemberModel
 	Name            string
-	Description     *string
+	Description     string
 	ExecutionState  ExecutionState
 	Percentage      uint32
 	CurrentStep     string

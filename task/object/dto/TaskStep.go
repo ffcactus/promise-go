@@ -8,10 +8,10 @@ import (
 
 // PostTaskStepRequest Post task step request DTO.
 type PostTaskStepRequest struct {
-	MessageID           *string `json:"MessageID"`
-	Name                string  `json:"Name"`
-	Description         *string `json:"Description"`
-	ExpectedExecutionMs uint64  `json:"ExpectedExecutionMs"`
+	MessageID           string `json:"MessageID"`
+	Name                string `json:"Name"`
+	Description         string `json:"Description"`
+	ExpectedExecutionMs uint64 `json:"ExpectedExecutionMs"`
 }
 
 // ToModel Convert to model.
@@ -28,9 +28,9 @@ func (dto *PostTaskStepRequest) ToModel() *model.TaskStep {
 
 // GetTaskStepResponse Post task step response DTO.
 type GetTaskStepResponse struct {
-	MessageID           *string              `json:"MessageID"`
+	MessageID           string               `json:"MessageID"`
 	Name                string               `json:"Name"`
-	Description         *string              `json:"Description,omitempty"`
+	Description         string               `json:"Description,omitempty"`
 	ExpectedExecutionMs uint64               `json:"ExpectedExecutionMs"`
 	ExecutionState      model.ExecutionState `json:"ExecutionState"`
 	ExecutionResult     ExecutionResult      `json:"ExecutionResult"`

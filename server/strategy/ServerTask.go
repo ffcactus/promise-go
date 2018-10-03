@@ -72,77 +72,77 @@ var (
 
 	// ServerTaskRefreshStepPower is a task step.
 	ServerTaskRefreshStepPower = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDPower,
+		MessageID:           ServerRefreshTaskStepIDPower,
 		Name:                ServerRefreshTaskStepNamePower,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepThermal is a task step.
 	ServerTaskRefreshStepThermal = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDThermal,
+		MessageID:           ServerRefreshTaskStepIDThermal,
 		Name:                ServerRefreshTaskStepNameThermal,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepBoards is a task step.
 	ServerTaskRefreshStepBoards = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDBoards,
+		MessageID:           ServerRefreshTaskStepIDBoards,
 		Name:                ServerRefreshTaskStepNameBoards,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepNetworkAdapters is a task step.
 	ServerTaskRefreshStepNetworkAdapters = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDNetworkAdapters,
+		MessageID:           ServerRefreshTaskStepIDNetworkAdapters,
 		Name:                ServerRefreshTaskStepNameNetworkAdapters,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepDrives is a task step.
 	ServerTaskRefreshStepDrives = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDDrives,
+		MessageID:           ServerRefreshTaskStepIDDrives,
 		Name:                ServerRefreshTaskStepNameDrives,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepPCIeDevices is a task step.
 	ServerTaskRefreshStepPCIeDevices = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDPCIeDevices,
+		MessageID:           ServerRefreshTaskStepIDPCIeDevices,
 		Name:                ServerRefreshTaskStepNamePCIeDevices,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepProcessors is a task step.
 	ServerTaskRefreshStepProcessors = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDProcessors,
+		MessageID:           ServerRefreshTaskStepIDProcessors,
 		Name:                ServerRefreshTaskStepNameProcessors,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepMemory is a task step.
 	ServerTaskRefreshStepMemory = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDMemory,
+		MessageID:           ServerRefreshTaskStepIDMemory,
 		Name:                ServerRefreshTaskStepNameMemory,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepEthernetInterfaces is a task step.
 	ServerTaskRefreshStepEthernetInterfaces = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDEthernetInterfaces,
+		MessageID:           ServerRefreshTaskStepIDEthernetInterfaces,
 		Name:                ServerRefreshTaskStepNameEthernetInterfaces,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepNetworkInterfaces is a task step.
 	ServerTaskRefreshStepNetworkInterfaces = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDNetworkInterfaces,
+		MessageID:           ServerRefreshTaskStepIDNetworkInterfaces,
 		Name:                ServerRefreshTaskStepNameNetworkInterfaces,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepStorages is a task step.
 	ServerTaskRefreshStepStorages = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDStorages,
+		MessageID:           ServerRefreshTaskStepIDStorages,
 		Name:                ServerRefreshTaskStepNameStorages,
 		ExpectedExecutionMs: uint64(4000),
 	}
@@ -171,10 +171,10 @@ type ServerTask struct {
 func createRefreshTaskRequest(server *model.Server) *taskDTO.PostTaskRequest {
 	var request taskDTO.PostTaskRequest
 
-	request.MessageID = &ServerTaskRefresh
+	request.MessageID = ServerTaskRefresh
 	request.Name = "Refresh Server"
 	description := "Refresh server resources and re-configure it."
-	request.Description = &description
+	request.Description = description
 	request.CreatedByName = "Server Service"
 	request.CreatedByURI = "/promise/v1/server"
 	request.TargetName = server.Name

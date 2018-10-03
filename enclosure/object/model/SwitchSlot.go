@@ -7,7 +7,8 @@ type SwitchSlot struct {
 
 // SwitchSlotCommon holds the common properties for model, dto and entity.
 type SwitchSlotCommon struct {
-	Index       int    `gorm:"column:Index"`
-	Inserted    bool   `gorm:"column:Inserted"`
-	ProductName string `gorm:"column:ProductName" json:",omitempty"`
+	Index        int    `gorm:"column:Index"`
+	Inserted     bool   `gorm:"column:Inserted"`
+	ProductName  string `gorm:"column:ProductName" json:",omitempty"`
+	SerialNumber string `gorm:"column:SerialNumber" json:",omitempty"`
 }

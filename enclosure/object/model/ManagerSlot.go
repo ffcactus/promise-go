@@ -11,7 +11,7 @@ type ManagerSlotCommon struct {
 	Inserted        bool   `gorm:"column:Inserted"`
 	ProductName     string `gorm:"column:ProductName" json:",omitempty"`
 	SerialNumber    string `gorm:"column:SerialNumber" json:",omitempty"`
-	FirmwareVersion int    `gorm:"column:FirmwareVersion" json:",omitempty"`
-	CPLDVersion     int    `gorm:"column:CPLDVersion" json:",omitempty"`
+	FirmwareVersion string `gorm:"column:FirmwareVersion" json:",omitempty"`
+	CPLDVersion     string `gorm:"column:CPLDVersion" json:",omitempty"`
 	ServerURL       string `gorm:"column:ServerURL" json:",omitempty"`
 }

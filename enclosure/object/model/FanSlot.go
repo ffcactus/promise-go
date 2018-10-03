@@ -9,7 +9,6 @@ type FanSlot struct {
 type FanSlotCommon struct {
 	Index           int    `gorm:"column:Index"`
 	Inserted        bool   `gorm:"column:Inserted"`
-	State           string `gorm:"column:State" json:",omitempty"`
 	Health          string `gorm:"column:Health" json:",omitempty"`
 	PCBVersion      string `gorm:"column:PCBVersion" json:",omitempty"`
 	SoftwareVersion string `gorm:"column:SoftwareVersion" json:",omitempty"`

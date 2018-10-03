@@ -8,9 +8,9 @@ import (
 
 // PostTaskRequest Post task request DTO.
 type PostTaskRequest struct {
-	MessageID     *string               `json:"MessageID"`
+	MessageID     string                `json:"MessageID,omitempty"`
 	Name          string                `json:"Name"`
-	Description   *string               `json:"Description"`
+	Description   string                `json:"Description,omitempty"`
 	CreatedByName string                `json:"CreatedByName"`
 	CreatedByURI  string                `json:"CreatedByURI"`
 	TargetName    string                `json:"TargetName"`
