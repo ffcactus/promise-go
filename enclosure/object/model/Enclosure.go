@@ -21,6 +21,9 @@ const (
 	// StateUnmanaged means enclosure is unmanaged.
 	StateUnmanaged = "Unmanaged"
 
+	// StateReasonAuto means enclosure change to the state automatically.
+	StateReasonAuto = "Auto"
+
 	// HealthOK means enclosure has no alarm.
 	HealthOK = "OK"
 	// HealthWarning means enclosure has warning alarm.
@@ -28,6 +31,18 @@ const (
 	// HealthCritical means enclosure has critical alarm.
 	HealthCritical = "Critical"
 )
+
+// EnclosureLockable check if the enclosure's state can turn to be Locked.
+func EnclosureLockable(state string) bool {
+	var ret = false
+	switch state {
+	case StateAdded, StateReady, StateUnmanaged:
+		ret = true
+	default:
+		ret = false
+	}
+	return ret
+}
 
 // Enclosure is the model of enclosure.
 type Enclosure struct {

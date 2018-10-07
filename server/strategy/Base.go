@@ -14,7 +14,7 @@ type Base struct {
 
 // LockServer Lock the server.
 func (s *Base) LockServer(c *context.Base, server *model.Server) *base.ErrorResponse {
-	success, lockedServer := c.DB.GetAndLockServer(server.ID)
+	success, lockedServer := c.DB.GetAndLock(server.ID)
 	if lockedServer == nil {
 		log.WithFields(log.Fields{"id": server.ID}).Info("Can not get and lock server, server not exist.")
 		return base.NewErrorResponseNotExist()
@@ -27,9 +27,9 @@ func (s *Base) LockServer(c *context.Base, server *model.Server) *base.ErrorResp
 	return nil
 }
 
-// SetServerState Set server state.
-func (s *Base) SetServerState(c *context.Base, server *model.Server, state string) error {
-	updatedServer, err := c.DB.SetServerState(server.ID, state)
+// SetState Set server state.
+func (s *Base) SetState(c *context.Base, server *model.Server, state string) error {
+	updatedServer, err := c.DB.SetState(server.ID, state)
 	if err != nil {
 		return base.ErrorTransaction
 	}

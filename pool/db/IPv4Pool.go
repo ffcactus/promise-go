@@ -91,9 +91,11 @@ func (impl *IPv4Pool) AllocateIPv4Address(id string, key string) (string, base.M
 	}
 	exist, err := impl.GetInternal(tx, id, record)
 	if !exist {
+		tx.Rollback()
 		return "", nil, base.NewErrorResponseNotExist()
 	}
 	if err != nil {
+		tx.Rollback()
 		return "", nil, base.NewErrorResponseTransactionError()
 	}
 
@@ -202,9 +204,11 @@ func (impl *IPv4Pool) FreeIPv4Address(id string, address string) (base.ModelInte
 	}
 	exist, err := impl.GetInternal(tx, id, record)
 	if !exist {
+		tx.Rollback()
 		return nil, base.NewErrorResponseNotExist()
 	}
 	if err != nil {
+		tx.Rollback()
 		return nil, base.NewErrorResponseTransactionError()
 	}
 	for i := range record.Ranges {

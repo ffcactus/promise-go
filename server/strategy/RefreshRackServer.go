@@ -127,7 +127,7 @@ func (s *RefreshRackServer) _execute(taskID string, c *context.RefreshServer, se
 	}
 	// s.SetServerHealth(&c.Base, server, constvalue.ServerHealthOK)
 	s.SetServerHealth(&c.Base, server, randHealth())
-	s.SetServerState(&c.Base, server, constvalue.ServerStateReady)
+	s.SetState(&c.Base, server, constvalue.ServerStateReady)
 	log.WithFields(log.Fields{
 		"id": server.ID,
 	}).Info("Refresh server done.")

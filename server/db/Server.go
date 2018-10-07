@@ -86,8 +86,8 @@ func (impl *Server) FindServerStateAdded() string {
 	return server.ID
 }
 
-// IsServerExist Check the existance of the server, if found, return it.
-func (impl *Server) IsServerExist(s *model.Server) (bool, base.ModelInterface) {
+// Exist Check the existance of the server, if found, return it.
+func (impl *Server) Exist(s *model.Server) (bool, base.ModelInterface) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
@@ -112,7 +112,7 @@ func (impl *Server) CreateServer(s *model.Server) (base.ModelInterface, base.Mod
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
 	)
-	if exist, _ := impl.IsServerExist(s); exist {
+	if exist, _ := impl.Exist(s); exist {
 		// TODO get the server to return.
 		log.WithFields(log.Fields{"hostname": s.Hostname}).Info("Post server in DB failed, server exist.")
 		return nil, nil, base.ErrorResourceExist
@@ -149,8 +149,8 @@ func (impl *Server) CreateServer(s *model.Server) (base.ModelInterface, base.Mod
 	return server.ToModel(), serverServerGroup.ToModel(), nil
 }
 
-// GetAndLockServer Get and lock the server.
-func (impl *Server) GetAndLockServer(ID string) (bool, base.ModelInterface) {
+// GetAndLock Get and lock the server.
+func (impl *Server) GetAndLock(ID string) (bool, base.ModelInterface) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
@@ -161,7 +161,7 @@ func (impl *Server) GetAndLockServer(ID string) (bool, base.ModelInterface) {
 		log.WithFields(log.Fields{
 			"id":    ID,
 			"error": err}).
-			Warn("Get and lock server in DB failed, start transaction failed.")
+			Warn("DB get and lock server failed, start transaction failed.")
 		return false, nil
 	}
 	tx.Exec("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;")
@@ -169,7 +169,7 @@ func (impl *Server) GetAndLockServer(ID string) (bool, base.ModelInterface) {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID}).
-			Debug("Get and lock server in DB failed, server does not exist.")
+			Debug("DB get and lock server failed, server does not exist.")
 		return false, nil
 	}
 	if !constvalue.ServerLockable(server.State) {
@@ -178,7 +178,7 @@ func (impl *Server) GetAndLockServer(ID string) (bool, base.ModelInterface) {
 		log.WithFields(log.Fields{
 			"id":    ID,
 			"state": server.State}).
-			Debug("Get and lock server in DB failed, server not lockable.")
+			Debug("DB get and lock server failed, server not lockable.")
 		return false, server.ToModel()
 	}
 	// Change the state.
@@ -187,7 +187,7 @@ func (impl *Server) GetAndLockServer(ID string) (bool, base.ModelInterface) {
 		log.WithFields(log.Fields{
 			"id":    ID,
 			"state": server.State}).
-			Debug("Get and lock server in DB failed, update state failed.")
+			Debug("DB get and lock server failed, update state failed.")
 		return false, nil
 	}
 	// Commit.
@@ -195,14 +195,14 @@ func (impl *Server) GetAndLockServer(ID string) (bool, base.ModelInterface) {
 		log.WithFields(log.Fields{
 			"id":    ID,
 			"error": err}).
-			Warn("Get and lock server in DB failed, commit failed.")
+			Warn("DB get and lock server failed, commit failed.")
 		return false, nil
 	}
 	return true, server.ToModel()
 }
 
-// SetServerState Set server state.
-func (impl *Server) SetServerState(ID string, state string) (base.ModelInterface, error) {
+// SetState Set server state.
+func (impl *Server) SetState(ID string, state string) (base.ModelInterface, error) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
@@ -211,23 +211,25 @@ func (impl *Server) SetServerState(ID string, state string) (base.ModelInterface
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
 			"id":    ID,
-			"op":    "SetServerState",
+			"op":    "SetState",
 			"error": err,
 		}).Warn("DB operation failed , start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
-			"op": "SetServerState",
+			"op": "SetState",
 		}).Warn("DB operation failed , load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := tx.Model(server).UpdateColumn("State", state).Error; err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id":    ID,
-			"op":    "SetServerState",
+			"op":    "SetState",
 			"error": err,
 		}).Warn("DB opertion failed, update server failed, transaction rollback.")
 		return nil, base.ErrorTransaction
@@ -235,7 +237,7 @@ func (impl *Server) SetServerState(ID string, state string) (base.ModelInterface
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"id":    ID,
-			"op":    "SetServerState",
+			"op":    "SetState",
 			"error": err,
 		}).Warn("DB opertion failed, commit failed.")
 		return nil, base.ErrorTransaction
@@ -260,6 +262,7 @@ func (impl *Server) SetServerHealth(ID string, health string) (base.ModelInterfa
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "SetServerHealth",
@@ -311,6 +314,7 @@ func (impl *Server) UpdateProcessors(ID string, processors []model.Processor) (b
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateProcessors",
@@ -378,6 +382,7 @@ func (impl *Server) UpdateMemory(ID string, memory []model.Memory) (base.ModelIn
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateMemory",
@@ -462,6 +467,7 @@ func (impl *Server) UpdateEthernetInterfaces(ID string, ethernet []model.Etherne
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateEthernetInterfaces",
@@ -529,6 +535,7 @@ func (impl *Server) UpdateNetworkInterfaces(ID string, networkInterface []model.
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateNetworkInterfaces",
@@ -602,6 +609,7 @@ func (impl *Server) UpdateStorages(ID string, storages []model.Storage) (base.Mo
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateStorages",
@@ -688,6 +696,7 @@ func (impl *Server) UpdatePower(ID string, power *model.Power) (base.ModelInterf
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdatePower",
@@ -758,6 +767,7 @@ func (impl *Server) UpdateThermal(ID string, thermal *model.Thermal) (base.Model
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateThermal",
@@ -820,6 +830,7 @@ func (impl *Server) UpdateOemHuaweiBoards(ID string, boards []model.OemHuaweiBoa
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateOemHuaweiBoards",
@@ -900,6 +911,7 @@ func (impl *Server) UpdateNetworkAdapters(ID string, networkAdapters []model.Net
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateNetworkAdapters",
@@ -984,6 +996,7 @@ func (impl *Server) UpdateDrives(ID string, drives []model.Drive) (base.ModelInt
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateDrives",
@@ -1058,6 +1071,7 @@ func (impl *Server) UpdatePCIeDevices(ID string, pcieDevices []model.PCIeDevice)
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdatePCIeDevices",
@@ -1122,11 +1136,12 @@ func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelIn
 		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 	exist, err := impl.GetInternal(tx, id, previous)
-	// Rollback in GetInternal.
 	if !exist {
+		tx.Rollback()
 		return nil, nil, base.NewErrorResponseNotExist()
 	}
 	if err != nil {
+		tx.Rollback()
 		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 

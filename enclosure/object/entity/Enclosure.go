@@ -13,6 +13,7 @@ type Enclosure struct {
 	Name           string          `gorm:"column:Name"`
 	Description    string          `gorm:"column:Description"`
 	State          string          `gorm:"column:State"`
+	StateReason    string          `gorm:"column:StateReason"`
 	Health         string          `gorm:"column:Health"`
 	ServerSlots    []ServerSlot    `gorm:"column:ServerSlots;ForeignKey:EnclosureRef"`
 	SwitchSlots    []SwitchSlot    `gorm:"column:SwitchSlots;ForeignKey:EnclosureRef"`

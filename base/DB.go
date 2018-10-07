@@ -46,7 +46,6 @@ func (impl *DB) GetInternal(tx *gorm.DB, id string, record EntityInterface) (boo
 
 	preload := record.Preload()
 	if tx.Where("\"ID\" = ?", id).First(record).RecordNotFound() {
-		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
 			"id":       id,
@@ -54,7 +53,6 @@ func (impl *DB) GetInternal(tx *gorm.DB, id string, record EntityInterface) (boo
 		return false, ErrorResourceNotExist
 	}
 	if err := tx.Error; err != nil {
-		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
 			"id":       id,
@@ -67,7 +65,6 @@ func (impl *DB) GetInternal(tx *gorm.DB, id string, record EntityInterface) (boo
 		tx = tx.Preload(v)
 	}
 	if err := tx.First(record).Error; err != nil {
-		tx.Rollback()
 		log.WithFields(log.Fields{
 			"resource": name,
 			"id":       id,
@@ -177,9 +174,11 @@ func (impl *DB) Get(id string) (ModelInterface, *ErrorResponse) {
 	}
 	exist, err := impl.GetInternal(tx, id, record)
 	if !exist {
+		tx.Rollback()
 		return nil, NewErrorResponseNotExist()
 	}
 	if err != nil {
+		tx.Rollback()
 		return nil, NewErrorResponseTransactionError()
 	}
 	if err := tx.Commit().Error; err != nil {
@@ -213,9 +212,11 @@ func (impl *DB) Update(id string, request UpdateRequestInterface) (ModelInterfac
 	}
 	exist, err := impl.GetInternal(tx, id, record)
 	if !exist {
+		tx.Rollback()
 		return nil, NewErrorResponseNotExist()
 	}
 	if err != nil {
+		tx.Rollback()
 		return nil, NewErrorResponseTransactionError()
 	}
 
@@ -259,11 +260,12 @@ func (impl *DB) Delete(id string) (ModelInterface, *ErrorResponse) {
 		return nil, NewErrorResponseTransactionError()
 	}
 	exist, err := impl.GetInternal(tx, id, previous)
-	// Rollback in GetInternal.
 	if !exist {
+		tx.Rollback()
 		return nil, NewErrorResponseNotExist()
 	}
 	if err != nil {
+		tx.Rollback()
 		return nil, NewErrorResponseTransactionError()
 	}
 
