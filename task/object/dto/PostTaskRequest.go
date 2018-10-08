@@ -19,7 +19,7 @@ type PostTaskRequest struct {
 }
 
 // NewInstance creates a new instance.
-func (dto *PostTaskRequest) NewInstance() base.RequestInterface {
+func (PostTaskRequest) NewInstance() base.RequestInterface {
 	return new(PostTaskRequest)
 }
 

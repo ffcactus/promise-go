@@ -17,6 +17,11 @@ type Refresh struct {
 	sub []Action
 }
 
+// NewRefreshAction creates the refresh action.
+func NewRefreshAction(ctx *context.RefreshContext) {
+	
+}
+
 // Add the sub actions.
 func (s *Refresh) Add(sub *Action) {
 	s.sub = append(s.sub, *sub)
@@ -75,8 +80,10 @@ func (s *Refresh) Execute(ctx *context.Base) {
 	if errorResponse != nil && len(errorResponse) > 0 {
 		log.WithFields(log.Fields{"error": errorResponse[0]}).Warn("Action refresh failed, create task failed.")
 	}
-	log.WithFields(log.Fields{"task": createTaskResponse.GetID()}).Warn("Action refresh, create task.")
-
+	log.WithFields(log.Fields{"task": createTaskResponse.GetID()}).Info("Action refresh, create task.")
+	// return the current work and continue.
+	go _refresh(ctx)
+	
 	// execute each of the sub action
 	for _, v := range s.sub {
 		v.Execute(ctx)

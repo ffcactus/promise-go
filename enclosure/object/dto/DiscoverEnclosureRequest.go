@@ -17,7 +17,7 @@ type DiscoverEnclosureRequest struct {
 }
 
 // NewInstance returns a new instance.
-func (dto *DiscoverEnclosureRequest) NewInstance() base.RequestInterface {
+func (DiscoverEnclosureRequest) NewInstance() base.RequestInterface {
 	return new(DiscoverEnclosureRequest)
 }
 

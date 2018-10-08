@@ -11,7 +11,7 @@ type PostAdapterConfigRequest struct {
 }
 
 // NewInstance creates a new instance.
-func (dto *PostAdapterConfigRequest) NewInstance() base.RequestInterface {
+func (PostAdapterConfigRequest) NewInstance() base.RequestInterface {
 	return new(PostAdapterConfigRequest)
 }
 

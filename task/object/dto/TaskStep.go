@@ -54,7 +54,7 @@ type UpdateTaskStepRequest struct {
 }
 
 // NewInstance creates a new instance.
-func (dto *UpdateTaskStepRequest) NewInstance() base.RequestInterface {
+func (UpdateTaskStepRequest) NewInstance() base.RequestInterface {
 	return new(UpdateTaskStepRequest)
 }
 

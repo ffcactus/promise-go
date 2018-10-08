@@ -30,6 +30,23 @@ const (
 	HealthWarning = "Warning"
 	// HealthCritical means enclosure has critical alarm.
 	HealthCritical = "Critical"
+
+	// RefreshAll means refresh everything.
+	RefreshAll = "All"
+	// RefreshManager means refresh enclosure's manager.
+	RefreshManager = "Manager"
+	// RefreshServer means refresh enclosure's server.
+	RefreshServer = "Server"
+	// RefreshSwitch means refresh enclosure's switch.
+	RefreshSwitch = "Switch"
+	// RefreshAlarm means frefresh enclosure's alarm.
+	RefreshAlarm = "Alarm"
+)
+
+var (
+	// RefreshBuildinAll is the buildin value. It means to refresh all.
+	RefreshBuildinAll = []string{RefreshManager, RefreshServer, RefreshSwitch, RefreshAlarm}
+
 )
 
 // EnclosureLockable check if the enclosure's state can turn to be Locked.

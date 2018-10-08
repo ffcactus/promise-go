@@ -20,31 +20,31 @@ type RefreshRackServer struct {
 var executor = make(chan bool, 5)
 
 // Execute will execute all the steps.
-func (s *RefreshRackServer) Execute(c *context.RefreshServer, server *model.Server) (*string, []base.ErrorResponse) {
+func (s *RefreshRackServer) Execute(c *context.RefreshServer, server *model.Server) (string, []base.ErrorResponse) {
 	select {
 	case executor <- true:
 		return s.execute(c, server)
 	default:
-		return nil, []base.ErrorResponse{*base.NewErrorResponseBusy()}
+		return "", []base.ErrorResponse{*base.NewErrorResponseBusy()}
 	}
 }
 
-func (s *RefreshRackServer) execute(c *context.RefreshServer, server *model.Server) (*string, []base.ErrorResponse) {
+func (s *RefreshRackServer) execute(c *context.RefreshServer, server *model.Server) (string, []base.ErrorResponse) {
 	log.WithFields(log.Fields{"id": server.ID}).Info("Refresh server.")
 	// Lock server.
 	if errorResp := s.LockServer(&c.Base, server); errorResp != nil {
 		<-executor
-		return nil, []base.ErrorResponse{*errorResp}
+		return "", []base.ErrorResponse{*errorResp}
 	}
 
 	taskID, err := s.CreateRefreshServerTask(&c.Base, server)
 	if err != nil {
 		<-executor
-		return nil, []base.ErrorResponse{*errorResp.NewErrorResponseServerRefreshTaskFailed()}
+		return "", []base.ErrorResponse{*errorResp.NewErrorResponseServerRefreshTaskFailed()}
 	}
 
 	go s._execute(taskID, c, server)
-	return &taskID, nil
+	return taskID, nil
 }
 
 func (s *RefreshRackServer) _execute(taskID string, c *context.RefreshServer, server *model.Server) {

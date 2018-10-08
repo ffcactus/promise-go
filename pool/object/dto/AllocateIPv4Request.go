@@ -10,7 +10,7 @@ type AllocateIPv4Request struct {
 }
 
 // NewInstance returns a new instance.
-func (dto *AllocateIPv4Request) NewInstance() base.RequestInterface {
+func (AllocateIPv4Request) NewInstance() base.RequestInterface {
 	return new(AllocateIPv4Request)
 }
 

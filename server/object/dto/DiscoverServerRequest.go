@@ -14,7 +14,7 @@ type DiscoverServerRequest struct {
 }
 
 // NewInstance returns a new instance.
-func (dto *DiscoverServerRequest) NewInstance() base.RequestInterface {
+func (DiscoverServerRequest) NewInstance() base.RequestInterface {
 	return new(DiscoverServerRequest)
 }
 

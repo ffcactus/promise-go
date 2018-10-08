@@ -12,7 +12,7 @@ type PostServerGroupRequest struct {
 }
 
 // NewInstance creates a new instance.
-func (dto *PostServerGroupRequest) NewInstance() base.RequestInterface {
+func (PostServerGroupRequest) NewInstance() base.RequestInterface {
 	return new(PostServerGroupRequest)
 }
 

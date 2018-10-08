@@ -14,7 +14,7 @@ type FreeIPv4Request struct {
 }
 
 // NewInstance returns a new instance.
-func (dto *FreeIPv4Request) NewInstance() base.RequestInterface {
+func (FreeIPv4Request) NewInstance() base.RequestInterface {
 	return new(FreeIPv4Request)
 }
 

@@ -14,7 +14,7 @@ type PostIPv4PoolRequest struct {
 }
 
 // NewInstance creates a new instance.
-func (dto *PostIPv4PoolRequest) NewInstance() base.RequestInterface {
+func (PostIPv4PoolRequest) NewInstance() base.RequestInterface {
 	return new(PostIPv4PoolRequest)
 }
 

@@ -1,6 +1,7 @@
 package service
 
 import (
+	beegoCtx "github.com/astaxie/beego/context"
 	log "github.com/sirupsen/logrus"
 	"promise/base"
 	"promise/server/context"
@@ -45,7 +46,7 @@ func (s *Refresh) FindServerStateAdded() {
 }
 
 // PerformAsych will process the refresh action.
-func (s *Refresh) PerformAsych(id string, request base.AsychActionRequestInterface) (base.ResponseInterface, *string, []base.ErrorResponse) {
+func (s *Refresh) PerformAsych(ctx *beegoCtx.Context, id string, request base.AsychActionRequestInterface) (base.ResponseInterface, string, []base.ErrorResponse) {
 	modelInterface, errorResp := serverDB.Get(id)
 	if errorResp != nil {
 		return nil, nil, []base.ErrorResponse{*errorResp}

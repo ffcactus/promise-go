@@ -57,7 +57,7 @@ func (c *ActionController) Post() {
 		asychActionService AsychActionServiceInterface
 
 		response   ResponseInterface
-		taskURI    *string
+		taskURI    string
 		actionType string
 	)
 
@@ -142,9 +142,10 @@ func (c *ActionController) Post() {
 			response, errorResps = actionService.Perform(id, actionRequest)
 		}
 	case ActionTypeAsych:
+		// TODO can we return the result in action?
 		asychActionRequest, asychActionService, ok = c.convertToAsychAction(request, service)
 		if ok {
-			response, taskURI, errorResps = asychActionService.PerformAsych(id, asychActionRequest)
+			response, taskURI, errorResps = asychActionService.PerformAsych(c.Ctx, id, asychActionRequest)
 		}
 	default:
 		log.WithFields(log.Fields{
@@ -190,12 +191,14 @@ func (c *ActionController) Post() {
 		"response": response,
 		"task":     taskURI,
 	}).Info("Perform action done.")
-	if taskURI != nil {
-		c.Ctx.Output.Header("Location", *taskURI)
+	if taskURI != "" {
+		c.Ctx.Output.Header("Location", taskURI)
 	}
-	c.Data["json"] = response
-	c.Ctx.Output.SetStatus(http.StatusAccepted)
-	c.ServeJSON()
+	if response != nil {
+		c.Data["json"] = response
+		c.Ctx.Output.SetStatus(http.StatusAccepted)
+		c.ServeJSON()
+	}
 }
 
 func (c *ActionController) convertToUpdate(request RequestInterface, service ServiceInterface) (UpdateRequestInterface, CRUDServiceInterface, bool) {
