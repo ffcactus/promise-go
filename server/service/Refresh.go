@@ -24,7 +24,7 @@ func (s *Refresh) FindServerStateAdded() {
 	for {
 		seconds := 5
 		if id := serverDB.FindServerStateAdded(); id != "" {
-			_, _, errorResp := s.PerformAsych(id, nil)
+			_, _, errorResp := s.PerformAsych(beegoCtx.NewContext(), id, nil)
 			if errorResp != nil {
 				if errorResp[0].ID == base.ErrorResponseBusy {
 					seconds = 1
@@ -49,17 +49,17 @@ func (s *Refresh) FindServerStateAdded() {
 func (s *Refresh) PerformAsych(ctx *beegoCtx.Context, id string, request base.AsychActionRequestInterface) (base.ResponseInterface, string, []base.ErrorResponse) {
 	modelInterface, errorResp := serverDB.Get(id)
 	if errorResp != nil {
-		return nil, nil, []base.ErrorResponse{*errorResp}
+		return nil, "", []base.ErrorResponse{*errorResp}
 	}
 	server, ok := modelInterface.(*model.Server)
 	if !ok {
-		return nil, nil, []base.ErrorResponse{*base.NewErrorResponseInternalError()}
+		return nil, "", []base.ErrorResponse{*base.NewErrorResponseInternalError()}
 	}
-	ctx := context.CreateRefreshServerContext(server)
+	refreshCtx := context.CreateRefreshServerContext(server)
 	st := strategy.CreateRefreshServerStrategy(server)
-	task, errorResps := st.Execute(ctx, server)
+	task, errorResps := st.Execute(refreshCtx, server)
 	if errorResps != nil {
-		return nil, nil, errorResps
+		return nil, "", errorResps
 	}
 	return nil, task, nil
 }

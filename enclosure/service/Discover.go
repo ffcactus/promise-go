@@ -14,9 +14,9 @@ type Discover struct {
 // Perform will process the discover action.
 func (s *Discover) Perform(id string, request base.ActionRequestInterface) (base.ResponseInterface, []base.ErrorResponse) {
 	var (
-		response dto.GetEnclosureResponse
+		response    dto.GetEnclosureResponse
 		clientError base.ClientError
-		identity *base.DeviceIdentity
+		identity    *base.DeviceIdentity
 	)
 
 	discoverRequest, ok := request.(*dto.DiscoverEnclosureRequest)
@@ -41,12 +41,7 @@ func (s *Discover) Perform(id string, request base.ActionRequestInterface) (base
 	if exist, _ := enclosureDB.Exist(enclosure); exist {
 		return nil, []base.ErrorResponse{*base.NewErrorResponseDuplicate()}
 	}
-	// get server slot.
-	enclosure.ServerSlots, clientError = client.ServerSlot()
-	if clientError != nil {
-		log.WithFields(log.Fields{"error": clientError}).Warn("Service discover enclosure failed, get server slot failed, discover abort.")
-		return nil, []base.ErrorResponse{*base.NewErrorResponseFromClientError(clientError)}
-	}
+	// save
 	created, errResp := enclosureDB.Create(enclosure)
 	if errResp != nil {
 		return nil, []base.ErrorResponse{*errResp}

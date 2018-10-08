@@ -14,12 +14,12 @@ type RefreshEnclosureRequest struct {
 
 // NewInstance returns a new instance.
 func (RefreshEnclosureRequest) NewInstance() base.RequestInterface {
-	return new (RefreshEnclosureRequest)
+	return new(RefreshEnclosureRequest)
 }
 
 // IsValid return if the request is valid.
 func (dto *RefreshEnclosureRequest) IsValid() *base.ErrorResponse {
-	if (dto.Username != "" || dto.Password == "") && (dto.Username == "" || dto.Password != "") {
+	if (dto.Username != "" && dto.Password == "") || (dto.Username == "" && dto.Password != "") {
 		return base.NewErrorResponseInvalidRequest()
 	}
 	return nil

@@ -1,6 +1,7 @@
 package context
 
 import (
+	beegoCtx "github.com/astaxie/beego/context"
 	"promise/enclosure/object/dto"
 )
 

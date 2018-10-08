@@ -2,15 +2,15 @@ package controller
 
 import (
 	"promise/base"
-	"promise/server/service"
+	"promise/enclosure/object/dto"
+	"promise/enclosure/service"
 )
-
 
 var (
 	refresh = base.ActionInfo{
 		Name:    "refresh",
 		Type:    base.ActionTypeAsych,
-		Request: dto.RequestEnclosureRequest,
+		Request: new(dto.RefreshEnclosureRequest),
 		Service: new(service.Refresh),
 	}
 

@@ -38,6 +38,31 @@ type ActionController struct {
 	beego.Controller
 }
 
+func (c *ActionController) SetResponse(resp ResponseInterface, task string, errorResps []ErrorResponse) {
+	if errorResps != nil {
+		log.WithFields(log.Fields{
+			"resource":  c.TemplateImpl.ResourceName(),
+			"errorResp": errorResps[0].ID,
+		}).Warn("ActionController perform action failed.")
+		c.Data["json"] = &errorResps
+		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
+		c.ServeJSON()
+		return
+	}
+	log.WithFields(log.Fields{
+		"resource": c.TemplateImpl.ResourceName(),
+		"task":     task,
+	}).Info("Perform action done.")
+	if task != "" {
+		c.Ctx.Output.Header("Location", task)
+	}
+	if resp != nil {
+		c.Data["json"] = resp
+		c.Ctx.Output.SetStatus(http.StatusAccepted)
+		c.ServeJSON()
+	}
+}
+
 // Post is the default method to handle POST method.
 func (c *ActionController) Post() {
 	var (

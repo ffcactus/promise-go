@@ -3,7 +3,6 @@ package action
 import (
 	"promise/base"
 	"promise/enclosure/context"
-	taskDTO "promise/task/object/dto"
 )
 
 // Action defines the strategy.
@@ -12,8 +11,6 @@ type Action interface {
 	Name() string
 	Description() string
 	ExpectedExecutionMs() uint64
-	Add(sub Action) Action
-	Task() *taskDTO.PostTaskRequest
 	Execute(c *context.Base)
 }
 

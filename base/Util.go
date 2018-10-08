@@ -82,3 +82,13 @@ func IPStringBetween(from string, to string, test string) bool {
 	_test := net.ParseIP(test)
 	return IPBetween(_from, _to, _test)
 }
+
+// ContainsString check if slice sl contains v.
+func ContainsString(sl []string, v string) bool {
+	for _, vv := range sl {
+		if vv == v {
+			return true
+		}
+	}
+	return false
+}

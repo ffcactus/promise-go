@@ -44,9 +44,9 @@ func main() {
 		beego.NSRouter("/:id", &base.IDController{
 			TemplateImpl: new(controller.EnclosureID),
 		}),
-		// beego.NSRouter("/:id/action/:action", &base.ActionController{
-		// 	TemplateImpl: new(controller.ServerAction),
-		// }),
+		beego.NSRouter("/:id/action/:action", &base.ActionController{
+			TemplateImpl: new(controller.EnclosureAction),
+		}),
 	)
 	beego.AddNamespace(enclosureNS)
 
