@@ -102,6 +102,9 @@ func (impl *Enclosure) GetAndLock(ID string) (base.ModelInterface, error) {
 	defer func() {
 		if rollback {
 			tx.Rollback()
+			log.WithFields(log.Fields{
+				"id": ID,
+			}).Warn("DB get and lock enclosure failed, transaction roll back.")
 		}
 	}()
 
@@ -109,15 +112,15 @@ func (impl *Enclosure) GetAndLock(ID string) (base.ModelInterface, error) {
 		rollback = true
 		log.WithFields(log.Fields{
 			"id":    ID,
-			"error": err}).
-			Debug("DB get and lock enclosure failed, set transaction isolation level to serializable failed.")
+			"error": err,
+		}).Warn("DB get and lock enclosure failed, set transaction isolation level to serializable failed.")
 		return nil, err
 	}
 	if tx.Where("\"ID\" = ?", ID).First(enclosure).RecordNotFound() {
 		rollback = true
 		log.WithFields(log.Fields{
-			"id": ID}).
-			Debug("DB get and lock enclosure failed, enclosure does not exist.")
+			"id": ID,
+		}).Warn("DB get and lock enclosure failed, enclosure does not exist.")
 		return nil, nil
 	}
 	if !model.EnclosureLockable(enclosure.State) {
@@ -125,8 +128,8 @@ func (impl *Enclosure) GetAndLock(ID string) (base.ModelInterface, error) {
 		rollback = true
 		log.WithFields(log.Fields{
 			"id":    ID,
-			"state": enclosure.State}).
-			Debug("DB get and lock enclosure failed, enclosure not lockable.")
+			"state": enclosure.State,
+		}).Warn("DB get and lock enclosure failed, enclosure not lockable.")
 		return enclosure.ToModel(), nil
 	}
 	// Change the state.
@@ -134,18 +137,22 @@ func (impl *Enclosure) GetAndLock(ID string) (base.ModelInterface, error) {
 		rollback = true
 		log.WithFields(log.Fields{
 			"id":    ID,
-			"state": enclosure.State}).
-			Debug("DB get and lock enclosure failed, update state failed.")
+			"state": enclosure.State,
+		}).Warn("DB get and lock enclosure failed, update state failed.")
 		return nil, err
 	}
 	// Commit.
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"id":    ID,
-			"error": err}).
-			Warn("DB get and lock enclosure failed, commit failed.")
+			"error": err,
+		}).Warn("DB get and lock enclosure failed, commit failed.")
 		return nil, err
 	}
+	log.WithFields(log.Fields{
+		"id":    ID,
+		"state": enclosure.State,
+	}).Info("DB get and lock enclosure success.")
 	return enclosure.ToModel(), nil
 }
 

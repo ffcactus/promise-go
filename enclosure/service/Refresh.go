@@ -4,10 +4,11 @@ import (
 	beegoCtx "github.com/astaxie/beego/context"
 	log "github.com/sirupsen/logrus"
 	"promise/base"
-	"promise/enclosure/action"
 	"promise/enclosure/context"
 	"promise/enclosure/object/dto"
 	"promise/enclosure/object/model"
+	"promise/enclosure/strategy"
+	taskSDK "promise/sdk/task"
 )
 
 // Refresh is the service for refresh enclosure action.
@@ -95,12 +96,29 @@ func (s *Refresh) Stage1(ctx *beegoCtx.Context, id string, request base.AsychAct
 		refreshCtx.SendResponse(nil, "", []base.ErrorResponse{*base.NewErrorResponseErrorState()})
 		return
 	}
+	refreshCtx.Enclosure = enclosure
+	log.WithFields(log.Fields{
+		"id": id,
+	}).Info("Service refresh enclosure, lock enclosure success.")
 	s.Stage2(refreshCtx)
 }
 
 // Stage2 will create the action and create a task to track the process.
 func (s *Refresh) Stage2(ctx *context.RefreshContext) {
-	act := action.NewRefreshAction(ctx)
+	act := strategy.NewRefresh(ctx)
+	createTaskRequest := act.Task()
+	// TODO we should use client error here.
+	createTaskResponse, errorResponse, err := taskSDK.CreateTask(createTaskRequest)
+	if err != nil {
+		log.WithFields(log.Fields{"error": err}).Warn("Service refresh failed, create task failed.")
+		ctx.SendResponse(nil, "", []base.ErrorResponse{*base.NewErrorResponseInternalError()})
+	}
+	if errorResponse != nil && len(errorResponse) > 0 {
+		log.WithFields(log.Fields{"error": errorResponse[0]}).Warn("Service refresh failed, create task failed.")
+	}
+	log.WithFields(log.Fields{"task": createTaskResponse.GetID()}).Info("Service refresh, create task.")
+	ctx.TaskURL = createTaskResponse.URI
+	ctx.SendResponse(ctx.Enclosure, ctx.TaskURL, nil)
 	act.Execute(&ctx.Base)
 }
 

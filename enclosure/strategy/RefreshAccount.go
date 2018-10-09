@@ -1,11 +1,11 @@
-package action
+package strategy
 
 import (
 	log "github.com/sirupsen/logrus"
 	"promise/enclosure/context"
 )
 
-// RefreshAccount is the action to refresh manager.
+// RefreshAccount is the strategy to refresh manager.
 type RefreshAccount struct {
 	name                string
 	messageID           string
@@ -13,7 +13,7 @@ type RefreshAccount struct {
 	expectedExecutionMs uint64
 }
 
-// NewRefreshAccount creates a new RefreshAccount action.
+// NewRefreshAccount creates a new RefreshAccount strategy.
 func NewRefreshAccount() *RefreshAccount {
 	return &RefreshAccount{
 		name:                "Refresh Account",
@@ -23,22 +23,22 @@ func NewRefreshAccount() *RefreshAccount {
 	}
 }
 
-// Name returns the name of the action.
+// Name returns the name of the strategy.
 func (s *RefreshAccount) Name() string {
 	return s.name
 }
 
-// MessageID returns the message ID of the action.
+// MessageID returns the message ID of the strategy.
 func (s *RefreshAccount) MessageID() string {
 	return s.messageID
 }
 
-// Description returns the description of the action.
+// Description returns the description of the strategy.
 func (s *RefreshAccount) Description() string {
 	return s.description
 }
 
-// ExpectedExecutionMs returns the expected execution time in ms of the action.
+// ExpectedExecutionMs returns the expected execution time in ms of the strategy.
 func (s *RefreshAccount) ExpectedExecutionMs() uint64 {
 	return s.expectedExecutionMs
 }

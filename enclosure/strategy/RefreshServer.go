@@ -1,11 +1,11 @@
-package action
+package strategy
 
 import (
 	log "github.com/sirupsen/logrus"
 	"promise/enclosure/context"
 )
 
-// RefreshServer is the action to refresh manager.
+// RefreshServer is the strategy to refresh manager.
 type RefreshServer struct {
 	name                string
 	messageID           string
@@ -13,7 +13,7 @@ type RefreshServer struct {
 	expectedExecutionMs uint64
 }
 
-// NewRefreshServer creates a new RefreshServer action.
+// NewRefreshServer creates a new RefreshServer strategy.
 func NewRefreshServer() *RefreshServer {
 	return &RefreshServer{
 		name:                "Refresh Server",
@@ -23,22 +23,22 @@ func NewRefreshServer() *RefreshServer {
 	}
 }
 
-// Name returns the name of the action.
+// Name returns the name of the strategy.
 func (s *RefreshServer) Name() string {
 	return s.name
 }
 
-// MessageID returns the message ID of the action.
+// MessageID returns the message ID of the strategy.
 func (s *RefreshServer) MessageID() string {
 	return s.messageID
 }
 
-// Description returns the description of the action.
+// Description returns the description of the strategy.
 func (s *RefreshServer) Description() string {
 	return s.description
 }
 
-// ExpectedExecutionMs returns the expected execution time in ms of the action.
+// ExpectedExecutionMs returns the expected execution time in ms of the strategy.
 func (s *RefreshServer) ExpectedExecutionMs() uint64 {
 	return s.expectedExecutionMs
 }
