@@ -82,7 +82,7 @@ export const serverApp = (state = defaultState, action) => {
   let arraylength;
   switch (action.type) {
     // App
-    case ActionType.APP_INIT_START:
+    case ActionType.APP_SERVER_INIT_START:
       return {
         ...state,
         appState: AppState.LOADING,
@@ -98,7 +98,7 @@ export const serverApp = (state = defaultState, action) => {
         currentServerUri: action.info.currentServerUri,
         currentServerGroupUri: action.info.currentServerGroupUri,
       };
-    case ActionType.APP_INIT_SUCCESS:
+    case ActionType.APP_SERVER_INIT_SUCCESS:
       tempCurrentServerUri = state.currentServerUri;
       tempServerExist = false;
       tempServerGroupExist = false;
@@ -143,13 +143,13 @@ export const serverApp = (state = defaultState, action) => {
         serverGroupExist: tempServerGroupExist,
         serverIndex: tempServerIndex,
       };
-    case ActionType.APP_INIT_FAILURE:
+    case ActionType.APP_SERVER_INIT_FAILURE:
       return {
         ...state,
         appState: AppState.FAILURE,
         serverDetailState: ServerDetailState.FAILURE,
       };
-    case ActionType.APP_EXIT:
+    case ActionType.APP_SERVER_EXIT:
       return defaultState;
     // Server
     // Server.REST.Get

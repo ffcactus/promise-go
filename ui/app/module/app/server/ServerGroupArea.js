@@ -9,7 +9,7 @@ import styles from './Server.css';
 function ServerGroupArea() {
   return (
     <div styleName="flex-column-container group-area">
-      <AppCollectionMenu action={{type: ActionType.APP_EXIT}} />
+      <AppCollectionMenu action={{type: ActionType.APP_SERVER_EXIT}} />
       <ServerGroupControlArea />
       <ServerGroupList />
     </div>

@@ -32,7 +32,7 @@ class AppList extends React.Component {
         <AppIcon img={Find} uri="/login" name="Find" notificationCount={0}/>
         <AppIcon img={Friends} uri="/animation" name="Friends" notificationCount={0}/>
         <AppIcon img={Drive} uri="/server" name="Server" notificationCount={0}/>
-        <AppIcon img={Keynote} uri="/server" name="Keynote" notificationCount={0}/>
+        <AppIcon img={Keynote} uri="/enclosure" name="Enclosure" notificationCount={0}/>
         <AppIcon img={Mail} uri="/settings" name="Mail" notificationCount={0}/>
         <AppIcon img={Notes} uri="/settings" name="Notes" notificationCount={0}/>
         <AppIcon img={Numbers} uri="/settings" name="Numbers" notificationCount={0}/>

@@ -23,7 +23,7 @@ export function appInit(servergroup, server) {
   return (dispatch, getState) => {
     const prefix = 'http://' + getState().session.hostname;
     dispatch({
-      type: ActionType.APP_INIT_START,
+      type: ActionType.APP_SERVER_INIT_START,
       info: {
         currentServerUri: server ? '/promise/v1/server/' + server : null,
         currentServerGroupUri: servergroup ? '/promise/v1/servergroup/' + servergroup : null,
@@ -40,7 +40,7 @@ export function appInit(servergroup, server) {
     ]).then((responses) => {
       if (responses[0].status === 200 && responses[1].status === 200 && responses[1].status === 200) {
         dispatch({
-          type: ActionType.APP_INIT_SUCCESS,
+          type: ActionType.APP_SERVER_INIT_SUCCESS,
           info: {
             serverList: responses[0].response,
             serverGroupList: responses[1].response,
@@ -50,11 +50,11 @@ export function appInit(servergroup, server) {
         return;
       }
       dispatch({
-        type: ActionType.APP_INIT_FAILURE,
+        type: ActionType.APP_SERVER_INIT_FAILURE,
       });
     }).catch((e) => {
       dispatch({
-        type: ActionType.APP_INIT_FAILURE,
+        type: ActionType.APP_SERVER_INIT_FAILURE,
         info: e,
       });
     });

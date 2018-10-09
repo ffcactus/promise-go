@@ -94,7 +94,7 @@ public class IPv4PoolTest extends PromiseIntegrationTest
     }
 
     /**
-     * When you post a IPv4 pool that exist, it will fail.
+     * When you post a IPv4 pool that not exist, it will fail.
      */
     @Test
     public void testPostExist()

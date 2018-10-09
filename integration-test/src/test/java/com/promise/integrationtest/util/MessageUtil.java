@@ -7,7 +7,7 @@ import com.promise.integrationtest.dto.Argument;
 import com.promise.integrationtest.dto.ErrorResponse;
 import com.promise.integrationtest.dto.Support;
 
-public class ErrorResponseUtil
+public class MessageUtil
 {
     public static ErrorResponse testErrorResponse;
 
