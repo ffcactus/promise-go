@@ -87,3 +87,14 @@
 .border-row {
     border-left: 1px solid #adc4dd;
 }
+
+.search {
+    width: 100%;
+    height: auto;
+    background: #fcfcfc;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    box-shadow: 0 0 3px #ccc, 0 10px 15px #ebebeb inset;
+    background: #fcfcfc url(../../promise/common/img/icon/search_512.png) left/8% no-repeat;
+    padding-left: 40px;
+}
