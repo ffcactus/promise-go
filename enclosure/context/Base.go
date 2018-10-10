@@ -4,13 +4,18 @@ import (
 	beegoCtx "github.com/astaxie/beego/context"
 	"net/http"
 	"promise/base"
+	"promise/enclosure/client/enclosure"
+	"promise/enclosure/db"
 )
 
 // Base containes the basic context info
 type Base struct {
 	*beegoCtx.Context
-	TaskURL string
-	ID      string
+	Client    enclosure.Client
+	DB        *db.Enclosure
+	Enclosure base.ModelInterface
+	TaskURL   string
+	ID        string
 }
 
 // SendResponse sents the response to client.

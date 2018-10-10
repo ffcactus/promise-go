@@ -1,7 +1,7 @@
 package enclosure
 
 import (
-	// log "github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"promise/base"
 	"promise/enclosure/client/enclosure/mm920"
 	"promise/enclosure/client/enclosure/mock"
@@ -30,6 +30,7 @@ func NewClient(enclosure *model.Enclosure) Client {
 	case model.EnclosureTypeE9000:
 		return mm920.NewClient(enclosure)
 	default:
+		log.WithFields(log.Fields{"type": enclosure.Type}).Error("Create enclosure client failed.")
 		return nil
 	}
 }

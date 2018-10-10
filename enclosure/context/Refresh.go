@@ -3,14 +3,12 @@ package context
 import (
 	beegoCtx "github.com/astaxie/beego/context"
 	"promise/enclosure/object/dto"
-	"promise/enclosure/object/model"
 )
 
 // RefreshContext is refresh context.
 type RefreshContext struct {
 	Base
-	Request   *dto.RefreshEnclosureRequest
-	Enclosure *model.Enclosure
+	Request *dto.RefreshEnclosureRequest
 }
 
 // NewRefreshContext creates a Refresh context.

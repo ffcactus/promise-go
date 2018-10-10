@@ -46,4 +46,18 @@ func (s *RefreshSwitch) ExpectedExecutionMs() uint64 {
 // Execute implements the Action interface.
 func (s *RefreshSwitch) Execute(c *context.Base) {
 	log.Info("Action refresh switch.")
+	slots, clientError := c.Client.SwitchSlot()
+	if clientError != nil {
+		// TODO we need process the alarm here.
+		log.WithFields(log.Fields{
+			"id": c.ID, "error": clientError,
+		}).Warn("Strategy refresh switch failed, get switch slots failed.")
+	}
+	enclosure, dbError := c.DB.RefreshSwitchSlot(c.ID, slots)
+	if dbError != nil {
+		log.WithFields(log.Fields{
+			"id": c.ID, "error": clientError,
+		}).Warn("Strategy refresh switch failed, DB refresh switch failed.")
+	}
+	c.Enclosure = enclosure
 }

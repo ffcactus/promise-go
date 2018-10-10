@@ -213,7 +213,7 @@ func (impl *Server) SetState(ID string, state string) (base.ModelInterface, erro
 			"id":    ID,
 			"op":    "SetState",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
@@ -222,7 +222,7 @@ func (impl *Server) SetState(ID string, state string) (base.ModelInterface, erro
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "SetState",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := tx.Model(server).UpdateColumn("State", state).Error; err != nil {
@@ -257,7 +257,7 @@ func (impl *Server) SetServerHealth(ID string, health string) (base.ModelInterfa
 			"id":    ID,
 			"op":    "SetServerHealth",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
@@ -266,7 +266,7 @@ func (impl *Server) SetServerHealth(ID string, health string) (base.ModelInterfa
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "SetServerHealth",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := tx.Model(server).UpdateColumn("Health", health).Error; err != nil {
@@ -309,7 +309,7 @@ func (impl *Server) UpdateProcessors(ID string, processors []model.Processor) (b
 			"id":    ID,
 			"op":    "UpdateProcessors",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
@@ -318,7 +318,7 @@ func (impl *Server) UpdateProcessors(ID string, processors []model.Processor) (b
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateProcessors",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deleteProcessors(tx, server); err != nil {
@@ -327,7 +327,7 @@ func (impl *Server) UpdateProcessors(ID string, processors []model.Processor) (b
 			"id":    ID,
 			"op":    "UpdateProcessors",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	server.Processors = []entity.Processor{}
@@ -377,7 +377,7 @@ func (impl *Server) UpdateMemory(ID string, memory []model.Memory) (base.ModelIn
 			"id":    ID,
 			"op":    "UpdateMemory",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
@@ -386,7 +386,7 @@ func (impl *Server) UpdateMemory(ID string, memory []model.Memory) (base.ModelIn
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateMemory",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deleteMemory(tx, server); err != nil {
@@ -395,7 +395,7 @@ func (impl *Server) UpdateMemory(ID string, memory []model.Memory) (base.ModelIn
 			"id":    ID,
 			"op":    "UpdateMemory",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	server.Memory = []entity.Memory{}
@@ -462,7 +462,7 @@ func (impl *Server) UpdateEthernetInterfaces(ID string, ethernet []model.Etherne
 			"id":    ID,
 			"op":    "UpdateEthernetInterfaces",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
@@ -471,7 +471,7 @@ func (impl *Server) UpdateEthernetInterfaces(ID string, ethernet []model.Etherne
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateEthernetInterfaces",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deleteEthernetInterfaces(tx, server); err != nil {
@@ -480,7 +480,7 @@ func (impl *Server) UpdateEthernetInterfaces(ID string, ethernet []model.Etherne
 			"id":    ID,
 			"op":    "UpdateEthernetInterfaces",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	server.EthernetInterfaces = []entity.EthernetInterface{}
@@ -530,7 +530,7 @@ func (impl *Server) UpdateNetworkInterfaces(ID string, networkInterface []model.
 			"id":    ID,
 			"op":    "UpdateNetworkInterfaces",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
@@ -539,7 +539,7 @@ func (impl *Server) UpdateNetworkInterfaces(ID string, networkInterface []model.
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateNetworkInterfaces",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deleteNetworkInterfaces(tx, server); err != nil {
@@ -548,7 +548,7 @@ func (impl *Server) UpdateNetworkInterfaces(ID string, networkInterface []model.
 			"id":    ID,
 			"op":    "UpdateNetworkInterfaces",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	networkInterfacesE := []entity.NetworkInterface{}
@@ -604,7 +604,7 @@ func (impl *Server) UpdateStorages(ID string, storages []model.Storage) (base.Mo
 			"id":    ID,
 			"op":    "UpdateStorages",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
@@ -613,7 +613,7 @@ func (impl *Server) UpdateStorages(ID string, storages []model.Storage) (base.Mo
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateStorages",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deleteStorages(tx, server); err != nil {
@@ -622,7 +622,7 @@ func (impl *Server) UpdateStorages(ID string, storages []model.Storage) (base.Mo
 			"id":    ID,
 			"op":    "UpdateStorages",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	storagesE := []entity.Storage{}
@@ -691,7 +691,7 @@ func (impl *Server) UpdatePower(ID string, power *model.Power) (base.ModelInterf
 			"id":    ID,
 			"op":    "UpdatePower",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
@@ -700,7 +700,7 @@ func (impl *Server) UpdatePower(ID string, power *model.Power) (base.ModelInterf
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdatePower",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deletePower(tx, server); err != nil {
@@ -709,7 +709,7 @@ func (impl *Server) UpdatePower(ID string, power *model.Power) (base.ModelInterf
 			"id":    ID,
 			"op":    "UpdatePower",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	server.Power.Load(power)
@@ -762,7 +762,7 @@ func (impl *Server) UpdateThermal(ID string, thermal *model.Thermal) (base.Model
 			"id":    ID,
 			"op":    "UpdateThermal",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
@@ -771,7 +771,7 @@ func (impl *Server) UpdateThermal(ID string, thermal *model.Thermal) (base.Model
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateThermal",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deleteThermal(tx, server); err != nil {
@@ -780,7 +780,7 @@ func (impl *Server) UpdateThermal(ID string, thermal *model.Thermal) (base.Model
 			"id":    ID,
 			"op":    "UpdateThermal",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	server.Thermal.Load(thermal)
@@ -825,7 +825,7 @@ func (impl *Server) UpdateOemHuaweiBoards(ID string, boards []model.OemHuaweiBoa
 			"id":    ID,
 			"op":    "UpdateOemHuaweiBoards",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
@@ -834,7 +834,7 @@ func (impl *Server) UpdateOemHuaweiBoards(ID string, boards []model.OemHuaweiBoa
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateOemHuaweiBoards",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deleteOemHuaweiBoards(tx, server); err != nil {
@@ -843,7 +843,7 @@ func (impl *Server) UpdateOemHuaweiBoards(ID string, boards []model.OemHuaweiBoa
 			"id":    ID,
 			"op":    "UpdateOemHuaweiBoards",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	boardsE := []entity.OemHuaweiBoard{}
@@ -906,7 +906,7 @@ func (impl *Server) UpdateNetworkAdapters(ID string, networkAdapters []model.Net
 			"id":    ID,
 			"op":    "UpdateNetworkAdapters",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
@@ -915,7 +915,7 @@ func (impl *Server) UpdateNetworkAdapters(ID string, networkAdapters []model.Net
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateNetworkAdapters",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deleteNetworkAdapters(tx, server); err != nil {
@@ -924,7 +924,7 @@ func (impl *Server) UpdateNetworkAdapters(ID string, networkAdapters []model.Net
 			"id":    ID,
 			"op":    "UpdateNetworkAdapters",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	networkAdaptersE := []entity.NetworkAdapter{}
@@ -991,7 +991,7 @@ func (impl *Server) UpdateDrives(ID string, drives []model.Drive) (base.ModelInt
 			"id":    ID,
 			"op":    "UpdateDrives",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
@@ -1000,7 +1000,7 @@ func (impl *Server) UpdateDrives(ID string, drives []model.Drive) (base.ModelInt
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateDrives",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deleteDrives(tx, server); err != nil {
@@ -1009,7 +1009,7 @@ func (impl *Server) UpdateDrives(ID string, drives []model.Drive) (base.ModelInt
 			"id":    ID,
 			"op":    "UpdateDrives",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	drivesE := []entity.Drive{}
@@ -1066,7 +1066,7 @@ func (impl *Server) UpdatePCIeDevices(ID string, pcieDevices []model.PCIeDevice)
 			"id":    ID,
 			"op":    "UpdatePCIeDevices",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
@@ -1075,7 +1075,7 @@ func (impl *Server) UpdatePCIeDevices(ID string, pcieDevices []model.PCIeDevice)
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdatePCIeDevices",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deletePCIeDevices(tx, server); err != nil {
@@ -1084,7 +1084,7 @@ func (impl *Server) UpdatePCIeDevices(ID string, pcieDevices []model.PCIeDevice)
 			"id":    ID,
 			"op":    "UpdatePCIeDevices",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	pcieDevicesE := new([]entity.PCIeDevice)

@@ -24,7 +24,7 @@ func NewClient(enclosure *model.Enclosure) *Client {
 
 // String returns the debug info of the client.
 func (c Client) String() string {
-	return c.Address
+	return "Mock"
 }
 
 // Ready returns if the enclosure is ready.
@@ -52,7 +52,7 @@ func (c Client) DeviceIdentity() (*base.DeviceIdentity, base.ClientError) {
 	return &identity, nil
 }
 
-// ServerSlot returns the blade slot info.
+// ServerSlot returns the server slot info.
 func (c Client) ServerSlot() ([]model.ServerSlot, base.ClientError) {
 	slots := make([]model.ServerSlot, 0)
 	for i := 1; i <= 8; i++ {
@@ -65,18 +65,18 @@ func (c Client) ServerSlot() ([]model.ServerSlot, base.ClientError) {
 		slot.Width = 1
 		slots = append(slots, slot)
 	}
-	log.WithFields(log.Fields{"client": c}).Info("Client get blade slot.")
+	log.WithFields(log.Fields{"client": c}).Info("Client get server slot.")
 	return slots, nil
 }
 
 // SwitchSlot returns the switch ade slot info.
 func (c Client) SwitchSlot() ([]model.SwitchSlot, base.ClientError) {
 	slots := make([]model.SwitchSlot, 0)
-	for i := 1; i <= 8; i++ {
+	for i := 1; i <= 4; i++ {
 		slot := model.SwitchSlot{}
 		slot.Index = i
 		slot.Inserted = true
-		slot.ProductName = "CH121 V5"
+		slot.ProductName = "CX920"
 		slot.SerialNumber = base.RandString(10)
 		slots = append(slots, slot)
 	}

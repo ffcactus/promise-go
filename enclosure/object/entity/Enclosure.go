@@ -12,6 +12,7 @@ type Enclosure struct {
 	base.DeviceIdentity
 	Name           string          `gorm:"column:Name"`
 	Description    string          `gorm:"column:Description"`
+	Type           string          `gorm:"column:Type"`
 	State          string          `gorm:"column:State"`
 	StateReason    string          `gorm:"column:StateReason"`
 	Health         string          `gorm:"column:Health"`
@@ -104,6 +105,7 @@ func (e *Enclosure) Load(i base.ModelInterface) error {
 	e.DeviceIdentity = m.DeviceIdentity
 	e.Name = m.Name
 	e.Description = m.Description
+	e.Type = m.Type
 	e.State = m.State
 	e.Health = m.Health
 	// blade
@@ -159,6 +161,7 @@ func (e *Enclosure) ToModel() base.ModelInterface {
 	m.DeviceIdentity = e.DeviceIdentity
 	m.Name = e.Name
 	m.Description = e.Description
+	m.Type = e.Type
 	m.State = e.State
 	m.Health = e.Health
 	// blade

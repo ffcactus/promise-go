@@ -4,6 +4,7 @@ import (
 	beegoCtx "github.com/astaxie/beego/context"
 	log "github.com/sirupsen/logrus"
 	"promise/base"
+	enclosureClient "promise/enclosure/client/enclosure"
 	"promise/enclosure/context"
 	"promise/enclosure/object/dto"
 	"promise/enclosure/object/model"
@@ -71,6 +72,7 @@ func (s *Refresh) Stage1(ctx *beegoCtx.Context, id string, request base.AsychAct
 	}
 	// 2. Prepare the context.
 	refreshCtx := context.NewRefreshContext(ctx, id, req)
+	refreshCtx.DB = enclosureDB
 	// 3. Lock the enclosure.
 	modelInterface, err := enclosureDB.GetAndLock(id)
 	if err != nil {
@@ -97,6 +99,7 @@ func (s *Refresh) Stage1(ctx *beegoCtx.Context, id string, request base.AsychAct
 		return
 	}
 	refreshCtx.Enclosure = enclosure
+	refreshCtx.Client = enclosureClient.NewClient(enclosure)
 	log.WithFields(log.Fields{
 		"id": id,
 	}).Info("Service refresh enclosure, lock enclosure success.")
@@ -105,6 +108,9 @@ func (s *Refresh) Stage1(ctx *beegoCtx.Context, id string, request base.AsychAct
 
 // Stage2 will create the action and create a task to track the process.
 func (s *Refresh) Stage2(ctx *context.RefreshContext) {
+	var (
+		response dto.GetEnclosureResponse
+	)
 	act := strategy.NewRefresh(ctx)
 	createTaskRequest := act.Task()
 	// TODO we should use client error here.
@@ -118,7 +124,8 @@ func (s *Refresh) Stage2(ctx *context.RefreshContext) {
 	}
 	log.WithFields(log.Fields{"task": createTaskResponse.GetID()}).Info("Service refresh, create task.")
 	ctx.TaskURL = createTaskResponse.URI
-	ctx.SendResponse(ctx.Enclosure, ctx.TaskURL, nil)
+	response.Load(ctx.Enclosure)
+	ctx.SendResponse(response, ctx.TaskURL, nil)
 	act.Execute(&ctx.Base)
 }
 

@@ -46,4 +46,18 @@ func (s *RefreshServer) ExpectedExecutionMs() uint64 {
 // Execute implements the Action interface.
 func (s *RefreshServer) Execute(c *context.Base) {
 	log.Info("Action refresh server.")
+	slots, clientError := c.Client.ServerSlot()
+	if clientError != nil {
+		// TODO we need process the alarm here.
+		log.WithFields(log.Fields{
+			"id": c.ID, "error": clientError,
+		}).Warn("Strategy refresh server failed, get server slots failed.")
+	}
+	enclosure, dbError := c.DB.RefreshServerSlot(c.ID, slots)
+	if dbError != nil {
+		log.WithFields(log.Fields{
+			"id": c.ID, "error": clientError,
+		}).Warn("Strategy refresh server failed, DB refresh server failed.")
+	}
+	c.Enclosure = enclosure
 }

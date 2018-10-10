@@ -46,4 +46,18 @@ func (s *RefreshManager) ExpectedExecutionMs() uint64 {
 // Execute implements the Action interface.
 func (s *RefreshManager) Execute(c *context.Base) {
 	log.Info("Action refresh manager.")
+	slots, clientError := c.Client.ManagerSlot()
+	if clientError != nil {
+		// TODO we need process the alarm here.
+		log.WithFields(log.Fields{
+			"id": c.ID, "error": clientError,
+		}).Warn("Strategy refresh manager failed, get manager slots failed.")
+	}
+	enclosure, dbError := c.DB.RefreshManagerSlot(c.ID, slots)
+	if dbError != nil {
+		log.WithFields(log.Fields{
+			"id": c.ID, "error": clientError,
+		}).Warn("Strategy refresh manager failed, DB refresh manager failed.")
+	}
+	c.Enclosure = enclosure
 }
