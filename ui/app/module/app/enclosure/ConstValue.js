@@ -25,14 +25,22 @@ export const ActionType = Object.freeze(
 
     // Enclosure
     // Enclosure.UI
+    // Enclosure.UI.Resource
+    'ENCLOSURE_UI_SELECT_RESOURCE': 'ENCLOSURE_UI_SELECT_RESOURCE',
+    // Enclosure.UI.List
     'ENCLOSURE_UI_SELECT': 'ENCLOSURE_UI_SELECT',
 
     // Profile
     // Profile.UI
-    'EP_UI_SELECT': 'EP_UI_SELECT',
+    'EP_UI_SELECT_RESOURCE': 'EP_UI_SELECT_RESOURCE',
 
     // IDPool
     // IDPool.UI
-    'IDPOOL_UI_SELECT': 'IDPOOL_UI_SELECT',
+    'IDPOOL_UI_SELECT_RESOURCE': 'IDPOOL_UI_SELECT_RESOURCE',
+
+    // Task.WS
+    'TASK_WS_CREATE': 'TASK_WS_CREATE',
+    'TASK_WS_UPDATE': 'TASK_WS_UPDATE',
+    'TASK_WS_DELETE': 'TASK_WS_DELETE',
   }
 );

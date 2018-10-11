@@ -1,10 +1,10 @@
 import { ActionType } from './ConstValue';
 
 /**
- * This action will be called when user select ID Pool.
+ * This action will be called when user select profile resource.
  */
-export function select() {
+export function selectResource() {
   return {
-    type: ActionType.EP_UI_SELECT,
+    type: ActionType.EP_UI_SELECT_RESOURCE,
   };
 }

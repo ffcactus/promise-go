@@ -98,3 +98,13 @@
     background: #fcfcfc url(../../promise/common/img/icon/search_512.png) left/8% no-repeat;
     padding-left: 40px;
 }
+
+.center-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.center-container p {
+    margin: 0px;
+}

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import ResourceListHeadArea from './ResourceListHeadArea';
 import ResourceListControlArea from './ResourceListControlArea';
-import ResourceList from './ResourceList';
+import ResourceListContainer from './ResourceListContainer';
 import styles from './Enclosure.css';
 
 class ResourceListArea extends React.Component {
@@ -16,7 +16,7 @@ class ResourceListArea extends React.Component {
       <div styleName="flex-column-container list-area border-row">
         <ResourceListHeadArea />
         <ResourceListControlArea />
-        <ResourceList />
+        <ResourceListContainer />
       </div>
     );
   }

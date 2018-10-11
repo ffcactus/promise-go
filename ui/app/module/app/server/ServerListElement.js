@@ -49,7 +49,6 @@ function mapStateToProps(state, ownProps) {
 ServerListElement.propTypes = {
   server: PropTypes.object,
   selected: PropTypes.bool,
-  children: PropTypes.string,
   dispatch: PropTypes.func
 };
 

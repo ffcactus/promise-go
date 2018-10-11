@@ -49,6 +49,7 @@ export function appInit(servergroup, server) {
         });
         return;
       }
+      // if not HTTP status 200.
       dispatch({
         type: ActionType.APP_SERVER_INIT_FAILURE,
       });

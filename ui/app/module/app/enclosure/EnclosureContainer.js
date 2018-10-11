@@ -5,7 +5,7 @@ import CenterDiv from '../../promise/common/CenterDiv';
 import LoadingIcon from '../../promise/common/LoadingIcon';
 import Enclosure from './Enclosure';
 import { AppState } from './ConstValue';
-import * as EnclosureAppAction from './EnclosureAppAction';
+import * as AppAction from './AppAction';
 
 class EnclosureContainer extends React.Component {
   constructor(props) {
@@ -13,7 +13,7 @@ class EnclosureContainer extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch(EnclosureAppAction.appInit());
+    this.props.dispatch(AppAction.appInit());
   }
 
   render() {

@@ -19,7 +19,7 @@ class ProfileResourceItem extends React.Component {
 
 
   render() {
-    const currentStyle = 'flex-item border-column selectable ' + (this.props.selected ? 'selected' : 'not-selected');
+    const currentStyle = 'center-container flex-item border-column selectable ' + (this.props.selected ? 'selected' : 'not-selected');
     return (
       <div styleName={currentStyle} onClick={this.onClick} style={{maxHeight: '40px'}}>
         <p>Profile</p>

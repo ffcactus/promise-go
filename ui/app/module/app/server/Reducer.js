@@ -111,6 +111,7 @@ export const serverApp = (state = defaultState, action) => {
           tempServerGroupExist = true;
         }
       }
+      // record the index of the pre-selected server.
       arraylength = action.info.serverList.Members.length;
       for (let i = 0; i < arraylength; i++) {
         if (action.info.serverList.Members[i].URI === state.currentServerUri) {
