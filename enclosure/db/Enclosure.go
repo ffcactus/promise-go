@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 	"promise/base"
@@ -130,7 +131,7 @@ func (impl *Enclosure) GetAndLock(ID string) (base.ModelInterface, error) {
 			"id":    ID,
 			"state": enclosure.State,
 		}).Warn("DB get and lock enclosure failed, enclosure not lockable.")
-		return enclosure.ToModel(), nil
+		return enclosure.ToModel(), fmt.Errorf("unlockable state")
 	}
 	// Change the state.
 	if err := tx.Model(enclosure).UpdateColumn("State", model.StateLocked).Error; err != nil {
@@ -139,6 +140,15 @@ func (impl *Enclosure) GetAndLock(ID string) (base.ModelInterface, error) {
 			"id":    ID,
 			"state": enclosure.State,
 		}).Warn("DB get and lock enclosure failed, update state failed.")
+		return nil, err
+	}
+	found, err := impl.GetInternal(tx, ID, enclosure)
+	if !found || err != nil {
+		rollback = true
+		log.WithFields(log.Fields{
+			"id":    ID,
+			"error": err,
+		}).Warn("DB get and lock enclosure failed, load enclosure failed.")
 		return nil, err
 	}
 	// Commit.
@@ -173,7 +183,7 @@ func (impl *Enclosure) SetState(ID, state, reason string) (base.ModelInterface, 
 			"id":    ID,
 			"op":    "SetState",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 
@@ -189,7 +199,7 @@ func (impl *Enclosure) SetState(ID, state, reason string) (base.ModelInterface, 
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "SetState",
-		}).Warn("DB operation failed , load enclosure failed.")
+		}).Warn("DB operation failed, load enclosure failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := tx.Model(enclosure).UpdateColumn(entity.Enclosure{State: state, StateReason: reason}).Error; err != nil {
@@ -372,7 +382,7 @@ func (impl *Enclosure) deleteServerSlot(c *gorm.DB, enclosure *entity.Enclosure)
 	return nil
 }
 
-// RefreshSwitchSlot refreshes the manager slots to the enclosure given by id in the DB.
+// RefreshSwitchSlot refreshes the switch slots to the enclosure given by id in the DB.
 func (impl *Enclosure) RefreshSwitchSlot(id string, slots []model.SwitchSlot) (base.ModelInterface, error) {
 	var (
 		c         = impl.TemplateImpl.GetConnection()
@@ -446,6 +456,246 @@ func (impl *Enclosure) RefreshSwitchSlot(id string, slots []model.SwitchSlot) (b
 func (impl *Enclosure) deleteSwitchSlot(c *gorm.DB, enclosure *entity.Enclosure) error {
 	for i := range enclosure.SwitchSlots {
 		if err := c.Delete(enclosure.SwitchSlots[i]).Error; err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// RefreshApplianceSlot refreshes the appliance slots to the enclosure given by id in the DB.
+func (impl *Enclosure) RefreshApplianceSlot(id string, slots []model.ApplianceSlot) (base.ModelInterface, error) {
+	var (
+		c         = impl.TemplateImpl.GetConnection()
+		enclosure entity.Enclosure
+		tx        *gorm.DB
+		rollback  = false
+	)
+	tx = c.Begin()
+	if err := tx.Error; err != nil {
+		log.WithFields(log.Fields{
+			"id":    id,
+			"op":    "RefreshApplianceSlot",
+			"error": err,
+		}).Warn("DB operation failed, start transaction failed.")
+		return nil, err
+	}
+
+	defer func() {
+		if rollback {
+			tx.Rollback()
+		}
+	}()
+
+	found, err := impl.GetInternal(tx, id, &enclosure)
+	if !found || err != nil {
+		rollback = true
+		log.WithFields(log.Fields{
+			"id": id,
+			"op": "RefreshApplianceSlot",
+		}).Warn("DB operation failed, load enclosure failed.")
+		// TODO we can't make sure this is a transaction error.
+		// Should GetInternal just return error?
+		return nil, base.ErrorTransaction
+	}
+
+	if err := impl.deleteApplianceSlot(tx, &enclosure); err != nil {
+		rollback = true
+		log.WithFields(log.Fields{
+			"id":    id,
+			"op":    "RefreshApplianceSlot",
+			"error": err,
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
+		return nil, err
+	}
+	enclosure.ApplianceSlots = []entity.ApplianceSlot{}
+	for _, v := range slots {
+		each := entity.ApplianceSlot{}
+		each.Load(&v)
+		enclosure.ApplianceSlots = append(enclosure.ApplianceSlots, each)
+	}
+	if err := tx.Save(&enclosure).Error; err != nil {
+		rollback = true
+		log.WithFields(log.Fields{
+			"id":    id,
+			"op":    "RefreshApplianceSlot",
+			"error": err,
+		}).Warn("DB opertion failed, save enclosure failed, transaction rollback.")
+		return nil, err
+	}
+	if err := tx.Commit().Error; err != nil {
+		log.WithFields(log.Fields{
+			"id":    id,
+			"op":    "RefreshApplianceSlot",
+			"error": err,
+		}).Warn("DB opertion failed, commit failed.")
+		return nil, err
+	}
+	return enclosure.ToModel(), nil
+}
+
+func (impl *Enclosure) deleteApplianceSlot(c *gorm.DB, enclosure *entity.Enclosure) error {
+	for i := range enclosure.ApplianceSlots {
+		if err := c.Delete(enclosure.ApplianceSlots[i]).Error; err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// RefreshPowerSlot refreshes the power slots to the enclosure given by id in the DB.
+func (impl *Enclosure) RefreshPowerSlot(id string, slots []model.PowerSlot) (base.ModelInterface, error) {
+	var (
+		c         = impl.TemplateImpl.GetConnection()
+		enclosure entity.Enclosure
+		tx        *gorm.DB
+		rollback  = false
+	)
+	tx = c.Begin()
+	if err := tx.Error; err != nil {
+		log.WithFields(log.Fields{
+			"id":    id,
+			"op":    "RefreshPowerSlot",
+			"error": err,
+		}).Warn("DB operation failed, start transaction failed.")
+		return nil, err
+	}
+
+	defer func() {
+		if rollback {
+			tx.Rollback()
+		}
+	}()
+
+	found, err := impl.GetInternal(tx, id, &enclosure)
+	if !found || err != nil {
+		rollback = true
+		log.WithFields(log.Fields{
+			"id": id,
+			"op": "RefreshPowerSlot",
+		}).Warn("DB operation failed, load enclosure failed.")
+		// TODO we can't make sure this is a transaction error.
+		// Should GetInternal just return error?
+		return nil, base.ErrorTransaction
+	}
+
+	if err := impl.deletePowerSlot(tx, &enclosure); err != nil {
+		rollback = true
+		log.WithFields(log.Fields{
+			"id":    id,
+			"op":    "RefreshPowerSlot",
+			"error": err,
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
+		return nil, err
+	}
+	enclosure.PowerSlots = []entity.PowerSlot{}
+	for _, v := range slots {
+		each := entity.PowerSlot{}
+		each.Load(&v)
+		enclosure.PowerSlots = append(enclosure.PowerSlots, each)
+	}
+	if err := tx.Save(&enclosure).Error; err != nil {
+		rollback = true
+		log.WithFields(log.Fields{
+			"id":    id,
+			"op":    "RefreshPowerSlot",
+			"error": err,
+		}).Warn("DB opertion failed, save enclosure failed, transaction rollback.")
+		return nil, err
+	}
+	if err := tx.Commit().Error; err != nil {
+		log.WithFields(log.Fields{
+			"id":    id,
+			"op":    "RefreshPowerSlot",
+			"error": err,
+		}).Warn("DB opertion failed, commit failed.")
+		return nil, err
+	}
+	return enclosure.ToModel(), nil
+}
+
+func (impl *Enclosure) deletePowerSlot(c *gorm.DB, enclosure *entity.Enclosure) error {
+	for i := range enclosure.PowerSlots {
+		if err := c.Delete(enclosure.PowerSlots[i]).Error; err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// RefreshFanSlot refreshes the fan slots to the enclosure given by id in the DB.
+func (impl *Enclosure) RefreshFanSlot(id string, slots []model.FanSlot) (base.ModelInterface, error) {
+	var (
+		c         = impl.TemplateImpl.GetConnection()
+		enclosure entity.Enclosure
+		tx        *gorm.DB
+		rollback  = false
+	)
+	tx = c.Begin()
+	if err := tx.Error; err != nil {
+		log.WithFields(log.Fields{
+			"id":    id,
+			"op":    "RefreshFanSlot",
+			"error": err,
+		}).Warn("DB operation failed, start transaction failed.")
+		return nil, err
+	}
+
+	defer func() {
+		if rollback {
+			tx.Rollback()
+		}
+	}()
+
+	found, err := impl.GetInternal(tx, id, &enclosure)
+	if !found || err != nil {
+		rollback = true
+		log.WithFields(log.Fields{
+			"id": id,
+			"op": "RefreshFanSlot",
+		}).Warn("DB operation failed, load enclosure failed.")
+		// TODO we can't make sure this is a transaction error.
+		// Should GetInternal just return error?
+		return nil, base.ErrorTransaction
+	}
+
+	if err := impl.deleteFanSlot(tx, &enclosure); err != nil {
+		rollback = true
+		log.WithFields(log.Fields{
+			"id":    id,
+			"op":    "RefreshFanSlot",
+			"error": err,
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
+		return nil, err
+	}
+	enclosure.FanSlots = []entity.FanSlot{}
+	for _, v := range slots {
+		each := entity.FanSlot{}
+		each.Load(&v)
+		enclosure.FanSlots = append(enclosure.FanSlots, each)
+	}
+	if err := tx.Save(&enclosure).Error; err != nil {
+		rollback = true
+		log.WithFields(log.Fields{
+			"id":    id,
+			"op":    "RefreshFanSlot",
+			"error": err,
+		}).Warn("DB opertion failed, save enclosure failed, transaction rollback.")
+		return nil, err
+	}
+	if err := tx.Commit().Error; err != nil {
+		log.WithFields(log.Fields{
+			"id":    id,
+			"op":    "RefreshFanSlot",
+			"error": err,
+		}).Warn("DB opertion failed, commit failed.")
+		return nil, err
+	}
+	return enclosure.ToModel(), nil
+}
+
+func (impl *Enclosure) deleteFanSlot(c *gorm.DB, enclosure *entity.Enclosure) error {
+	for i := range enclosure.FanSlots {
+		if err := c.Delete(enclosure.FanSlots[i]).Error; err != nil {
 			return err
 		}
 	}

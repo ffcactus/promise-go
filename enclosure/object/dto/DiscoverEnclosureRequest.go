@@ -39,6 +39,7 @@ func (dto DiscoverEnclosureRequest) NewEnclosure() *model.Enclosure {
 	enclosure := model.Enclosure{}
 	enclosure.Category = base.CategoryEnclosure
 	enclosure.State = model.StateAdded
+	enclosure.StateReason = model.StateReasonAuto
 	enclosure.Health = model.HealthOK
 	enclosure.Name = dto.Name
 	enclosure.Description = dto.Description

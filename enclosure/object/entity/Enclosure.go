@@ -91,7 +91,7 @@ func (e *Enclosure) Tables() []interface{} {
 
 // FilterNameList return all the property name that can be used in filter.
 func (e *Enclosure) FilterNameList() []string {
-	return []string{"Name", "State", "State", "Health", "UUID", "SerialNumber", "PartNumber"}
+	return []string{"Name", "State", "StateReason", "Health", "UUID", "SerialNumber", "PartNumber"}
 }
 
 // Load will load data from model. this function is used on POST.
@@ -107,6 +107,7 @@ func (e *Enclosure) Load(i base.ModelInterface) error {
 	e.Description = m.Description
 	e.Type = m.Type
 	e.State = m.State
+	e.StateReason = m.StateReason
 	e.Health = m.Health
 	// blade
 	e.ServerSlots = make([]ServerSlot, 0)
@@ -163,6 +164,7 @@ func (e *Enclosure) ToModel() base.ModelInterface {
 	m.Description = e.Description
 	m.Type = e.Type
 	m.State = e.State
+	m.StateReason = e.StateReason
 	m.Health = e.Health
 	// blade
 	m.ServerSlots = make([]model.ServerSlot, 0)

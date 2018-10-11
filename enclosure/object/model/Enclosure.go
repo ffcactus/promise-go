@@ -39,14 +39,27 @@ const (
 	RefreshServer = "Server"
 	// RefreshSwitch means refresh enclosure's switch.
 	RefreshSwitch = "Switch"
+	// RefreshAppliance means refresh enclosure's appliance.
+	RefreshAppliance = "Appliance"
+	// RefreshPower means refresh enclosure's power.
+	RefreshPower = "Power"
+	// RefreshFan means refresh enclosure's fan.
+	RefreshFan = "Fan"
 	// RefreshAlarm means frefresh enclosure's alarm.
 	RefreshAlarm = "Alarm"
 )
 
 var (
 	// RefreshBuildinAll is the buildin value. It means to refresh all.
-	RefreshBuildinAll = []string{RefreshManager, RefreshServer, RefreshSwitch, RefreshAlarm}
-
+	RefreshBuildinAll = []string{
+		RefreshManager,
+		RefreshServer,
+		RefreshSwitch,
+		RefreshAppliance,
+		RefreshPower,
+		RefreshFan,
+		RefreshAlarm,
+	}
 )
 
 // EnclosureLockable check if the enclosure's state can turn to be Locked.
@@ -69,6 +82,7 @@ type Enclosure struct {
 	Description    string
 	Type           string
 	State          string
+	StateReason    string
 	Health         string
 	Addresses      []string // The addresses that can be used to connect to enclosure.
 	Credential     Credential

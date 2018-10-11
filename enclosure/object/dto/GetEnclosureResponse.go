@@ -13,6 +13,7 @@ type GetEnclosureResponse struct {
 	Description string
 	Type        string
 	State       string
+	StateReason string
 	Health      string
 	base.DeviceIdentity
 	Addresses      []string
@@ -42,6 +43,7 @@ func (dto *GetEnclosureResponse) Load(data base.ModelInterface) error {
 	dto.Description = m.Description
 	dto.Type = m.Type
 	dto.State = m.State
+	dto.StateReason = m.StateReason
 	dto.Health = m.Health
 	// blade
 	dto.ServerSlots = make([]ServerSlot, 0)

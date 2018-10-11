@@ -26,6 +26,15 @@ func NewRefresh(ctx *context.RefreshContext) MainStrategy {
 	if base.ContainsString(ctx.Request.Targets, model.RefreshSwitch) {
 		ret.Add(NewRefreshSwitch())
 	}
+	if base.ContainsString(ctx.Request.Targets, model.RefreshAppliance) {
+		ret.Add(NewRefreshAppliance())
+	}
+	if base.ContainsString(ctx.Request.Targets, model.RefreshPower) {
+		ret.Add(NewRefreshPower())
+	}
+	if base.ContainsString(ctx.Request.Targets, model.RefreshFan) {
+		ret.Add(NewRefreshFan())
+	}
 	return &ret
 }
 

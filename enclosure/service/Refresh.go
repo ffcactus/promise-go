@@ -75,6 +75,16 @@ func (s *Refresh) Stage1(ctx *beegoCtx.Context, id string, request base.AsychAct
 	refreshCtx.DB = enclosureDB
 	// 3. Lock the enclosure.
 	modelInterface, err := enclosureDB.GetAndLock(id)
+	defer func() {
+		if modelInterface, err := refreshCtx.DB.SetState(refreshCtx.ID, refreshCtx.NextState, refreshCtx.NextReason); err != nil {
+			log.WithFields(log.Fields{"id": id}).Error("Service refresh enclosure failed, unlock enclosure failed.")
+		} else {
+			enclosure, _ := modelInterface.(*model.Enclosure)
+			log.WithFields(log.Fields{
+				"id": id, "state": enclosure.State, "reason": enclosure.StateReason,
+			}).Info("Service refresh enclosure doen, set enclosure state.")
+		}
+	}()
 	if err != nil {
 		log.WithFields(log.Fields{
 			"id": id, "error": err,
@@ -125,6 +135,7 @@ func (s *Refresh) Stage2(ctx *context.RefreshContext) {
 	log.WithFields(log.Fields{"task": createTaskResponse.GetID()}).Info("Service refresh, create task.")
 	ctx.TaskURL = createTaskResponse.URI
 	response.Load(ctx.Enclosure)
+	// Send response to client.
 	ctx.SendResponse(response, ctx.TaskURL, nil)
 	act.Execute(&ctx.Base)
 }
