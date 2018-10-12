@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import CSSModules from 'react-css-modules';
-import styles from './Server.css';
+import styles from './App.css';
 
 function ServerListElementName(props) {
   return (

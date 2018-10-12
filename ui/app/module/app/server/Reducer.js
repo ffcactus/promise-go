@@ -164,7 +164,7 @@ export const serverApp = (state = defaultState, action) => {
       return {
         ...state,
         currentServer: action.info,
-        serverDetailState: ServerDetailState.NORMAL,
+        serverDetailState: ServerDetailState.READY,
       };
     case ActionType.SERVER_REST_GET_MESSAGE:
     case ActionType.SERVER_REST_GET_EXCEPTION:

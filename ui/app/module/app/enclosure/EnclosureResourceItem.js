@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import * as EnclosureAction from './EnclosureAction';
-import styles from './Enclosure.css';
+import styles from './App.css';
 
 class EnclosureResourceItem extends React.Component {
   constructor(props) {

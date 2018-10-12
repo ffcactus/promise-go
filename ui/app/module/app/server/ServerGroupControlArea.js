@@ -2,7 +2,7 @@ import React from 'react';
 import CSSModules from 'react-css-modules';
 import ServerGroupControlCreate from './ServerGroupControlCreate';
 import ServerGroupControlEdit from './ServerGroupControlEdit';
-import styles from './Server.css';
+import styles from './App.css';
 
 class ServerGroupControlArea extends React.Component {
   constructor(props) {

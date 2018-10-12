@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import * as IDPoolAction from './IDPoolAction';
-import styles from './Enclosure.css';
+import styles from './App.css';
 
 class IDPoolResourceItem extends React.Component {
   constructor(props) {

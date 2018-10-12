@@ -1,10 +1,15 @@
 import React from 'react';
 import CSSModules from 'react-css-modules';
-import styles from './Enclosure.css';
+import ResourceDetailControlArea from './ResourceDetailControlArea';
+import EnclosureDetailContainer from './EnclosureDetailContainer';
+import styles from './App.css';
 
 function EnclosureDetailArea() {
   return (
-    <div styleName="flex-column-container detail-area border-row"/>
+    <div styleName="flex-column-container detail-area border-row">
+      <ResourceDetailControlArea />
+      <EnclosureDetailContainer />
+    </div>
   );
 }
 

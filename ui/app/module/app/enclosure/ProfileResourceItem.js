@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import { EnclosureResource } from './ConstValue';
 import * as ProfileAction from './ProfileAction';
-import styles from './Enclosure.css';
+import styles from './App.css';
 
 class ProfileResourceItem extends React.Component {
   constructor(props) {

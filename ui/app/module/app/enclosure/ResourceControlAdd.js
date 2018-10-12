@@ -2,15 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
-import DiscoverServerDialog from './DiscoverServerDialog';
-import * as ServerAction from './ServerAction';
+import DiscoverEnclosureDialog from './DiscoverEnclosureDialog';
+import * as EnclosureAction from './EnclosureAction';
 import CenterDiv from '../../promise/common/CenterDiv';
 import styles from './App.css';
 
 /**
- * ServerControlDiscover is the button to pop a dialog for server adding.
+ * ResourceControlAdd is the button to pop a dialog for server adding.
  */
-class ServerControlDiscover extends React.Component {
+class ResourceControlAdd extends React.Component {
   constructor(props) {
     super(props);
     this.onClick = this.onClick.bind(this);
@@ -18,16 +18,16 @@ class ServerControlDiscover extends React.Component {
 
   onClick(event) {
     event.preventDefault();
-    if (! this.props.openCreateServerGroupDialog) {
-      this.props.dispatch(ServerAction.openDiscoverServerDialog());
+    if (! this.props.openDiscoverEnclosureDialog) {
+      this.props.dispatch(EnclosureAction.openDiscoverDialog());
     }
   }
 
   render() {
     const icon = require('../../promise/common/img/icon/Navigation_Add_2x.png');
     return (
-      <div styleName="ListControlAreaButton" style={{float: 'right'}}>
-        <DiscoverServerDialog />
+      <div styleName="main-control-button-container" style={{float: 'right'}}>
+        <DiscoverEnclosureDialog />
         <CenterDiv><img src={icon} onClick={this.onClick} style={{display: 'block', margin: 'auto', height: '30px'}}/></CenterDiv>
       </div>
     );
@@ -36,13 +36,13 @@ class ServerControlDiscover extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    openAddServerDialog: state.serverApp.openAddServerDialog
+    openDiscoverEnclosureDialog: state.enclosureApp.openDiscoverEnclosureDialog
   };
 }
 
-ServerControlDiscover.propTypes = {
+ResourceControlAdd.propTypes = {
   dispatch: PropTypes.func,
-  openCreateServerGroupDialog: PropTypes.bool,
+  openDiscoverEnclosureDialog: PropTypes.bool,
 };
 
-export default connect(mapStateToProps)(CSSModules(ServerControlDiscover, styles));
+export default connect(mapStateToProps)(CSSModules(ResourceControlAdd, styles));

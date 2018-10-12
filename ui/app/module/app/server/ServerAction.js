@@ -62,7 +62,7 @@ export function getServer(uri) {
 }
 
 /**
- * When user clicks a differenct server, we need load the new server.
+ * This action means user clicks on server in the list.
  * @param {string} uri The URI to get the server.
  */
 export function uiListSelect(uri) {

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ServerDetailSectionHeader from './ServerDetailSectionHeader';
 import CSSModules from 'react-css-modules';
-import styles from './Server.css';
+import styles from './App.css';
 import ServerDetailObjectEthernetInterface from './ServerDetailObjectEthernetInterface';
 
 function ServerDetailSectionEthernetInterface(props) {

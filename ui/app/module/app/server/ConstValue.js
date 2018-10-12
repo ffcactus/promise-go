@@ -10,7 +10,7 @@ export const ServerDetailState = Object.freeze(
   {
     'EMPTY': 'EMPTY',
     'LOADING': 'LOADING',
-    'NORMAL': 'NORMAL',
+    'READY': 'READY',
     'FAILURE': 'FAILURE',
   }
 );

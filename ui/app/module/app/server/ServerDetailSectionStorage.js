@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ServerDetailSectionHeader from './ServerDetailSectionHeader';
 import ServerDetailObjectStorage from './ServerDetailObjectStorage';
 import CSSModules from 'react-css-modules';
-import styles from './Server.css';
+import styles from './App.css';
 
 function ServerDetailSectionStorage(props) {
   const iconImage = require('./img/icon/Storage.png');

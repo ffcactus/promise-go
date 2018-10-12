@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import { AutoSizer, List } from 'react-virtualized';
 import EnclosureListElement from './EnclosureListElement';
-import styles from './Enclosure.css';
+import styles from './App.css';
 
 class EnclosureList extends React.Component {
   constructor(props) {

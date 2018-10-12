@@ -4,7 +4,7 @@ import CSSModules from 'react-css-modules';
 import ResourceListHeadArea from './ResourceListHeadArea';
 import ResourceListControlArea from './ResourceListControlArea';
 import ResourceListContainer from './ResourceListContainer';
-import styles from './Enclosure.css';
+import styles from './App.css';
 
 class ResourceListArea extends React.Component {
   constructor(props) {
@@ -22,13 +22,8 @@ class ResourceListArea extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-  };
-}
-
 ResourceListArea.propTypes = {
 };
 
-export default connect(mapStateToProps)(CSSModules(ResourceListArea, styles, {allowMultiple: true}));
+export default connect()(CSSModules(ResourceListArea, styles, {allowMultiple: true}));
 

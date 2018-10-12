@@ -1,7 +1,7 @@
 import React from 'react';
 import CSSModules from 'react-css-modules';
 import ResourceSearch from './ResourceSearch';
-import styles from './Enclosure.css';
+import styles from './App.css';
 
 class ResourceListHeadArea extends React.Component {
   constructor(props) {

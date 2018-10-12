@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
-import styles from './Server.css';
 import * as ServerAction from './ServerAction';
 import DialogFrame from '../../promise/common/dialog/DialogFrame';
 import DialogTitle from '../../promise/common/dialog/DialogTitle';
@@ -10,20 +9,20 @@ import DialogHR from '../../promise/common/dialog/DialogHR';
 import DialogContentDiv from '../../promise/common/dialog/DialogContentDiv';
 import DialogControlDiv from '../../promise/common/dialog/DialogControlDiv';
 import DialogButton from '../../promise/common/dialog/DialogButton';
-
+import styles from './App.css';
 
 class DiscoverServerDialog extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       name: '',
-      discription: '',
+      description: '',
       hostname: '',
       username: '',
       password: ''
     };
     this.onNameChange = this.onNameChange.bind(this);
-    this.onDiscriptionChange = this.onDiscriptionChange.bind(this);
+    this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onHostnameChange = this.onHostnameChange.bind(this);
     this.onUsernameChange = this.onUsernameChange.bind(this);
     this.onPasswordChange = this.onPasswordChange.bind(this);
@@ -35,8 +34,8 @@ class DiscoverServerDialog extends React.Component {
     this.setState({ name: event.target.value });
   }
 
-  onDiscriptionChange(event) {
-    this.setState({ discription: event.target.value });
+  onDescriptionChange(event) {
+    this.setState({ description: event.target.value });
   }
 
   onHostnameChange(event) {
@@ -55,7 +54,7 @@ class DiscoverServerDialog extends React.Component {
     event.preventDefault();
     this.props.dispatch(ServerAction.discoverServer({
       Name: this.state.name,
-      Discription: this.state.discription,
+      Description: this.state.description,
       Hostname: this.state.hostname,
       Username: this.state.username,
       Password: this.state.password
@@ -78,8 +77,8 @@ class DiscoverServerDialog extends React.Component {
           <DialogContentDiv>
             <p>Name</p>
             <input onChange={this.onNameChange}/>
-            <p>Discription</p>
-            <input onChange={this.onDiscriptionChange}/>
+            <p>Description</p>
+            <input onChange={this.onDescriptionChange}/>
             <p>Hostname</p>
             <input onChange={this.onHostnameChange}/>
             <p>Username</p>

@@ -1,6 +1,6 @@
 import React from 'react';
 import CSSModules from 'react-css-modules';
-import styles from './Enclosure.css';
+import styles from './App.css';
 
 class ResourceSearch extends React.Component {
   constructor(props) {

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CSSModules from 'react-css-modules';
 import ServerListElement from './ServerListElement';
-import styles from './Server.css';
+import styles from './App.css';
 import { AutoSizer, List } from 'react-virtualized';
 
 class ServerList extends React.Component {

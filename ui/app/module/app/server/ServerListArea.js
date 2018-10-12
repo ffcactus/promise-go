@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
-import styles from './Server.css';
+import styles from './App.css';
 import ServerSearchArea from './ServerSearchArea';
 import ServerListControlArea from './ServerListControlArea';
 import ServerList from './ServerList';
@@ -14,7 +14,7 @@ class ServerListArea extends React.Component {
     this.setListRef = this.setListRef.bind(this);
   }
 
-  UNSAFE_componentWillUpdate() {
+  getSnapshotBeforeUpdate() {
     if (this.listRef.forceUpdateGrid) {
       this.listRef.forceUpdateGrid();
     }

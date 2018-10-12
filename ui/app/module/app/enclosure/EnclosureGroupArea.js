@@ -5,7 +5,7 @@ import EnclosureResourceItem from './EnclosureResourceItem';
 import ProfileResourceItem from './ProfileResourceItem';
 import IDPoolResourceItem from './IDPoolResourceItem';
 import { ActionType } from './ConstValue';
-import styles from './Enclosure.css';
+import styles from './App.css';
 
 function EnclosureGroupArea() {
   return (
