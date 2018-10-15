@@ -9,7 +9,13 @@ import DialogHR from '../../promise/common/dialog/DialogHR';
 import DialogContentDiv from '../../promise/common/dialog/DialogContentDiv';
 import DialogControlDiv from '../../promise/common/dialog/DialogControlDiv';
 import DialogButton from '../../promise/common/dialog/DialogButton';
+import Select from 'react-select';
 import styles from './App.css';
+
+const options = [
+  {value: 'E9000', label: 'E9000'},
+  {value: 'Mock', label: 'Mock'}
+];
 
 class DiscoverEnclosureDialog extends React.Component {
   constructor(props) {
@@ -95,10 +101,7 @@ class DiscoverEnclosureDialog extends React.Component {
               <input id="Discription" type="text" aria-label="Discription" onChange={this.onDiscriptionChange}/>
               <br/>
               <label htmlFor="Type">Type</label>
-              <select id="Type" aria-label="Type" aria-required="true" onChange={this.onTypeChange}>
-                <option key="E9000" value="E9000">E9000</option>
-                <option key="Mock" value="Mock">Mock</option>
-              </select>
+              <Select options={options} className="select"/>
               <br/>
               <label htmlFor="Address">Address</label>
               <input id="Address" type="text" aria-label="Address" aria-required="true" onChange={this.onAddressChange}/>
