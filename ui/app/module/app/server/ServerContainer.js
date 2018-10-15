@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CenterDiv from '../../promise/common/CenterDiv';
 import LoadingIcon from '../../promise/common/LoadingIcon';
+import AppInitFailure from '../../promise/common/AppInitFailure';
 import Server from './Server';
 import { AppState } from './ConstValue';
 import * as AppAction from './AppAction';
@@ -27,7 +28,7 @@ class ServerContainer extends React.Component {
       case AppState.NORMAL:
         return <Server />;
       case AppState.FAILURE:
-        return <CenterDiv><p>App initialization failure.</p></CenterDiv>;
+        return <AppInitFailure />;
       default:
         return <CenterDiv><LoadingIcon /></CenterDiv>;
     }
