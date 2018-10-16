@@ -87,6 +87,15 @@ class DiscoverEnclosureDialog extends React.Component {
   // Why do we pass action here?
   // Because I don't know how to get form content here if pass a function.
   render() {
+    const customStyles = {
+      control: (base) => ({
+        ...base,
+        minHeight: '25px',
+        maxHeight: '25px',
+        width: '100px',
+      })
+    };
+
     if (this.props.openDiscoverEnclosureDialog) {
       return (
         <DialogFrame>
@@ -101,7 +110,7 @@ class DiscoverEnclosureDialog extends React.Component {
               <input id="Discription" type="text" aria-label="Discription" onChange={this.onDiscriptionChange}/>
               <br/>
               <label htmlFor="Type">Type</label>
-              <Select options={options} className="select"/>
+              <Select aria-label="Type" options={options} styles={customStyles}/>
               <br/>
               <label htmlFor="Address">Address</label>
               <input id="Address" type="text" aria-label="Address" aria-required="true" onChange={this.onAddressChange}/>
@@ -131,6 +140,7 @@ function mapStateToProps(state) {
 
 DiscoverEnclosureDialog.propTypes = {
   dispatch: PropTypes.func,
+  styles: PropTypes.object,
   openDiscoverEnclosureDialog: PropTypes.bool,
   onOK: PropTypes.func,
 };

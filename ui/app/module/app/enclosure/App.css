@@ -120,6 +120,9 @@
 }
 
 .select {
-    height: 10px;
     background-color: aqua;
+}
+
+.select_control {
+    height: 10px;
 }
