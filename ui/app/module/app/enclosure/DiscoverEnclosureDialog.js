@@ -9,6 +9,7 @@ import DialogHR from '../../promise/common/dialog/DialogHR';
 import DialogContentDiv from '../../promise/common/dialog/DialogContentDiv';
 import DialogControlDiv from '../../promise/common/dialog/DialogControlDiv';
 import DialogButton from '../../promise/common/dialog/DialogButton';
+import Button from '@material-ui/core/Button';
 import Select from 'react-select';
 import styles from './App.css';
 
@@ -120,6 +121,9 @@ class DiscoverEnclosureDialog extends React.Component {
               <br/>
               <label htmlFor="Password">Password</label>
               <input id="Password" type="password" aria-label="Password" aria-required="true" onChange={this.onPasswordChange}/>
+              <Button variant="contained" color="primary">
+                Hello
+              </Button>
             </form>
           </DialogContentDiv>
           <DialogHR />
