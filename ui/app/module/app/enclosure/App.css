@@ -126,3 +126,18 @@
 .select_control {
     height: 10px;
 }
+
+.dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    background: #c7ccd0;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(100,163,184,1);
+    border-radius: 20px;
+}
+
+.dialog:focus {
+    outline: none;
+    box-shadow: 0 0 20px rgba(100,163,184,0.4);
+}

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import DiscoverEnclosureDialog from './DiscoverEnclosureDialog';
+import TestDialog from './TestDialog';
 import * as EnclosureAction from './EnclosureAction';
 import CenterDiv from '../../promise/common/CenterDiv';
 import styles from './App.css';
@@ -27,7 +28,7 @@ class ResourceControlAdd extends React.Component {
     const icon = require('../../promise/common/img/icon/Navigation_Add_2x.png');
     return (
       <div styleName="main-control-button-container" style={{float: 'right'}}>
-        <DiscoverEnclosureDialog />
+        <TestDialog />
         <CenterDiv><img src={icon} onClick={this.onClick} style={{display: 'block', margin: 'auto', height: '30px'}}/></CenterDiv>
       </div>
     );
