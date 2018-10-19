@@ -3,22 +3,20 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import * as EnclosureAction from './EnclosureAction';
-import DialogFrame from '../../promise/common/dialog/DialogFrame';
-import DialogTitle from '../../promise/common/dialog/DialogTitle';
-import DialogHR from '../../promise/common/dialog/DialogHR';
-import DialogContentDiv from '../../promise/common/dialog/DialogContentDiv';
-import DialogControlDiv from '../../promise/common/dialog/DialogControlDiv';
-import DialogButton from '../../promise/common/dialog/DialogButton';
 import Button from '@material-ui/core/Button';
-import Select from 'react-select';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
 import styles from './App.css';
 
-const options = [
-  {value: 'E9000', label: 'E9000'},
-  {value: 'Mock', label: 'Mock'}
-];
-
-class DiscoverEnclosureDialog extends React.Component {
+class TestDialog extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,7 +24,8 @@ class DiscoverEnclosureDialog extends React.Component {
       description: '',
       address: '',
       username: '',
-      password: ''
+      password: '',
+      type: 'E9000'
     };
     this.onNameChange = this.onNameChange.bind(this);
     this.onDiscriptionChange = this.onDiscriptionChange.bind(this);
@@ -34,8 +33,8 @@ class DiscoverEnclosureDialog extends React.Component {
     this.onUsernameChange = this.onUsernameChange.bind(this);
     this.onPasswordChange = this.onPasswordChange.bind(this);
     this.onTypeChange = this.onTypeChange.bind(this);
-    this.handleOK = this.handleOK.bind(this);
-    this.handleCancel = this.handleCancel.bind(this);
+    this.onOK = this.onOK.bind(this);
+    this.onCancel = this.onCancel.bind(this);
   }
 
   onNameChange(event) {
@@ -68,7 +67,7 @@ class DiscoverEnclosureDialog extends React.Component {
     this.setState({ type: event.target.value });
   }
 
-  handleOK(event) {
+  onOK(event) {
     event.preventDefault();
     this.props.dispatch(EnclosureAction.discover({
       Name: this.state.name,
@@ -80,7 +79,7 @@ class DiscoverEnclosureDialog extends React.Component {
     }));
   }
 
-  handleCancel(event) {
+  onCancel(event) {
     event.preventDefault();
     this.props.dispatch(EnclosureAction.closeDiscoverDialog());
   }
@@ -88,53 +87,37 @@ class DiscoverEnclosureDialog extends React.Component {
   // Why do we pass action here?
   // Because I don't know how to get form content here if pass a function.
   render() {
-    const customStyles = {
-      control: (base) => ({
-        ...base,
-        minHeight: '25px',
-        maxHeight: '25px',
-        width: '100px',
-      })
-    };
-
-    if (this.props.openDiscoverEnclosureDialog) {
-      return (
-        <DialogFrame>
-          <DialogTitle value="Discover Enclosure" />
-          <DialogHR />
-          <DialogContentDiv>
-            <form>
-              <label htmlFor="Name">Name</label>
-              <input id="Name" type="text" aria-label="Name" aria-required="true" onChange={this.onNameChange}/>
-              <br/>
-              <label htmlFor="Discription">Discription</label>
-              <input id="Discription" type="text" aria-label="Discription" onChange={this.onDiscriptionChange}/>
-              <br/>
-              <label htmlFor="Type">Type</label>
-              <Select aria-label="Type" options={options} styles={customStyles}/>
-              <br/>
-              <label htmlFor="Address">Address</label>
-              <input id="Address" type="text" aria-label="Address" aria-required="true" onChange={this.onAddressChange}/>
-              <br/>
-              <label htmlFor="Username">Username</label>
-              <input id="Username" type="text" aria-label="Username" aria-required="true" onChange={this.onUsernameChange}/>
-              <br/>
-              <label htmlFor="Password">Password</label>
-              <input id="Password" type="password" aria-label="Password" aria-required="true" onChange={this.onPasswordChange}/>
-              <Button variant="contained" color="primary">
-                Hello
-              </Button>
-            </form>
-          </DialogContentDiv>
-          <DialogHR />
-          <DialogControlDiv>
-            <DialogButton name="Cancel" onClick={this.handleCancel} />
-            <DialogButton name="OK" onClick={this.handleOK} />
-          </DialogControlDiv>
-        </DialogFrame>
-      );
-    }
-    return (<div />);
+    return (
+      <Dialog
+        aria-labelledby="Discover Enclosure"
+        aria-describedby="Discover Enclosure"
+        open={this.props.openDiscoverEnclosureDialog}
+        onClose={this.onClose}
+      >
+        <DialogTitle id="Discover Enclosure">Discover Enclosure</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Input the login credential to the enclosure manager to add it to the system.
+          </DialogContentText>
+          <InputLabel htmlFor="Type">Type</InputLabel>
+          <Select
+            input={<Input name="Type" id="Type" fullWidth value={this.state.type} onChange={this.onTypeChange}/>}
+          >
+            <MenuItem value="E9000">E9000</MenuItem>
+            <MenuItem value="Mock">Mock</MenuItem>
+          </Select>
+          <TextField autoFocus margin="dense" id="name" label="Name" fullWidth onChange={this.onNameChange}/>
+          <TextField margin="dense" id="description" label="Description" fullWidth onChange={this.onDiscriptionChange}/>
+          <TextField margin="dense" id="address" label="Address" fullWidth onChange={this.onAddressChange}/>
+          <TextField margin="dense" id="username" label="Username" fullWidth onChange={this.onUsernameChange}/>
+          <TextField margin="dense" id="username" label="Password" fullWidth type="password" onChange={this.onPasswordChange}/>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.onCancel} color="primary">Cancel</Button>
+          <Button onClick={this.onOK} color="primary">OK</Button>
+        </DialogActions>
+      </Dialog>
+    );
   }
 }
 
@@ -142,11 +125,11 @@ function mapStateToProps(state) {
   return { openDiscoverEnclosureDialog: state.enclosureApp.openDiscoverEnclosureDialog };
 }
 
-DiscoverEnclosureDialog.propTypes = {
+TestDialog.propTypes = {
   dispatch: PropTypes.func,
   styles: PropTypes.object,
   openDiscoverEnclosureDialog: PropTypes.bool,
   onOK: PropTypes.func,
 };
 
-export default connect(mapStateToProps)(CSSModules(DiscoverEnclosureDialog, styles));
+export default connect(mapStateToProps)(CSSModules(TestDialog, styles));
