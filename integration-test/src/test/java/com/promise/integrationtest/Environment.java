@@ -6,7 +6,7 @@ package com.promise.integrationtest;
  */
 public class Environment
 {
-    private static String hostname = "10.93.81.79";
+    private static String hostname = "192.168.206.130";
 
     public static String getHostname()
     {

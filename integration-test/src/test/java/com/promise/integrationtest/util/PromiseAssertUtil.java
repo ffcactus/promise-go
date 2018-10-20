@@ -11,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.promise.integrationtest.base.ErrorResponseEnum;
 import com.promise.integrationtest.dto.DeleteResourceResponse;
-import com.promise.integrationtest.dto.MemberResponse;
 import com.promise.integrationtest.dto.ErrorResponse;
+import com.promise.integrationtest.dto.MemberResponse;
 import com.promise.integrationtest.dto.ResourceCollectionResponse;
 import com.promise.integrationtest.dto.ResourceResponse;
 

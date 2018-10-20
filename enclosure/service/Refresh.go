@@ -82,7 +82,7 @@ func (s *Refresh) Stage1(ctx *beegoCtx.Context, id string, request base.AsychAct
 			enclosure, _ := modelInterface.(*model.Enclosure)
 			log.WithFields(log.Fields{
 				"id": id, "state": enclosure.State, "reason": enclosure.StateReason,
-			}).Info("Service refresh enclosure doen, set enclosure state.")
+			}).Info("Service refresh enclosure done, set enclosure state.")
 		}
 	}()
 	if err != nil {
@@ -133,10 +133,11 @@ func (s *Refresh) Stage2(ctx *context.RefreshContext) {
 		log.WithFields(log.Fields{"error": errorResponse[0]}).Warn("Service refresh failed, create task failed.")
 	}
 	log.WithFields(log.Fields{"task": createTaskResponse.GetID()}).Info("Service refresh, create task.")
-	ctx.TaskURL = createTaskResponse.URI
+	ctx.TaskID = createTaskResponse.ID
 	response.Load(ctx.Enclosure)
 	// Send response to client.
-	ctx.SendResponse(response, ctx.TaskURL, nil)
+	ctx.SendResponse(response, ctx.TaskID, nil)
+	log.WithFields(log.Fields{"ctx": ctx}).Info("Service response to client before execute strategy.")
 	act.Execute(&ctx.Base)
 }
 

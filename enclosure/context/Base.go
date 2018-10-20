@@ -1,6 +1,7 @@
 package context
 
 import (
+	"fmt"
 	beegoCtx "github.com/astaxie/beego/context"
 	"net/http"
 	"promise/base"
@@ -14,7 +15,7 @@ type Base struct {
 	Client    enclosure.Client
 	DB        *db.Enclosure
 	Enclosure base.ModelInterface
-	TaskURL   string
+	TaskID    string
 	ID        string
 }
 
@@ -30,4 +31,9 @@ func (c Base) SendResponse(resposne base.ResponseInterface, taskURL string, erro
 		c.Context.Output.SetStatus(http.StatusAccepted)
 		c.Context.Output.JSON(resposne, true, false)
 	}
+}
+
+// String return the debug info.
+func (c Base) String() string {
+	return fmt.Sprintf("(ID = %s)", c.ID)
 }

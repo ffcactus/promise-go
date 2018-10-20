@@ -3,12 +3,10 @@ package strategy
 import (
 	log "github.com/sirupsen/logrus"
 	"promise/enclosure/context"
-	taskModel "promise/task/object/model"
 )
 
 // RefreshManager is the strategy to refresh manager.
 type RefreshManager struct {
-	Task
 	name                string
 	messageID           string
 	description         string
@@ -48,21 +46,23 @@ func (s *RefreshManager) ExpectedExecutionMs() uint64 {
 // Execute implements the Action interface.
 func (s *RefreshManager) Execute(c *context.Base) {
 	log.Info("Action refresh manager.")
-	s.StepStart(c, s.Name)
+	StepStart(c, s.name)
 	slots, clientError := c.Client.ManagerSlot()
 	if clientError != nil {
 		// TODO we need process the alarm here.
 		log.WithFields(log.Fields{
 			"id": c.ID, "error": clientError,
 		}).Warn("Strategy refresh manager failed, get manager slots failed.")
-		s.UpdateStepExecutionState(c, s.Name, taskModel.ExecutionStateRunning)
+		StepError(c, s.name)
 		return
 	}
 	enclosure, dbError := c.DB.RefreshManagerSlot(c.ID, slots)
 	if dbError != nil {
+		StepError(c, s.name)
 		log.WithFields(log.Fields{
 			"id": c.ID, "error": clientError,
 		}).Warn("Strategy refresh manager failed, DB refresh manager failed.")
 	}
 	c.Enclosure = enclosure
+	StepFinish(c, s.name)
 }

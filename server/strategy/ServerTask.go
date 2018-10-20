@@ -287,19 +287,12 @@ func (s *ServerTask) SetTaskStepRunning(c *context.Base, id string, stepName str
 }
 
 func (s *ServerTask) logUpdateStepResult(c *context.Base, id string, stepName string, server *model.Server, err error, errorResp []base.ErrorResponse) {
-	if err != nil {
+	if err != nil || errorResp != nil {
 		log.WithFields(log.Fields{
 			"server": server.ID,
 			"task":   id,
 			"step":   stepName,
 			"error":  err,
-		}).Warn("Set task step to finished failed.")
-	}
-	if errorResp != nil {
-		log.WithFields(log.Fields{
-			"server":    server.ID,
-			"task":      id,
-			"step":      stepName,
 			"errorResp": errorResp[0].ID,
 		}).Warn("Set task step to finished failed.")
 	}

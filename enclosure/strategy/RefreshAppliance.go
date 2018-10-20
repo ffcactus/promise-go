@@ -46,12 +46,15 @@ func (s *RefreshAppliance) ExpectedExecutionMs() uint64 {
 // Execute implements the Action interface.
 func (s *RefreshAppliance) Execute(c *context.Base) {
 	log.Info("Action refresh appliance.")
+	StepStart(c, s.name)
 	slots, clientError := c.Client.ApplianceSlot()
 	if clientError != nil {
 		// TODO we need process the alarm here.
 		log.WithFields(log.Fields{
 			"id": c.ID, "error": clientError,
 		}).Warn("Strategy refresh appliance failed, get appliance slots failed.")
+		StepError(c, s.name)
+		return
 	}
 	enclosure, dbError := c.DB.RefreshApplianceSlot(c.ID, slots)
 	if dbError != nil {
@@ -60,4 +63,5 @@ func (s *RefreshAppliance) Execute(c *context.Base) {
 		}).Warn("Strategy refresh appliance failed, DB refresh appliance failed.")
 	}
 	c.Enclosure = enclosure
+	StepFinish(c, s.name)
 }

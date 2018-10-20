@@ -46,12 +46,15 @@ func (s *RefreshPower) ExpectedExecutionMs() uint64 {
 // Execute implements the Action interface.
 func (s *RefreshPower) Execute(c *context.Base) {
 	log.Info("Action refresh power.")
+	StepStart(c, s.name)
 	slots, clientError := c.Client.PowerSlot()
 	if clientError != nil {
 		// TODO we need process the alarm here.
 		log.WithFields(log.Fields{
 			"id": c.ID, "error": clientError,
 		}).Warn("Strategy refresh power failed, get power slots failed.")
+		StepError(c, s.name)
+		return
 	}
 	enclosure, dbError := c.DB.RefreshPowerSlot(c.ID, slots)
 	if dbError != nil {
@@ -60,4 +63,5 @@ func (s *RefreshPower) Execute(c *context.Base) {
 		}).Warn("Strategy refresh power failed, DB refresh power failed.")
 	}
 	c.Enclosure = enclosure
+	StepFinish(c, s.name)
 }

@@ -46,12 +46,15 @@ func (s *RefreshFan) ExpectedExecutionMs() uint64 {
 // Execute implements the Action interface.
 func (s *RefreshFan) Execute(c *context.Base) {
 	log.Info("Action refresh fan.")
+	StepStart(c, s.name)
 	slots, clientError := c.Client.FanSlot()
 	if clientError != nil {
 		// TODO we need process the alarm here.
 		log.WithFields(log.Fields{
 			"id": c.ID, "error": clientError,
 		}).Warn("Strategy refresh fan failed, get fan slots failed.")
+		StepError(c, s.name)
+		return
 	}
 	enclosure, dbError := c.DB.RefreshFanSlot(c.ID, slots)
 	if dbError != nil {
@@ -60,4 +63,5 @@ func (s *RefreshFan) Execute(c *context.Base) {
 		}).Warn("Strategy refresh fan failed, DB refresh fan failed.")
 	}
 	c.Enclosure = enclosure
+	StepFinish(c, s.name)
 }

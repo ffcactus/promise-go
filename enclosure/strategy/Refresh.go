@@ -6,6 +6,7 @@ import (
 	"promise/enclosure/object/constvalue"
 	"promise/enclosure/object/model"
 	taskDTO "promise/task/object/dto"
+	"time"
 )
 
 // Refresh is the refresh strategy.
@@ -85,6 +86,7 @@ func (s *Refresh) Task() *taskDTO.PostTaskRequest {
 func (s *Refresh) Execute(ctx *context.Base) {
 	// execute each of the sub strategy
 	for _, v := range s.sub {
+		time.Sleep(time.Duration(5000) * time.Millisecond)
 		v.Execute(ctx)
 	}
 }
