@@ -113,8 +113,8 @@ class TestDialog extends React.Component {
           <TextField margin="dense" id="username" label="Password" fullWidth type="password" onChange={this.onPasswordChange}/>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.onCancel} color="primary">Cancel</Button>
-          <Button onClick={this.onOK} color="primary">OK</Button>
+          <Button onClick={this.onCancel} color="secondary" variant="contained">Cancel</Button>
+          <Button onClick={this.onOK} color="primary" variant="contained">OK</Button>
         </DialogActions>
       </Dialog>
     );
