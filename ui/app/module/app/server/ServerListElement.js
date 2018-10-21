@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
-import styles from './Server.css';
+import styles from './App.css';
 import * as ServerAction from './ServerAction';
 import ServerListElementTask from './ServerListElementTask';
 import ServerListElementName from './ServerListElementName';
@@ -49,7 +49,6 @@ function mapStateToProps(state, ownProps) {
 ServerListElement.propTypes = {
   server: PropTypes.object,
   selected: PropTypes.bool,
-  children: PropTypes.string,
   dispatch: PropTypes.func
 };
 

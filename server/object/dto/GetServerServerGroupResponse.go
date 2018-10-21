@@ -15,8 +15,8 @@ type GetServerServerGroupResponse struct {
 	ServerGroupURI string `json:"ServerGroupURI"`
 }
 
-// DebugInfo return the name for debug.
-func (dto *GetServerServerGroupResponse) DebugInfo() string {
+// String return the name for debug.
+func (dto GetServerServerGroupResponse) String() string {
 	return dto.ServerID + " " + dto.ServerGroupID
 }
 

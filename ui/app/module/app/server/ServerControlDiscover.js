@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
-import styles from './Server.css';
 import DiscoverServerDialog from './DiscoverServerDialog';
 import * as ServerAction from './ServerAction';
 import CenterDiv from '../../promise/common/CenterDiv';
+import styles from './App.css';
 
 /**
- * ServerControlAdd is the button to pop a dialog for server adding.
+ * ServerControlDiscover is the button to pop a dialog for server adding.
  */
 class ServerControlDiscover extends React.Component {
   constructor(props) {

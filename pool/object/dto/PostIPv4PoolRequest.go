@@ -3,7 +3,7 @@ package dto
 import (
 	"net"
 	"promise/base"
-	"promise/pool/object/message"
+	"promise/pool/object/errorResp"
 	"promise/pool/object/model"
 )
 
@@ -14,53 +14,53 @@ type PostIPv4PoolRequest struct {
 }
 
 // NewInstance creates a new instance.
-func (dto *PostIPv4PoolRequest) NewInstance() base.RequestInterface {
+func (PostIPv4PoolRequest) NewInstance() base.RequestInterface {
 	return new(PostIPv4PoolRequest)
 }
 
 // IsValid return if the request is valid.
-func (dto *PostIPv4PoolRequest) IsValid() *base.Message {
+func (dto *PostIPv4PoolRequest) IsValid() *base.ErrorResponse {
 	if dto.SubnetMask != nil && net.ParseIP(*dto.SubnetMask) == nil {
-		return message.NewMessageIPv4FormatError()
+		return errorResp.NewErrorResponseIPv4FormatError()
 	}
 	if dto.Gateway != nil && net.ParseIP(*dto.Gateway) == nil {
-		return message.NewMessageIPv4FormatError()
+		return errorResp.NewErrorResponseIPv4FormatError()
 	}
 	if dto.SubnetMask != nil && net.ParseIP(*dto.SubnetMask) == nil {
-		return message.NewMessageIPv4FormatError()
+		return errorResp.NewErrorResponseIPv4FormatError()
 	}
 	if dto.DNSServers != nil {
 		for _, v := range *dto.DNSServers {
 			if net.ParseIP(v) == nil {
-				return message.NewMessageIPv4FormatError()
+				return errorResp.NewErrorResponseIPv4FormatError()
 			}
 		}
 	}
 
 	if len(dto.Ranges) == 0 {
-		return message.NewMessageIPv4RangeCountError()
+		return errorResp.NewErrorResponseIPv4RangeCountError()
 	}
 	for _, v := range dto.Ranges {
 		start := net.ParseIP(v.Start)
 		end := net.ParseIP(v.End)
 		if start == nil {
-			return message.NewMessageIPv4FormatError()
+			return errorResp.NewErrorResponseIPv4FormatError()
 		}
 		if end == nil {
-			return message.NewMessageIPv4FormatError()
+			return errorResp.NewErrorResponseIPv4FormatError()
 		}
 		if base.IPtoInt(start) > base.IPtoInt(end) {
-			return message.NewMessageIPv4RangeEndAddressError()
+			return errorResp.NewErrorResponseIPv4RangeEndAddressError()
 		}
 		if base.IPtoInt(end)-base.IPtoInt(start)+1 > 256 {
-			return message.NewMessageIPv4RangeSizeError()
+			return errorResp.NewErrorResponseIPv4RangeSizeError()
 		}
 	}
 	return nil
 }
 
-// DebugInfo return the name for debug.
-func (dto *PostIPv4PoolRequest) DebugInfo() string {
+// String return the name for debug.
+func (dto PostIPv4PoolRequest) String() string {
 	return dto.Name
 }
 

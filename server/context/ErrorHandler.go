@@ -6,28 +6,28 @@ import (
 
 // ErrorHandlerInterface The interface of error handler.
 type ErrorHandlerInterface interface {
-	AppendErrorMessage(message base.Message)
-	ErrorMessages() *[]base.Message
+	AppendErrorErrorResponse(errorResp base.ErrorResponse)
+	ErrorErrorResponses() *[]base.ErrorResponse
 }
 
 // ErrorHandler The implementation of error handler.
 type ErrorHandler struct {
-	messages []base.Message
+	errorResps []base.ErrorResponse
 }
 
-// AppendMessage Append message.
-func (c *Base) AppendMessage(message base.Message) {
-	c.messages = append(c.messages, message)
+// AppendErrorResponse Appends error response.
+func (c *Base) AppendErrorResponse(errorResp base.ErrorResponse) {
+	c.errorResps = append(c.errorResps, errorResp)
 }
 
-// AppendMessages Append messages.
-func (c *Base) AppendMessages(messages []base.Message) {
-	for i := range messages {
-		c.messages = append(c.messages, messages[i])
+// AppendErrorResponses Appends error response.
+func (c *Base) AppendErrorResponses(errorResps []base.ErrorResponse) {
+	for i := range errorResps {
+		c.errorResps = append(c.errorResps, errorResps[i])
 	}
 }
 
-// Messages Get messages.
-func (c *Base) Messages() []base.Message {
-	return c.messages
+// ErrorResponses Gets error response.
+func (c *Base) ErrorResponses() []base.ErrorResponse {
+	return c.errorResps
 }

@@ -9,9 +9,9 @@ import (
 // GetTaskResponse Post task response DTO.
 type GetTaskResponse struct {
 	base.GetResponse
-	MessageID           *string               `json:"MessageID,omitempty"`
+	MessageID           string                `json:"MessageID,omitempty"`
 	Name                string                `json:"Name"`
-	Description         *string               `json:"Description,omitempty"`
+	Description         string                `json:"Description,omitempty"`
 	ExecutionState      model.ExecutionState  `json:"ExecutionState"`
 	CreatedByName       string                `json:"CreatedByName"`
 	CreatedByURI        string                `json:"CreatedByURI"`
@@ -24,8 +24,8 @@ type GetTaskResponse struct {
 	ExecutionResult     ExecutionResult       `json:"ExecutionResult"`
 }
 
-// DebugInfo return the name for debug.
-func (dto *GetTaskResponse) DebugInfo() string {
+// String return the name for debug.
+func (dto GetTaskResponse) String() string {
 	return dto.Name
 }
 

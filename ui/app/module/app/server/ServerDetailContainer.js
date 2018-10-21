@@ -24,7 +24,7 @@ class ServerDetailContainer extends React.Component {
         return <CenterDiv><p>No Server Selected.</p></CenterDiv>;
       case ServerDetailState.LOADING:
         return <CenterDiv><LoadingIcon/></CenterDiv>;
-      case ServerDetailState.NORMAL:
+      case ServerDetailState.READY:
         return <ServerDetail server={this.props.currentServer} />;
       case ServerDetailState.FAILURE:
         return <CenterDiv><p>Loading Server Failed</p></CenterDiv>;

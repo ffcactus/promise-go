@@ -3,7 +3,7 @@ package com.promise.integrationtest.util;
 import org.junit.Assert;
 import org.springframework.http.HttpStatus;
 
-import com.promise.integrationtest.base.MessageEnum;
+import com.promise.integrationtest.base.ErrorResponseEnum;
 import com.promise.integrationtest.idpool.dto.AllocateIPv4Request;
 import com.promise.integrationtest.idpool.dto.AllocateIPv4Response;
 import com.promise.integrationtest.idpool.dto.FreeIPv4Request;
@@ -85,10 +85,10 @@ public class IPv4PoolAssertUtil
     public static void assertIPv4PoolEmpty(String id)
     {
         final AllocateIPv4Request request = new AllocateIPv4Request();
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 "/promise/v1/id-pool/ipv4/" + id + "/action/allocate",
                 HttpStatus.BAD_REQUEST,
-                MessageEnum.IPv4PoolEmpty.getId(),
+                ErrorResponseEnum.IPv4PoolEmpty.getId(),
                 request);
 
         final GetIPv4PoolResponse response = PromiseAssertUtil.assertGetResponse(
@@ -98,7 +98,7 @@ public class IPv4PoolAssertUtil
     }
 
     /**
-     * Assert the message is right when you free an address that not belong to
+     * Assert the error response is right when you free an address that not belong to
      * this pool.
      * 
      * @param id The pool ID.
@@ -107,15 +107,15 @@ public class IPv4PoolAssertUtil
     {
         final FreeIPv4Request request = new FreeIPv4Request();
         request.setAddress(address);
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 "/promise/v1/id-pool/ipv4/" + id + "/action/free",
                 HttpStatus.BAD_REQUEST,
-                MessageEnum.IPv4PoolAddressNotExist.getId(),
+                ErrorResponseEnum.IPv4PoolAddressNotExist.getId(),
                 request);
     }
 
     /**
-     * Assert the message is right when you free an address which is is not
+     * Assert the error response is right when you free an address which is is not
      * allocated before.
      * 
      * @param id The pool ID.
@@ -125,10 +125,10 @@ public class IPv4PoolAssertUtil
     {
         final FreeIPv4Request request = new FreeIPv4Request();
         request.setAddress(address);
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 "/promise/v1/id-pool/ipv4/" + id + "/action/free",
                 HttpStatus.BAD_REQUEST,
-                MessageEnum.IPv4PoolNotAllocatedError.getId(),
+                ErrorResponseEnum.IPv4PoolNotAllocatedError.getId(),
                 request);
     }
 }

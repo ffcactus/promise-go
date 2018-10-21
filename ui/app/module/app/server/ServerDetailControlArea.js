@@ -1,8 +1,8 @@
 import React from 'react';
 import CSSModules from 'react-css-modules';
-import styles from './Server.css';
 import ServerControlDiscover from './ServerControlDiscover';
 import ServerControlEdit from './ServerControlEdit';
+import styles from './App.css';
 
 class ServerDetailControlArea extends React.Component {
   constructor(props) {

@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.promise.integrationtest.base.MessageEnum;
+import com.promise.integrationtest.base.ErrorResponseEnum;
 import com.promise.integrationtest.base.PromiseIntegrationTest;
 import com.promise.integrationtest.dto.DeleteResourceResponse;
 import com.promise.integrationtest.dto.MemberResponse;
@@ -180,6 +180,6 @@ public class ServerServerGroupTest extends PromiseIntegrationTest
         Assert.assertEquals(HttpStatus.OK, ssgResponse.getStatusCode());
         Assert.assertEquals(1, ssgResponse.getBody().getMember().size());
         final String ssgUrl = ssgResponse.getBody().getMember().get(0).getUri();
-        PromiseAssertUtil.assertDeleteMessage(ssgUrl, HttpStatus.BAD_REQUEST, MessageEnum.ServerServerGroupDeleteDefault.getId());
+        PromiseAssertUtil.assertDeleteErrorResponse(ssgUrl, HttpStatus.BAD_REQUEST, ErrorResponseEnum.ServerServerGroupDeleteDefault.getId());
     }
 }

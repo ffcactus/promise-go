@@ -16,8 +16,8 @@ type GetIPv4PoolResponse struct {
 	Allocatable uint32              `json:"Allocatable"`
 }
 
-// DebugInfo return the name for debug.
-func (dto *GetIPv4PoolResponse) DebugInfo() string {
+// String return the name for debug.
+func (dto GetIPv4PoolResponse) String() string {
 	return dto.Name
 }
 

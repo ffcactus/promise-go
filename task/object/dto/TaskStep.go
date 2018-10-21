@@ -8,10 +8,10 @@ import (
 
 // PostTaskStepRequest Post task step request DTO.
 type PostTaskStepRequest struct {
-	MessageID           *string `json:"MessageID"`
-	Name                string  `json:"Name"`
-	Description         *string `json:"Description"`
-	ExpectedExecutionMs uint64  `json:"ExpectedExecutionMs"`
+	MessageID           string `json:"MessageID"`
+	Name                string `json:"Name"`
+	Description         string `json:"Description"`
+	ExpectedExecutionMs uint64 `json:"ExpectedExecutionMs"`
 }
 
 // ToModel Convert to model.
@@ -28,9 +28,9 @@ func (dto *PostTaskStepRequest) ToModel() *model.TaskStep {
 
 // GetTaskStepResponse Post task step response DTO.
 type GetTaskStepResponse struct {
-	MessageID           *string              `json:"MessageID"`
+	MessageID           string               `json:"MessageID"`
 	Name                string               `json:"Name"`
-	Description         *string              `json:"Description,omitempty"`
+	Description         string               `json:"Description,omitempty"`
 	ExpectedExecutionMs uint64               `json:"ExpectedExecutionMs"`
 	ExecutionState      model.ExecutionState `json:"ExecutionState"`
 	ExecutionResult     ExecutionResult      `json:"ExecutionResult"`
@@ -54,24 +54,24 @@ type UpdateTaskStepRequest struct {
 }
 
 // NewInstance creates a new instance.
-func (dto *UpdateTaskStepRequest) NewInstance() base.RequestInterface {
+func (UpdateTaskStepRequest) NewInstance() base.RequestInterface {
 	return new(UpdateTaskStepRequest)
 }
 
 // IsValid return if the request is valid.
-func (dto *UpdateTaskStepRequest) IsValid() *base.Message {
-	message := base.NewMessageUnknownPropertyValue()
+func (dto *UpdateTaskStepRequest) IsValid() *base.ErrorResponse {
+	errorResp := base.NewErrorResponseUnknownPropertyValue()
 	if dto.ExecutionState != nil && !model.IsValidExecutionState(*dto.ExecutionState) {
-		return message
+		return errorResp
 	}
 	if dto.ExecutionResult != nil && dto.ExecutionResult.State != nil && !model.IsValidExecutionResultState(*dto.ExecutionResult.State) {
-		return message
+		return errorResp
 	}
 	return nil
 }
 
-// DebugInfo return the name for debug.
-func (dto *UpdateTaskStepRequest) DebugInfo() string {
+// String return the name for debug.
+func (dto UpdateTaskStepRequest) String() string {
 	return dto.Name
 }
 

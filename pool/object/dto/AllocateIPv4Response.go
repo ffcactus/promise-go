@@ -6,7 +6,7 @@ type AllocateIPv4Response struct {
 	Pool    GetIPv4PoolResponse
 }
 
-// DebugInfo return the debug info.
-func (dto *AllocateIPv4Response) DebugInfo() string {
+// String return the debug info.
+func (dto AllocateIPv4Response) String() string {
 	return dto.Address
 }

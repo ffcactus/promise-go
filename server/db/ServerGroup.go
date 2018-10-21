@@ -5,13 +5,13 @@ import (
 	log "github.com/sirupsen/logrus"
 	"promise/base"
 	"promise/server/object/entity"
-	"promise/server/object/message"
+	"promise/server/object/errorResp"
 )
 
 var (
 	// DefaultServerGroupID records the ID of default servergroup. We don't have to retrieve it each time.
-	DefaultServerGroupID    string
-	messageTransactionError = base.NewMessageTransactionError()
+	DefaultServerGroupID      string
+	errorRespTransactionError = base.NewErrorResponseTransactionError()
 )
 
 // ServerGroup is the concrete DB.
@@ -45,11 +45,11 @@ func (impl *ServerGroup) NeedCheckDuplication() bool {
 }
 
 // ConvertFindResultToCollection convert the Find() result to collection mode.
-func (impl *ServerGroup) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.Message) {
+func (impl *ServerGroup) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.ErrorResponse) {
 	collection, ok := result.(*[]entity.ServerGroup)
 	if !ok {
 		log.Error("ServerGroup.ConvertFindResult() failed, convert data failed.")
-		return nil, base.NewMessageInternalError()
+		return nil, base.NewErrorResponseInternalError()
 	}
 	ret := base.CollectionModel{}
 	ret.Start = start
@@ -62,11 +62,11 @@ func (impl *ServerGroup) ConvertFindResultToCollection(start int64, total int64,
 }
 
 // ConvertFindResultToModel convert the Find() result to model slice
-func (impl *ServerGroup) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.Message) {
+func (impl *ServerGroup) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.ErrorResponse) {
 	collection, ok := result.(*[]entity.ServerGroup)
 	if !ok {
 		log.Error("ServerGroup.ConvertFindResult() failed, convert data failed.")
-		return nil, base.NewMessageInternalError()
+		return nil, base.NewErrorResponseInternalError()
 	}
 	ret := make([]base.ModelInterface, 0)
 	for _, v := range *collection {
@@ -78,16 +78,16 @@ func (impl *ServerGroup) ConvertFindResultToModel(result interface{}) ([]base.Mo
 
 // Delete will override the default Delete process.
 // We should not delete the default servergroup.
-func (impl *ServerGroup) Delete(id string) (base.ModelInterface, *base.Message) {
+func (impl *ServerGroup) Delete(id string) (base.ModelInterface, *base.ErrorResponse) {
 	if id == DefaultServerGroupID {
-		return nil, message.NewMessageServerGroupDeleteDefault()
+		return nil, errorResp.NewErrorResponseServerGroupDeleteDefault()
 	}
 	return impl.DB.Delete(id)
 }
 
 // DeleteCollection will override the default DeleteCollection process.
 // We should not delete the default servergroup.
-func (impl *ServerGroup) DeleteCollection() ([]base.ModelInterface, *base.Message) {
+func (impl *ServerGroup) DeleteCollection() ([]base.ModelInterface, *base.ErrorResponse) {
 	var (
 		name             = impl.ResourceName()
 		recordCollection = impl.NewEntityCollection()
@@ -101,7 +101,7 @@ func (impl *ServerGroup) DeleteCollection() ([]base.ModelInterface, *base.Messag
 			"resource": name,
 			"error":    err,
 		}).Warn("Get collection in DB failed, start transaction failed.")
-		return nil, base.NewMessageTransactionError()
+		return nil, base.NewErrorResponseTransactionError()
 	}
 
 	if err := tx.Where("\"Name\" <> ?", "all").Find(recordCollection).Error; err != nil {
@@ -109,30 +109,30 @@ func (impl *ServerGroup) DeleteCollection() ([]base.ModelInterface, *base.Messag
 			"resource": name,
 			"error":    err,
 		}).Warn("Delete collection in DB failed, find resource failed.")
-		return nil, base.NewMessageTransactionError()
+		return nil, base.NewErrorResponseTransactionError()
 	}
 	if err := tx.Where("\"Name\" <> ?", "all").Delete(entity.ServerGroup{}).Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
 			"error":    err,
 		}).Warn("Delete collection in DB failed.")
-		return nil, base.NewMessageTransactionError()
+		return nil, base.NewErrorResponseTransactionError()
 	}
-	ret, message := impl.TemplateImpl.ConvertFindResultToModel(recordCollection)
-	if message != nil {
+	ret, errorResp := impl.TemplateImpl.ConvertFindResultToModel(recordCollection)
+	if errorResp != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
-			"resource": name,
-			"message":  message.ID,
+			"resource":  name,
+			"errorResp": errorResp.ID,
 		}).Warn("Delete collection in DB failed, convert find result failed, transaction rollback.")
-		return nil, message
+		return nil, errorResp
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
 			"error":    err,
 		}).Warn("Delete collection in DB failed, commit failed.")
-		return nil, base.NewMessageTransactionError()
+		return nil, base.NewErrorResponseTransactionError()
 	}
 	return ret, nil
 }

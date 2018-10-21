@@ -5,7 +5,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"promise/base"
 	"promise/pool/object/entity"
-	"promise/pool/object/message"
+	"promise/pool/object/errorResp"
 )
 
 // IPv4Pool is the concrete DB.
@@ -39,11 +39,11 @@ func (impl *IPv4Pool) NeedCheckDuplication() bool {
 }
 
 // ConvertFindResultToCollection convert the Find() result to collection mode.
-func (impl *IPv4Pool) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.Message) {
+func (impl *IPv4Pool) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.ErrorResponse) {
 	collection, ok := result.(*[]entity.IPv4Pool)
 	if !ok {
 		log.Error("IPv4Pool.ConvertFindResult() failed, convert data failed.")
-		return nil, base.NewMessageInternalError()
+		return nil, base.NewErrorResponseInternalError()
 	}
 	ret := base.CollectionModel{}
 	ret.Start = start
@@ -56,11 +56,11 @@ func (impl *IPv4Pool) ConvertFindResultToCollection(start int64, total int64, re
 }
 
 // ConvertFindResultToModel convert the Find() result to model slice
-func (impl *IPv4Pool) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.Message) {
+func (impl *IPv4Pool) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.ErrorResponse) {
 	collection, ok := result.(*[]entity.IPv4Pool)
 	if !ok {
 		log.Error("IPv4Pool.ConvertFindResult() failed, convert data failed.")
-		return nil, base.NewMessageInternalError()
+		return nil, base.NewErrorResponseInternalError()
 	}
 	ret := make([]base.ModelInterface, 0)
 	for _, v := range *collection {
@@ -73,8 +73,8 @@ func (impl *IPv4Pool) ConvertFindResultToModel(result interface{}) ([]base.Model
 // AllocateIPv4Address will allocate IPv4 address from IP pool.
 // It will return the address if operation commited, or nil
 // It will return the pool after the allocation if operation commited, or nil
-// It will return message if any error.
-func (impl *IPv4Pool) AllocateIPv4Address(id string, key string) (string, base.ModelInterface, *base.Message) {
+// It will return error response if any error.
+func (impl *IPv4Pool) AllocateIPv4Address(id string, key string) (string, base.ModelInterface, *base.ErrorResponse) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		record = new(entity.IPv4Pool)
@@ -87,14 +87,16 @@ func (impl *IPv4Pool) AllocateIPv4Address(id string, key string) (string, base.M
 			"key":   key,
 			"error": err,
 		}).Warn("Allocate IPv4 failed, start transaction failed.")
-		return "", nil, base.NewMessageTransactionError()
+		return "", nil, base.NewErrorResponseTransactionError()
 	}
 	exist, err := impl.GetInternal(tx, id, record)
 	if !exist {
-		return "", nil, base.NewMessageNotExist()
+		tx.Rollback()
+		return "", nil, base.NewErrorResponseNotExist()
 	}
 	if err != nil {
-		return "", nil, base.NewMessageTransactionError()
+		tx.Rollback()
+		return "", nil, base.NewErrorResponseTransactionError()
 	}
 
 	foundKey := false
@@ -119,7 +121,7 @@ func (impl *IPv4Pool) AllocateIPv4Address(id string, key string) (string, base.M
 						if commited, err := impl.SaveAndCommit(tx, record); commited && err == nil {
 							return record.Ranges[i].Addresses[j].Address, record.ToModel(), nil
 						}
-						return "", nil, base.NewMessageTransactionError()
+						return "", nil, base.NewErrorResponseTransactionError()
 					}
 					// found the address with the key, but in already allocated.
 					break
@@ -148,7 +150,7 @@ func (impl *IPv4Pool) AllocateIPv4Address(id string, key string) (string, base.M
 				if commited && err == nil {
 					return record.Ranges[i].Addresses[j].Address, record.ToModel(), nil
 				}
-				return "", nil, base.NewMessageTransactionError()
+				return "", nil, base.NewErrorResponseTransactionError()
 			}
 		}
 	}
@@ -169,7 +171,7 @@ func (impl *IPv4Pool) AllocateIPv4Address(id string, key string) (string, base.M
 				if commited && err == nil {
 					return record.Ranges[i].Addresses[j].Address, record.ToModel(), nil
 				}
-				return "", nil, base.NewMessageTransactionError()
+				return "", nil, base.NewErrorResponseTransactionError()
 			}
 		}
 	}
@@ -180,12 +182,12 @@ func (impl *IPv4Pool) AllocateIPv4Address(id string, key string) (string, base.M
 		"key": key,
 	}).Info("Allocate IPv4 failed, no allocatable address.")
 
-	return "", nil, message.NewMessageIPv4PoolEmpty()
+	return "", nil, errorResp.NewErrorResponseIPv4PoolEmpty()
 }
 
 // FreeIPv4Address will free the address to pool.
-// It will return message if any error.
-func (impl *IPv4Pool) FreeIPv4Address(id string, address string) (base.ModelInterface, *base.Message) {
+// It will return error response if any error.
+func (impl *IPv4Pool) FreeIPv4Address(id string, address string) (base.ModelInterface, *base.ErrorResponse) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		record = new(entity.IPv4Pool)
@@ -198,14 +200,16 @@ func (impl *IPv4Pool) FreeIPv4Address(id string, address string) (base.ModelInte
 			"address": address,
 			"error":   err,
 		}).Warn("Free IPv4 failed, start transaction failed.")
-		return nil, base.NewMessageTransactionError()
+		return nil, base.NewErrorResponseTransactionError()
 	}
 	exist, err := impl.GetInternal(tx, id, record)
 	if !exist {
-		return nil, base.NewMessageNotExist()
+		tx.Rollback()
+		return nil, base.NewErrorResponseNotExist()
 	}
 	if err != nil {
-		return nil, base.NewMessageTransactionError()
+		tx.Rollback()
+		return nil, base.NewErrorResponseTransactionError()
 	}
 	for i := range record.Ranges {
 		if !base.IPStringBetween(record.Ranges[i].Start, record.Ranges[i].End, address) {
@@ -219,7 +223,7 @@ func (impl *IPv4Pool) FreeIPv4Address(id string, address string) (base.ModelInte
 						"id":      id,
 						"address": address,
 					}).Warn("Free IPv4 failed, the address didn't allocate, transaction rollback.")
-					return nil, message.NewMessageIPv4NotAllocatedError()
+					return nil, errorResp.NewErrorResponseIPv4NotAllocatedError()
 				}
 				record.Ranges[i].Addresses[j].Allocated = false
 				record.Ranges[i].Allocatable++
@@ -230,12 +234,12 @@ func (impl *IPv4Pool) FreeIPv4Address(id string, address string) (base.ModelInte
 				if commited && err == nil {
 					return record.ToModel(), nil
 				}
-				return nil, base.NewMessageTransactionError()
+				return nil, base.NewErrorResponseTransactionError()
 			}
 		}
 		break
 	}
 	// Can't find the address in pool.
 	tx.Rollback()
-	return nil, message.NewMessageIPv4AddressNotExistError()
+	return nil, errorResp.NewErrorResponseIPv4AddressNotExistError()
 }

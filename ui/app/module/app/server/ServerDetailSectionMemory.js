@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CSSModules from 'react-css-modules';
 import ServerDetailSectionHeader from './ServerDetailSectionHeader';
-import styles from './Server.css';
+import styles from './App.css';
 
 function ServerDetailSectionMemory(props) {
   const iconImage = require('./img/icon/Memory.png');

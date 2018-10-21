@@ -1,13 +1,13 @@
 package base
 
 import (
+	"fmt"
 	"time"
 )
 
 // ModelInterface is the interface of Model.
 type ModelInterface interface {
 	ValueForDuplicationCheck() string
-	DebugInfo() string
 	GetID() string
 	GetCategory() string
 }
@@ -52,4 +52,16 @@ type CollectionModel struct {
 // For example the phone numbers of a person.
 type SubModel struct {
 	ID uint64
+}
+
+// DeviceIdentity contains the information that is used to distinguish device among a certain type.
+type DeviceIdentity struct {
+	SerialNumber string `gorm:"column:SerialNumber"`
+	PartNumber   string `gorm:"column:PartNumber"`
+	UUID         string `gorm:"column:UUID"`
+}
+
+// String returns the debug info.
+func (d DeviceIdentity) String() string {
+	return fmt.Sprintf("(serial = %s, part = %s, UUID = %s)", d.SerialNumber, d.PartNumber, d.UUID)
 }

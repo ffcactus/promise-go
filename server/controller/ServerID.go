@@ -5,7 +5,7 @@ import (
 	"promise/server/object/dto"
 )
 
-// ServerID Server ID controller.
+// ServerID is server ID controller.
 type ServerID struct {
 }
 

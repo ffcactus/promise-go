@@ -38,10 +38,35 @@ type ActionController struct {
 	beego.Controller
 }
 
+// func (c *ActionController) SetResponse(resp ResponseInterface, task string, errorResps []ErrorResponse) {
+// 	if errorResps != nil {
+// 		log.WithFields(log.Fields{
+// 			"resource":  c.TemplateImpl.ResourceName(),
+// 			"errorResp": errorResps[0].ID,
+// 		}).Warn("ActionController perform action failed.")
+// 		c.Data["json"] = &errorResps
+// 		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
+// 		c.ServeJSON()
+// 		return
+// 	}
+// 	log.WithFields(log.Fields{
+// 		"resource": c.TemplateImpl.ResourceName(),
+// 		"task":     task,
+// 	}).Info("Perform action done.")
+// 	if task != "" {
+// 		c.Ctx.Output.Header("Location", task)
+// 	}
+// 	if resp != nil {
+// 		c.Data["json"] = resp
+// 		c.Ctx.Output.SetStatus(http.StatusAccepted)
+// 		c.ServeJSON()
+// 	}
+// }
+
 // Post is the default method to handle POST method.
 func (c *ActionController) Post() {
 	var (
-		messages   []Message
+		errorResps []ErrorResponse
 		action     = c.Ctx.Input.Param(":action")
 		id         = c.Ctx.Input.Param(":id")
 		actionInfo = c.TemplateImpl.ActionInfo()
@@ -57,7 +82,7 @@ func (c *ActionController) Post() {
 		asychActionService AsychActionServiceInterface
 
 		response   ResponseInterface
-		taskURI    *string
+		taskURI    string
 		actionType string
 	)
 
@@ -75,61 +100,57 @@ func (c *ActionController) Post() {
 		}
 	}
 	if service == nil {
-		messages = append(messages, *NewMessageInvalidRequest())
+		errorResps = append(errorResps, *NewErrorResponseInvalidRequest())
 		log.WithFields(log.Fields{
-			"resource": c.TemplateImpl.ResourceName(),
-			"action":   action,
-			"type":     actionType,
-			"id":       id,
-			"message":  messages[0].ID,
+			"resource":  c.TemplateImpl.ResourceName(),
+			"action":    action,
+			"type":      actionType,
+			"id":        id,
+			"errorResp": errorResps[0].ID,
 		}).Warn("ActionController perform action failed, unknown action.")
-		c.Data["json"] = &messages
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.Data["json"] = &errorResps
+		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
 		c.ServeJSON()
 		return
 	}
 	if request != nil {
 		// Unmarshal the request.
 		if err := json.Unmarshal(c.Ctx.Input.RequestBody, request); err != nil {
-			messages = append(messages, *NewMessageInvalidRequest())
+			errorResps = append(errorResps, *NewErrorResponseInvalidRequest())
 			log.WithFields(log.Fields{
-				"resource": c.TemplateImpl.ResourceName(),
-				"action":   action,
-				"type":     actionType,
-				"id":       id,
-				"error":    err,
-				"message":  messages[0].ID,
+				"resource":  c.TemplateImpl.ResourceName(),
+				"action":    action,
+				"type":      actionType,
+				"id":        id,
+				"error":     err,
+				"errorResp": errorResps[0].ID,
 			}).Warn("ActionController perform action failed, bad request.")
-			c.Data["json"] = &messages
-			c.Ctx.Output.SetStatus(messages[0].StatusCode)
+			c.Data["json"] = &errorResps
+			c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
 			c.ServeJSON()
 			return
 		}
 		// Validate the request.
-		if message := request.IsValid(); message != nil {
-			messages = append(messages, *message)
+		if errorResp := request.IsValid(); errorResp != nil {
+			errorResps = append(errorResps, *errorResp)
 			log.WithFields(log.Fields{
-				"resource": c.TemplateImpl.ResourceName(),
-				"action":   action,
-				"type":     actionType,
-				"id":       id,
-				"message":  messages[0].ID,
+				"resource":  c.TemplateImpl.ResourceName(),
+				"action":    action,
+				"type":      actionType,
+				"id":        id,
+				"errorResp": errorResps[0].ID,
 			}).Warn("ActionController perform action failed, request validation failed.")
-			c.Data["json"] = &messages
-			c.Ctx.Output.SetStatus(messages[0].StatusCode)
+			c.Data["json"] = &errorResps
+			c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
 			c.ServeJSON()
 			return
 		}
 	}
 
-	requestDebugInfo := ""
-	if request != nil {
-		requestDebugInfo = request.DebugInfo()
-	}
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.ResourceName(),
 		"action":   action,
-		"request":  requestDebugInfo,
+		"request":  request,
 		"id":       id,
 	}).Info("ActionController perform action.")
 	// Now the request is correct, select the right runtine by action type.
@@ -138,17 +159,18 @@ func (c *ActionController) Post() {
 	case ActionTypeUpdate:
 		updateRequest, updateService, ok = c.convertToUpdate(request, service)
 		if ok {
-			response, messages = updateService.Update(id, updateRequest)
+			response, errorResps = updateService.Update(id, updateRequest)
 		}
 	case ActionTypeSych:
 		actionRequest, actionService, ok = c.convertToAction(request, service)
 		if ok {
-			response, messages = actionService.Perform(id, actionRequest)
+			response, errorResps = actionService.Perform(id, actionRequest)
 		}
 	case ActionTypeAsych:
+		// TODO can we return the result in action?
 		asychActionRequest, asychActionService, ok = c.convertToAsychAction(request, service)
 		if ok {
-			response, taskURI, messages = asychActionService.PerformAsych(id, asychActionRequest)
+			response, taskURI, errorResps = asychActionService.PerformAsych(c.Ctx, id, asychActionRequest)
 		}
 	default:
 		log.WithFields(log.Fields{
@@ -160,50 +182,48 @@ func (c *ActionController) Post() {
 		ok = false
 	}
 	if !ok {
-		messages = []Message{*NewMessageInternalError()}
+		errorResps = []ErrorResponse{*NewErrorResponseInternalError()}
 		log.WithFields(log.Fields{
-			"resource": c.TemplateImpl.ResourceName(),
-			"action":   action,
-			"type":     actionType,
-			"id":       id,
-			"message":  messages[0].ID,
+			"resource":  c.TemplateImpl.ResourceName(),
+			"action":    action,
+			"type":      actionType,
+			"id":        id,
+			"errorResp": errorResps[0].ID,
 		}).Warn("ActionController perform action failed, convert request and service failed.")
-		c.Data["json"] = &messages
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.Data["json"] = &errorResps
+		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
 		c.ServeJSON()
 		return
 	}
-	if messages != nil {
+	if errorResps != nil {
 		log.WithFields(log.Fields{
-			"resource": c.TemplateImpl.ResourceName(),
-			"action":   action,
-			"type":     actionType,
-			"id":       id,
-			"message":  messages[0].ID,
+			"resource":  c.TemplateImpl.ResourceName(),
+			"action":    action,
+			"type":      actionType,
+			"id":        id,
+			"errorResp": errorResps[0].ID,
 		}).Warn("ActionController perform action failed.")
-		c.Data["json"] = &messages
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+		c.Data["json"] = &errorResps
+		c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
 		c.ServeJSON()
 		return
-	}
-	responseDebugInfo := ""
-	if response != nil {
-		responseDebugInfo = response.DebugInfo()
 	}
 	log.WithFields(log.Fields{
 		"resource": c.TemplateImpl.ResourceName(),
 		"action":   action,
 		"type":     actionType,
 		"id":       id,
-		"response": responseDebugInfo,
+		"response": response,
 		"task":     taskURI,
 	}).Info("Perform action done.")
-	if taskURI != nil {
-		c.Ctx.Output.Header("Location", *taskURI)
+	if taskURI != "" {
+		c.Ctx.Output.Header("Location", taskURI)
 	}
-	c.Data["json"] = response
-	c.Ctx.Output.SetStatus(http.StatusAccepted)
-	c.ServeJSON()
+	if response != nil {
+		c.Data["json"] = response
+		c.Ctx.Output.SetStatus(http.StatusAccepted)
+		c.ServeJSON()
+	}
 }
 
 func (c *ActionController) convertToUpdate(request RequestInterface, service ServiceInterface) (UpdateRequestInterface, CRUDServiceInterface, bool) {

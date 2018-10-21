@@ -10,17 +10,17 @@ type AllocateIPv4Request struct {
 }
 
 // NewInstance returns a new instance.
-func (dto *AllocateIPv4Request) NewInstance() base.RequestInterface {
+func (AllocateIPv4Request) NewInstance() base.RequestInterface {
 	return new(AllocateIPv4Request)
 }
 
 // IsValid return if the request is valid.
-func (dto *AllocateIPv4Request) IsValid() *base.Message {
+func (dto *AllocateIPv4Request) IsValid() *base.ErrorResponse {
 	return nil
 }
 
-// DebugInfo return the name for debug.
-func (dto *AllocateIPv4Request) DebugInfo() string {
+// String return the name for debug.
+func (dto AllocateIPv4Request) String() string {
 	if dto.Key == nil {
 		return ""
 	}

@@ -10,4 +10,4 @@ image: all
 	cp ../package/docker/script/wait-for.sh ./package/image/fs/
 	docker build  -t pool.promise ./package/image
 
-.PHONY: all clean start image
+.PHONY: all clean image

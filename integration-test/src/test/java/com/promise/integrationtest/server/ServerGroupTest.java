@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.promise.integrationtest.base.MessageEnum;
+import com.promise.integrationtest.base.ErrorResponseEnum;
 import com.promise.integrationtest.base.PromiseIntegrationTest;
 import com.promise.integrationtest.dto.DeleteResourceResponse;
 import com.promise.integrationtest.server.dto.GetServerGroupResponse;
@@ -105,10 +105,10 @@ public class ServerGroupTest extends PromiseIntegrationTest
     {
         // Create the default "all" server group should fail.
         final PostServerGroupRequest request = new PostServerGroupRequest("all", "default server group");
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 "/promise/v1/servergroup/",
                 HttpStatus.BAD_REQUEST,
-                MessageEnum.Duplicate.getId(),
+                ErrorResponseEnum.Duplicate.getId(),
                 request);
     }
 
@@ -118,10 +118,10 @@ public class ServerGroupTest extends PromiseIntegrationTest
     @Test
     public void testDeleteNotExist()
     {
-        PromiseAssertUtil.assertDeleteMessage(
+        PromiseAssertUtil.assertDeleteErrorResponse(
                 "/promise/v1/servergroup/i_am_not_exist",
                 HttpStatus.NOT_FOUND,
-                MessageEnum.NotExist.getId());
+                ErrorResponseEnum.NotExist.getId());
     }
 
     /**
@@ -134,10 +134,10 @@ public class ServerGroupTest extends PromiseIntegrationTest
             throws UnsupportedEncodingException
     {
         GetServerGroupResponse response = ServerGroupAssertUtil.assertGetServerGroupByName("all");
-        PromiseAssertUtil.assertDeleteMessage(
+        PromiseAssertUtil.assertDeleteErrorResponse(
                 response.getUri(),
                 HttpStatus.BAD_REQUEST,
-                MessageEnum.ServerGroupDeleteDefault.getId());
+                ErrorResponseEnum.ServerGroupDeleteDefault.getId());
     }
 
     /**

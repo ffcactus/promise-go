@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import * as ServerGroupAction from './ServerGroupAction';
-import styles from './Server.css';
+import styles from './App.css';
 
 class ServerGroupElement extends React.Component {
   constructor(props) {

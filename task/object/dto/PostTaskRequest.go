@@ -2,15 +2,15 @@ package dto
 
 import (
 	"promise/base"
-	"promise/task/object/message"
+	"promise/task/object/errorResp"
 	"promise/task/object/model"
 )
 
 // PostTaskRequest Post task request DTO.
 type PostTaskRequest struct {
-	MessageID     *string               `json:"MessageID"`
+	MessageID     string                `json:"MessageID,omitempty"`
 	Name          string                `json:"Name"`
-	Description   *string               `json:"Description"`
+	Description   string                `json:"Description,omitempty"`
 	CreatedByName string                `json:"CreatedByName"`
 	CreatedByURI  string                `json:"CreatedByURI"`
 	TargetName    string                `json:"TargetName"`
@@ -19,20 +19,20 @@ type PostTaskRequest struct {
 }
 
 // NewInstance creates a new instance.
-func (dto *PostTaskRequest) NewInstance() base.RequestInterface {
+func (PostTaskRequest) NewInstance() base.RequestInterface {
 	return new(PostTaskRequest)
 }
 
 // IsValid return if the request is valid.
-func (dto *PostTaskRequest) IsValid() *base.Message {
+func (dto *PostTaskRequest) IsValid() *base.ErrorResponse {
 	if len(dto.TaskSteps) == 0 {
-		return message.NewMessageTaskNoStep()
+		return errorResp.NewErrorResponseTaskNoStep()
 	}
 	return nil
 }
 
-// DebugInfo return the name for debug.
-func (dto *PostTaskRequest) DebugInfo() string {
+// String return the name for debug.
+func (dto PostTaskRequest) String() string {
 	return dto.Name
 }
 

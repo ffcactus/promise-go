@@ -23,11 +23,11 @@ func (c *Login) Post() {
 		}).Warn("Login failed, unable to unmarshal request.")
 	}
 
-	if session, messages := service.Login(request); messages != nil {
-		c.Data["json"] = &messages
-		c.Ctx.Output.SetStatus(messages[0].StatusCode)
+	if session, errorResp := service.Login(request); errorResp != nil {
+		c.Data["json"] = &errorResp
+		c.Ctx.Output.SetStatus(errorResp[0].StatusCode)
 		log.WithFields(log.Fields{
-			"message": messages[0].ID,
+			"errorResp": errorResp[0].ID,
 		}).Warn("Login failed.")
 	} else {
 		resp := new(dto.PostLoginResponse)

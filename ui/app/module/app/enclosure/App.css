@@ -1,0 +1,143 @@
+.selectable {
+    cursor: pointer;    
+}
+
+.selected {
+    background-color: #2196F3;
+    color: white;
+}
+
+.not-selected {
+    background-color: #DFEEFC;
+    color: black;
+}
+
+.not-selected:hover {
+    background: rgb(194, 220, 245);
+}
+
+.flex-column-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-item {
+    flex: 1;
+}
+
+.flex-item-last {
+    flex: 1 1 auto;
+}
+
+.border-column-first {
+    border-top: 0px transparent;
+}
+
+.border-column {
+    border-top: 1px solid #adc4dd;
+}
+
+.border-column-last {
+    border-bottom: 1px solid #adc4dd;
+}
+
+.border-row-first {
+    border-left: 0px solid transparent;
+}
+
+.border-row {
+    border-left: 1px solid #adc4dd;
+}
+
+.border-row-last {
+    border-right: 1px solid #adc4dd;
+}
+
+.group-area {
+    height: 100%;
+    background-color: #dfeefc;
+}
+
+.detail-area {
+    height: 100%;
+}
+
+.list-area {
+    height: 100%;
+    background-color: #f9f9f9;
+}
+
+.border-column-first {
+    border-top: 0px transparent;
+}
+
+.border-column {
+    border-top: 1px solid #adc4dd;
+}
+
+.border-row-first {
+    border-left: 0px solid transparent;
+}
+
+.border-row {
+    border-left: 1px solid #adc4dd;
+}
+
+.search {
+    width: 100%;
+    height: auto;
+    background: #fcfcfc;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    box-shadow: 0 0 3px #ccc, 0 10px 15px #ebebeb inset;
+    background: #fcfcfc url(../../promise/common/img/icon/search_512.png) left/8% no-repeat;
+    padding-left: 40px;
+}
+
+.center-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.center-container p {
+    margin: 0px;
+}
+
+.main-control-button-container {
+    border: 0px;
+    margin: 0px 10px 0px 10px;
+    padding: 0px;
+    cursor: pointer;
+    height: 100%;
+    width: 40px;
+    position: relative;    
+}
+
+.select {
+    background-color: aqua;
+}
+
+.select_control {
+    height: 10px;
+}
+
+.dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    background: #c7ccd0;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(100,163,184,1);
+    border-radius: 20px;
+}
+
+.dialog:focus {
+    outline: none;
+    box-shadow: 0 0 20px rgba(100,163,184,0.4);
+}

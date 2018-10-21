@@ -4,34 +4,34 @@ import (
 	log "github.com/sirupsen/logrus"
 	"promise/auth/db"
 	"promise/auth/object/dto"
-	"promise/auth/object/message"
+	"promise/auth/object/errorResp"
 	"promise/auth/object/model"
 	"promise/base"
 )
 
 // Login On success return the session.
-func Login(request *dto.PostLoginRequest) (*model.Session, []base.Message) {
+func Login(request *dto.PostLoginRequest) (*model.Session, []base.ErrorResponse) {
 	dbInstance := db.GetDBInstance()
 	account := dbInstance.GetAccountByName(request.Name)
 	if account == nil {
-		return nil, []base.Message{*message.NewMessageAuthIncorrectCredential()}
+		return nil, []base.ErrorResponse{*errorResp.NewErrorResponseAuthIncorrectCredential()}
 	}
 	// We should valid the password here.
 	session := CreateSession(account)
 	savedSession := dbInstance.PostSession(session)
 	if savedSession == nil {
 		log.Warn("Failed to save session in DB.")
-		return nil, []base.Message{*message.NewMessageAuthInternalError()}
+		return nil, []base.ErrorResponse{*errorResp.NewErrorResponseAuthInternalError()}
 	}
 	return savedSession, nil
 }
 
 // GetSession Get session by token
-func GetSession(token string) (*model.Session, []base.Message) {
+func GetSession(token string) (*model.Session, []base.ErrorResponse) {
 	dbInstance := db.GetDBInstance()
 	session := dbInstance.GetSessionByToken(token)
 	if session == nil {
-		return nil, []base.Message{*message.NewMessageAuthNotFoundSession()}
+		return nil, []base.ErrorResponse{*errorResp.NewErrorResponseAuthNotFoundSession()}
 	}
 	return session, nil
 }

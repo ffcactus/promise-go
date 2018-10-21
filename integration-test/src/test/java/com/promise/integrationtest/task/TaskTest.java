@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.promise.integrationtest.base.Category;
-import com.promise.integrationtest.base.MessageEnum;
+import com.promise.integrationtest.base.ErrorResponseEnum;
 import com.promise.integrationtest.base.PromiseIntegrationTest;
 import com.promise.integrationtest.dto.DeleteResourceResponse;
 import com.promise.integrationtest.task.dto.GetTaskResponse;
@@ -25,7 +25,7 @@ import com.promise.integrationtest.task.dto.TaskCollectionMemberResponse;
 import com.promise.integrationtest.task.dto.UpdateExecutionResultRequest;
 import com.promise.integrationtest.task.dto.UpdateTaskRequest;
 import com.promise.integrationtest.task.dto.UpdateTaskStepRequest;
-import com.promise.integrationtest.util.MessageUtil;
+import com.promise.integrationtest.util.ErrorResponseUtil;
 import com.promise.integrationtest.util.PromiseAssertUtil;
 import com.promise.integrationtest.util.RestClient;
 
@@ -101,22 +101,22 @@ public class TaskTest extends PromiseIntegrationTest
     public void testNotExist()
     {
         // Get
-        PromiseAssertUtil.assertGetMessage("/promise/v1/task/not_exist", HttpStatus.NOT_FOUND, MessageEnum.NotExist.getId());
+        PromiseAssertUtil.assertGetErrorResponse("/promise/v1/task/not_exist", HttpStatus.NOT_FOUND, ErrorResponseEnum.NotExist.getId());
         // Delete
-        PromiseAssertUtil.assertDeleteMessage("/promise/v1/task/not_exist", HttpStatus.NOT_FOUND, MessageEnum.NotExist.getId());
+        PromiseAssertUtil.assertDeleteErrorResponse("/promise/v1/task/not_exist", HttpStatus.NOT_FOUND, ErrorResponseEnum.NotExist.getId());
         // Update task step action.
         UpdateTaskStepRequest request1 = new UpdateTaskStepRequest();
-        PromiseAssertUtil.assertActionMessage(
+        PromiseAssertUtil.assertActionErrorResponse(
                 "/promise/v1/task/not_exist/action/updateTaskStep",
                 HttpStatus.NOT_FOUND,
-                MessageEnum.NotExist.getId(),
+                ErrorResponseEnum.NotExist.getId(),
                 request1);
         // Update task action.
         UpdateTaskRequest request2 = new UpdateTaskRequest();
-        PromiseAssertUtil.assertActionMessage(
+        PromiseAssertUtil.assertActionErrorResponse(
                 "/promise/v1/task/not_exist/action/updateTask",
                 HttpStatus.NOT_FOUND,
-                MessageEnum.NotExist.getId(),
+                ErrorResponseEnum.NotExist.getId(),
                 request2);
     }
 
@@ -133,10 +133,10 @@ public class TaskTest extends PromiseIntegrationTest
         request.setName(name);
         request.setDescription(description);
 
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 "/promise/v1/task/",
                 HttpStatus.BAD_REQUEST,
-                MessageEnum.TaskNoStep.getId(),
+                ErrorResponseEnum.TaskNoStep.getId(),
                 request);
     }
 
@@ -288,28 +288,28 @@ public class TaskTest extends PromiseIntegrationTest
         UpdateTaskRequest updateTaskRequest = new UpdateTaskRequest();
         // Validate execution state.
         updateTaskRequest.setExecutionState("xxxx");
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 response1.getUri() + "/action/updateTask",
                 HttpStatus.BAD_REQUEST,
-                MessageEnum.UnknownPropertyValue.getId(),
+                ErrorResponseEnum.UnknownPropertyValue.getId(),
                 updateTaskRequest);
         // Validate percentage.
         updateTaskRequest.setExecutionState(TaskExecutionStateEnum.Running.getId());
         updateTaskRequest.setPercentage(100 + 1);
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 response1.getUri() + "/action/updateTask",
                 HttpStatus.BAD_REQUEST,
-                MessageEnum.UnknownPropertyValue.getId(),
+                ErrorResponseEnum.UnknownPropertyValue.getId(),
                 updateTaskRequest);
         // Validate execution result state.
         updateTaskRequest.setPercentage(50);
         UpdateExecutionResultRequest updateExecutionResultRequest = new UpdateExecutionResultRequest();
         updateExecutionResultRequest.setState("xxxx");
         updateTaskRequest.setExecutionResult(updateExecutionResultRequest);
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 response1.getUri() + "/action/updateTask",
                 HttpStatus.BAD_REQUEST,
-                MessageEnum.UnknownPropertyValue.getId(),
+                ErrorResponseEnum.UnknownPropertyValue.getId(),
                 updateTaskRequest);
     }
 
@@ -340,7 +340,7 @@ public class TaskTest extends PromiseIntegrationTest
 
         UpdateExecutionResultRequest executionResult = new UpdateExecutionResultRequest();
         executionResult.setState(TaskExecutionResultStateEnum.Finished.getId());
-        executionResult.setMessage(MessageUtil.newTestMessage());
+        executionResult.setErrorResponse(ErrorResponseUtil.newTestErrorResponse());
         updateTaskRequest.setExecutionResult(executionResult);
 
         final GetTaskResponse updatedTask = PromiseAssertUtil.assertActionResponse(
@@ -353,7 +353,7 @@ public class TaskTest extends PromiseIntegrationTest
         Assert.assertEquals(1234, updatedTask.getExpectedExecutionMs());
         Assert.assertEquals(TaskExecutionStateEnum.Running.getId(), updatedTask.getExecutionState());
         Assert.assertEquals(TaskExecutionResultStateEnum.Finished.getId(), updatedTask.getExecutionResult().getState());
-        Assert.assertEquals(MessageUtil.newTestMessage(), updatedTask.getExecutionResult().getMessage());
+        Assert.assertEquals(ErrorResponseUtil.newTestErrorResponse(), updatedTask.getExecutionResult().getErrorResponse());
     }
 
     /**
@@ -379,19 +379,19 @@ public class TaskTest extends PromiseIntegrationTest
         // name should be valid.
         UpdateTaskStepRequest request2 = new UpdateTaskStepRequest();
         request2.setName("xxxx");
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 response1.getUri() + "/action/updateTaskStep",
                 HttpStatus.BAD_REQUEST,
-                MessageEnum.UnknownPropertyValue.getId(),
+                ErrorResponseEnum.UnknownPropertyValue.getId(),
                 request2);
 
         // execution state should be valid.
         request2.setName("Step1");
         request2.setExecutionState("xxxx");
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 response1.getUri() + "/action/updateTaskStep",
                 HttpStatus.BAD_REQUEST,
-                MessageEnum.UnknownPropertyValue.getId(),
+                ErrorResponseEnum.UnknownPropertyValue.getId(),
                 request2);
 
         // execution result should be valid.
@@ -399,10 +399,10 @@ public class TaskTest extends PromiseIntegrationTest
         UpdateExecutionResultRequest updateExecutionResultRequest = new UpdateExecutionResultRequest();
         updateExecutionResultRequest.setState("xxxx");
         request2.setExecutionResult(updateExecutionResultRequest);
-        PromiseAssertUtil.assertPostMessage(
+        PromiseAssertUtil.assertPostErrorResponse(
                 response1.getUri() + "/action/updateTaskStep",
                 HttpStatus.BAD_REQUEST,
-                MessageEnum.UnknownPropertyValue.getId(),
+                ErrorResponseEnum.UnknownPropertyValue.getId(),
                 request2);
     }
 
@@ -433,7 +433,7 @@ public class TaskTest extends PromiseIntegrationTest
 
         UpdateExecutionResultRequest executionResult = new UpdateExecutionResultRequest();
         executionResult.setState(TaskExecutionResultStateEnum.Finished.getId());
-        executionResult.setMessage(MessageUtil.newTestMessage());
+        executionResult.setErrorResponse(ErrorResponseUtil.newTestErrorResponse());
 
         taskStepRequest.setExecutionResult(executionResult);
         final GetTaskResponse updatedTask = PromiseAssertUtil.assertActionResponse(
@@ -444,7 +444,7 @@ public class TaskTest extends PromiseIntegrationTest
         GetTaskStepResponse taskStep = updatedTask.getTaskSteps().get(0);
         Assert.assertEquals(TaskExecutionStateEnum.Terminated.getId(), taskStep.getExecutionState());
         Assert.assertEquals(TaskExecutionResultStateEnum.Finished.getId(), taskStep.getExecutionResult().getState());
-        Assert.assertEquals(MessageUtil.newTestMessage(), taskStep.getExecutionResult().getMessage());
+        Assert.assertEquals(ErrorResponseUtil.newTestErrorResponse(), taskStep.getExecutionResult().getErrorResponse());
     }
 
     /**

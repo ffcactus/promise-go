@@ -4,19 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.promise.integrationtest.dto.Argument;
-import com.promise.integrationtest.dto.Message;
+import com.promise.integrationtest.dto.ErrorResponse;
 import com.promise.integrationtest.dto.Support;
 
 public class MessageUtil
 {
-    public static Message testMessage;
+    public static ErrorResponse testErrorResponse;
 
     static
     {
-        testMessage = new Message();
-        testMessage.setId("id");
-        testMessage.setDescription("description");
-        testMessage.setSeverity("severity");
+        testErrorResponse = new ErrorResponse();
+        testErrorResponse.setId("id");
+        testErrorResponse.setDescription("description");
+        testErrorResponse.setSeverity("severity");
 
         List<Argument> arguments = new ArrayList<Argument>();
 
@@ -32,7 +32,7 @@ public class MessageUtil
 
         arguments.add(argument1);
         arguments.add(argument2);
-        testMessage.setArgument(arguments);
+        testErrorResponse.setArgument(arguments);
 
         List<Support> supports = new ArrayList<Support>();
         Support support1 = new Support();
@@ -50,16 +50,16 @@ public class MessageUtil
         support2.setSolutionArgument(arguments);
         supports.add(support1);
         supports.add(support2);
-        testMessage.setSupport(supports);
+        testErrorResponse.setSupport(supports);
     }
 
     /**
-     * Return a message that is used for test.
+     * Return a error response that is used for test.
      * 
      * @return
      */
-    public static Message newTestMessage()
+    public static ErrorResponse newTestErrorResponse()
     {
-        return testMessage;
+        return testErrorResponse;
     }
 }

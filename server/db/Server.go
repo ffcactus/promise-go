@@ -41,11 +41,11 @@ func (impl *Server) NeedCheckDuplication() bool {
 }
 
 // ConvertFindResultToCollection convert the Find() result to collection mode.
-func (impl *Server) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.Message) {
+func (impl *Server) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.ErrorResponse) {
 	collection, ok := result.(*[]entity.Server)
 	if !ok {
 		log.Error("Server.ConvertFindResult() failed, convert data failed.")
-		return nil, base.NewMessageInternalError()
+		return nil, base.NewErrorResponseInternalError()
 	}
 	ret := base.CollectionModel{}
 	ret.Start = start
@@ -58,11 +58,11 @@ func (impl *Server) ConvertFindResultToCollection(start int64, total int64, resu
 }
 
 // ConvertFindResultToModel convert the Find() result to model slice
-func (impl *Server) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.Message) {
+func (impl *Server) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.ErrorResponse) {
 	collection, ok := result.(*[]entity.Server)
 	if !ok {
 		log.Error("Server.ConvertFindResult() failed, convert data failed.")
-		return nil, base.NewMessageInternalError()
+		return nil, base.NewErrorResponseInternalError()
 	}
 	ret := make([]base.ModelInterface, 0)
 	for _, v := range *collection {
@@ -86,8 +86,8 @@ func (impl *Server) FindServerStateAdded() string {
 	return server.ID
 }
 
-// IsServerExist Check the existance of the server, if found, return it.
-func (impl *Server) IsServerExist(s *model.Server) (bool, base.ModelInterface) {
+// Exist Check the existance of the server, if found, return it.
+func (impl *Server) Exist(s *model.Server) (bool, base.ModelInterface) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
@@ -112,7 +112,7 @@ func (impl *Server) CreateServer(s *model.Server) (base.ModelInterface, base.Mod
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
 	)
-	if exist, _ := impl.IsServerExist(s); exist {
+	if exist, _ := impl.Exist(s); exist {
 		// TODO get the server to return.
 		log.WithFields(log.Fields{"hostname": s.Hostname}).Info("Post server in DB failed, server exist.")
 		return nil, nil, base.ErrorResourceExist
@@ -149,8 +149,8 @@ func (impl *Server) CreateServer(s *model.Server) (base.ModelInterface, base.Mod
 	return server.ToModel(), serverServerGroup.ToModel(), nil
 }
 
-// GetAndLockServer Get and lock the server.
-func (impl *Server) GetAndLockServer(ID string) (bool, base.ModelInterface) {
+// GetAndLock Get and lock the server.
+func (impl *Server) GetAndLock(ID string) (bool, base.ModelInterface) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
@@ -161,7 +161,7 @@ func (impl *Server) GetAndLockServer(ID string) (bool, base.ModelInterface) {
 		log.WithFields(log.Fields{
 			"id":    ID,
 			"error": err}).
-			Warn("Get and lock server in DB failed, start transaction failed.")
+			Warn("DB get and lock server failed, start transaction failed.")
 		return false, nil
 	}
 	tx.Exec("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;")
@@ -169,7 +169,7 @@ func (impl *Server) GetAndLockServer(ID string) (bool, base.ModelInterface) {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID}).
-			Debug("Get and lock server in DB failed, server does not exist.")
+			Debug("DB get and lock server failed, server does not exist.")
 		return false, nil
 	}
 	if !constvalue.ServerLockable(server.State) {
@@ -178,7 +178,7 @@ func (impl *Server) GetAndLockServer(ID string) (bool, base.ModelInterface) {
 		log.WithFields(log.Fields{
 			"id":    ID,
 			"state": server.State}).
-			Debug("Get and lock server in DB failed, server not lockable.")
+			Debug("DB get and lock server failed, server not lockable.")
 		return false, server.ToModel()
 	}
 	// Change the state.
@@ -187,7 +187,7 @@ func (impl *Server) GetAndLockServer(ID string) (bool, base.ModelInterface) {
 		log.WithFields(log.Fields{
 			"id":    ID,
 			"state": server.State}).
-			Debug("Get and lock server in DB failed, update state failed.")
+			Debug("DB get and lock server failed, update state failed.")
 		return false, nil
 	}
 	// Commit.
@@ -195,14 +195,14 @@ func (impl *Server) GetAndLockServer(ID string) (bool, base.ModelInterface) {
 		log.WithFields(log.Fields{
 			"id":    ID,
 			"error": err}).
-			Warn("Get and lock server in DB failed, commit failed.")
+			Warn("DB get and lock server failed, commit failed.")
 		return false, nil
 	}
 	return true, server.ToModel()
 }
 
-// SetServerState Set server state.
-func (impl *Server) SetServerState(ID string, state string) (base.ModelInterface, error) {
+// SetState Set server state.
+func (impl *Server) SetState(ID string, state string) (base.ModelInterface, error) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
@@ -211,23 +211,25 @@ func (impl *Server) SetServerState(ID string, state string) (base.ModelInterface
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
 			"id":    ID,
-			"op":    "SetServerState",
+			"op":    "SetState",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
-			"op": "SetServerState",
-		}).Warn("DB operation failed , load server failed.")
+			"op": "SetState",
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := tx.Model(server).UpdateColumn("State", state).Error; err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id":    ID,
-			"op":    "SetServerState",
+			"op":    "SetState",
 			"error": err,
 		}).Warn("DB opertion failed, update server failed, transaction rollback.")
 		return nil, base.ErrorTransaction
@@ -235,7 +237,7 @@ func (impl *Server) SetServerState(ID string, state string) (base.ModelInterface
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"id":    ID,
-			"op":    "SetServerState",
+			"op":    "SetState",
 			"error": err,
 		}).Warn("DB opertion failed, commit failed.")
 		return nil, base.ErrorTransaction
@@ -255,15 +257,16 @@ func (impl *Server) SetServerHealth(ID string, health string) (base.ModelInterfa
 			"id":    ID,
 			"op":    "SetServerHealth",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "SetServerHealth",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := tx.Model(server).UpdateColumn("Health", health).Error; err != nil {
@@ -306,15 +309,16 @@ func (impl *Server) UpdateProcessors(ID string, processors []model.Processor) (b
 			"id":    ID,
 			"op":    "UpdateProcessors",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateProcessors",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deleteProcessors(tx, server); err != nil {
@@ -323,7 +327,7 @@ func (impl *Server) UpdateProcessors(ID string, processors []model.Processor) (b
 			"id":    ID,
 			"op":    "UpdateProcessors",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	server.Processors = []entity.Processor{}
@@ -373,15 +377,16 @@ func (impl *Server) UpdateMemory(ID string, memory []model.Memory) (base.ModelIn
 			"id":    ID,
 			"op":    "UpdateMemory",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateMemory",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deleteMemory(tx, server); err != nil {
@@ -390,7 +395,7 @@ func (impl *Server) UpdateMemory(ID string, memory []model.Memory) (base.ModelIn
 			"id":    ID,
 			"op":    "UpdateMemory",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	server.Memory = []entity.Memory{}
@@ -457,15 +462,16 @@ func (impl *Server) UpdateEthernetInterfaces(ID string, ethernet []model.Etherne
 			"id":    ID,
 			"op":    "UpdateEthernetInterfaces",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateEthernetInterfaces",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deleteEthernetInterfaces(tx, server); err != nil {
@@ -474,7 +480,7 @@ func (impl *Server) UpdateEthernetInterfaces(ID string, ethernet []model.Etherne
 			"id":    ID,
 			"op":    "UpdateEthernetInterfaces",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	server.EthernetInterfaces = []entity.EthernetInterface{}
@@ -524,15 +530,16 @@ func (impl *Server) UpdateNetworkInterfaces(ID string, networkInterface []model.
 			"id":    ID,
 			"op":    "UpdateNetworkInterfaces",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateNetworkInterfaces",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deleteNetworkInterfaces(tx, server); err != nil {
@@ -541,7 +548,7 @@ func (impl *Server) UpdateNetworkInterfaces(ID string, networkInterface []model.
 			"id":    ID,
 			"op":    "UpdateNetworkInterfaces",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	networkInterfacesE := []entity.NetworkInterface{}
@@ -597,15 +604,16 @@ func (impl *Server) UpdateStorages(ID string, storages []model.Storage) (base.Mo
 			"id":    ID,
 			"op":    "UpdateStorages",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateStorages",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deleteStorages(tx, server); err != nil {
@@ -614,7 +622,7 @@ func (impl *Server) UpdateStorages(ID string, storages []model.Storage) (base.Mo
 			"id":    ID,
 			"op":    "UpdateStorages",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	storagesE := []entity.Storage{}
@@ -683,15 +691,16 @@ func (impl *Server) UpdatePower(ID string, power *model.Power) (base.ModelInterf
 			"id":    ID,
 			"op":    "UpdatePower",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdatePower",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deletePower(tx, server); err != nil {
@@ -700,7 +709,7 @@ func (impl *Server) UpdatePower(ID string, power *model.Power) (base.ModelInterf
 			"id":    ID,
 			"op":    "UpdatePower",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	server.Power.Load(power)
@@ -753,15 +762,16 @@ func (impl *Server) UpdateThermal(ID string, thermal *model.Thermal) (base.Model
 			"id":    ID,
 			"op":    "UpdateThermal",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateThermal",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deleteThermal(tx, server); err != nil {
@@ -770,7 +780,7 @@ func (impl *Server) UpdateThermal(ID string, thermal *model.Thermal) (base.Model
 			"id":    ID,
 			"op":    "UpdateThermal",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	server.Thermal.Load(thermal)
@@ -815,15 +825,16 @@ func (impl *Server) UpdateOemHuaweiBoards(ID string, boards []model.OemHuaweiBoa
 			"id":    ID,
 			"op":    "UpdateOemHuaweiBoards",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateOemHuaweiBoards",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deleteOemHuaweiBoards(tx, server); err != nil {
@@ -832,7 +843,7 @@ func (impl *Server) UpdateOemHuaweiBoards(ID string, boards []model.OemHuaweiBoa
 			"id":    ID,
 			"op":    "UpdateOemHuaweiBoards",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	boardsE := []entity.OemHuaweiBoard{}
@@ -895,15 +906,16 @@ func (impl *Server) UpdateNetworkAdapters(ID string, networkAdapters []model.Net
 			"id":    ID,
 			"op":    "UpdateNetworkAdapters",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateNetworkAdapters",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deleteNetworkAdapters(tx, server); err != nil {
@@ -912,7 +924,7 @@ func (impl *Server) UpdateNetworkAdapters(ID string, networkAdapters []model.Net
 			"id":    ID,
 			"op":    "UpdateNetworkAdapters",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	networkAdaptersE := []entity.NetworkAdapter{}
@@ -979,15 +991,16 @@ func (impl *Server) UpdateDrives(ID string, drives []model.Drive) (base.ModelInt
 			"id":    ID,
 			"op":    "UpdateDrives",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdateDrives",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deleteDrives(tx, server); err != nil {
@@ -996,7 +1009,7 @@ func (impl *Server) UpdateDrives(ID string, drives []model.Drive) (base.ModelInt
 			"id":    ID,
 			"op":    "UpdateDrives",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	drivesE := []entity.Drive{}
@@ -1053,15 +1066,16 @@ func (impl *Server) UpdatePCIeDevices(ID string, pcieDevices []model.PCIeDevice)
 			"id":    ID,
 			"op":    "UpdatePCIeDevices",
 			"error": err,
-		}).Warn("DB operation failed , start transaction failed.")
+		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
 	}
 	found, err := impl.GetInternal(tx, ID, server)
 	if !found || err != nil {
+		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
 			"op": "UpdatePCIeDevices",
-		}).Warn("DB operation failed , load server failed.")
+		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
 	if err := impl.deletePCIeDevices(tx, server); err != nil {
@@ -1070,7 +1084,7 @@ func (impl *Server) UpdatePCIeDevices(ID string, pcieDevices []model.PCIeDevice)
 			"id":    ID,
 			"op":    "UpdatePCIeDevices",
 			"error": err,
-		}).Warn("DB operation failed , delete association failed, transaction rollback.")
+		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
 	pcieDevicesE := new([]entity.PCIeDevice)
@@ -1102,7 +1116,7 @@ func (impl *Server) UpdatePCIeDevices(ID string, pcieDevices []model.PCIeDevice)
 
 // DeleteServer will override the default process.
 // When delete a server we should delete all the associations too and return the association back.
-func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelInterface, *base.Message) {
+func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelInterface, *base.ErrorResponse) {
 	var (
 		name             = impl.ResourceName()
 		record           = new(entity.Server)
@@ -1119,15 +1133,16 @@ func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelIn
 			"id":       id,
 			"error":    err,
 		}).Warn("DB delete resource failed, start transaction failed.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 	exist, err := impl.GetInternal(tx, id, previous)
-	// Rollback in GetInternal.
 	if !exist {
-		return nil, nil, base.NewMessageNotExist()
+		tx.Rollback()
+		return nil, nil, base.NewErrorResponseNotExist()
 	}
 	if err != nil {
-		return nil, nil, base.NewMessageTransactionError()
+		tx.Rollback()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 
 	record.SetID(id)
@@ -1139,7 +1154,7 @@ func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelIn
 				"id":       id,
 				"error":    err,
 			}).Warn("DB delete resource failed, delete association failed, transaction rollback.")
-			return nil, nil, base.NewMessageTransactionError()
+			return nil, nil, base.NewErrorResponseTransactionError()
 		}
 	}
 	if err := tx.Delete(record).Error; err != nil {
@@ -1149,7 +1164,7 @@ func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelIn
 			"id":       id,
 			"error":    err,
 		}).Warn("DB delete resource failed, delete resource failed, transaction rollback.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 
 	// Delete the server-servergroup association.
@@ -1161,7 +1176,7 @@ func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelIn
 			"id":       id,
 			"error":    err,
 		}).Warn("DB delete resource failed, record server-servergroup association failed, transaction rollback.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 	for _, each := range deletedSSGEntity {
 		deletedSSG = append(deletedSSG, each.ToModel())
@@ -1173,7 +1188,7 @@ func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelIn
 			"id":       id,
 			"error":    err,
 		}).Warn("DB delete resource failed, delete server-servergroup association failed, transaction rollback.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 
 	if err := tx.Commit().Error; err != nil {
@@ -1182,7 +1197,7 @@ func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelIn
 			"id":       id,
 			"error":    err,
 		}).Warn("DB delete resource failed, commit failed.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 	return previous.ToModel(), deletedSSG, nil
 }
@@ -1192,7 +1207,7 @@ func (impl *Server) DeleteServer(id string) (base.ModelInterface, []base.ModelIn
 // It returns all the deleted resources,
 // It returnes if committed.
 // It returens error if any.
-func (impl *Server) DeleteServerCollection() ([]base.ModelInterface, []base.ModelInterface, *base.Message) {
+func (impl *Server) DeleteServerCollection() ([]base.ModelInterface, []base.ModelInterface, *base.ErrorResponse) {
 	var (
 		name             = impl.TemplateImpl.ResourceName()
 		recordCollection = impl.TemplateImpl.NewEntityCollection()
@@ -1209,7 +1224,7 @@ func (impl *Server) DeleteServerCollection() ([]base.ModelInterface, []base.Mode
 			"resource": name,
 			"error":    err,
 		}).Warn("DB delete collection failed, start transaction failed.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 
 	if err := tx.Find(recordCollection).Error; err != nil {
@@ -1217,7 +1232,7 @@ func (impl *Server) DeleteServerCollection() ([]base.ModelInterface, []base.Mode
 			"resource": name,
 			"error":    err,
 		}).Warn("DB delete collection failed, find resource failed.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 	for _, v := range tables {
 		if err := tx.Delete(v).Error; err != nil {
@@ -1226,7 +1241,7 @@ func (impl *Server) DeleteServerCollection() ([]base.ModelInterface, []base.Mode
 				"resource": name,
 				"error":    err,
 			}).Warn("DB delete collection failed, delete resources failed, transaction rollback.")
-			return nil, nil, base.NewMessageTransactionError()
+			return nil, nil, base.NewErrorResponseTransactionError()
 		}
 	}
 	// When we delete all the servers we also need delete all the server-servergroup.
@@ -1236,7 +1251,7 @@ func (impl *Server) DeleteServerCollection() ([]base.ModelInterface, []base.Mode
 			"resource": name,
 			"error":    err,
 		}).Warn("DB delete resource failed, record server-servergroup association failed, transaction rollback.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 	for _, each := range deletedSSGEntity {
 		deletedSSG = append(deletedSSG, each.ToModel())
@@ -1246,23 +1261,23 @@ func (impl *Server) DeleteServerCollection() ([]base.ModelInterface, []base.Mode
 		log.WithFields(log.Fields{
 			"error": err}).
 			Warn("Delete server collection in DB failed, delete server-servergroup collection failed, transaction rollback.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
-	ret, message := impl.TemplateImpl.ConvertFindResultToModel(recordCollection)
-	if message != nil {
+	ret, errorResp := impl.TemplateImpl.ConvertFindResultToModel(recordCollection)
+	if errorResp != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
-			"resource": name,
-			"message":  message.ID,
+			"resource":  name,
+			"errorResp": errorResp.ID,
 		}).Warn("DB delete collection failed, convert find result failed, transaction rollback.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"resource": name,
 			"error":    err,
 		}).Warn("DB delete collection failed, commit failed.")
-		return nil, nil, base.NewMessageTransactionError()
+		return nil, nil, base.NewErrorResponseTransactionError()
 	}
 	return ret, deletedSSG, nil
 }

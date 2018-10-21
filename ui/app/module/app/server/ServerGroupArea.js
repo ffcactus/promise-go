@@ -4,12 +4,12 @@ import AppCollectionMenu from '../../promise/app/AppCollectionMenu';
 import { ActionType } from './ConstValue';
 import ServerGroupList from './ServerGroupList';
 import ServerGroupControlArea from './ServerGroupControlArea';
-import styles from './Server.css';
+import styles from './App.css';
 
 function ServerGroupArea() {
   return (
     <div styleName="flex-column-container group-area">
-      <AppCollectionMenu action={{type: ActionType.APP_EXIT}} />
+      <AppCollectionMenu action={{type: ActionType.APP_SERVER_EXIT}} />
       <ServerGroupControlArea />
       <ServerGroupList />
     </div>

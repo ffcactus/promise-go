@@ -72,77 +72,77 @@ var (
 
 	// ServerTaskRefreshStepPower is a task step.
 	ServerTaskRefreshStepPower = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDPower,
+		MessageID:           ServerRefreshTaskStepIDPower,
 		Name:                ServerRefreshTaskStepNamePower,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepThermal is a task step.
 	ServerTaskRefreshStepThermal = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDThermal,
+		MessageID:           ServerRefreshTaskStepIDThermal,
 		Name:                ServerRefreshTaskStepNameThermal,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepBoards is a task step.
 	ServerTaskRefreshStepBoards = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDBoards,
+		MessageID:           ServerRefreshTaskStepIDBoards,
 		Name:                ServerRefreshTaskStepNameBoards,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepNetworkAdapters is a task step.
 	ServerTaskRefreshStepNetworkAdapters = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDNetworkAdapters,
+		MessageID:           ServerRefreshTaskStepIDNetworkAdapters,
 		Name:                ServerRefreshTaskStepNameNetworkAdapters,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepDrives is a task step.
 	ServerTaskRefreshStepDrives = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDDrives,
+		MessageID:           ServerRefreshTaskStepIDDrives,
 		Name:                ServerRefreshTaskStepNameDrives,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepPCIeDevices is a task step.
 	ServerTaskRefreshStepPCIeDevices = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDPCIeDevices,
+		MessageID:           ServerRefreshTaskStepIDPCIeDevices,
 		Name:                ServerRefreshTaskStepNamePCIeDevices,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepProcessors is a task step.
 	ServerTaskRefreshStepProcessors = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDProcessors,
+		MessageID:           ServerRefreshTaskStepIDProcessors,
 		Name:                ServerRefreshTaskStepNameProcessors,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepMemory is a task step.
 	ServerTaskRefreshStepMemory = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDMemory,
+		MessageID:           ServerRefreshTaskStepIDMemory,
 		Name:                ServerRefreshTaskStepNameMemory,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepEthernetInterfaces is a task step.
 	ServerTaskRefreshStepEthernetInterfaces = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDEthernetInterfaces,
+		MessageID:           ServerRefreshTaskStepIDEthernetInterfaces,
 		Name:                ServerRefreshTaskStepNameEthernetInterfaces,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepNetworkInterfaces is a task step.
 	ServerTaskRefreshStepNetworkInterfaces = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDNetworkInterfaces,
+		MessageID:           ServerRefreshTaskStepIDNetworkInterfaces,
 		Name:                ServerRefreshTaskStepNameNetworkInterfaces,
 		ExpectedExecutionMs: uint64(4000),
 	}
 
 	// ServerTaskRefreshStepStorages is a task step.
 	ServerTaskRefreshStepStorages = taskDTO.PostTaskStepRequest{
-		MessageID:           &ServerRefreshTaskStepIDStorages,
+		MessageID:           ServerRefreshTaskStepIDStorages,
 		Name:                ServerRefreshTaskStepNameStorages,
 		ExpectedExecutionMs: uint64(4000),
 	}
@@ -171,10 +171,10 @@ type ServerTask struct {
 func createRefreshTaskRequest(server *model.Server) *taskDTO.PostTaskRequest {
 	var request taskDTO.PostTaskRequest
 
-	request.MessageID = &ServerTaskRefresh
+	request.MessageID = ServerTaskRefresh
 	request.Name = "Refresh Server"
 	description := "Refresh server resources and re-configure it."
-	request.Description = &description
+	request.Description = description
 	request.CreatedByName = "Server Service"
 	request.CreatedByURI = "/promise/v1/server"
 	request.TargetName = server.Name
@@ -185,7 +185,7 @@ func createRefreshTaskRequest(server *model.Server) *taskDTO.PostTaskRequest {
 
 // createTask creates the task.
 func (s *ServerTask) createTask(request *taskDTO.PostTaskRequest, server *model.Server) (string, error) {
-	taskResp, message, err := taskSDK.CreateTask(request)
+	taskResp, errorResp, err := taskSDK.CreateTask(request)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"server": server.ID,
@@ -194,11 +194,11 @@ func (s *ServerTask) createTask(request *taskDTO.PostTaskRequest, server *model.
 			Warn("Create server task failed.")
 		return "", err
 	}
-	if message != nil {
+	if errorResp != nil {
 		log.WithFields(log.Fields{
-			"server":  server.ID,
-			"name":    request.Name,
-			"message": message[0].ID}).
+			"server":    server.ID,
+			"name":      request.Name,
+			"errorResp": errorResp[0].ID}).
 			Warn("Create server task failed.")
 		return "", fmt.Errorf("create task failed")
 	}
@@ -217,7 +217,7 @@ func (s *ServerTask) CreateRefreshServerTask(c *context.Base, server *model.Serv
 
 // UpdateStepExecutionState Update the step's execution state.
 func (s *ServerTask) UpdateStepExecutionState(id string, stepName string, state taskModel.ExecutionState, server *model.Server) {
-	_, message, err := taskSDK.SetStepExecutionState(id, stepName, state)
+	_, errorResp, err := taskSDK.SetStepExecutionState(id, stepName, state)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"server": server.ID,
@@ -226,20 +226,20 @@ func (s *ServerTask) UpdateStepExecutionState(id string, stepName string, state 
 			"state":  state,
 			"error":  err}).Warn("Update task step execution state failed.")
 	}
-	if message != nil {
+	if errorResp != nil {
 		log.WithFields(log.Fields{
-			"server":  server.ID,
-			"task":    id,
-			"step":    stepName,
-			"state":   state,
-			"message": message[0].ID}).
+			"server":    server.ID,
+			"task":      id,
+			"step":      stepName,
+			"state":     state,
+			"errorResp": errorResp[0].ID}).
 			Warn("Update task step execution state failed.")
 	}
 }
 
 // UpdateStepExecutionResultState Update the step's execution result state.
 func (s *ServerTask) UpdateStepExecutionResultState(c *context.Base, id string, stepName string, state taskModel.ExecutionResultState, server *model.Server) {
-	_, message, err := taskSDK.SetStepExecutionResultState(id, stepName, state)
+	_, errorResp, err := taskSDK.SetStepExecutionResultState(id, stepName, state)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"server": server.ID,
@@ -249,13 +249,13 @@ func (s *ServerTask) UpdateStepExecutionResultState(c *context.Base, id string, 
 			"error":  err}).
 			Warn("Update task step execution result state failed.")
 	}
-	if message != nil {
+	if errorResp != nil {
 		log.WithFields(log.Fields{
-			"server":  server.ID,
-			"task":    id,
-			"step":    stepName,
-			"state":   state,
-			"message": message[0].ID}).
+			"server":    server.ID,
+			"task":      id,
+			"step":      stepName,
+			"state":     state,
+			"errorResp": errorResp[0].ID}).
 			Warn("Update task step execution result state failed.")
 	}
 }
@@ -267,7 +267,7 @@ func (s *ServerTask) SetTaskStepRunning(c *context.Base, id string, stepName str
 		"task":   id,
 		"step":   stepName}).
 		Debug("Set task step to running.")
-	_, message, err := taskSDK.SetStepExecutionState(id, stepName, taskModel.ExecutionStateRunning)
+	_, errorResp, err := taskSDK.SetStepExecutionState(id, stepName, taskModel.ExecutionStateRunning)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"server": server.ID,
@@ -276,31 +276,24 @@ func (s *ServerTask) SetTaskStepRunning(c *context.Base, id string, stepName str
 			"error":  err}).
 			Warn("Set task step to running failed.")
 	}
-	if message != nil {
+	if errorResp != nil {
 		log.WithFields(log.Fields{
-			"server":  server.ID,
-			"task":    id,
-			"step":    stepName,
-			"message": message[0].ID}).
+			"server":    server.ID,
+			"task":      id,
+			"step":      stepName,
+			"errorResp": errorResp[0].ID}).
 			Warn("Set task step to running failed.")
 	}
 }
 
-func (s *ServerTask) logUpdateStepResult(c *context.Base, id string, stepName string, server *model.Server, err error, message []base.Message) {
-	if err != nil {
+func (s *ServerTask) logUpdateStepResult(c *context.Base, id string, stepName string, server *model.Server, err error, errorResp []base.ErrorResponse) {
+	if err != nil || errorResp != nil {
 		log.WithFields(log.Fields{
 			"server": server.ID,
 			"task":   id,
 			"step":   stepName,
 			"error":  err,
-		}).Warn("Set task step to finished failed.")
-	}
-	if message != nil {
-		log.WithFields(log.Fields{
-			"server":  server.ID,
-			"task":    id,
-			"step":    stepName,
-			"message": message[0].ID,
+			"errorResp": errorResp[0].ID,
 		}).Warn("Set task step to finished failed.")
 	}
 }
@@ -312,8 +305,8 @@ func (s *ServerTask) SetTaskStepFinished(c *context.Base, id string, stepName st
 	request.ExecutionState = &taskModel.ExecutionStateTerminated
 	request.ExecutionResult = new(taskDTO.UpdateExecutionResultRequest)
 	request.ExecutionResult.State = &taskModel.ExecutionResultStateFinished
-	_, message, err := taskSDK.UpdateStep(id, request)
-	s.logUpdateStepResult(c, id, stepName, server, err, message)
+	_, errorResp, err := taskSDK.UpdateStep(id, request)
+	s.logUpdateStepResult(c, id, stepName, server, err, errorResp)
 }
 
 // SetTaskStepWarning Set the task step to warning.
@@ -323,8 +316,8 @@ func (s *ServerTask) SetTaskStepWarning(c *context.Base, id string, stepName str
 	request.ExecutionState = &taskModel.ExecutionStateTerminated
 	request.ExecutionResult = new(taskDTO.UpdateExecutionResultRequest)
 	request.ExecutionResult.State = &taskModel.ExecutionResultStateWarning
-	_, message, err := taskSDK.UpdateStep(id, request)
-	s.logUpdateStepResult(c, id, stepName, server, err, message)
+	_, errorResp, err := taskSDK.UpdateStep(id, request)
+	s.logUpdateStepResult(c, id, stepName, server, err, errorResp)
 }
 
 // SetTaskStepError Set the task step to error.
@@ -335,6 +328,6 @@ func (s *ServerTask) SetTaskStepError(c *context.Base, id string, stepName strin
 	request.ExecutionState = &taskModel.ExecutionStateTerminated
 	request.ExecutionResult = new(taskDTO.UpdateExecutionResultRequest)
 	request.ExecutionResult.State = &taskModel.ExecutionResultStateError
-	_, message, err := taskSDK.UpdateStep(id, request)
-	s.logUpdateStepResult(c, id, stepName, server, err, message)
+	_, errorResp, err := taskSDK.UpdateStep(id, request)
+	s.logUpdateStepResult(c, id, stepName, server, err, errorResp)
 }

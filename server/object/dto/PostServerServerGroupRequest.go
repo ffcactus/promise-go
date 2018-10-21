@@ -12,20 +12,20 @@ type PostServerServerGroupRequest struct {
 }
 
 // NewInstance creates a new instance.
-func (dto *PostServerServerGroupRequest) NewInstance() base.RequestInterface {
+func (PostServerServerGroupRequest) NewInstance() base.RequestInterface {
 	return new(PostServerServerGroupRequest)
 }
 
 // IsValid return if the request is valid.
-func (dto *PostServerServerGroupRequest) IsValid() *base.Message {
+func (dto *PostServerServerGroupRequest) IsValid() *base.ErrorResponse {
 	if dto.ServerID == "" || dto.ServerGroupID == "" {
-		return base.NewMessageInvalidRequest()
+		return base.NewErrorResponseInvalidRequest()
 	}
 	return nil
 }
 
-// DebugInfo return the name for debug.
-func (dto *PostServerServerGroupRequest) DebugInfo() string {
+// String return the name for debug.
+func (dto PostServerServerGroupRequest) String() string {
 	return dto.ServerID + " " + dto.ServerGroupID
 }
 

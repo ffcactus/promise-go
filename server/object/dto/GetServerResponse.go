@@ -39,8 +39,8 @@ type GetServerResponse struct {
 	Chassis        Chassis        `json:"Chassis"`
 }
 
-// DebugInfo return the name for debug.
-func (dto *GetServerResponse) DebugInfo() string {
+// String return the name for debug.
+func (dto GetServerResponse) String() string {
 	return dto.Name
 }
 

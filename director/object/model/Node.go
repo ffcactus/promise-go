@@ -13,8 +13,8 @@ type Node struct {
 	ManagerStatus string
 }
 
-// DebugInfo return the debug name the model.
-func (m *Node) DebugInfo() string {
+// String return the debug name the model.
+func (m Node) String() string {
 	return m.Hostname
 }
 

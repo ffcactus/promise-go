@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CenterDiv from '../../promise/common/CenterDiv';
 import LoadingIcon from '../../promise/common/LoadingIcon';
+import AppInitFailure from '../../promise/common/AppInitFailure';
 import Server from './Server';
 import { AppState } from './ConstValue';
-import * as ServerAppAction from './ServerAppAction';
+import * as AppAction from './AppAction';
 import * as Util from '../../promise/common/Util';
 
 class ServerContainer extends React.Component {
@@ -17,7 +18,7 @@ class ServerContainer extends React.Component {
     const search = this.props.location.search;
     const servergroup = Util.getParameterByName('servergroup', search);
     const server = Util.getParameterByName('server', search);
-    this.props.dispatch(ServerAppAction.appInit(servergroup, server));
+    this.props.dispatch(AppAction.appInit(servergroup, server));
   }
 
   render() {
@@ -27,7 +28,7 @@ class ServerContainer extends React.Component {
       case AppState.NORMAL:
         return <Server />;
       case AppState.FAILURE:
-        return <CenterDiv><p>App initialization failure.</p></CenterDiv>;
+        return <AppInitFailure />;
       default:
         return <CenterDiv><LoadingIcon /></CenterDiv>;
     }

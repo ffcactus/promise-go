@@ -10,7 +10,7 @@ import (
 type TaskCollectionMember struct {
 	base.CollectionMemberResponse
 	Name            string               `json:"Name"`
-	Description     *string              `json:"Description,omitempty"`
+	Description     string               `json:"Description,omitempty"`
 	ExecutionState  model.ExecutionState `json:"ExecutionState"`
 	CurrentStep     string               `json:"CurrentStep"`
 	Percentage      uint32               `json:"Percentage"`

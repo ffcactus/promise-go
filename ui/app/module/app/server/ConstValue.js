@@ -10,7 +10,7 @@ export const ServerDetailState = Object.freeze(
   {
     'EMPTY': 'EMPTY',
     'LOADING': 'LOADING',
-    'NORMAL': 'NORMAL',
+    'READY': 'READY',
     'FAILURE': 'FAILURE',
   }
 );
@@ -33,10 +33,10 @@ export const ServerOrderByState = Object.freeze(
 export const ActionType = Object.freeze(
   {
     // App
-    'APP_INIT_START': 'APP_INIT_START',
-    'APP_INIT_SUCCESS': 'APP_INIT_SUCCESS',
-    'APP_INIT_FAILURE': 'APP_INIT_FAILURE',
-    'APP_EXIT': 'APP_EXIT',
+    'APP_SERVER_INIT_START': 'APP_SERVER_INIT_START',
+    'APP_SERVER_INIT_SUCCESS': 'APP_SERVER_INIT_SUCCESS',
+    'APP_SERVER_INIT_FAILURE': 'APP_SERVER_INIT_FAILURE',
+    'APP_SERVER_EXIT': 'APP_SERVER_EXIT',
     // Server
     // Server.REST
     // Server.REST.Get

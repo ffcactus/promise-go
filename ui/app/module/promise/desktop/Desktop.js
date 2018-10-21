@@ -11,6 +11,7 @@ import Settings from '../../app/settings/Settings';
 import Test from '../../app/test/Test';
 import Animation from '../../app/animation/Animation';
 import ServerContainer from '../../app/server/ServerContainer';
+import EnclosureContainer from '../../app/enclosure/EnclosureContainer';
 import styles from './Desktop.css';
 import ServerController from '../../app/server-controller/ServerController';
 
@@ -59,6 +60,7 @@ class Desktop extends React.Component {
             <PrivateRoute path="/animation" component={Animation} />
             <PrivateRoute path="/servercontroller" component={ServerController} />
             <PrivateRoute appName="Server" path="/server" hostname={window.location.hostname} component={ServerContainer} />
+            <PrivateRoute appName="Enclosure" path="/enclosure" hostname={window.location.hostname} component={EnclosureContainer} />
           </Switch>
         </CSSTransition>
       </TransitionGroup>

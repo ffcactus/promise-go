@@ -16,7 +16,7 @@ var (
 	serverAction = []base.ActionInfo{refresh}
 )
 
-// IPv4ActionController is implements ActionControllerTemplateInterface.
+// ServerAction is implements ActionControllerTemplateInterface.
 type ServerAction struct {
 }
 

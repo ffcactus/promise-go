@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
-import Styles from './AppFrame.css';
+import styles from './AppFrame.css';
 
 class AppCollectionMenu extends React.Component {
   constructor(props) {
@@ -32,4 +32,4 @@ AppCollectionMenu.propTypes = {
 };
 
 
-export default connect()(CSSModules(AppCollectionMenu, Styles));
+export default connect()(CSSModules(AppCollectionMenu, styles));

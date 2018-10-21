@@ -35,8 +35,8 @@ type AdapterModel struct {
 	Capability AdapterCapability
 }
 
-// DebugInfo return the debug name the model.
-func (m *AdapterModel) DebugInfo() string {
+// String return the debug name the model.
+func (m AdapterModel) String() string {
 	return m.Name
 }
 

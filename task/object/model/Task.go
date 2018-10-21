@@ -63,15 +63,15 @@ func IsValidExecutionResultState(state string) bool {
 
 // ExecutionResult Used by Task and it's TaskStep
 type ExecutionResult struct {
-	State   ExecutionResultState
-	Message *base.Message
+	State         ExecutionResultState
+	ErrorResponse *base.ErrorResponse
 }
 
 // TaskStep The TaskStep represents each planned steps in a task.
 type TaskStep struct {
-	MessageID           *string
+	MessageID           string
 	Name                string
-	Description         *string
+	Description         string
 	ExpectedExecutionMs uint64
 	ExecutionState      ExecutionState
 	ExecutionResult     ExecutionResult
@@ -80,10 +80,10 @@ type TaskStep struct {
 // Task Task object.
 type Task struct {
 	base.Model
-	MessageID           *string
+	MessageID           string
 	Name                string
-	ParentTask          *string
-	Description         *string
+	ParentTask          string
+	Description         string
 	ExecutionState      ExecutionState
 	CreatedByName       string
 	CreatedByURI        string
@@ -96,8 +96,8 @@ type Task struct {
 	ExecutionResult     ExecutionResult
 }
 
-// DebugInfo return the debug name the model.
-func (m *Task) DebugInfo() string {
+// String return the debug name the model.
+func (m Task) String() string {
 	return m.Name
 }
 
@@ -110,7 +110,7 @@ func (m *Task) ValueForDuplicationCheck() string {
 type TaskCollectionMember struct {
 	base.CollectionMemberModel
 	Name            string
-	Description     *string
+	Description     string
 	ExecutionState  ExecutionState
 	Percentage      uint32
 	CurrentStep     string

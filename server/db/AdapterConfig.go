@@ -7,9 +7,14 @@ import (
 	"promise/server/object/entity"
 )
 
-// AdapterConfig is the concrete DB.
+// AdapterConfig is the DB implementation for adapter config.
 type AdapterConfig struct {
 	base.DB
+}
+
+// GetConnection return the DB connection.
+func (impl *AdapterConfig) GetConnection() *gorm.DB {
+	return base.GetConnection()
 }
 
 // ResourceName get the resource name.
@@ -27,22 +32,17 @@ func (impl *AdapterConfig) NewEntityCollection() interface{} {
 	return new([]entity.AdapterConfig)
 }
 
-// GetConnection return the DB connection.
-func (impl *AdapterConfig) GetConnection() *gorm.DB {
-	return base.GetConnection()
-}
-
 // NeedCheckDuplication return if need check duplication for entity.
 func (impl *AdapterConfig) NeedCheckDuplication() bool {
 	return false
 }
 
 // ConvertFindResultToCollection convert the Find() result to collection mode.
-func (impl *AdapterConfig) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.Message) {
+func (impl *AdapterConfig) ConvertFindResultToCollection(start int64, total int64, result interface{}) (*base.CollectionModel, *base.ErrorResponse) {
 	collection, ok := result.(*[]entity.AdapterConfig)
 	if !ok {
 		log.Error("AdapterConfig.ConvertFindResult() failed, convert data failed.")
-		return nil, base.NewMessageInternalError()
+		return nil, base.NewErrorResponseInternalError()
 	}
 	ret := base.CollectionModel{}
 	ret.Start = start
@@ -55,11 +55,11 @@ func (impl *AdapterConfig) ConvertFindResultToCollection(start int64, total int6
 }
 
 // ConvertFindResultToModel convert the Find() result to model slice
-func (impl *AdapterConfig) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.Message) {
+func (impl *AdapterConfig) ConvertFindResultToModel(result interface{}) ([]base.ModelInterface, *base.ErrorResponse) {
 	collection, ok := result.(*[]entity.AdapterConfig)
 	if !ok {
 		log.Error("AdapterConfig.ConvertFindResult() failed, convert data failed.")
-		return nil, base.NewMessageInternalError()
+		return nil, base.NewErrorResponseInternalError()
 	}
 	ret := make([]base.ModelInterface, 0)
 	for _, v := range *collection {

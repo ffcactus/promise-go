@@ -10,19 +10,19 @@ type Free struct {
 }
 
 // Perform the free IPv4 action.
-func (s *Free) Perform(id string, request base.ActionRequestInterface) (base.ResponseInterface, []base.Message) {
+func (s *Free) Perform(id string, request base.ActionRequestInterface) (base.ResponseInterface, []base.ErrorResponse) {
 	var (
 		response dto.GetIPv4PoolResponse
 	)
 
 	freeRequest, ok := request.(*dto.FreeIPv4Request)
 	if !ok {
-		return nil, []base.Message{*base.NewMessageInternalError()}
+		return nil, []base.ErrorResponse{*base.NewErrorResponseInternalError()}
 	}
 
-	updatedPool, message := ipv4PoolDB.FreeIPv4Address(id, freeRequest.Address)
-	if message != nil {
-		return nil, []base.Message{*message}
+	updatedPool, errorResp := ipv4PoolDB.FreeIPv4Address(id, freeRequest.Address)
+	if errorResp != nil {
+		return nil, []base.ErrorResponse{*errorResp}
 	}
 	response.Load(updatedPool)
 	base.PublishUpdateMessage(&response)

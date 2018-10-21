@@ -1,6 +1,6 @@
 import React from 'react';
 import CSSModules from 'react-css-modules';
-import styles from './Server.css';
+import styles from './App.css';
 import CenterDiv from '../../promise/common/CenterDiv';
 
 class ServerGroupControlEdit extends React.Component {

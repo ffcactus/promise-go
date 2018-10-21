@@ -57,7 +57,7 @@ const (
 
 // ServerLockable will return wether the server can be locked.
 func ServerLockable(state string) bool {
-	var ret bool
+	var ret = false
 	switch state {
 	case ServerStateAdded:
 		ret = true

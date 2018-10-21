@@ -4,7 +4,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"net"
 	"promise/base"
-	"promise/pool/object/message"
+	"promise/pool/object/errorResp"
 	"promise/pool/object/model"
 )
 
@@ -14,20 +14,20 @@ type FreeIPv4Request struct {
 }
 
 // NewInstance returns a new instance.
-func (dto *FreeIPv4Request) NewInstance() base.RequestInterface {
+func (FreeIPv4Request) NewInstance() base.RequestInterface {
 	return new(FreeIPv4Request)
 }
 
 // IsValid return if the request is valid.
-func (dto *FreeIPv4Request) IsValid() *base.Message {
+func (dto *FreeIPv4Request) IsValid() *base.ErrorResponse {
 	if net.ParseIP(dto.Address) == nil {
-		return message.NewMessageIPv4FormatError()
+		return errorResp.NewErrorResponseIPv4FormatError()
 	}
 	return nil
 }
 
-// DebugInfo return the name for debug.
-func (dto *FreeIPv4Request) DebugInfo() string {
+// String return the name for debug.
+func (dto FreeIPv4Request) String() string {
 	return dto.Address
 }
 

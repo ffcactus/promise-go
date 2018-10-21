@@ -51,18 +51,18 @@ func (c *NodeRoot) ConvertCollectionModel(m *base.CollectionModel) (interface{},
 
 // Post override the default behavior
 func (c *NodeRoot) Post() {
-	messages := []base.Message{*base.NewMessageMethodNotAllowed()}
-	c.Data["json"] = &messages
-	c.Ctx.Output.SetStatus(messages[0].StatusCode)
+	errorResps := []base.ErrorResponse{*base.NewErrorResponseMethodNotAllowed()}
+	c.Data["json"] = &errorResps
+	c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
 	c.ServeJSON()
 	return
 }
 
 // Delete override the default behavior
 func (c *NodeRoot) Delete() {
-	messages := []base.Message{*base.NewMessageMethodNotAllowed()}
-	c.Data["json"] = &messages
-	c.Ctx.Output.SetStatus(messages[0].StatusCode)
+	errorResps := []base.ErrorResponse{*base.NewErrorResponseMethodNotAllowed()}
+	c.Data["json"] = &errorResps
+	c.Ctx.Output.SetStatus(errorResps[0].StatusCode)
 	c.ServeJSON()
 	return
 }

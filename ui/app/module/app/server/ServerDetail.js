@@ -7,7 +7,7 @@ import ServerDetailTabChassis from './ServerDetailTabChassis';
 import ServerDetailTabBasic from './ServerDetailTabBasic';
 import { ActionType } from './ConstValue';
 import CSSModules from 'react-css-modules';
-import styles from './Server.css';
+import styles from './App.css';
 
 const ServerDetail = props => {
   if (!props.server) {

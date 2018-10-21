@@ -9,7 +9,7 @@ import (
 // UpdateTaskRequest UpdateTaskRequest that only includes the changable properties.
 // Note: Update sub task not use this request.
 type UpdateTaskRequest struct {
-	Description         *string                       `json:"Description"`
+	Description         string                        `json:"Description"`
 	ExecutionState      *model.ExecutionState         `json:"ExecutionState"`
 	ExpectedExecutionMs *uint64                       `json:"ExpectedExecutionMs"`
 	Percentage          *uint32                       `json:"Percentage"`
@@ -17,27 +17,27 @@ type UpdateTaskRequest struct {
 }
 
 // NewInstance creates a new instance.
-func (dto *UpdateTaskRequest) NewInstance() base.RequestInterface {
+func (UpdateTaskRequest) NewInstance() base.RequestInterface {
 	return new(UpdateTaskRequest)
 }
 
 // IsValid return if the request is valid.
-func (dto *UpdateTaskRequest) IsValid() *base.Message {
-	message := base.NewMessageUnknownPropertyValue()
+func (dto *UpdateTaskRequest) IsValid() *base.ErrorResponse {
+	errorResp := base.NewErrorResponseUnknownPropertyValue()
 	if dto.Percentage != nil && *dto.Percentage > 100 {
-		return message
+		return errorResp
 	}
 	if dto.ExecutionState != nil && !model.IsValidExecutionState(*dto.ExecutionState) {
-		return message
+		return errorResp
 	}
 	if dto.ExecutionResult != nil && dto.ExecutionResult.State != nil && !model.IsValidExecutionResultState(*dto.ExecutionResult.State) {
-		return message
+		return errorResp
 	}
 	return nil
 }
 
-// DebugInfo return the name for debug.
-func (dto *UpdateTaskRequest) DebugInfo() string {
+// String return the name for debug.
+func (dto UpdateTaskRequest) String() string {
 	return ""
 }
 
@@ -48,9 +48,7 @@ func (dto *UpdateTaskRequest) UpdateModel(i base.ModelInterface) error {
 		log.Error("UpdateTaskRequest.UpdateModel() convert interface failed.")
 		return base.ErrorDataConvert
 	}
-	if dto.Description != nil {
-		m.Description = dto.Description
-	}
+	m.Description = dto.Description
 	if dto.ExecutionState != nil {
 		m.ExecutionState = *dto.ExecutionState
 	}

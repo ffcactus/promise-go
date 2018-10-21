@@ -11,17 +11,17 @@ type PostAdapterConfigRequest struct {
 }
 
 // NewInstance creates a new instance.
-func (dto *PostAdapterConfigRequest) NewInstance() base.RequestInterface {
+func (PostAdapterConfigRequest) NewInstance() base.RequestInterface {
 	return new(PostAdapterConfigRequest)
 }
 
 // IsValid return if the request is valid.
-func (dto *PostAdapterConfigRequest) IsValid() *base.Message {
+func (dto *PostAdapterConfigRequest) IsValid() *base.ErrorResponse {
 	return nil
 }
 
-// DebugInfo return the name for debug.
-func (dto *PostAdapterConfigRequest) DebugInfo() string {
+// String return the name for debug.
+func (dto PostAdapterConfigRequest) String() string {
 	return dto.Name
 }
 

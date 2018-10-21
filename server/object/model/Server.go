@@ -61,8 +61,8 @@ type Server struct {
 	Chassis        Chassis
 }
 
-// DebugInfo return the debug name the model.
-func (m *Server) DebugInfo() string {
+// String return the debug name the model.
+func (m Server) String() string {
 	return m.Name
 }
 

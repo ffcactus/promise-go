@@ -11,7 +11,7 @@ import (
 )
 
 func initDB() {
-	if err := base.InitConnection(); err != nil {
+	if err := base.InitConnection("server"); err != nil {
 		log.Error("Init DB failed, App exit.")
 		panic("Init DB failed, App exit.")
 	}
