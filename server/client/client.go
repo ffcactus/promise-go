@@ -36,7 +36,7 @@ func FindBestClient(hostname string, username string, password string) ServerCli
 	if client.Support() {
 		return client
 	}
-	client = redfish.GetInstance(hostname, username, password, true)
+	client = redfish.GetInstance(hostname, username, password)
 	if client.Support() {
 		return client
 	}
@@ -62,7 +62,7 @@ func GetServerClient(server *model.Server) ServerClientInterface {
 	switch server.Protocol {
 	case constvalue.RedfishV1:
 		username, password := getServerManagementAccount(server)
-		return redfish.GetInstance(server.Hostname, username, password, true)
+		return redfish.GetInstance(server.Hostname, username, password)
 	case constvalue.MockProtocol:
 		return mock.GetInstance(server.Hostname)
 	default:
