@@ -1,7 +1,6 @@
 package task
 
 import (
-	"net/http"
 	"promise/base"
 	"promise/task/object/dto"
 	"promise/task/object/model"
@@ -9,67 +8,56 @@ import (
 
 var (
 	// TaskServerRoot The root of the service.
-	TaskServerRoot = base.ProtocolScheme + "task" + base.RootURL + base.TaskBaseURI + "/"
+	TaskServerRoot = base.RootURL + base.TaskBaseURI + "/"
+	client         base.Client
 )
 
+func init() {
+	client.Protocol = "http"
+	client.Addresses = []string{"task"}
+	client.Username = "Username"
+	client.Password = "Password"
+	client.CurrentAddress = "task"
+}
+
 // CreateTask Create the task.
-func CreateTask(task *dto.PostTaskRequest) (*dto.GetTaskResponse, []base.ErrorResponse, error) {
-	respDto := new(dto.GetTaskResponse)
-	errorResps, err := base.REST(
-		http.MethodPost,
-		TaskServerRoot,
-		*task, respDto,
-		[]int{http.StatusCreated})
-	return respDto, errorResps, err
+func CreateTask(request *dto.PostTaskRequest) (*dto.GetTaskResponse, base.ClientError) {
+	response := new(dto.GetTaskResponse)
+	err := client.Post(TaskServerRoot, request, response)
+	return response, err
 }
 
-// UpdateTask Update the task.
-func UpdateTask(taskID string, task *dto.UpdateTaskRequest) (*dto.GetTaskResponse, []base.ErrorResponse, error) {
-	respDto := new(dto.GetTaskResponse)
-	errorResps, err := base.REST(
-		http.MethodPost,
-		TaskServerRoot+taskID+"/action/updatetask",
-		*task, respDto,
-		[]int{http.StatusAccepted})
-	return respDto, errorResps, err
+// UpdateTask will update the task.
+func UpdateTask(taskID string, request *dto.UpdateTaskRequest) (*dto.GetTaskResponse, base.ClientError) {
+	response := new(dto.GetTaskResponse)
+	err := client.Post(TaskServerRoot+taskID+"/action/updatetask", request, response)
+	return response, err
 }
 
-// UpdateStep The task percentage will be set according to the c steop.
-func UpdateStep(taskID string, step *dto.UpdateTaskStepRequest) (*dto.GetTaskResponse, []base.ErrorResponse, error) {
-	respDto := new(dto.GetTaskResponse)
-	errorResps, err := base.REST(
-		http.MethodPost,
-		TaskServerRoot+taskID+"/action/updatetaskstep",
-		*step, respDto,
-		[]int{http.StatusAccepted})
-	return respDto, errorResps, err
+// UpdateStep will update the task to step and update it's percentage.
+func UpdateStep(taskID string, request *dto.UpdateTaskStepRequest) (*dto.GetTaskResponse, base.ClientError) {
+	response := new(dto.GetTaskResponse)
+	err := client.Post(TaskServerRoot+taskID+"/action/updatetaskstep", request, response)
+	return response, err
 }
 
 // SetStepExecutionState Set step execution state.
-func SetStepExecutionState(taskID string, name string, state model.ExecutionState) (*dto.GetTaskResponse, []base.ErrorResponse, error) {
+func SetStepExecutionState(taskID string, name string, state model.ExecutionState) (*dto.GetTaskResponse, base.ClientError) {
 	request := new(dto.UpdateTaskStepRequest)
 	request.Name = name
 	request.ExecutionState = &state
-	respDto := new(dto.GetTaskResponse)
-	errorResps, err := base.REST(
-		http.MethodPost,
-		TaskServerRoot+taskID+"/action/updatetaskstep",
-		request, respDto,
-		[]int{http.StatusAccepted})
-	return respDto, errorResps, err
+	response := new(dto.GetTaskResponse)
+	err := client.Post(TaskServerRoot+taskID+"/action/updatetaskstep", request, response)
+	return response, err
 }
 
 // SetStepExecutionResultState Set step execution result state.
-func SetStepExecutionResultState(taskID string, name string, state model.ExecutionResultState) (*dto.GetTaskResponse, []base.ErrorResponse, error) {
+func SetStepExecutionResultState(taskID string, name string, state model.ExecutionResultState) (*dto.GetTaskResponse, base.ClientError) {
 	request := new(dto.UpdateTaskStepRequest)
 	request.Name = name
 	request.ExecutionResult = new(dto.UpdateExecutionResultRequest)
 	request.ExecutionResult.State = &state
-	respDto := new(dto.GetTaskResponse)
-	errorResps, err := base.REST(
-		http.MethodPost,
-		TaskServerRoot+taskID+"/action/updatetaskstep",
-		request, respDto,
-		[]int{http.StatusAccepted})
-	return respDto, errorResps, err
+	response := new(dto.GetTaskResponse)
+	err := client.Post(TaskServerRoot+taskID+"/action/updatetaskstep", request, response)
+	return response, err
 }

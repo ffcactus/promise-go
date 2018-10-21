@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	base.Init("Director")
+	base.Init("director")
 	// Add namespace for Node.
 	beego.AddNamespace(beego.NewNamespace(
 		base.RootURL+base.DirectorBaseURI,

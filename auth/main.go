@@ -33,7 +33,7 @@ func initDB() {
 }
 
 func main() {
-	base.Init("AuthApp")
+	base.Init("auth")
 	beego.SetLevel(beego.LevelDebug)
 	initDB()
 	ns := beego.NewNamespace(

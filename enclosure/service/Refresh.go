@@ -123,14 +123,10 @@ func (s *Refresh) Stage2(ctx *context.RefreshContext) {
 	)
 	act := strategy.NewRefresh(ctx)
 	createTaskRequest := act.Task()
-	// TODO we should use client error here.
-	createTaskResponse, errorResponse, err := taskSDK.CreateTask(createTaskRequest)
+	createTaskResponse, err := taskSDK.CreateTask(createTaskRequest)
 	if err != nil {
 		log.WithFields(log.Fields{"error": err}).Warn("Service refresh failed, create task failed.")
 		ctx.SendResponse(nil, "", []base.ErrorResponse{*base.NewErrorResponseInternalError()})
-	}
-	if errorResponse != nil && len(errorResponse) > 0 {
-		log.WithFields(log.Fields{"error": errorResponse[0]}).Warn("Service refresh failed, create task failed.")
 	}
 	log.WithFields(log.Fields{"task": createTaskResponse.GetID()}).Info("Service refresh, create task.")
 	ctx.TaskID = createTaskResponse.ID

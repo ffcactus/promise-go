@@ -28,7 +28,7 @@ func initDB() {
 }
 
 func main() {
-	base.Init("EnclosureApp")
+	base.Init("enclosure")
 	base.InitMQService()
 	defer base.StopMQService()
 	initDB()

@@ -7,14 +7,15 @@ import (
 	"promise/enclosure/object/model"
 )
 
-// MM920Client is MM920's client.
-type MM920Client struct {
+// Client is MM920's client.
+type Client struct {
 	base.Client
 }
 
 // NewClient creates a client for enclosure.
-func NewClient(enclosure *model.Enclosure) *MM920Client {
-	client := MM920Client{}
+func NewClient(enclosure *model.Enclosure) *Client {
+	client := Client{}
+	client.Protocol = "https"
 	// TODO or get username and password from keystore.
 	if enclosure.Credential.URL == "" {
 		client.Username = enclosure.Credential.Username
@@ -28,22 +29,22 @@ func NewClient(enclosure *model.Enclosure) *MM920Client {
 }
 
 // Ready returns if the enclosure is ready.
-func (c MM920Client) Ready() bool {
+func (c Client) Ready() bool {
 	return false
 }
 
 // Claim should make make a flag on the enclosure that indicate it is exclusively managed by this system.
-func (c MM920Client) Claim() base.ClientError {
+func (c Client) Claim() base.ClientError {
 	return nil
 }
 
 // Unclaim should remove the flag that indicate the enclosure is managed by this system.
-func (c MM920Client) Unclaim() base.ClientError {
+func (c Client) Unclaim() base.ClientError {
 	return nil
 }
 
 // DeviceIdentity returns the device identity.
-func (c MM920Client) DeviceIdentity() (*base.DeviceIdentity, base.ClientError) {
+func (c Client) DeviceIdentity() (*base.DeviceIdentity, base.ClientError) {
 	var (
 		identity         base.DeviceIdentity
 		redfishV1        GetRedfishV1Response
@@ -65,7 +66,7 @@ func (c MM920Client) DeviceIdentity() (*base.DeviceIdentity, base.ClientError) {
 }
 
 // ServerSlot returns the blade slot info.
-func (c MM920Client) ServerSlot() ([]model.ServerSlot, base.ClientError) {
+func (c Client) ServerSlot() ([]model.ServerSlot, base.ClientError) {
 	var (
 		slots    []model.ServerSlot
 		inserted int
@@ -92,31 +93,31 @@ func (c MM920Client) ServerSlot() ([]model.ServerSlot, base.ClientError) {
 }
 
 // SwitchSlot returns the switch ade slot info.
-func (c MM920Client) SwitchSlot() ([]model.SwitchSlot, base.ClientError) {
+func (c Client) SwitchSlot() ([]model.SwitchSlot, base.ClientError) {
 	log.WithFields(log.Fields{"client": c}).Info("Client get switch slot.")
 	return nil, nil
 }
 
 // FanSlot returns the fan slot info.
-func (c MM920Client) FanSlot() ([]model.FanSlot, base.ClientError) {
+func (c Client) FanSlot() ([]model.FanSlot, base.ClientError) {
 	log.WithFields(log.Fields{"client": c}).Info("Client get fan slot.")
 	return nil, nil
 }
 
 // PowerSlot returns the power slot info.
-func (c MM920Client) PowerSlot() ([]model.PowerSlot, base.ClientError) {
+func (c Client) PowerSlot() ([]model.PowerSlot, base.ClientError) {
 	log.WithFields(log.Fields{"client": c}).Info("Client get power slot.")
 	return nil, nil
 }
 
 // ManagerSlot returns the manager slot info.
-func (c MM920Client) ManagerSlot() ([]model.ManagerSlot, base.ClientError) {
+func (c Client) ManagerSlot() ([]model.ManagerSlot, base.ClientError) {
 	log.WithFields(log.Fields{"client": c}).Info("Client get manager slot.")
 	return nil, nil
 }
 
 // ApplianceSlot returns the manager slot info.
-func (c MM920Client) ApplianceSlot() ([]model.ApplianceSlot, base.ClientError) {
+func (c Client) ApplianceSlot() ([]model.ApplianceSlot, base.ClientError) {
 	log.WithFields(log.Fields{"client": c}).Info("Client get appliance slot.")
 	return nil, nil
 }

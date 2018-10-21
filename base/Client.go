@@ -4,125 +4,125 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
-	"errors"
+	// "errors"
 	"fmt"
 	log "github.com/sirupsen/logrus"
-	"io"
+	// "io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 )
 
-var (
-	client = http.Client{
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: true,
-			},
-		},
-	}
-)
+// var (
+// 	client = http.Client{
+// 		Transport: &http.Transport{
+// 			TLSClientConfig: &tls.Config{
+// 				InsecureSkipVerify: true,
+// 			},
+// 		},
+// 	}
+// )
 
-func rest(method string, uri string, request io.Reader) (*http.Response, error) {
-	log.WithFields(log.Fields{
-		"method": method,
-		"uri":    uri,
-	}).Debug("rest() call.")
-	// Form the REST request.
-	req, err := http.NewRequest(method, uri, request)
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept", "application/json")
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	return resp, err
-}
+// func rest(method string, uri string, request io.Reader) (*http.Response, error) {
+// 	log.WithFields(log.Fields{
+// 		"method": method,
+// 		"uri":    uri,
+// 	}).Debug("rest() call.")
+// 	// Form the REST request.
+// 	req, err := http.NewRequest(method, uri, request)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	req.Header.Set("Content-Type", "application/json")
+// 	req.Header.Set("Accept", "application/json")
+// 	resp, err := client.Do(req)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return resp, err
+// }
 
-func isExpectedStatusCode(expectStatusCode []int, realStatusCode int) bool {
-	for i := range expectStatusCode {
-		if expectStatusCode[i] == realStatusCode {
-			return true
-		}
-	}
-	return false
-}
+// func isExpectedStatusCode(expectStatusCode []int, realStatusCode int) bool {
+// 	for i := range expectStatusCode {
+// 		if expectStatusCode[i] == realStatusCode {
+// 			return true
+// 		}
+// 	}
+// 	return false
+// }
 
-// REST perform the REST operations.
-func REST(method string, uri string, requestDto interface{}, responseDtoP interface{}, expectStatusCode []int) ([]ErrorResponse, error) {
-	var (
-		resp *http.Response
-		err  error
-	)
-	log.WithFields(log.Fields{
-		"method": method,
-		"uri":    uri,
-	}).Debug("Start REST call.")
-	if requestDto != nil {
-		b := new(bytes.Buffer)
-		json.NewEncoder(b).Encode(requestDto)
-		resp, err = rest(method, uri, b)
-	} else {
-		resp, err = rest(method, uri, nil)
-	}
-	if err != nil {
-		log.WithFields(log.Fields{
-			"method": method,
-			"uri":    uri,
-			"error":  err,
-		}).Warn("rest() call failed.")
-		return nil, err
-	}
-	// Only when err == nil should the resp can be dereferenced.
-	defer resp.Body.Close()
-	// If is expected status code, turn the response to expectedDto, or turn to []ErrorResponse.
-	if isExpectedStatusCode(expectStatusCode, resp.StatusCode) {
-		if resp.Body == nil && responseDtoP != nil {
-			log.WithFields(log.Fields{
-				"method": method,
-				"uri":    uri,
-			}).Warn("REST call failed, response body is empty")
-			return nil, errors.New("response body is empty")
-		}
-		if resp.Body == nil || responseDtoP == nil {
-			return nil, nil
-		}
-		if err := json.NewDecoder(resp.Body).Decode(responseDtoP); err != nil {
-			log.WithFields(log.Fields{
-				"method": method,
-				"uri":    uri,
-			}).Warn("REST call failed, can not decode response.")
-			return nil, err
-		}
-		return nil, nil
-	}
-	log.WithFields(log.Fields{
-		"method": method,
-		"uri":    uri,
-		"status": resp.StatusCode,
-		"expect": expectStatusCode,
-	}).Info("Not the expected http status code.")
-	// TODO Not all the response body can be translate to errorResps.
-	errorResp := new([]ErrorResponse)
-	if resp.Body == nil {
-		log.WithFields(log.Fields{
-			"method": method,
-			"uri":    uri,
-		}).Warn("REST call failed, errorResp is empty.")
-		return nil, errors.New("response body is empty")
-	}
-	if err := json.NewDecoder(resp.Body).Decode(errorResp); err != nil {
-		log.WithFields(log.Fields{
-			"method": method,
-			"uri":    uri,
-		}).Warn("REST call failed, can not decode errorResp.")
-		return nil, err
-	}
-	return *errorResp, nil
-}
+// // REST perform the REST operations.
+// func REST(method string, uri string, requestDto interface{}, responseDtoP interface{}, expectStatusCode []int) ([]ErrorResponse, error) {
+// 	var (
+// 		resp *http.Response
+// 		err  error
+// 	)
+// 	log.WithFields(log.Fields{
+// 		"method": method,
+// 		"uri":    uri,
+// 	}).Debug("Start REST call.")
+// 	if requestDto != nil {
+// 		b := new(bytes.Buffer)
+// 		json.NewEncoder(b).Encode(requestDto)
+// 		resp, err = rest(method, uri, b)
+// 	} else {
+// 		resp, err = rest(method, uri, nil)
+// 	}
+// 	if err != nil {
+// 		log.WithFields(log.Fields{
+// 			"method": method,
+// 			"uri":    uri,
+// 			"error":  err,
+// 		}).Warn("rest() call failed.")
+// 		return nil, err
+// 	}
+// 	// Only when err == nil should the resp can be dereferenced.
+// 	defer resp.Body.Close()
+// 	// If is expected status code, turn the response to expectedDto, or turn to []ErrorResponse.
+// 	if isExpectedStatusCode(expectStatusCode, resp.StatusCode) {
+// 		if resp.Body == nil && responseDtoP != nil {
+// 			log.WithFields(log.Fields{
+// 				"method": method,
+// 				"uri":    uri,
+// 			}).Warn("REST call failed, response body is empty")
+// 			return nil, errors.New("response body is empty")
+// 		}
+// 		if resp.Body == nil || responseDtoP == nil {
+// 			return nil, nil
+// 		}
+// 		if err := json.NewDecoder(resp.Body).Decode(responseDtoP); err != nil {
+// 			log.WithFields(log.Fields{
+// 				"method": method,
+// 				"uri":    uri,
+// 			}).Warn("REST call failed, can not decode response.")
+// 			return nil, err
+// 		}
+// 		return nil, nil
+// 	}
+// 	log.WithFields(log.Fields{
+// 		"method": method,
+// 		"uri":    uri,
+// 		"status": resp.StatusCode,
+// 		"expect": expectStatusCode,
+// 	}).Info("Not the expected http status code.")
+// 	// TODO Not all the response body can be translate to errorResps.
+// 	errorResp := new([]ErrorResponse)
+// 	if resp.Body == nil {
+// 		log.WithFields(log.Fields{
+// 			"method": method,
+// 			"uri":    uri,
+// 		}).Warn("REST call failed, errorResp is empty.")
+// 		return nil, errors.New("response body is empty")
+// 	}
+// 	if err := json.NewDecoder(resp.Body).Decode(errorResp); err != nil {
+// 		log.WithFields(log.Fields{
+// 			"method": method,
+// 			"uri":    uri,
+// 		}).Warn("REST call failed, can not decode errorResp.")
+// 		return nil, err
+// 	}
+// 	return *errorResp, nil
+// }
 
 var _client = &http.Client{
 	Transport: &http.Transport{
@@ -134,6 +134,7 @@ var _client = &http.Client{
 
 // Client implements EnclosureClient interface.
 type Client struct {
+	Protocol       string
 	Addresses      []string
 	Username       string
 	Password       string
@@ -222,7 +223,7 @@ func ToClientError(err error) ClientError {
 func (c Client) GetRequest(url string) (*http.Request, ClientError) {
 	var errorImpl ClientErrorImpl
 
-	url = "https://" + c.CurrentAddress + url
+	url = c.Protocol + "://" + c.CurrentAddress + url
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		errorImpl.requestError = err
@@ -237,7 +238,7 @@ func (c Client) GetRequest(url string) (*http.Request, ClientError) {
 func (c Client) DeleteRequest(url string) (*http.Request, ClientError) {
 	var errorImpl ClientErrorImpl
 
-	url = "https://" + c.CurrentAddress + url
+	url = c.Protocol + "://" + c.CurrentAddress + url
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
 		errorImpl.requestError = err
@@ -249,12 +250,12 @@ func (c Client) DeleteRequest(url string) (*http.Request, ClientError) {
 }
 
 // PostRequest creates http POST request.
-func (c Client) PostRequest(url string, dto interface{}) (*http.Request, ClientError) {
+func (c Client) PostRequest(url string, request interface{}) (*http.Request, ClientError) {
 	var errorImpl ClientErrorImpl
 
-	url = "https://" + c.CurrentAddress + url
+	url = c.Protocol + "://" + c.CurrentAddress + url
 	b := new(bytes.Buffer)
-	if err := json.NewEncoder(b).Encode(dto); err != nil {
+	if err := json.NewEncoder(b).Encode(request); err != nil {
 		errorImpl.jsonError = err
 		return nil, &errorImpl
 	}
@@ -271,12 +272,12 @@ func (c Client) PostRequest(url string, dto interface{}) (*http.Request, ClientE
 }
 
 // PatchRequest creates http POST request.
-func (c Client) PatchRequest(url, etag string, dto interface{}) (*http.Request, ClientError) {
+func (c Client) PatchRequest(url, etag string, request interface{}) (*http.Request, ClientError) {
 	var errorImpl ClientErrorImpl
 
-	url = "https://" + c.CurrentAddress + url
+	url = c.Protocol + "://" + c.CurrentAddress + url
 	b := new(bytes.Buffer)
-	if err := json.NewEncoder(b).Encode(dto); err != nil {
+	if err := json.NewEncoder(b).Encode(request); err != nil {
 		errorImpl.jsonError = err
 		return nil, &errorImpl
 	}
@@ -297,7 +298,7 @@ func (c Client) PatchRequest(url, etag string, dto interface{}) (*http.Request, 
 
 // Unmarshal parse the http response to DTO in case the status is 2xx.
 // It returns client error if parse failed, or the status is not 2xx.
-func (c Client) Unmarshal(resp *http.Response, dto interface{}) ClientError {
+func (c Client) Unmarshal(resp *http.Response, response interface{}) ClientError {
 	var errorImpl ClientErrorImpl
 	var body []byte
 
@@ -308,7 +309,7 @@ func (c Client) Unmarshal(resp *http.Response, dto interface{}) ClientError {
 		errorImpl.body = body
 		return &errorImpl
 	}
-	if err := json.Unmarshal(body, dto); err != nil {
+	if err := json.Unmarshal(body, response); err != nil {
 		errorImpl.status = resp.StatusCode
 		errorImpl.body = body
 		errorImpl.jsonError = err
@@ -319,21 +320,30 @@ func (c Client) Unmarshal(resp *http.Response, dto interface{}) ClientError {
 
 // Do is will call http.Client.Do() and unmarshal the response.
 // It helps on unify the error process.
-func (c Client) Do(request *http.Request, dto interface{}) ClientError {
+func (c Client) Do(request *http.Request, response interface{}) ClientError {
 	log.WithFields(log.Fields{"method": request.Method, "URL": request.URL}).Info("MM920 client operation.")
 	httpResponse, err := _client.Do(request)
 	if err != nil {
 		log.WithFields(log.Fields{"method": request.Method, "URL": request.URL, "error": err}).Warn("Client operation failed.")
 		return ToClientError(err)
 	}
-	return c.Unmarshal(httpResponse, dto)
+	return c.Unmarshal(httpResponse, response)
 }
 
-// Get do http GET to uri, and unmarshal the response to dto.
-func (c Client) Get(uri string, dto interface{}) ClientError {
+// Get do http GET to uri, and unmarshal the response dto.
+func (c Client) Get(uri string, response interface{}) ClientError {
 	httpRequest, err := c.GetRequest(uri)
 	if err != nil {
 		return err
 	}
-	return c.Do(httpRequest, dto)
+	return c.Do(httpRequest, response)
+}
+
+// Post do http POST to uri, and unmarshal the response to dto.
+func (c Client) Post(uri string, request, response interface{}) ClientError {
+	httpRequest, err := c.PostRequest(uri, request)
+	if err != nil {
+		return err
+	}
+	return c.Do(httpRequest, response)
 }
