@@ -111,14 +111,16 @@ func (s *Refresh) Prepare(ctx *beegoCtx.Context, id string, request base.AsychAc
 		}).Warn("Service refresh enclosure failed, enclosure not exist.")
 		return nil, "", []base.ErrorResponse{*base.NewErrorResponseNotExist()}
 	}
-
+	log.WithFields(log.Fields{
+		"id": id,
+	}).Info("Service refresh enclosure, lock enclosure success.")
 	needRestoreState= true
 	enclosure, _ := modelInterface.(*model.Enclosure)
 	refreshCtx.Enclosure = enclosure
 	refreshCtx.Client = enclosureClient.NewClient(enclosure)
 	log.WithFields(log.Fields{
-		"id": id,
-	}).Info("Service refresh enclosure, lock enclosure success.")
+		"id": id, "client": refreshCtx.Client,
+	}).Info("Service refresh enclosure, enclosure client created.")
 	// 4. Create the task.
 	act := strategy.NewRefresh(refreshCtx)
 	createTaskRequest := act.Task()

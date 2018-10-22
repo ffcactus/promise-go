@@ -321,7 +321,7 @@ func (c Client) Unmarshal(resp *http.Response, response interface{}) ClientError
 // Do is will call http.Client.Do() and unmarshal the response.
 // It helps on unify the error process.
 func (c Client) Do(request *http.Request, response interface{}) ClientError {
-	log.WithFields(log.Fields{"method": request.Method, "URL": request.URL}).Info("MM920 client operation.")
+	log.WithFields(log.Fields{"method": request.Method, "URL": request.URL}).Info("Client perform operation.")
 	httpResponse, err := _client.Do(request)
 	if err != nil {
 		log.WithFields(log.Fields{"method": request.Method, "URL": request.URL, "error": err}).Warn("Client operation failed.")
