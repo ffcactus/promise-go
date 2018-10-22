@@ -49,22 +49,22 @@ type Refresh struct {
 // }
 
 // PerformAsych will process the refresh action.
-func (s *Refresh) PerformAsych(ctx *beegoCtx.Context, id string, request base.AsychActionRequestInterface) (base.ResponseInterface, string, []base.ErrorResponse) {
-	// We seperate a whole refresh process into different stage to provide different
-	// entrypoint for different refresh cases. We need make a refresh in the following cases:
-	// 1. Required by user directrly.
-	// 2. Auto refresh after discoverd.
-	// 3. Hardware event that requires a refreshing.
-	s.Stage1(ctx, id, request)
-	return nil, "", nil
+func (s *Refresh) PerformAsych(ctx *beegoCtx.Context, id string, request base.AsychActionRequestInterface) (base.ResponseInterface, string, []base.ErrorResponse) {	
+	return s.Prepare(ctx, id, request)
 }
 
-// Stage1 will do the things that is requied till locking enclosure.
+// Prepare do the things that is requied before returning the response to client.
 // It includes:
 // 1. Complement the request DTO.
 // 2. Prepare the context.
 // 3. Lock the enclosure.
-func (s *Refresh) Stage1(ctx *beegoCtx.Context, id string, request base.AsychActionRequestInterface) {
+// 4. Create the task.
+func (s *Refresh) Prepare(ctx *beegoCtx.Context, id string, request base.AsychActionRequestInterface) (base.ResponseInterface, string, []base.ErrorResponse) {
+	var (
+		response dto.GetEnclosureResponse
+		needRestoreState = true
+	)
+
 	// 1. Complement the request DTO.
 	req, _ := request.(*dto.RefreshEnclosureRequest)
 	if len(req.Targets) == 0 || base.ContainsString(req.Targets, model.RefreshAll) {
@@ -74,70 +74,65 @@ func (s *Refresh) Stage1(ctx *beegoCtx.Context, id string, request base.AsychAct
 	refreshCtx := context.NewRefreshContext(ctx, id, req)
 	refreshCtx.DB = enclosureDB
 	// 3. Lock the enclosure.
-	modelInterface, err := enclosureDB.GetAndLock(id)
+	modelInterface, preState, preReason, err := enclosureDB.GetAndLock(id)
 	defer func() {
-		if modelInterface, err := refreshCtx.DB.SetState(refreshCtx.ID, refreshCtx.NextState, refreshCtx.NextReason); err != nil {
-			log.WithFields(log.Fields{"id": id}).Error("Service refresh enclosure failed, unlock enclosure failed.")
-		} else {
-			enclosure, _ := modelInterface.(*model.Enclosure)
-			log.WithFields(log.Fields{
-				"id": id, "state": enclosure.State, "reason": enclosure.StateReason,
-			}).Info("Service refresh enclosure done, set enclosure state.")
+		if needRestoreState {
+			if _, err := refreshCtx.DB.SetState(refreshCtx.ID, preState, preReason); err != nil {
+				log.WithFields(log.Fields{"id": id}).Error("Service refresh enclosure failed, prepare refresh failed, restore enclosure state on error failed.")
+			} else {
+				log.WithFields(log.Fields{
+					"id": id, "state": preState, "reason": preReason,
+				}).Warn("Service refresh enclosure failed, prepare refresh failed, restore enclosure state.")
+			}
 		}
 	}()
-	if err != nil {
+	
+	needRestoreState = false
+	// TODO: Maybe we need define DB error to indicate this is transaction error.
+	if modelInterface == nil && err != nil {
 		log.WithFields(log.Fields{
 			"id": id, "error": err,
-		}).Warn("Service refresh enclosure failed, lock enclosure failed.")
-		refreshCtx.SendResponse(nil, "", []base.ErrorResponse{*base.NewErrorResponseInternalError()})
-		return
+		}).Warn("Service refresh enclosure failed, DB lock enclosure failed.")
+		return nil, "", []base.ErrorResponse{*base.NewErrorResponseTransactionError()}
+	}
+	if modelInterface != nil && err == nil {
+		enclosure, _ := modelInterface.(*model.Enclosure)
+		response.Load(enclosure)
+		if enclosure.State != model.StateLocked {
+			log.WithFields(log.Fields{
+				"id": id, "state": enclosure.State,
+			}).Warn("Service refresh enclosure failed, enclosure can't be locked.")
+			return response, "", []base.ErrorResponse{*base.NewErrorResponseBusy()}
+		}
 	}
 	if modelInterface == nil {
 		log.WithFields(log.Fields{
 			"id": id,
 		}).Warn("Service refresh enclosure failed, enclosure not exist.")
-		refreshCtx.SendResponse(nil, "", []base.ErrorResponse{*base.NewErrorResponseNotExist()})
-		return
+		return nil, "", []base.ErrorResponse{*base.NewErrorResponseNotExist()}
 	}
-	enclosure, _ := modelInterface.(*model.Enclosure)
-	if enclosure.State != model.StateLocked {
-		log.WithFields(log.Fields{
-			"id": id, "state": enclosure.State,
-		}).Warn("Service refresh enclosure failed, lock enclosure failed.")
 
-		refreshCtx.SendResponse(nil, "", []base.ErrorResponse{*base.NewErrorResponseErrorState()})
-		return
-	}
+	needRestoreState= true
+	enclosure, _ := modelInterface.(*model.Enclosure)
 	refreshCtx.Enclosure = enclosure
 	refreshCtx.Client = enclosureClient.NewClient(enclosure)
 	log.WithFields(log.Fields{
 		"id": id,
 	}).Info("Service refresh enclosure, lock enclosure success.")
-	s.Stage2(refreshCtx)
-}
-
-// Stage2 will create the action and create a task to track the process.
-func (s *Refresh) Stage2(ctx *context.RefreshContext) {
-	var (
-		response dto.GetEnclosureResponse
-	)
-	act := strategy.NewRefresh(ctx)
+	// 4. Create the task.
+	act := strategy.NewRefresh(refreshCtx)
 	createTaskRequest := act.Task()
 	createTaskResponse, err := taskSDK.CreateTask(createTaskRequest)
 	if err != nil {
 		log.WithFields(log.Fields{"error": err}).Warn("Service refresh failed, create task failed.")
-		ctx.SendResponse(nil, "", []base.ErrorResponse{*base.NewErrorResponseInternalError()})
+		return nil, "", []base.ErrorResponse{*base.NewErrorResponseInternalError()}
 	}
 	log.WithFields(log.Fields{"task": createTaskResponse.GetID()}).Info("Service refresh, create task.")
-	ctx.TaskID = createTaskResponse.ID
-	response.Load(ctx.Enclosure)
-	// Send response to client.
-	ctx.SendResponse(response, ctx.TaskID, nil)
-	log.WithFields(log.Fields{"ctx": ctx}).Info("Service response to client before execute strategy.")
-	act.Execute(&ctx.Base)
-}
-
-// Stage3 do the rest work of refresh.
-func (s *Refresh) Stage3(ctx *context.Base) {
-
+	refreshCtx.TaskID = createTaskResponse.ID
+	response.Load(refreshCtx.Enclosure)
+	log.WithFields(log.Fields{"ctx": refreshCtx}).Info("Service response to client before execute strategy.")
+	go act.Execute(&refreshCtx.Base)
+	// Let the goroutine to set the state accordingly.
+	needRestoreState = false
+	return response, createTaskResponse.URI, nil
 }

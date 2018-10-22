@@ -77,17 +77,23 @@ func (impl *Enclosure) Exist(e *model.Enclosure) (bool, base.ModelInterface) {
 	return false, nil
 }
 
-// GetAndLock will try to lock the enclosure by ID.
+// GetAndLock will try to lock the enclosure by ID. Please note that it is not enought to just check the error,
+// you need check the state of the returned enclosure to see if it has been locked.
+// to see if it is locked successfully.
+// 
 // The first return value is the enclosure when everything works fine or nil if failed to get and lock enclosure.
-// The second return value indicates if any error happened.
-// If the enclosure does not exist, return nil and nil.
-// If the enclosure can't be locked, return the enclosure and nil.
-// For any DB operation error, return nil and the error.
-func (impl *Enclosure) GetAndLock(ID string) (base.ModelInterface, error) {
+// The second and third value are the previous state and statereason respectively.
+// The fourh return value indicates if any error happened.
+// If the enclosure does not exist, return (nil, "", "", nil).
+// If the enclosure can't be locked, return the (enclosure, state, reason, nil).
+// Note that in this case the return value is the same to return of successfully locked.
+// For any DB operation error, return (nil, "", "", error).
+func (impl *Enclosure) GetAndLock(ID string) (base.ModelInterface, string, string, error) {
 	var (
 		c         = impl.TemplateImpl.GetConnection()
 		enclosure = new(entity.Enclosure)
 		rollback  = false
+		state, reason string
 	)
 
 	// Transaction start.
@@ -97,7 +103,7 @@ func (impl *Enclosure) GetAndLock(ID string) (base.ModelInterface, error) {
 			"id":    ID,
 			"error": err}).
 			Warn("DB get and lock enclosure failed, start transaction failed.")
-		return nil, err
+		return nil, "", "", err
 	}
 
 	defer func() {
@@ -115,15 +121,17 @@ func (impl *Enclosure) GetAndLock(ID string) (base.ModelInterface, error) {
 			"id":    ID,
 			"error": err,
 		}).Warn("DB get and lock enclosure failed, set transaction isolation level to serializable failed.")
-		return nil, err
+		return nil, "", "", err
 	}
 	if tx.Where("\"ID\" = ?", ID).First(enclosure).RecordNotFound() {
 		rollback = true
 		log.WithFields(log.Fields{
 			"id": ID,
 		}).Warn("DB get and lock enclosure failed, enclosure does not exist.")
-		return nil, nil
+		return nil, "", "", nil
 	}
+	state = enclosure.State
+	reason = enclosure.StateReason
 	if !model.EnclosureLockable(enclosure.State) {
 		// Server not ready, rollback.
 		rollback = true
@@ -131,7 +139,7 @@ func (impl *Enclosure) GetAndLock(ID string) (base.ModelInterface, error) {
 			"id":    ID,
 			"state": enclosure.State,
 		}).Warn("DB get and lock enclosure failed, enclosure not lockable.")
-		return enclosure.ToModel(), fmt.Errorf("unlockable state")
+		return enclosure.ToModel(), state, reason, fmt.Errorf("unlockable state")
 	}
 	// Change the state.
 	if err := tx.Model(enclosure).UpdateColumn("State", model.StateLocked).Error; err != nil {
@@ -140,7 +148,7 @@ func (impl *Enclosure) GetAndLock(ID string) (base.ModelInterface, error) {
 			"id":    ID,
 			"state": enclosure.State,
 		}).Warn("DB get and lock enclosure failed, update state failed.")
-		return nil, err
+		return nil, "", "", err
 	}
 	found, err := impl.GetInternal(tx, ID, enclosure)
 	if !found || err != nil {
@@ -149,7 +157,7 @@ func (impl *Enclosure) GetAndLock(ID string) (base.ModelInterface, error) {
 			"id":    ID,
 			"error": err,
 		}).Warn("DB get and lock enclosure failed, load enclosure failed.")
-		return nil, err
+		return nil, "", "", err
 	}
 	// Commit.
 	if err := tx.Commit().Error; err != nil {
@@ -157,13 +165,13 @@ func (impl *Enclosure) GetAndLock(ID string) (base.ModelInterface, error) {
 			"id":    ID,
 			"error": err,
 		}).Warn("DB get and lock enclosure failed, commit failed.")
-		return nil, err
+		return nil, "", "", err
 	}
 	log.WithFields(log.Fields{
 		"id":    ID,
 		"state": enclosure.State,
 	}).Info("DB get and lock enclosure success.")
-	return enclosure.ToModel(), nil
+	return enclosure.ToModel(), state, reason, nil
 }
 
 // SetState sets the state and state reason to the enclosure specified by ID.
