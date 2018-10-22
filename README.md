@@ -1,3 +1,4 @@
 # promise
 
-A platform based on React Redux Router Golang.
+Promise is designed to be a platform for resource management.
+
