@@ -62,6 +62,7 @@ func (s *RefreshFan) Execute(c context.Refresh) {
 		}).Warn("Strategy refresh fan failed, DB refresh fan failed.")
 	}
 	c.UpdateEnclosure(enclosure)
+	c.DispatchUpdateEvent()
 	StepFinish(c, s.name)
 	log.Info("Strategy refresh fan done.")
 }

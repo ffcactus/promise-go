@@ -14,7 +14,7 @@ class IDPoolResourceItem extends React.Component {
 
   onClick(event) {
     event.preventDefault();
-    this.props.dispatch(IDPoolAction.select());
+    this.props.dispatch(IDPoolAction.selectResource());
   }
 
   render() {

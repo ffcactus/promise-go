@@ -63,5 +63,6 @@ func (s *RefreshPower) Execute(c context.Refresh) {
 	}
 	c.UpdateEnclosure(enclosure)
 	StepFinish(c, s.name)
+	c.DispatchUpdateEvent()
 	log.Info("Strategy refresh power done.")
 }

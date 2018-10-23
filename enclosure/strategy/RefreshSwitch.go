@@ -62,6 +62,7 @@ func (s *RefreshSwitch) Execute(c context.Refresh) {
 		}).Warn("Strategy refresh switch failed, DB refresh switch failed.")
 	}
 	c.UpdateEnclosure(enclosure)
+	c.DispatchUpdateEvent()
 	StepFinish(c, s.name)
 	log.Info("Strategy refresh switch done.")
 }

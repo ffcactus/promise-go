@@ -7,7 +7,7 @@ import IDPoolResourceItem from './IDPoolResourceItem';
 import { ActionType } from './ConstValue';
 import styles from './App.css';
 
-function EnclosureGroupArea() {
+function AppGroupArea() {
   return (
     <div styleName="flex-column-container group-area">
       <AppCollectionMenu action={{type: ActionType.APP_ENCLOSURE_EXIT}} />
@@ -18,4 +18,4 @@ function EnclosureGroupArea() {
   );
 }
 
-export default CSSModules(EnclosureGroupArea, styles, {allowMultiple: true});
+export default CSSModules(AppGroupArea, styles, {allowMultiple: true});

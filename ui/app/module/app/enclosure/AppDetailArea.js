@@ -4,7 +4,7 @@ import ResourceDetailControlArea from './ResourceDetailControlArea';
 import EnclosureDetailContainer from './EnclosureDetailContainer';
 import styles from './App.css';
 
-function EnclosureDetailArea() {
+function AppDetailArea() {
   return (
     <div styleName="flex-column-container detail-area border-row">
       <ResourceDetailControlArea />
@@ -13,4 +13,4 @@ function EnclosureDetailArea() {
   );
 }
 
-export default CSSModules(EnclosureDetailArea, styles, {allowMultiple: true});
+export default CSSModules(AppDetailArea, styles, {allowMultiple: true});

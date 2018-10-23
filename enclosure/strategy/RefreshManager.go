@@ -63,6 +63,7 @@ func (s *RefreshManager) Execute(c context.Refresh) {
 		}).Warn("Strategy refresh manager failed, DB refresh manager failed.")
 	}
 	c.UpdateEnclosure(enclosure)
+	c.DispatchUpdateEvent()
 	StepFinish(c, s.name)
 	log.Info("Strategy refresh manager done.")
 }

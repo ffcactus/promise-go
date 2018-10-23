@@ -60,6 +60,7 @@ func (s *RefreshState) Execute(c context.Refresh) {
 		return
 	}
 	c.UpdateEnclosure(enclosure)
+	c.DispatchUpdateEvent()
 	StepFinish(c, s.name)
 	log.WithFields(log.Fields{
 		"id":     c.GetID(),

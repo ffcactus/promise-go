@@ -78,6 +78,41 @@ export const enclosureApp = (state = defaultState, action) => {
       return state;
     case ActionType.ENCLOSURE_REST_DISCOVER_EXCEPTION:
       return state;
+    // Enclosure.WS
+    case ActionType.ENCLOSURE_WS_CREATE:
+      return {
+        ...state,
+        enclosureList: state.enclosureList.push({
+          ID: action.info.ID,
+          URI: action.info.URI,
+          Category: action.info.Category,
+          Name: action.info.Name,
+          State: action.info.State,
+          Health: action.info.Health
+        }),
+      };
+    case ActionType.ENCLOSURE_WS_UPDATE:
+      // If the server in the list.
+      return {
+        ...state,
+        enclosureList: state.enclosureList.map((each) => {
+          if (each.ID === action.info.ID) {
+            each.Name = action.info.Name;
+            each.State = action.info.State;
+            each.Health = action.info.Health;
+          }
+          return each;
+        }),
+        enclosure: action.info.URI === state.enclosureUri ? action.info : state.enclosure,
+      };
+    case ActionType.ENCLOSURE_WS_DELETE:
+      return {
+        ...state,
+        enclosureList: state.enclosureList.filter((each) => each.ID !== action.info.ID),
+        enclosure: action.info.URI === state.enclosureUri ? null : state.enclosure,
+      };
+    case ActionType.ENCLOSURE_WS_DELETE_LIST:
+      return state;
     // Enclosure.UI
     // Enclosure.UI.Resource
     case ActionType.ENCLOSURE_UI_SELECT_RESOURCE:

@@ -14,7 +14,7 @@ class EnclosureResourceItem extends React.Component {
 
   onClick(event) {
     event.preventDefault();
-    this.props.dispatch(EnclosureAction.select());
+    this.props.dispatch(EnclosureAction.selectResource());
   }
 
   render() {

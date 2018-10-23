@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import ResourceListHeadArea from './ResourceListHeadArea';
 import ResourceListControlArea from './ResourceListControlArea';
-import ResourceListContainer from './ResourceListContainer';
+import AppListContainer from './AppListContainer';
 import styles from './App.css';
 
-class ResourceListArea extends React.Component {
+class AppListArea extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -16,14 +16,14 @@ class ResourceListArea extends React.Component {
       <div styleName="flex-column-container list-area border-row">
         <ResourceListHeadArea />
         <ResourceListControlArea />
-        <ResourceListContainer />
+        <AppListContainer />
       </div>
     );
   }
 }
 
-ResourceListArea.propTypes = {
+AppListArea.propTypes = {
 };
 
-export default connect()(CSSModules(ResourceListArea, styles, {allowMultiple: true}));
+export default connect()(CSSModules(AppListArea, styles, {allowMultiple: true}));
 

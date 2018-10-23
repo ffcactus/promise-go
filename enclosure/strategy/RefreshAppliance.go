@@ -45,7 +45,6 @@ func (s *RefreshAppliance) ExpectedExecutionMs() uint64 {
 
 // Execute performs the operation of this strategy.
 func (s *RefreshAppliance) Execute(c context.Refresh) {
-	log.Info("Strategy refresh appliance.")
 	StepStart(c, s.name)
 	slots, clientError := c.GetClient().ApplianceSlot()
 	if clientError != nil {
@@ -63,5 +62,7 @@ func (s *RefreshAppliance) Execute(c context.Refresh) {
 		}).Warn("Strategy refresh appliance failed, DB refresh appliance failed.")
 	}
 	c.UpdateEnclosure(enclosure)
+	c.DispatchUpdateEvent()
 	StepFinish(c, s.name)
+	log.Info("Strategy refresh appliance done.")
 }

@@ -14,7 +14,7 @@ class ProfileResourceItem extends React.Component {
 
   onClick(event) {
     event.preventDefault();
-    this.props.dispatch(ProfileAction.select());
+    this.props.dispatch(ProfileAction.selectResource());
   }
 
 

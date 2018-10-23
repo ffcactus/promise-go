@@ -74,6 +74,7 @@ func (s *RefreshServer) Execute(c context.Refresh) {
 		}).Warn("Strategy refresh server failed, DB refresh server failed.")
 	}
 	c.UpdateEnclosure(enclosure)
+	c.DispatchUpdateEvent()
 	StepFinish(c, s.name)
 	log.Info("Strategy refresh server done.")
 }
