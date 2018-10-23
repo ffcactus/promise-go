@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"github.com/lib/pq"
 	log "github.com/sirupsen/logrus"
 	"promise/base"
 	"promise/enclosure/object/model"
@@ -16,7 +17,7 @@ type Enclosure struct {
 	State          string          `gorm:"column:State"`
 	StateReason    string          `gorm:"column:StateReason"`
 	Health         string          `gorm:"column:Health"`
-	Addresses      []string		   `gorm:"column:Addresses;ForeignKey:EnclosureRef`
+	Addresses      pq.StringArray  `gorm:"type:varchar(255)[]"`
 	ServerSlots    []ServerSlot    `gorm:"column:ServerSlots;ForeignKey:EnclosureRef"`
 	SwitchSlots    []SwitchSlot    `gorm:"column:SwitchSlots;ForeignKey:EnclosureRef"`
 	ManagerSlots   []ManagerSlot   `gorm:"column:ManagerSlots;ForeignKey:EnclosureRef"`
@@ -44,7 +45,6 @@ func (e *Enclosure) PropertyNameForDuplicationCheck() string {
 // Preload return the property names that need to be preload.
 func (e *Enclosure) Preload() []string {
 	return []string{
-		"Addresses",
 		"ServerSlots",
 		"SwitchSlots",
 		"ManagerSlots",
@@ -75,16 +75,12 @@ func (e *Enclosure) Association() []interface{} {
 	for _, v := range e.ServerSlots {
 		ret = append(ret, v)
 	}
-	for _, v := range e.Addresses {
-		ret = append(ret, v)
-	}
 	return ret
 }
 
 // Tables returns the tables to delete when you want delete all the resources.
 func (e *Enclosure) Tables() []interface{} {
 	return []interface{}{
-		new(Address),
 		new(PowerSlot),
 		new(FanSlot),
 		new(ApplianceSlot),

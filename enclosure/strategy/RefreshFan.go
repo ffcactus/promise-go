@@ -43,25 +43,25 @@ func (s *RefreshFan) ExpectedExecutionMs() uint64 {
 	return s.expectedExecutionMs
 }
 
-// Execute implements the Action interface.
-func (s *RefreshFan) Execute(c *context.Base) {
-	log.Info("Action refresh fan.")
+// Execute performs the operation of this strategy.
+func (s *RefreshFan) Execute(c context.Refresh) {
 	StepStart(c, s.name)
-	slots, clientError := c.Client.FanSlot()
+	slots, clientError := c.GetClient().FanSlot()
 	if clientError != nil {
 		// TODO we need process the alarm here.
 		log.WithFields(log.Fields{
-			"id": c.ID, "error": clientError,
+			"id": c.GetID(), "error": clientError,
 		}).Warn("Strategy refresh fan failed, get fan slots failed.")
 		StepError(c, s.name)
 		return
 	}
-	enclosure, dbError := c.DB.RefreshFanSlot(c.ID, slots)
+	enclosure, dbError := c.GetDB().RefreshFanSlot(c.GetID(), slots)
 	if dbError != nil {
 		log.WithFields(log.Fields{
-			"id": c.ID, "error": clientError,
+			"id": c.GetID(), "error": clientError,
 		}).Warn("Strategy refresh fan failed, DB refresh fan failed.")
 	}
 	c.UpdateEnclosure(enclosure)
 	StepFinish(c, s.name)
+	log.Info("Strategy refresh fan done.")
 }

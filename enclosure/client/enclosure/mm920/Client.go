@@ -21,6 +21,8 @@ func NewClient(enclosure *model.Enclosure) *Client {
 		client.Username = enclosure.Credential.Username
 		client.Password = enclosure.Credential.Password
 	}
+	client.Username = "Administrator"
+	client.Password = "Admin@9000"
 	if len(enclosure.Addresses) > 0 {
 		client.CurrentAddress = enclosure.Addresses[0]
 		client.Addresses = enclosure.Addresses
@@ -65,13 +67,18 @@ func (c Client) DeviceIdentity() (*base.DeviceIdentity, base.ClientError) {
 	return &identity, nil
 }
 
+// GetCollection is used to get each of the resource from a collection URI.
+func (c Client) GetCollection(url string, members []interface{}) {
+
+}
+
 // ServerSlot returns the blade slot info.
 func (c Client) ServerSlot() ([]model.ServerSlot, base.ClientError) {
 	var (
 		slots    []model.ServerSlot
 		inserted int
 	)
-	for i := 1; i < 16; i++ {
+	for i := 1; i <= 32; i++ {
 		chassis := GetBladeChassisResponse{}
 		slot := model.ServerSlot{}
 		if err := c.Get(fmt.Sprintf("/redfish/v1/Chassis/Blade%d", i), &chassis); err != nil {
@@ -88,36 +95,59 @@ func (c Client) ServerSlot() ([]model.ServerSlot, base.ClientError) {
 		slot.Width = chassis.Oem.Huawei.Width
 		slots = append(slots, slot)
 	}
-	log.WithFields(log.Fields{"inserted": inserted, "client": c}).Info("Client get blade slot.")
+	log.WithFields(log.Fields{"inserted": inserted, "client": c}).Info("Client get blade slot done.")
 	return slots, nil
 }
 
 // SwitchSlot returns the switch ade slot info.
 func (c Client) SwitchSlot() ([]model.SwitchSlot, base.ClientError) {
-	log.WithFields(log.Fields{"client": c}).Info("Client get switch slot.")
-	return nil, nil
+	var (
+		slots    []model.SwitchSlot
+		inserted int
+	)
+	for i := 1; i <= 4; i++ {
+		chassis := GetSwiChassisResponse{}
+		system := GetSwiSystemResponse{}
+		slot := model.SwitchSlot{}
+		if err := c.Get(fmt.Sprintf("/redfish/v1/Chassis/Swi%d", i), &chassis); err != nil {
+			return nil, err
+		}
+		slot.Index = i
+		slot.Inserted = (chassis.Status.State == "Enabled")
+		if slot.Inserted {
+			inserted++
+			if err := c.Get(fmt.Sprintf("/redfish/v1/Systems/Swi%d", i), &system); err != nil {
+				return nil, err
+			}
+		}
+		slot.ProductName = chassis.Model
+		slot.SerialNumber = system.SerialNumber
+		slots = append(slots, slot)
+	}
+	log.WithFields(log.Fields{"inserted": inserted, "client": c}).Info("Client get switch slot done.")
+	return slots, nil
 }
 
 // FanSlot returns the fan slot info.
 func (c Client) FanSlot() ([]model.FanSlot, base.ClientError) {
-	log.WithFields(log.Fields{"client": c}).Info("Client get fan slot.")
+	log.WithFields(log.Fields{"client": c}).Info("Client get fan slot done.")
 	return nil, nil
 }
 
 // PowerSlot returns the power slot info.
 func (c Client) PowerSlot() ([]model.PowerSlot, base.ClientError) {
-	log.WithFields(log.Fields{"client": c}).Info("Client get power slot.")
+	log.WithFields(log.Fields{"client": c}).Info("Client get power slot done.")
 	return nil, nil
 }
 
 // ManagerSlot returns the manager slot info.
 func (c Client) ManagerSlot() ([]model.ManagerSlot, base.ClientError) {
-	log.WithFields(log.Fields{"client": c}).Info("Client get manager slot.")
+	log.WithFields(log.Fields{"client": c}).Info("Client get manager slot done.")
 	return nil, nil
 }
 
 // ApplianceSlot returns the manager slot info.
 func (c Client) ApplianceSlot() ([]model.ApplianceSlot, base.ClientError) {
-	log.WithFields(log.Fields{"client": c}).Info("Client get appliance slot.")
+	log.WithFields(log.Fields{"client": c}).Info("Client get appliance slot done.")
 	return nil, nil
 }

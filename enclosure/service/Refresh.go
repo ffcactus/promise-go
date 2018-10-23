@@ -29,12 +29,12 @@ type Refresh struct {
 // 		if id := enclosureDB.FindServerStateAdded(); id != "" {
 // 			_, _, errorResp := s.PerformAsych(id, nil)
 // 			if errorResp != nil {
-// 				if errorResp[0].ID == base.ErrorResponseBusy {
+// 				if errorResp[0].GetID() == base.ErrorResponseBusy {
 // 					seconds = 1
 // 				} else {
 // 					log.WithFields(log.Fields{
 // 						"server":    id,
-// 						"errorResp": errorResp[0].ID,
+// 						"errorResp": errorResp[0].GetID(),
 // 					}).Info("Service auto-refresh server failed.")
 // 					seconds = 5
 // 				}
@@ -49,7 +49,7 @@ type Refresh struct {
 // }
 
 // PerformAsych will process the refresh action.
-func (s *Refresh) PerformAsych(ctx *beegoCtx.Context, id string, request base.AsychActionRequestInterface) (base.ResponseInterface, string, []base.ErrorResponse) {	
+func (s *Refresh) PerformAsych(ctx *beegoCtx.Context, id string, request base.AsychActionRequestInterface) (base.ResponseInterface, string, []base.ErrorResponse) {
 	return s.Prepare(ctx, id, request)
 }
 
@@ -61,7 +61,7 @@ func (s *Refresh) PerformAsych(ctx *beegoCtx.Context, id string, request base.As
 // 4. Create the task.
 func (s *Refresh) Prepare(ctx *beegoCtx.Context, id string, request base.AsychActionRequestInterface) (base.ResponseInterface, string, []base.ErrorResponse) {
 	var (
-		response dto.GetEnclosureResponse
+		response         dto.GetEnclosureResponse
 		needRestoreState = true
 	)
 
@@ -71,13 +71,13 @@ func (s *Refresh) Prepare(ctx *beegoCtx.Context, id string, request base.AsychAc
 		req.Targets = model.RefreshBuildinAll
 	}
 	// 2. Prepare the context.
-	refreshCtx := context.NewRefreshContext(ctx, id, req)
-	refreshCtx.DB = enclosureDB
+	refreshCtx := context.NewRefresh(id, req)
+	refreshCtx.SetDB(enclosureDB)
 	// 3. Lock the enclosure.
 	modelInterface, preState, preReason, err := enclosureDB.GetAndLock(id)
 	defer func() {
 		if needRestoreState {
-			if _, err := refreshCtx.DB.SetState(refreshCtx.ID, preState, preReason); err != nil {
+			if _, err := refreshCtx.GetDB().SetState(refreshCtx.GetID(), preState, preReason); err != nil {
 				log.WithFields(log.Fields{"id": id}).Error("Service refresh enclosure failed, prepare refresh failed, restore enclosure state on error failed.")
 			} else {
 				log.WithFields(log.Fields{
@@ -86,24 +86,13 @@ func (s *Refresh) Prepare(ctx *beegoCtx.Context, id string, request base.AsychAc
 			}
 		}
 	}()
-	
+
 	needRestoreState = false
-	// TODO: Maybe we need define DB error to indicate this is transaction error.
-	if modelInterface == nil && err != nil {
+	if modelInterface == nil && err != nil && preState != "" {
 		log.WithFields(log.Fields{
-			"id": id, "error": err,
-		}).Warn("Service refresh enclosure failed, DB lock enclosure failed.")
-		return nil, "", []base.ErrorResponse{*base.NewErrorResponseTransactionError()}
-	}
-	if modelInterface != nil && err == nil {
-		enclosure, _ := modelInterface.(*model.Enclosure)
-		response.Load(enclosure)
-		if enclosure.State != model.StateLocked {
-			log.WithFields(log.Fields{
-				"id": id, "state": enclosure.State,
-			}).Warn("Service refresh enclosure failed, enclosure can't be locked.")
-			return response, "", []base.ErrorResponse{*base.NewErrorResponseBusy()}
-		}
+			"id": id, "state": preState,
+		}).Warn("Service refresh enclosure failed, enclosure can't be locked.")
+		return nil, "", []base.ErrorResponse{*base.NewErrorResponseBusy()}
 	}
 	if modelInterface == nil {
 		log.WithFields(log.Fields{
@@ -111,15 +100,21 @@ func (s *Refresh) Prepare(ctx *beegoCtx.Context, id string, request base.AsychAc
 		}).Warn("Service refresh enclosure failed, enclosure not exist.")
 		return nil, "", []base.ErrorResponse{*base.NewErrorResponseNotExist()}
 	}
+	// TODO: Maybe we need define DB error to indicate this is transaction error.
+	if err != nil {
+		log.WithFields(log.Fields{
+			"id": id, "error": err,
+		}).Warn("Service refresh enclosure failed, DB lock enclosure failed.")
+		return nil, "", []base.ErrorResponse{*base.NewErrorResponseTransactionError()}
+	}
 	log.WithFields(log.Fields{
 		"id": id,
 	}).Info("Service refresh enclosure, lock enclosure success.")
-	needRestoreState= true
-	enclosure, _ := modelInterface.(*model.Enclosure)
-	refreshCtx.Enclosure = enclosure
-	refreshCtx.Client = enclosureClient.NewClient(enclosure)
+	needRestoreState = true
+	refreshCtx.UpdateEnclosure(modelInterface)
+	refreshCtx.SetClient(enclosureClient.NewClient(refreshCtx.GetEnclosure()))
 	log.WithFields(log.Fields{
-		"id": id, "client": refreshCtx.Client,
+		"id": id, "client": refreshCtx.GetClient(),
 	}).Info("Service refresh enclosure, enclosure client created.")
 	// 4. Create the task.
 	act := strategy.NewRefresh(refreshCtx)
@@ -130,10 +125,10 @@ func (s *Refresh) Prepare(ctx *beegoCtx.Context, id string, request base.AsychAc
 		return nil, "", []base.ErrorResponse{*base.NewErrorResponseInternalError()}
 	}
 	log.WithFields(log.Fields{"task": createTaskResponse.GetID()}).Info("Service refresh, create task.")
-	refreshCtx.TaskID = createTaskResponse.ID
-	response.Load(refreshCtx.Enclosure)
+	refreshCtx.SetTaskID(createTaskResponse.GetID())
+	response.Load(refreshCtx.GetEnclosure())
 	log.WithFields(log.Fields{"ctx": refreshCtx}).Info("Service response to client before execute strategy.")
-	go act.Execute(&refreshCtx.Base)
+	go act.Execute(refreshCtx)
 	// Let the goroutine to set the state accordingly.
 	needRestoreState = false
 	return response, createTaskResponse.URI, nil

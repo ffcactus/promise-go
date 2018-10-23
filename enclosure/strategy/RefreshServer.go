@@ -44,20 +44,19 @@ func (s *RefreshServer) ExpectedExecutionMs() uint64 {
 	return s.expectedExecutionMs
 }
 
-// Execute implements the Action interface.
-func (s *RefreshServer) Execute(c *context.Base) {
-	log.Info("Action refresh server.")
+// Execute performs the operation of this strategy.
+func (s *RefreshServer) Execute(c context.Refresh) {
 	StepStart(c, s.name)
-	slots, clientError := c.Client.ServerSlot()
+	slots, clientError := c.GetClient().ServerSlot()
 	if clientError != nil {
 		// TODO we need process the alarm here.
 		log.WithFields(log.Fields{
-			"id": c.ID, "error": clientError,
+			"id": c.GetID(), "error": clientError,
 		}).Warn("Strategy refresh server failed, get server slots failed.")
 		StepError(c, s.name)
 		return
 	}
-	for _, serverInModel := range c.Enclosure.ServerSlots {
+	for _, serverInModel := range c.GetEnclosure().ServerSlots {
 		// If enclosure has no server URL, we check if the server exist in client's value.
 		if serverInModel.ServerURL == "" {
 			for _, slot := range slots {
@@ -68,14 +67,15 @@ func (s *RefreshServer) Execute(c *context.Base) {
 		}
 	}
 
-	enclosure, dbError := c.DB.RefreshServerSlot(c.ID, slots)
+	enclosure, dbError := c.GetDB().RefreshServerSlot(c.GetID(), slots)
 	if dbError != nil {
 		log.WithFields(log.Fields{
-			"id": c.ID, "error": clientError,
+			"id": c.GetID(), "error": clientError,
 		}).Warn("Strategy refresh server failed, DB refresh server failed.")
 	}
 	c.UpdateEnclosure(enclosure)
 	StepFinish(c, s.name)
+	log.Info("Strategy refresh server done.")
 }
 
 // prepareServer will get the server's address, username and password for adding.

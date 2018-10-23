@@ -43,7 +43,7 @@ func (s *RefreshAccount) ExpectedExecutionMs() uint64 {
 	return s.expectedExecutionMs
 }
 
-// Execute implements the Action interface.
-func (s *RefreshAccount) Execute(c *context.Base) {
-	log.Info("Action refresh account.")
+// Execute performs the operation of this strategy.
+func (s *RefreshAccount) Execute(c context.Refresh) {
+	log.Info("Strategy refresh account done.")
 }

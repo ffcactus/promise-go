@@ -77,22 +77,19 @@ func (impl *Enclosure) Exist(e *model.Enclosure) (bool, base.ModelInterface) {
 	return false, nil
 }
 
-// GetAndLock will try to lock the enclosure by ID. Please note that it is not enought to just check the error,
-// you need check the state of the returned enclosure to see if it has been locked.
-// to see if it is locked successfully.
-// 
-// The first return value is the enclosure when everything works fine or nil if failed to get and lock enclosure.
+// GetAndLock will try to lock the enclosure by ID.
+//
+// The first return value is the enclosure when everything works fine and the enclosure is locked due to this operation.
 // The second and third value are the previous state and statereason respectively.
 // The fourh return value indicates if any error happened.
 // If the enclosure does not exist, return (nil, "", "", nil).
 // If the enclosure can't be locked, return the (enclosure, state, reason, nil).
-// Note that in this case the return value is the same to return of successfully locked.
 // For any DB operation error, return (nil, "", "", error).
 func (impl *Enclosure) GetAndLock(ID string) (base.ModelInterface, string, string, error) {
 	var (
-		c         = impl.TemplateImpl.GetConnection()
-		enclosure = new(entity.Enclosure)
-		rollback  = false
+		c             = impl.TemplateImpl.GetConnection()
+		enclosure     = new(entity.Enclosure)
+		rollback      = false
 		state, reason string
 	)
 
@@ -139,7 +136,7 @@ func (impl *Enclosure) GetAndLock(ID string) (base.ModelInterface, string, strin
 			"id":    ID,
 			"state": enclosure.State,
 		}).Warn("DB get and lock enclosure failed, enclosure not lockable.")
-		return enclosure.ToModel(), state, reason, fmt.Errorf("unlockable state")
+		return nil, state, reason, fmt.Errorf("unlockable state")
 	}
 	// Change the state.
 	if err := tx.Model(enclosure).UpdateColumn("State", model.StateLocked).Error; err != nil {
