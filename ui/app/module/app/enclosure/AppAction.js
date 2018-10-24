@@ -2,8 +2,6 @@ import { ActionType } from './ConstValue';
 import * as WsAction from '../../promise/ws/WsAction';
 import * as TaskAction from './TaskAction';
 import * as EnclosureAction from './EnclosureAction';
-import * as ProfileAction from './ProfileAction';
-import * as IDPoolAction from './IDPoolAction';
 import { doGet } from '../../promise/common/Client';
 const Promise = require('promise');
 
@@ -16,9 +14,7 @@ const Promise = require('promise');
  * @param {string} pool The pre-selected pool ID.
  */
 export function appInit(enclosure, profile, pool) {
-  WsAction.registerMessageAction('Enclosure', EnclosureAction.onEnclosureMessage);
-  WsAction.registerMessageAction('Enclosure', ProfileAction.onEnclosureMessage);
-  WsAction.registerMessageAction('Enclosure', IDPoolAction.onEnclosureMessage);
+  WsAction.registerMessageAction('Enclosure', EnclosureAction.onMessage);
   WsAction.registerMessageAction('Task', TaskAction.onTaskMessage);
   return (dispatch, getState) => {
     const prefix = 'http://' + getState().session.hostname;

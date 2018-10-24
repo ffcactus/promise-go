@@ -110,7 +110,7 @@ class TestDialog extends React.Component {
           <TextField margin="dense" id="description" label="Description" fullWidth onChange={this.onDiscriptionChange}/>
           <TextField margin="dense" id="address" label="Address" fullWidth onChange={this.onAddressChange}/>
           <TextField margin="dense" id="username" label="Username" fullWidth onChange={this.onUsernameChange}/>
-          <TextField margin="dense" id="username" label="Password" fullWidth type="password" onChange={this.onPasswordChange}/>
+          <TextField margin="dense" id="password" label="Password" fullWidth type="password" onChange={this.onPasswordChange}/>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.onCancel} color="secondary" variant="contained">Cancel</Button>

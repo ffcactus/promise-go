@@ -64,3 +64,29 @@ export function discover(request) {
     )(dispatch, getState);
   };
 }
+
+/**
+ * This action is called on WS message
+ * @param {object} message The DTO from WS.
+ */
+export function onMessage(message) {
+  switch(message.Type) {
+    case 'Create':
+      return {
+        type: ActionType.ENCLOSURE_WS_CREATE,
+        info: message.Data
+      };
+    case 'Update':
+      return {
+        type: ActionType.ENCLOSURE_WS_UPDATE,
+        info: message.Data
+      };
+    case 'Delete':
+      return {
+        type: ActionType.ENCLOSURE_WS_DELETE,
+        info: message.Data
+      };
+    default:
+      return {};
+  }
+}

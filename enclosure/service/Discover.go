@@ -4,6 +4,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"promise/base"
 	enclosureClient "promise/enclosure/client/enclosure"
+	"promise/enclosure/context"
 	"promise/enclosure/object/dto"
 )
 
@@ -23,14 +24,17 @@ func (s *Discover) Perform(id string, request base.ActionRequestInterface) (base
 	if !ok {
 		log.Error("Service perform discover enclosure failed, convert request failed.")
 		return nil, []base.ErrorResponse{*base.NewErrorResponseInternalError()}
-	}
-
+	}	
+	discoverCtx := context.NewDiscover(id, discoverRequest)
 	enclosure := discoverRequest.NewEnclosure()
+	discoverCtx.UpdateEnclosure(enclosure)
 	client := enclosureClient.NewClient(enclosure)
 	if client == nil {
 		log.Warn("Service discover enclosure failed, create client failed, discover abort.")
 		return nil, []base.ErrorResponse{*base.NewErrorResponseInternalError()}
 	}
+	discoverCtx.SetClient(client)
+	// TODO use strategy to finish all the discovery workload.
 	// get identity and check existance.
 	identity, clientError = client.DeviceIdentity()
 	if clientError != nil {
@@ -46,6 +50,8 @@ func (s *Discover) Perform(id string, request base.ActionRequestInterface) (base
 	if errResp != nil {
 		return nil, []base.ErrorResponse{*errResp}
 	}
+	discoverCtx.UpdateEnclosure(created)
+	discoverCtx.DispatchCreateEvent()
 	if err := response.Load(created); err != nil {
 		return nil, []base.ErrorResponse{*base.NewErrorResponseInternalError()}
 	}

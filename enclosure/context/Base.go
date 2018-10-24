@@ -7,6 +7,7 @@ import (
 	"promise/enclosure/client/enclosure"
 	"promise/enclosure/db"
 	"promise/enclosure/object/model"
+	"promise/enclosure/object/dto"
 )
 
 // Base interface contains the base methods need in context operation.
@@ -21,6 +22,9 @@ type Base interface {
 	GetDB() *db.Enclosure
 	SetDB(t *db.Enclosure)
 	String() string
+	DispatchCreateEvent()
+	DispatchUpdateEvent()
+	DispatchDeleteEvent()			
 }
 
 // BaseImpl implements the Base interface.
@@ -85,4 +89,65 @@ func (c *BaseImpl) SetTaskID(t string) {
 // GetEnclosure returns current enclosure.
 func (c *BaseImpl) GetEnclosure() *model.Enclosure {
 	return c.Enclosure
+}
+
+// GetEnclosureResponse translate the enclosure into response.
+func (c *BaseImpl) GetEnclosureResponse() *dto.GetEnclosureResponse {
+	response := dto.GetEnclosureResponse{}
+	if err := response.Load(c.GetEnclosure()); err != nil {
+		log.WithFields(log.Fields{
+			"id":    c.GetID(),
+			"error": err,
+		}).Warn("Context get response failed, create response failed.")
+		return nil
+	}
+	return &response
+}
+
+// DispatchCreateEvent will send an create event using the enclosure in the context.
+func (c *BaseImpl) DispatchCreateEvent() {
+	response := c.GetEnclosureResponse()
+	if response == nil {
+		return
+	}
+	err := base.PublishResourceMessage(base.CreateOperation, response)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"id":    c.GetID(),
+			"type": base.CreateOperation,
+			"error": err,
+		}).Warn("Context dispatch event failed, event dispatching failed.")
+	}
+}
+
+// DispatchUpdateEvent will send an update event using the enclosure in the context.
+func (c *BaseImpl) DispatchUpdateEvent() {
+	response := c.GetEnclosureResponse()
+	if response == nil {
+		return
+	}
+	err := base.PublishResourceMessage(base.UpdateOperation, response)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"id":    c.GetID(),
+			"type": base.UpdateOperation,
+			"error": err,
+		}).Warn("Context dispatch event failed, event dispatching failed.")
+	}
+}
+
+// DispatchDeleteEvent will send an delete event using the enclosure in the context.
+func (c *BaseImpl) DispatchDeleteEvent() {
+	response := c.GetEnclosureResponse()
+	if response == nil {
+		return
+	}
+	err := base.PublishResourceMessage(base.DeleteOperation, response)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"id":    c.GetID(),
+			"type": base.DeleteOperation,
+			"error": err,
+		}).Warn("Context dispatch event failed, event dispatching failed.")
+	}
 }
