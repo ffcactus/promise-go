@@ -12,9 +12,9 @@ class EnclosureList extends React.Component {
     this.rowRenderer = this.rowRenderer.bind(this);
   }
 
-  rowRenderer({key, index}) {
+  rowRenderer({key, index, style}) {
     const enclosure = this.props.enclosureList.get(index);
-    return <EnclosureListElement key={key} enclosure={enclosure} />;
+    return <EnclosureListElement key={key} enclosure={enclosure} style={style}/>;
   }
 
   render() {
