@@ -18,12 +18,10 @@ class EnclosureListElement extends React.Component {
   }
 
   render() {
-    const currentStyle = 'border-column selectable ' + (this.props.selected ? 'selected' : 'not-selected');
+    const currentStyle = 'flex-item button-border center-left-container selectable ' + (this.props.selected ? 'selected' : 'not-selected');
     return (
-      <div styleName={currentStyle} onClick={this.onSelect}>
-        <div>
-          <Health health={this.props.enclosure.Health}/>
-        </div>
+      <div styleName={currentStyle} onClick={this.onSelect} style={{height: '39px'}}>
+        <Health health={this.props.enclosure.Health}/>
         <div styleName="center-container">
           <p>{this.props.enclosure.Name}</p>
         </div>
@@ -40,7 +38,7 @@ EnclosureListElement.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   return {
-    selected: ownProps.enclosure.URI === state.enclosureApp.currentEnclosureUri,
+    selected: ownProps.enclosure.URI === state.enclosureApp.enclosureUri,
   };
 }
 

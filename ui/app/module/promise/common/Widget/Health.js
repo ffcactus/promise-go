@@ -19,6 +19,7 @@ export const Health = (props) => {
   }
   return (
     <div style={{
+      margin: '20px',
       height: '10px',
       width: '10px',
       backgroundColor: color,

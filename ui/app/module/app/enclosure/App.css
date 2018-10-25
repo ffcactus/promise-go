@@ -88,6 +88,14 @@
     border-left: 1px solid #adc4dd;
 }
 
+.top-border {
+    border-top: 1px solid #adc4dd;
+}
+
+.button-border {
+    border-bottom: 1px solid #adc4dd;
+}
+
 .search {
     width: 100%;
     height: auto;
@@ -103,6 +111,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.center-left-container {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-start;
 }
 
 .center-container p {
