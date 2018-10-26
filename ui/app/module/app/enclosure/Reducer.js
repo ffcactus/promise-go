@@ -10,6 +10,8 @@ const defaultState = {
   appState: AppState.LOADING,
   currentResource: EnclosureResource.Enclosure,
   enclosureList: new List(),
+  // records the enclosures latest task, key is enclosure URI.
+  enclosureTask: new Map(),
   poolList: new List(),
   profileList: new List(),
   taskMap: new Map(),
@@ -154,6 +156,19 @@ export const enclosureApp = (state = defaultState, action) => {
         ...state,
         currentResource: EnclosureResource.IDPool
       };
+    // Task
+    // Task.WS
+    case ActionType.TASK_WS_CREATE:
+    case ActionType.TASK_WS_UPDATE:
+      for (let i = 0; i < state.enclosureList.size; i++) {
+        if (state.enclosureList.get(i).URI === action.info.TargetURI) {
+          return {
+            ...state,
+            enclosureTask: state.enclosureTask.set(action.info.TargetURI, action.info)
+          };
+        }
+      }
+      return state;
     default:
       return state;
   }

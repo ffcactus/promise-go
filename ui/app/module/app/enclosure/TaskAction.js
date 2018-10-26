@@ -1,20 +1,20 @@
 import { ActionType } from './ConstValue';
 
-function onTaskCreate(task) {
+function onCreate(task) {
   return {
     type: ActionType.TASK_WS_CREATE,
     info: task
   };
 }
 
-function onTaskUpdate(task) {
+function onUpdate(task) {
   return {
     type: ActionType.TASK_WS_UPDATE,
     info: task
   };
 }
 
-function onTaskDelete(task) {
+function onDelete(task) {
   return {
     type: ActionType.TASK_WS_DELETE,
     info: task
@@ -24,11 +24,11 @@ function onTaskDelete(task) {
 export function onTaskMessage(message) {
   switch (message.Type) {
     case 'Create':
-      return onTaskCreate(message.Data);
+      return onCreate(message.Data);
     case 'Update':
-      return onTaskUpdate(message.Data);
+      return onUpdate(message.Data);
     case 'Delete':
-      return onTaskDelete(message.Data);
+      return onDelete(message.Data);
     default:
       return {};
   }

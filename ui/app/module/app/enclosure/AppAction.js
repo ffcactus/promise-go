@@ -50,3 +50,11 @@ export function appInit(enclosure, profile, pool) {
     });
   };
 }
+
+export function appExit() {
+  WsAction.unregisterMessageAction('Enclosure');
+  WsAction.unregisterMessageAction('Task');
+  return {
+    type: ActionType.APP_ENCLOSURE_EXIT
+  };
+}

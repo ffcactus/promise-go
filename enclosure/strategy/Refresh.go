@@ -11,7 +11,7 @@ import (
 // Refresh is the interface that a refresh operation should support.
 type Refresh interface {
 	Execute(c context.Refresh)
-	Task() *taskDTO.PostTaskRequest
+	Task(c context.Refresh) *taskDTO.PostTaskRequest
 }
 
 // TaskStepStrategy is an kind of strategy that corresponding to a task step.
@@ -60,11 +60,15 @@ func (s *RefreshImpl) Add(sub TaskStepStrategy) {
 }
 
 // Task returns the post task request.
-func (s *RefreshImpl) Task() *taskDTO.PostTaskRequest {
+func (s *RefreshImpl) Task(ctx context.Refresh) *taskDTO.PostTaskRequest {
 	dto := taskDTO.PostTaskRequest{}
 	dto.MessageID = constvalue.RefreshTaskID
 	dto.Name = "Refresh Enclosure"
 	dto.Description = "Refresh enclosure's settings and component."
+	dto.CreatedByName = "Enclosure Service"
+	dto.CreatedByURI = "/promise/v1/enclosure"
+	dto.TargetName = ctx.GetEnclosure().Name
+	dto.TargetURI = base.ToEnclosureURI(ctx.GetEnclosure().ID)
 	for _, v := range s.sub {
 		step := taskDTO.PostTaskStepRequest{}
 		step.MessageID = v.MessageID()

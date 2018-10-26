@@ -28,7 +28,7 @@ class AppCollectionMenu extends React.Component {
 
 AppCollectionMenu.propTypes = {
   dispatch: PropTypes.func,
-  action: PropTypes.object,
+  action: PropTypes.func,
 };
 
 

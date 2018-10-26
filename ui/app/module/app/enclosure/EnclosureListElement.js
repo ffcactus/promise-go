@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
+import EnclosureTask from './EnclosureTask';
 import * as EnclosureAction from './EnclosureAction';
 import { Health } from '../../promise/common/Widget/Health';
 import styles from './App.css';
@@ -25,6 +26,7 @@ class EnclosureListElement extends React.Component {
         <div styleName="center-container">
           <p>{this.props.enclosure.Name}</p>
         </div>
+        <EnclosureTask enclosureUri={this.props.enclosure.URI}/>
       </div>
     );
   }

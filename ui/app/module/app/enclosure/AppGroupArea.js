@@ -4,13 +4,13 @@ import AppCollectionMenu from '../../promise/app/AppCollectionMenu';
 import EnclosureResourceItem from './EnclosureResourceItem';
 import ProfileResourceItem from './ProfileResourceItem';
 import IDPoolResourceItem from './IDPoolResourceItem';
-import { ActionType } from './ConstValue';
+import { appExit } from './AppAction';
 import styles from './App.css';
 
 function AppGroupArea() {
   return (
     <div styleName="flex-column-container group-area">
-      <AppCollectionMenu action={{type: ActionType.APP_ENCLOSURE_EXIT}} />
+      <AppCollectionMenu action={appExit}/>
       <EnclosureResourceItem />
       <ProfileResourceItem />
       <IDPoolResourceItem />

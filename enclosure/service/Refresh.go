@@ -118,7 +118,7 @@ func (s *Refresh) Prepare(ctx *beegoCtx.Context, id string, request base.AsychAc
 	}).Info("Service refresh enclosure, enclosure client created.")
 	// 4. Create the task.
 	act := strategy.NewRefresh(refreshCtx)
-	createTaskRequest := act.Task()
+	createTaskRequest := act.Task(refreshCtx)
 	createTaskResponse, err := taskSDK.CreateTask(createTaskRequest)
 	if err != nil {
 		log.WithFields(log.Fields{"error": err}).Warn("Service refresh failed, create task failed.")

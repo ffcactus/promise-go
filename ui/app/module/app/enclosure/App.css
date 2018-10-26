@@ -103,7 +103,7 @@
     border: 1px solid #aaa;
     border-radius: 5px;
     box-shadow: 0 0 3px #ccc, 0 10px 15px #ebebeb inset;
-    background: #fcfcfc url(../../promise/common/img/icon/search_512.png) left/8% no-repeat;
+    background: #fcfcfc url(../../promise/common/img/icon/outline_search_black_36pt_1x.png) left no-repeat;
     padding-left: 40px;
 }
 
@@ -142,6 +142,7 @@
     height: 10px;
 }
 
+/*
 .dialog {
     position: fixed;
     top: 50%;
@@ -152,7 +153,14 @@
     border-radius: 20px;
 }
 
+
 .dialog:focus {
     outline: none;
     box-shadow: 0 0 20px rgba(100,163,184,0.4);
+}
+*/
+
+.list-progress {
+    margin-left: auto;
+    margin-right: 10px;
 }
