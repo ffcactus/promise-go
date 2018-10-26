@@ -6,7 +6,7 @@ import styles from './App.css';
 
 function AppDetailArea() {
   return (
-    <div styleName="flex-column-container detail-area border-row">
+    <div styleName="flex-column-container detail-area left-border">
       <ResourceDetailControlArea />
       <EnclosureDetailContainer />
     </div>

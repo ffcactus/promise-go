@@ -9,7 +9,7 @@ const EnclosureDetail = props => {
     return <div />;
   }
   return (
-    <div>
+    <div styleName="detail-container">
       <h1>Name</h1>
       <p>{props.enclosure.Name}</p>
       <h2>Description</h2>

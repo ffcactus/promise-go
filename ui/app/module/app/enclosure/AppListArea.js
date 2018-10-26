@@ -13,7 +13,7 @@ class AppListArea extends React.Component {
 
   render() {
     return (
-      <div styleName="flex-column-container list-area border-row">
+      <div styleName="flex-column-container list-area left-border">
         <ResourceListHeadArea />
         <ResourceListControlArea />
         <AppListContainer />

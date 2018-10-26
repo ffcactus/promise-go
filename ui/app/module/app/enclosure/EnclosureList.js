@@ -19,7 +19,7 @@ class EnclosureList extends React.Component {
 
   render() {
     return (
-      <div styleName="flex-item flex-row-container border-column flex-item-last">
+      <div styleName="flex-item flex-row-container left-border flex-item-last">
         <AutoSizer>{
           ({ height, width }) => (
             <List

@@ -19,7 +19,7 @@ class EnclosureListElement extends React.Component {
   }
 
   render() {
-    const currentStyle = 'flex-item button-border center-left-container selectable ' + (this.props.selected ? 'selected' : 'not-selected');
+    const currentStyle = 'flex-item bottom-border center-left-container selectable ' + (this.props.selected ? 'selected' : 'not-selected');
     return (
       <div styleName={currentStyle} onClick={this.onSelect} style={{height: '39px'}}>
         <Health health={this.props.enclosure.Health}/>

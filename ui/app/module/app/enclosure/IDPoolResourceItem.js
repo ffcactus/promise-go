@@ -18,7 +18,7 @@ class IDPoolResourceItem extends React.Component {
   }
 
   render() {
-    const currentStyle = 'center-container flex-item border-column border-column-last selectable ' + (this.props.selected ? 'selected' : 'not-selected');
+    const currentStyle = 'center-container flex-item bottom-border selectable ' + (this.props.selected ? 'selected' : 'not-selected');
     return (
       <div styleName={currentStyle} onClick={this.onClick} style={{maxHeight: '40px'}}>
         <p>ID Pool</p>
