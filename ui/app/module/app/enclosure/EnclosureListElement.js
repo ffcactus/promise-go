@@ -19,14 +19,19 @@ class EnclosureListElement extends React.Component {
   }
 
   render() {
+    const { enclosure } = this.props;
     const currentStyle = 'flex-item bottom-border center-left-container selectable ' + (this.props.selected ? 'selected' : 'not-selected');
+    let percentage = 100;
+    if (enclosure.UI !== null && enclosure.UI.task !== null) {
+      percentage = enclosure.UI.task.Percentage;
+    }
     return (
       <div styleName={currentStyle} onClick={this.onSelect} style={{height: '39px'}}>
-        <Health health={this.props.enclosure.Health}/>
+        <Health health={enclosure.Health}/>
         <div styleName="center-container">
-          <p>{this.props.enclosure.Name}</p>
+          <p>{enclosure.Name}</p>
         </div>
-        <EnclosureTask enclosureUri={this.props.enclosure.URI}/>
+        {percentage === 100 ? null : <EnclosureTask percentage={percentage}/>}
       </div>
     );
   }
