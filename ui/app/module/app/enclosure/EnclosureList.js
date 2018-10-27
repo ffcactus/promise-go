@@ -11,6 +11,11 @@ class EnclosureList extends React.Component {
   constructor(props) {
     super(props);
     this.rowRenderer = this.rowRenderer.bind(this);
+    this.listRef = React.createRef();
+  }
+
+  componentWillReceiveProps() {
+    this.listRef.current.forceUpdateGrid();
   }
 
   rowRenderer({key, index, style}) {
@@ -24,7 +29,7 @@ class EnclosureList extends React.Component {
         <AutoSizer>{
           ({ height, width }) => (
             <List
-              ref={this.props.setListRef}
+              ref= {this.listRef}
               width={width}
               height={height}
               rowCount={this.props.enclosureOrderedMap.size}

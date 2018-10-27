@@ -30,7 +30,7 @@ export const enclosureApp = (state = defaultState, action) => {
       return {
         ...state,
         appState: AppState.LOADING,
-        enclosureUri: action.info.enclosureUri,
+        enclosureUri: action.info.enclosureUri ? action.info.enclosureUri : null,
       };
     case ActionType.APP_ENCLOSURE_INIT_SUCCESS:
       return {
