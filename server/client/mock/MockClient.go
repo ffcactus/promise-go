@@ -2,14 +2,13 @@ package mock
 
 import (
 	"fmt"
+	"github.com/astaxie/beego"
+	"github.com/google/uuid"
 	"math/rand"
+	"promise/server/object/constvalue"
 	"promise/server/object/model"
 	"strings"
 	"time"
-
-	"github.com/astaxie/beego"
-	"github.com/google/uuid"
-	"promise/server/object/constvalue"
 )
 
 var (

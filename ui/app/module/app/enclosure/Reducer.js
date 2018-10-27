@@ -39,6 +39,7 @@ export const enclosureApp = (state = defaultState, action) => {
         ...state,
         appState: AppState.NORMAL,
         enclosureList: List(action.info.enclosureList.Members),
+        enclosureMap: Map
       };
     case ActionType.APP_ENCLOSURE_INIT_FAILURE:
       return {

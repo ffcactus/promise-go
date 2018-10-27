@@ -4,6 +4,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"promise/base"
 	"promise/enclosure/object/model"
+	"time"
 )
 
 // Client implements EnclosureClient interface.
@@ -44,6 +45,7 @@ func (c Client) Unclaim() base.ClientError {
 
 // DeviceIdentity returns the device identity.
 func (c Client) DeviceIdentity() (*base.DeviceIdentity, base.ClientError) {
+	time.Sleep(time.Duration(1) * time.Second)
 	identity := base.DeviceIdentity{}
 	identity.UUID = base.RandUUID()
 	identity.SerialNumber = base.RandString(10)
@@ -54,6 +56,7 @@ func (c Client) DeviceIdentity() (*base.DeviceIdentity, base.ClientError) {
 
 // ServerSlot returns the server slot info.
 func (c Client) ServerSlot() ([]model.ServerSlot, base.ClientError) {
+	time.Sleep(time.Duration(10) * time.Second)
 	slots := make([]model.ServerSlot, 0)
 	for i := 1; i <= 8; i++ {
 		slot := model.ServerSlot{}
@@ -71,6 +74,7 @@ func (c Client) ServerSlot() ([]model.ServerSlot, base.ClientError) {
 
 // SwitchSlot returns the switch ade slot info.
 func (c Client) SwitchSlot() ([]model.SwitchSlot, base.ClientError) {
+	time.Sleep(time.Duration(3) * time.Second)
 	slots := make([]model.SwitchSlot, 0)
 	for i := 1; i <= 4; i++ {
 		slot := model.SwitchSlot{}
@@ -86,6 +90,7 @@ func (c Client) SwitchSlot() ([]model.SwitchSlot, base.ClientError) {
 
 // FanSlot returns the fan slot info.
 func (c Client) FanSlot() ([]model.FanSlot, base.ClientError) {
+	time.Sleep(time.Duration(3) * time.Second)
 	slots := make([]model.FanSlot, 0)
 	for i := 1; i <= 14; i++ {
 		slot := model.FanSlot{}
@@ -102,6 +107,7 @@ func (c Client) FanSlot() ([]model.FanSlot, base.ClientError) {
 
 // PowerSlot returns the power slot info.
 func (c Client) PowerSlot() ([]model.PowerSlot, base.ClientError) {
+	time.Sleep(time.Duration(3) * time.Second)
 	slots := make([]model.PowerSlot, 0)
 	for i := 1; i <= 6; i++ {
 		slot := model.PowerSlot{}
@@ -120,6 +126,7 @@ func (c Client) PowerSlot() ([]model.PowerSlot, base.ClientError) {
 
 // ManagerSlot returns the manager slot info.
 func (c Client) ManagerSlot() ([]model.ManagerSlot, base.ClientError) {
+	time.Sleep(time.Duration(5) * time.Second)
 	slots := make([]model.ManagerSlot, 0)
 	for i := 1; i <= 2; i++ {
 		slot := model.ManagerSlot{}
@@ -137,6 +144,7 @@ func (c Client) ManagerSlot() ([]model.ManagerSlot, base.ClientError) {
 
 // ApplianceSlot returns the manager slot info.
 func (c Client) ApplianceSlot() ([]model.ApplianceSlot, base.ClientError) {
+	time.Sleep(time.Duration(3) * time.Second)
 	slots := make([]model.ApplianceSlot, 0)
 	for i := 1; i <= 2; i++ {
 		slot := model.ApplianceSlot{}

@@ -10,7 +10,7 @@ import styles from './App.css';
 function AppGroupArea() {
   return (
     <div styleName="flex-column-container group-area">
-      <AppCollectionMenu action={appExit}/>
+      <AppCollectionMenu styleName="bottom-border" action={appExit}/>
       <EnclosureResourceItem />
       <ProfileResourceItem />
       <IDPoolResourceItem />
