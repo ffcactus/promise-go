@@ -245,8 +245,8 @@ public class TaskTest extends PromiseIntegrationTest
         // Test the collection is right.
         final List<TaskCollectionMemberResponse> members1 = PromiseAssertUtil
                 .assertGetCollection("/promise/v1/task", 2, 2, TaskCollectionMemberResponse.class);
-        Assert.assertTrue(members1.contains(response1));
-        Assert.assertTrue(members1.contains(response2));
+        Assert.assertTrue(members1.contains((Object)response1));
+        Assert.assertTrue(members1.contains((Object)response2));
 
         // Test filter.
         final String filter1 = URLEncoder.encode("Name eq 'MyTask1'", "UTF-8");
@@ -256,7 +256,7 @@ public class TaskTest extends PromiseIntegrationTest
                         2,
                         1,
                         TaskCollectionMemberResponse.class);
-        Assert.assertTrue(members2.contains(response1));
+        Assert.assertTrue(members2.contains((Object)response1));
 
         PromiseAssertUtil.assertUnknownFilter("/promise/v1/task", "xxx", "yyy");
 

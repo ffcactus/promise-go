@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.promise.integrationtest.dto.ResourceResponse;
 
+// todo : this class should not have this annotation.
+
 /**
  * DTO of post server response.
  *
  */
-// TODO this class should not have this annotation.
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GetServerResponse extends ResourceResponse
 {

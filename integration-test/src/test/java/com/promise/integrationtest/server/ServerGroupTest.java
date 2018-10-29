@@ -155,9 +155,8 @@ public class ServerGroupTest extends PromiseIntegrationTest
 
         List<ServerGroupMemberResponse> members = PromiseAssertUtil
                 .assertGetCollection("/promise/v1/servergroup", 3, 3, ServerGroupMemberResponse.class);
-        Assert.assertTrue(members.contains(r1));
-        Assert.assertTrue(members.contains(r2));
-        Assert.assertTrue(members.contains(r3));
-
+        Assert.assertTrue(members.contains((Object)r1));
+        Assert.assertTrue(members.contains((Object)r2));
+        Assert.assertTrue(members.contains((Object)r3));
     }
 }
