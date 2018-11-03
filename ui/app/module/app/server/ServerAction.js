@@ -1,35 +1,27 @@
 import { ActionType } from './ConstValue';
 import { createGetAction, createPostAction } from '../../promise/common/Client';
 
-function onServerCreate(server) {
-  return {
-    type: ActionType.SERVER_WS_CREATE,
-    info: server
-  };
-}
-
-function onServerUpdate(server) {
-  return {
-    type: ActionType.SERVER_WS_UPDATE,
-    info: server
-  };
-}
-
-function onServerDelete(server) {
-  return {
-    type: ActionType.SERVER_WS_DELETE,
-    info: server
-  };
-}
-
+/**
+ * This action is called on WS message
+ * @param {object} message The DTO from WS.
+ */
 export function onServerMessage(message) {
   switch(message.Type) {
     case 'Create':
-      return onServerCreate(message.Data);
+      return {
+        type: ActionType.SERVER_WS_CREATE,
+        info: message.Data
+      };
     case 'Update':
-      return onServerUpdate(message.Data);
+      return {
+        type: ActionType.SERVER_WS_UPDATE,
+        info: message.Data
+      };
     case 'Delete':
-      return onServerDelete(message.Data);
+      return {
+        type: ActionType.SERVER_WS_DELETE,
+        info: message.Data
+      };
     default:
       return {};
   }

@@ -39,6 +39,7 @@ func (dto *GetEnclosureResponse) Load(data base.ModelInterface) error {
 	}
 	dto.GetResponse.Load(&m.Model)
 	dto.DeviceIdentity = m.DeviceIdentity
+	dto.Addresses = m.Addresses
 	dto.Name = m.Name
 	dto.Description = m.Description
 	dto.Type = m.Type

@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	base.Init("WSApp")
+	base.Init("ws")
 
 	go service.StartDispatcher()
 

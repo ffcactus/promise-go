@@ -19,17 +19,17 @@ class EnclosureDetailContainer extends React.Component {
   }
 
   render() {
-    switch(this.props.resourceDetailState) {
+    switch (this.props.resourceDetailState) {
       case ResourceDetailState.EMPTY:
         return <CenterDiv><p>No Enclosure Selected.</p></CenterDiv>;
       case ResourceDetailState.LOADING:
-        return <CenterDiv><LoadingIcon/></CenterDiv>;
+        return <CenterDiv><LoadingIcon /></CenterDiv>;
       case ResourceDetailState.READY:
         return <EnclosureDetail enclosure={this.props.enclosure} />;
       case ResourceDetailState.FAILURE:
         return <CenterDiv><p>Loading Enclosure Failed</p></CenterDiv>;
       default:
-        return <CenterDiv><LoadingIcon/></CenterDiv>;
+        return <CenterDiv><LoadingIcon /></CenterDiv>;
     }
   }
 }
@@ -43,7 +43,7 @@ EnclosureDetailContainer.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    enclosureUri: state.serverApp.enclosureUri,
+    enclosureUri: state.enclosureApp.enclosureUri,
     enclosure: state.enclosureApp.enclosure,
     resourceDetailState: state.enclosureApp.resourceDetailState,
   };

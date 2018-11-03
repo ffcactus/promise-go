@@ -1,7 +1,6 @@
 package strategy
 
 import (
-	"fmt"
 	log "github.com/sirupsen/logrus"
 	"promise/base"
 	taskSDK "promise/sdk/task"
@@ -185,7 +184,7 @@ func createRefreshTaskRequest(server *model.Server) *taskDTO.PostTaskRequest {
 
 // createTask creates the task.
 func (s *ServerTask) createTask(request *taskDTO.PostTaskRequest, server *model.Server) (string, error) {
-	taskResp, errorResp, err := taskSDK.CreateTask(request)
+	taskResp, err := taskSDK.CreateTask(request)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"server": server.ID,
@@ -193,14 +192,6 @@ func (s *ServerTask) createTask(request *taskDTO.PostTaskRequest, server *model.
 			"error":  err}).
 			Warn("Create server task failed.")
 		return "", err
-	}
-	if errorResp != nil {
-		log.WithFields(log.Fields{
-			"server":    server.ID,
-			"name":      request.Name,
-			"errorResp": errorResp[0].ID}).
-			Warn("Create server task failed.")
-		return "", fmt.Errorf("create task failed")
 	}
 	log.WithFields(log.Fields{
 		"server": server.ID,
@@ -217,7 +208,7 @@ func (s *ServerTask) CreateRefreshServerTask(c *context.Base, server *model.Serv
 
 // UpdateStepExecutionState Update the step's execution state.
 func (s *ServerTask) UpdateStepExecutionState(id string, stepName string, state taskModel.ExecutionState, server *model.Server) {
-	_, errorResp, err := taskSDK.SetStepExecutionState(id, stepName, state)
+	_, err := taskSDK.SetStepExecutionState(id, stepName, state)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"server": server.ID,
@@ -226,20 +217,11 @@ func (s *ServerTask) UpdateStepExecutionState(id string, stepName string, state 
 			"state":  state,
 			"error":  err}).Warn("Update task step execution state failed.")
 	}
-	if errorResp != nil {
-		log.WithFields(log.Fields{
-			"server":    server.ID,
-			"task":      id,
-			"step":      stepName,
-			"state":     state,
-			"errorResp": errorResp[0].ID}).
-			Warn("Update task step execution state failed.")
-	}
 }
 
 // UpdateStepExecutionResultState Update the step's execution result state.
 func (s *ServerTask) UpdateStepExecutionResultState(c *context.Base, id string, stepName string, state taskModel.ExecutionResultState, server *model.Server) {
-	_, errorResp, err := taskSDK.SetStepExecutionResultState(id, stepName, state)
+	_, err := taskSDK.SetStepExecutionResultState(id, stepName, state)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"server": server.ID,
@@ -247,15 +229,6 @@ func (s *ServerTask) UpdateStepExecutionResultState(c *context.Base, id string, 
 			"step":   stepName,
 			"state":  state,
 			"error":  err}).
-			Warn("Update task step execution result state failed.")
-	}
-	if errorResp != nil {
-		log.WithFields(log.Fields{
-			"server":    server.ID,
-			"task":      id,
-			"step":      stepName,
-			"state":     state,
-			"errorResp": errorResp[0].ID}).
 			Warn("Update task step execution result state failed.")
 	}
 }
@@ -267,7 +240,7 @@ func (s *ServerTask) SetTaskStepRunning(c *context.Base, id string, stepName str
 		"task":   id,
 		"step":   stepName}).
 		Debug("Set task step to running.")
-	_, errorResp, err := taskSDK.SetStepExecutionState(id, stepName, taskModel.ExecutionStateRunning)
+	_, err := taskSDK.SetStepExecutionState(id, stepName, taskModel.ExecutionStateRunning)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"server": server.ID,
@@ -276,24 +249,15 @@ func (s *ServerTask) SetTaskStepRunning(c *context.Base, id string, stepName str
 			"error":  err}).
 			Warn("Set task step to running failed.")
 	}
-	if errorResp != nil {
-		log.WithFields(log.Fields{
-			"server":    server.ID,
-			"task":      id,
-			"step":      stepName,
-			"errorResp": errorResp[0].ID}).
-			Warn("Set task step to running failed.")
-	}
 }
 
-func (s *ServerTask) logUpdateStepResult(c *context.Base, id string, stepName string, server *model.Server, err error, errorResp []base.ErrorResponse) {
-	if err != nil || errorResp != nil {
+func (s *ServerTask) logUpdateStepResult(c *context.Base, id string, stepName string, server *model.Server, err error) {
+	if err != nil {
 		log.WithFields(log.Fields{
 			"server": server.ID,
 			"task":   id,
 			"step":   stepName,
 			"error":  err,
-			"errorResp": errorResp[0].ID,
 		}).Warn("Set task step to finished failed.")
 	}
 }
@@ -305,8 +269,8 @@ func (s *ServerTask) SetTaskStepFinished(c *context.Base, id string, stepName st
 	request.ExecutionState = &taskModel.ExecutionStateTerminated
 	request.ExecutionResult = new(taskDTO.UpdateExecutionResultRequest)
 	request.ExecutionResult.State = &taskModel.ExecutionResultStateFinished
-	_, errorResp, err := taskSDK.UpdateStep(id, request)
-	s.logUpdateStepResult(c, id, stepName, server, err, errorResp)
+	_, err := taskSDK.UpdateStep(id, request)
+	s.logUpdateStepResult(c, id, stepName, server, err)
 }
 
 // SetTaskStepWarning Set the task step to warning.
@@ -316,8 +280,8 @@ func (s *ServerTask) SetTaskStepWarning(c *context.Base, id string, stepName str
 	request.ExecutionState = &taskModel.ExecutionStateTerminated
 	request.ExecutionResult = new(taskDTO.UpdateExecutionResultRequest)
 	request.ExecutionResult.State = &taskModel.ExecutionResultStateWarning
-	_, errorResp, err := taskSDK.UpdateStep(id, request)
-	s.logUpdateStepResult(c, id, stepName, server, err, errorResp)
+	_, err := taskSDK.UpdateStep(id, request)
+	s.logUpdateStepResult(c, id, stepName, server, err)
 }
 
 // SetTaskStepError Set the task step to error.
@@ -328,6 +292,6 @@ func (s *ServerTask) SetTaskStepError(c *context.Base, id string, stepName strin
 	request.ExecutionState = &taskModel.ExecutionStateTerminated
 	request.ExecutionResult = new(taskDTO.UpdateExecutionResultRequest)
 	request.ExecutionResult.State = &taskModel.ExecutionResultStateError
-	_, errorResp, err := taskSDK.UpdateStep(id, request)
-	s.logUpdateStepResult(c, id, stepName, server, err, errorResp)
+	_, err := taskSDK.UpdateStep(id, request)
+	s.logUpdateStepResult(c, id, stepName, server, err)
 }

@@ -1,15 +1,10 @@
 package redfish
 
 import (
-	"bytes"
-	"crypto/tls"
-	"encoding/json"
 	"errors"
-	"fmt"
 	log "github.com/sirupsen/logrus"
-	"io"
-	"net/http"
-	. "promise/server/client/redfish/dto"
+	"promise/base"
+	"promise/server/client/redfish/dto"
 	"promise/server/object/constvalue"
 	"promise/server/object/model"
 )
@@ -19,73 +14,54 @@ const (
 	CommonHead string = "application/json; charset=utf-8"
 )
 
-// RedfishClient is the redfish client.
-type RedfishClient struct {
-	Client       *http.Client
-	Address      string
-	Username     string
-	Password     string
-	token        string
-	UseBasicAuth bool
+// Client is the redfish client.
+type Client struct {
+	base.Client
 }
 
 // GetInstance Get a new instance of Redfish client.
-func GetInstance(address string, username string, password string, useBasicAuth bool) *RedfishClient {
-	return &RedfishClient{
-		Client:       &http.Client{Transport: &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}},
-		Address:      address,
-		Username:     username,
-		Password:     password,
-		UseBasicAuth: useBasicAuth,
-	}
+func GetInstance(address string, username string, password string) *Client {
+	client := Client{}
+	client.Protocol = "https"
+	client.CurrentAddress = address
+	client.Username = username
+	client.Password = password
+	return &client
 }
 
 // Support check if support.
-func (c *RedfishClient) Support() bool {
+func (c *Client) Support() bool {
 	// Form the REST request.
-	req, err := http.NewRequest(http.MethodGet, c.address("/redfish/v1"), nil)
-	if err != nil {
-		log.Warn("NewRequest() failed, error = ", err)
+	if err := c.Get("/redfish/v1", nil); err != nil {
 		return false
 	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept", "application/json")
-	resp, err := c.Client.Do(req)
-	if err != nil {
-		return false
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode == http.StatusOK {
-		return true
-	}
-	return false
-
+	return true
 }
 
 // GetProtocol Get the protocal used by this client.
-func (c *RedfishClient) GetProtocol() string {
+func (c *Client) GetProtocol() string {
 	return constvalue.RedfishV1
 }
 
 // GetBasicInfo Get server basic info.
 // Just set parts of the properties.
-func (c *RedfishClient) GetBasicInfo() (*model.ServerBasicInfo, error) {
+func (c *Client) GetBasicInfo() (*model.ServerBasicInfo, error) {
 	// First set the server type.
-	var chassisCollection = Collection{}
-	if err := c.getObject("/redfish/v1/chassis", &chassisCollection); err != nil {
+	var chassisCollection = dto.Collection{}
+	if err := c.Get("/redfish/v1/chassis", &chassisCollection); err != nil {
 		return nil, err
 	}
 
-	var systemCollection = Collection{}
-	if err := c.getObject("/redfish/v1/systems", &systemCollection); err != nil {
+	var systemCollection = dto.Collection{}
+	if err := c.Get("/redfish/v1/systems", &systemCollection); err != nil {
 		return nil, err
 	}
 
 	// If chassis count = 1, and computer system count = 1, it must be a blade or rack.
 	if chassisCollection.Count == 1 && systemCollection.Count == 1 {
 		// Get info from Computer system.
-		var system = GetSystemResponse{}
-		if err := c.getObject(systemCollection.Members[0].Id, &system); err != nil {
+		var system = dto.GetSystemResponse{}
+		if err := c.Get(systemCollection.Members[0].Id, &system); err != nil {
 			return nil, err
 		}
 		ret := model.ServerBasicInfo{}
@@ -94,8 +70,8 @@ func (c *RedfishClient) GetBasicInfo() (*model.ServerBasicInfo, error) {
 		ret.PhysicalUUID = system.PhysicalUUID
 		ret.Protocol = constvalue.RedfishV1
 		// Get info from chassis.
-		var chassis = GetChassisResponse{}
-		if err := c.getObject(chassisCollection.Members[0].Id, &chassis); err != nil {
+		var chassis = dto.GetChassisResponse{}
+		if err := c.Get(chassisCollection.Members[0].Id, &chassis); err != nil {
 			return nil, err
 		}
 		if *chassis.ChassisType == "" {
@@ -109,28 +85,28 @@ func (c *RedfishClient) GetBasicInfo() (*model.ServerBasicInfo, error) {
 }
 
 // CreateManagementAccount Create Management account.
-func (c *RedfishClient) CreateManagementAccount(username string, password string) error {
-	requestBody := PostAccountRequest{
+func (c *Client) CreateManagementAccount(username string, password string) error {
+	requestBody := dto.PostAccountRequest{
 		UserName: username,
 		Password: password,
 		RoleId:   "Administrator",
 	}
-	if err := c.postObject("/redfish/v1/AccountService/Accounts", requestBody, nil); err != nil {
-		return errors.New("create management account failed")
+	if err := c.Post("/redfish/v1/AccountService/Accounts", requestBody, nil); err != nil {
+		return err
 	}
 	return nil
 }
 
 // GetProcessors Get server's process info.
-func (c *RedfishClient) GetProcessors(systemID string) ([]model.Processor, error) {
-	collection := Collection{}
-	if err := c.getObject(systemID+"/processors", &collection); err != nil {
+func (c *Client) GetProcessors(systemID string) ([]model.Processor, error) {
+	collection := dto.Collection{}
+	if err := c.Get(systemID+"/processors", &collection); err != nil {
 		return nil, err
 	}
 	var ret []model.Processor
 	for i := range collection.Members {
-		each := new(GetProcessorResponse)
-		if err := c.getObject(collection.Members[i].Id, each); err != nil {
+		each := new(dto.GetProcessorResponse)
+		if err := c.Get(collection.Members[i].Id, each); err != nil {
 			return nil, err
 		}
 		ret = append(ret, *createProcessorModel(each))
@@ -139,16 +115,16 @@ func (c *RedfishClient) GetProcessors(systemID string) ([]model.Processor, error
 }
 
 // GetMemory Get server's memory info.
-func (c *RedfishClient) GetMemory(systemID string) ([]model.Memory, error) {
-	collection := Collection{}
-	if err := c.getObject(systemID+"/memory", &collection); err != nil {
+func (c *Client) GetMemory(systemID string) ([]model.Memory, error) {
+	collection := dto.Collection{}
+	if err := c.Get(systemID+"/memory", &collection); err != nil {
 		return nil, err
 	}
 
 	var ret []model.Memory
 	for i := range collection.Members {
-		each := new(GetMemoryResponse)
-		if err := c.getObject(collection.Members[i].Id, each); err != nil {
+		each := new(dto.GetMemoryResponse)
+		if err := c.Get(collection.Members[i].Id, each); err != nil {
 			return nil, err
 		}
 		ret = append(ret, *createMemoryModel(each))
@@ -157,27 +133,27 @@ func (c *RedfishClient) GetMemory(systemID string) ([]model.Memory, error) {
 }
 
 // GetEthernetInterfaces Get server's ethernet interface info.
-func (c *RedfishClient) GetEthernetInterfaces(systemID string) ([]model.EthernetInterface, error) {
-	collection := Collection{}
-	if err := c.getObject(systemID+"/EthernetInterfaces", &collection); err != nil {
+func (c *Client) GetEthernetInterfaces(systemID string) ([]model.EthernetInterface, error) {
+	collection := dto.Collection{}
+	if err := c.Get(systemID+"/EthernetInterfaces", &collection); err != nil {
 		return nil, err
 	}
 	var ret []model.EthernetInterface
 	for i := range collection.Members {
-		eachEthernet := new(GetEthernetInterfaceResponse)
-		if err := c.getObject(collection.Members[i].Id, eachEthernet); err != nil {
+		eachEthernet := new(dto.GetEthernetInterfaceResponse)
+		if err := c.Get(collection.Members[i].Id, eachEthernet); err != nil {
 			return nil, err
 		}
 		// Get the VLANs
-		vlanCollection := Collection{}
+		vlanCollection := dto.Collection{}
 		vlanCollectionPageURI := systemID + "/EthernetInterfaces/" + *eachEthernet.Id + "/vlans"
-		if err := c.getObject(vlanCollectionPageURI, &vlanCollection); err != nil {
+		if err := c.Get(vlanCollectionPageURI, &vlanCollection); err != nil {
 			return nil, err
 		}
 		var vlans []model.VLanNetworkInterface
 		for j := range vlanCollection.Members {
-			eachVlan := new(GetVLANResponse)
-			if err := c.getObject(collection.Members[j].Id, eachVlan); err != nil {
+			eachVlan := new(dto.GetVLANResponse)
+			if err := c.Get(collection.Members[j].Id, eachVlan); err != nil {
 				return nil, err
 			}
 			vlans = append(vlans, *createVLanModel(eachVlan))
@@ -190,15 +166,15 @@ func (c *RedfishClient) GetEthernetInterfaces(systemID string) ([]model.Ethernet
 }
 
 // GetNetworkInterfaces get network interfaces.
-func (c *RedfishClient) GetNetworkInterfaces(systemID string) ([]model.NetworkInterface, error) {
-	collection := Collection{}
-	if err := c.getObject(systemID+"/NetworkInterfaces", &collection); err != nil {
+func (c *Client) GetNetworkInterfaces(systemID string) ([]model.NetworkInterface, error) {
+	collection := dto.Collection{}
+	if err := c.Get(systemID+"/NetworkInterfaces", &collection); err != nil {
 		return nil, err
 	}
 	var ret []model.NetworkInterface
 	for i := range collection.Members {
-		networkInterface := new(GetNetworkInterfaceResponse)
-		if err := c.getObject(collection.Members[i].Id, networkInterface); err != nil {
+		networkInterface := new(dto.GetNetworkInterfaceResponse)
+		if err := c.Get(collection.Members[i].Id, networkInterface); err != nil {
 			return nil, err
 		}
 
@@ -208,15 +184,15 @@ func (c *RedfishClient) GetNetworkInterfaces(systemID string) ([]model.NetworkIn
 }
 
 // GetStorages get storages.
-func (c *RedfishClient) GetStorages(systemID string) ([]model.Storage, error) {
-	collection := Collection{}
-	if err := c.getObject(systemID+"/storages", &collection); err != nil {
+func (c *Client) GetStorages(systemID string) ([]model.Storage, error) {
+	collection := dto.Collection{}
+	if err := c.Get(systemID+"/storages", &collection); err != nil {
 		return nil, err
 	}
 	ret := []model.Storage{}
 	for i := range collection.Members {
-		storage := new(GetStorageResponse)
-		if err := c.getObject(collection.Members[i].Id, storage); err != nil {
+		storage := new(dto.GetStorageResponse)
+		if err := c.Get(collection.Members[i].Id, storage); err != nil {
 			return nil, err
 		}
 
@@ -226,9 +202,9 @@ func (c *RedfishClient) GetStorages(systemID string) ([]model.Storage, error) {
 }
 
 // GetPower get power.
-func (c *RedfishClient) GetPower(chassisID string) (*model.Power, error) {
-	power := new(GetPowerResponse)
-	if err := c.getObject(chassisID+"/power", power); err != nil {
+func (c *Client) GetPower(chassisID string) (*model.Power, error) {
+	power := new(dto.GetPowerResponse)
+	if err := c.Get(chassisID+"/power", power); err != nil {
 		return nil, err
 	}
 	model := createPowerModel(power)
@@ -236,24 +212,24 @@ func (c *RedfishClient) GetPower(chassisID string) (*model.Power, error) {
 }
 
 // GetThermal get thermal.
-func (c *RedfishClient) GetThermal(chassisID string) (*model.Thermal, error) {
-	thermal := new(GetThermalResponse)
-	if err := c.getObject(chassisID+"/thermal", thermal); err != nil {
+func (c *Client) GetThermal(chassisID string) (*model.Thermal, error) {
+	thermal := new(dto.GetThermalResponse)
+	if err := c.Get(chassisID+"/thermal", thermal); err != nil {
 	}
 	model := createThermalModel(thermal)
 	return model, nil
 }
 
 // GetOemHuaweiBoards get oem huawei boards.
-func (c *RedfishClient) GetOemHuaweiBoards(chassisID string) ([]model.OemHuaweiBoard, error) {
-	collection := Collection{}
-	if err := c.getObject(chassisID+"/boards", &collection); err != nil {
+func (c *Client) GetOemHuaweiBoards(chassisID string) ([]model.OemHuaweiBoard, error) {
+	collection := dto.Collection{}
+	if err := c.Get(chassisID+"/boards", &collection); err != nil {
 		return nil, err
 	}
 	ret := []model.OemHuaweiBoard{}
 	for i := range collection.Members {
-		board := new(GetOemHuaweiBoardResponse)
-		if err := c.getObject(collection.Members[i].Id, board); err != nil {
+		board := new(dto.GetOemHuaweiBoardResponse)
+		if err := c.Get(collection.Members[i].Id, board); err != nil {
 			return nil, err
 		}
 		ret = append(ret, *createOemHuaweiBoardModel(board))
@@ -262,15 +238,15 @@ func (c *RedfishClient) GetOemHuaweiBoards(chassisID string) ([]model.OemHuaweiB
 }
 
 // GetNetworkAdapters get networkadapters.
-func (c *RedfishClient) GetNetworkAdapters(chassisID string) ([]model.NetworkAdapter, error) {
-	collection := Collection{}
-	if err := c.getObject(chassisID+"/NetworkAdapters", &collection); err != nil {
+func (c *Client) GetNetworkAdapters(chassisID string) ([]model.NetworkAdapter, error) {
+	collection := dto.Collection{}
+	if err := c.Get(chassisID+"/NetworkAdapters", &collection); err != nil {
 		return nil, err
 	}
 	var ret []model.NetworkAdapter
 	for i := range collection.Members {
-		resp := new(GetNetworkAdapterResponse)
-		if err := c.getObject(collection.Members[i].Id, resp); err != nil {
+		resp := new(dto.GetNetworkAdapterResponse)
+		if err := c.Get(collection.Members[i].Id, resp); err != nil {
 			return nil, err
 		}
 		networkAdpter := createNetworkAdapterModel(resp)
@@ -279,8 +255,8 @@ func (c *RedfishClient) GetNetworkAdapters(chassisID string) ([]model.NetworkAda
 			portsResp := resp.Controllers[j].Links.NetworkPorts
 			for k := range portsResp {
 				portPageURI := portsResp[k].OdataId
-				portResp := new(NetworkPort)
-				if err := c.getObject(portPageURI, portResp); err != nil {
+				portResp := new(dto.NetworkPort)
+				if err := c.Get(portPageURI, portResp); err != nil {
 					return nil, err
 				}
 				eachController.NetworkPorts = append(eachController.NetworkPorts, *createNetworkPortModel(portResp))
@@ -294,17 +270,17 @@ func (c *RedfishClient) GetNetworkAdapters(chassisID string) ([]model.NetworkAda
 }
 
 // GetDrives get drives.
-func (c *RedfishClient) GetDrives(chassisID string) ([]model.Drive, error) {
+func (c *Client) GetDrives(chassisID string) ([]model.Drive, error) {
 	// Get the Drive links from chassis.
-	chassis := new(GetChassisResponse)
-	if err := c.getObject(chassisID, chassis); err != nil {
+	chassis := new(dto.GetChassisResponse)
+	if err := c.Get(chassisID, chassis); err != nil {
 		return nil, err
 	}
 	ret := []model.Drive{}
 	for i := range chassis.Links.Drives {
 		uri := chassis.Links.Drives[i].OdataId
-		drive := new(GetDriveResponse)
-		if err := c.getObject(uri, drive); err != nil {
+		drive := new(dto.GetDriveResponse)
+		if err := c.Get(uri, drive); err != nil {
 			return nil, err
 		}
 		ret = append(ret, *createDriveModel(drive))
@@ -313,24 +289,24 @@ func (c *RedfishClient) GetDrives(chassisID string) ([]model.Drive, error) {
 }
 
 // GetPCIeDevices get PCIeDevices.
-func (c *RedfishClient) GetPCIeDevices(chassisID string) ([]model.PCIeDevice, error) {
+func (c *Client) GetPCIeDevices(chassisID string) ([]model.PCIeDevice, error) {
 	// Get the Drive links from chassis.
-	chassis := new(GetChassisResponse)
-	if err := c.getObject(chassisID, chassis); err != nil {
+	chassis := new(dto.GetChassisResponse)
+	if err := c.Get(chassisID, chassis); err != nil {
 		return nil, err
 	}
 	ret := []model.PCIeDevice{}
 	for i := range chassis.Links.PCIeDevices {
 		uri := chassis.Links.PCIeDevices[i].OdataId
-		pcieDevice := new(GetPCIeDeviceResponse)
-		if err := c.getObject(uri, pcieDevice); err != nil {
+		pcieDevice := new(dto.GetPCIeDeviceResponse)
+		if err := c.Get(uri, pcieDevice); err != nil {
 			return nil, err
 		}
-		pcieFunctions := new([]GetPCIeFunctionResponse)
+		pcieFunctions := new([]dto.GetPCIeFunctionResponse)
 		for j := range pcieDevice.Links.PCIeFunctions {
 			uri := pcieDevice.Links.PCIeFunctions[j].OdataId
-			pcieFunction := new(GetPCIeFunctionResponse)
-			if err := c.getObject(uri, pcieFunction); err != nil {
+			pcieFunction := new(dto.GetPCIeFunctionResponse)
+			if err := c.Get(uri, pcieFunction); err != nil {
 				return nil, err
 			}
 			*pcieFunctions = append(*pcieFunctions, *pcieFunction)
@@ -342,15 +318,15 @@ func (c *RedfishClient) GetPCIeDevices(chassisID string) ([]model.PCIeDevice, er
 }
 
 // GetNetworkPorts get network ports.
-func (c *RedfishClient) GetNetworkPorts(uri string) ([]model.NetworkPort, error) {
-	collection := Collection{}
-	if err := c.getObject(uri, &collection); err != nil {
+func (c *Client) GetNetworkPorts(uri string) ([]model.NetworkPort, error) {
+	collection := dto.Collection{}
+	if err := c.Get(uri, &collection); err != nil {
 		return nil, err
 	}
 	var ret []model.NetworkPort
 	for i := range collection.Members {
-		resp := new(NetworkPort)
-		if err := c.getObject(collection.Members[i].Id, resp); err != nil {
+		resp := new(dto.NetworkPort)
+		if err := c.Get(collection.Members[i].Id, resp); err != nil {
 			return nil, err
 		}
 		ret = append(ret, *createNetworkPortModel(resp))
@@ -358,97 +334,7 @@ func (c *RedfishClient) GetNetworkPorts(uri string) ([]model.NetworkPort, error)
 	return ret, nil
 }
 
-// The REST operation.
-func (c *RedfishClient) rest(method string, uri string, body io.Reader) (resp *http.Response, err error) {
-	url := c.address(uri)
-	// Form the REST request.
-	req, err := http.NewRequest(method, url, body)
-	if err != nil {
-		log.Warn("NewRequest() failed, method = ", method, ", URL = ", url, ", error = ", err)
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept", "application/json")
-	// For basic auth, we pend credential first.
-	if c.UseBasicAuth {
-		// For basic auth.
-		req.SetBasicAuth(c.Username, c.Password)
-	}
-	response, err := c.Client.Do(req)
-	if err != nil {
-		log.Warn("Do() failed, method = ", method, ", URL = ", url, ", error = ", err)
-		return nil, err
-	}
-	return response, err
-
-}
-
-//
-// Private methods.
-//
-
-// Get the complete address.
-func (c *RedfishClient) address(uri string) string {
-	var buf bytes.Buffer
-
-	buf.WriteString("https://")
-	buf.WriteString(c.Address)
-	buf.WriteString(uri)
-
-	return buf.String()
-}
-
-// Get and parse the object.
-func (c *RedfishClient) getObject(uri string, o interface{}) error {
-	resp, err := c.rest(http.MethodGet, uri, nil)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-	if resp.Body == nil {
-		log.Warn("getObject() failed, resposne body is empty, URI = ", uri)
-		return errors.New("response body is empty")
-	}
-	if resp.StatusCode != http.StatusOK {
-		log.Warn("getObject() failed, URI = ", uri, ", response code = ", resp.StatusCode)
-		return fmt.Errorf("response code = %d", resp.StatusCode)
-	}
-	if err := json.NewDecoder(resp.Body).Decode(o); err != nil {
-		log.Warn("NewDecoder() failed, URI = ", uri, ", error = ", err)
-		return err
-	}
-	return nil
-
-}
-
-func (c *RedfishClient) postObject(uri string, req interface{}, response interface{}) error {
-	b := new(bytes.Buffer)
-	json.NewEncoder(b).Encode(req)
-	resp, err := c.rest(http.MethodPost, uri, b)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusCreated {
-		// respBody := ioutil.ReadAll(resp.Body)
-		log.Warn("postObject() failed, URI = ", uri, ", response code = ", resp.StatusCode)
-		return fmt.Errorf("response code = %d", resp.StatusCode)
-	}
-	if resp.Body == nil {
-		return nil
-	}
-	// Decode only when the client asked for.
-	if response != nil {
-		if err := json.NewDecoder(resp.Body).Decode(response); err != nil {
-			log.Warn("NewDecoder() failed, URI = ", uri, ", error = ", err)
-			return err
-		}
-	}
-	return nil
-}
-
-func createProcessorModel(d *GetProcessorResponse) *model.Processor {
+func createProcessorModel(d *dto.GetProcessorResponse) *model.Processor {
 	ret := model.Processor{}
 	createResourceModel(&d.Resource, &ret.Resource)
 	createProductInfoModel(&d.ProductInfo, &ret.ProductInfo)
@@ -470,7 +356,7 @@ func createProcessorModel(d *GetProcessorResponse) *model.Processor {
 	return &ret
 }
 
-func createResourceModel(d *Resource, m *model.Resource) {
+func createResourceModel(d *dto.Resource, m *model.Resource) {
 	m.URI = d.OdataID
 	m.Name = d.Name
 	m.Description = d.Description
@@ -481,7 +367,7 @@ func createResourceModel(d *Resource, m *model.Resource) {
 	}
 }
 
-func createMemberModel(d *Member, m *model.Member) {
+func createMemberModel(d *dto.Member, m *model.Member) {
 	m.URI = d.OdataID
 	m.Name = d.Name
 	m.Description = d.Description
@@ -492,7 +378,7 @@ func createMemberModel(d *Member, m *model.Member) {
 	}
 }
 
-func createThresholdModel(d *Threshold, m *model.Threshold) {
+func createThresholdModel(d *dto.Threshold, m *model.Threshold) {
 	m.UpperThresholdNonCritical = d.UpperThresholdNonCritical
 	m.UpperThresholdCritical = d.UpperThresholdCritical
 	m.UpperThresholdFatal = d.UpperThresholdFatal
@@ -501,7 +387,7 @@ func createThresholdModel(d *Threshold, m *model.Threshold) {
 	m.LowerThresholdFatal = d.LowerThresholdFatal
 }
 
-func createProductInfoModel(d *ProductInfo, m *model.ProductInfo) {
+func createProductInfoModel(d *dto.ProductInfo, m *model.ProductInfo) {
 	m.Model = d.Model
 	m.Manufacturer = d.Manufacturer
 	m.SKU = d.SKU
@@ -511,12 +397,12 @@ func createProductInfoModel(d *ProductInfo, m *model.ProductInfo) {
 	m.AssetTag = d.AssetTag
 }
 
-func createLocationModel(d *Location, m *model.Location) {
+func createLocationModel(d *dto.Location, m *model.Location) {
 	m.Info = d.Info
 	m.InfoFormat = d.InfoFormat
 }
 
-func createMemoryModel(d *GetMemoryResponse) *model.Memory {
+func createMemoryModel(d *dto.GetMemoryResponse) *model.Memory {
 	ret := model.Memory{}
 	createResourceModel(&d.Resource, &ret.Resource)
 	createProductInfoModel(&d.ProductInfo, &ret.ProductInfo)
@@ -537,7 +423,7 @@ func createMemoryModel(d *GetMemoryResponse) *model.Memory {
 	return &ret
 }
 
-func createEthernetInterfaceModel(d *GetEthernetInterfaceResponse) *model.EthernetInterface {
+func createEthernetInterfaceModel(d *dto.GetEthernetInterfaceResponse) *model.EthernetInterface {
 	ret := model.EthernetInterface{}
 	createResourceModel(&d.Resource, &ret.Resource)
 	ret.UefiDevicePath = d.UefiDevicePath
@@ -579,7 +465,7 @@ func createEthernetInterfaceModel(d *GetEthernetInterfaceResponse) *model.Ethern
 	return &ret
 }
 
-func createVLanModel(d *GetVLANResponse) *model.VLanNetworkInterface {
+func createVLanModel(d *dto.GetVLANResponse) *model.VLanNetworkInterface {
 	ret := model.VLanNetworkInterface{}
 	createResourceModel(&d.Resource, &ret.Resource)
 	ret.VLANEnable = d.VLANEnable
@@ -587,14 +473,14 @@ func createVLanModel(d *GetVLANResponse) *model.VLanNetworkInterface {
 	return &ret
 }
 
-func createNetworkInterfaceModel(d *GetNetworkInterfaceResponse) *model.NetworkInterface {
+func createNetworkInterfaceModel(d *dto.GetNetworkInterfaceResponse) *model.NetworkInterface {
 	ret := model.NetworkInterface{}
 	createResourceModel(&d.Resource, &ret.Resource)
 	ret.NetworkAdapterURI = d.Links.NetworkAdapter.OdataId
 	return &ret
 }
 
-func createStorageControllerModel(d *StorageController) *model.StorageController {
+func createStorageControllerModel(d *dto.StorageController) *model.StorageController {
 	ret := model.StorageController{}
 	createMemberModel(&d.Member, &ret.Member)
 	createProductInfoModel(&d.ProductInfo, &ret.ProductInfo)
@@ -604,7 +490,7 @@ func createStorageControllerModel(d *StorageController) *model.StorageController
 	return &ret
 }
 
-func createStorageModel(d *GetStorageResponse) *model.Storage {
+func createStorageModel(d *dto.GetStorageResponse) *model.Storage {
 	ret := model.Storage{}
 	createResourceModel(&d.Resource, &ret.Resource)
 	for i := range d.Drives {
@@ -616,15 +502,15 @@ func createStorageModel(d *GetStorageResponse) *model.Storage {
 	return &ret
 }
 
-func createPowerModel(d *GetPowerResponse) *model.Power {
-	dto := *d
+func createPowerModel(d *dto.GetPowerResponse) *model.Power {
+	r := *d
 	ret := model.Power{}
 	createResourceModel(&d.Resource, &ret.Resource)
 	// PowerControl
 	powerControl := []model.PowerControl{}
-	for i := range *dto.PowerControl {
+	for i := range *r.PowerControl {
 		eachModel := model.PowerControl{}
-		eachDto := (*dto.PowerControl)[i]
+		eachDto := (*r.PowerControl)[i]
 		createResourceModel(&eachDto.Resource, &eachModel.Resource)
 		createProductInfoModel(&eachDto.ProductInfo, &eachModel.ProductInfo)
 		eachModel.PowerConsumedWatts = eachDto.PowerConsumedWatts
@@ -652,9 +538,9 @@ func createPowerModel(d *GetPowerResponse) *model.Power {
 
 	// Voltages
 	voltages := []model.Voltage{}
-	for i := range *dto.Voltages {
+	for i := range *r.Voltages {
 		eachModel := model.Voltage{}
-		eachDto := (*dto.Voltages)[i]
+		eachDto := (*r.Voltages)[i]
 		createResourceModel(&eachDto.Resource, &eachModel.Resource)
 		createThresholdModel(&eachDto.Threshold, &eachModel.Threshold)
 		eachModel.SensorNumber = eachDto.SensorNumber
@@ -668,9 +554,9 @@ func createPowerModel(d *GetPowerResponse) *model.Power {
 
 	// PowerSupplies
 	powerSupplies := []model.PowerSupply{}
-	for i := range *dto.PowerSupplies {
+	for i := range *r.PowerSupplies {
 		eachModel := model.PowerSupply{}
-		eachDto := (*dto.PowerSupplies)[i]
+		eachDto := (*r.PowerSupplies)[i]
 		createResourceModel(&eachDto.Resource, &eachModel.Resource)
 		createProductInfoModel(&eachDto.ProductInfo, &eachModel.ProductInfo)
 		eachModel.PowerSupplyType = eachDto.PowerSupplyType
@@ -686,9 +572,9 @@ func createPowerModel(d *GetPowerResponse) *model.Power {
 
 	// Redundancy
 	redundancy := []model.Redundancy{}
-	for i := range *dto.Redundancy {
+	for i := range *r.Redundancy {
 		eachModel := model.Redundancy{}
-		eachDto := (*dto.Redundancy)[i]
+		eachDto := (*r.Redundancy)[i]
 		createResourceModel(&eachDto.Resource, &eachModel.Resource)
 		eachModel.Mode = eachDto.Mode
 		eachModel.MaxNumSupported = eachDto.MaxNumSupported
@@ -697,10 +583,10 @@ func createPowerModel(d *GetPowerResponse) *model.Power {
 		// only name is needed in the name of redundancy set.
 		redundancySet := []string{}
 		for j := range *eachDto.RedundancySet {
-			for k := range *dto.PowerSupplies {
-				redundancyOdataId := (*eachDto.RedundancySet)[j].OdataId
-				powerSupply := (*dto.PowerSupplies)[k]
-				if *powerSupply.OdataID == redundancyOdataId {
+			for k := range *r.PowerSupplies {
+				redundancyOdataID := (*eachDto.RedundancySet)[j].OdataId
+				powerSupply := (*r.PowerSupplies)[k]
+				if *powerSupply.OdataID == redundancyOdataID {
 					redundancySet = append(redundancySet, *powerSupply.Name)
 				}
 			}
@@ -712,7 +598,7 @@ func createPowerModel(d *GetPowerResponse) *model.Power {
 	return &ret
 }
 
-func createThermalModel(d *GetThermalResponse) *model.Thermal {
+func createThermalModel(d *dto.GetThermalResponse) *model.Thermal {
 	ret := new(model.Thermal)
 	createResourceModel(&d.Resource, &ret.Resource)
 	temperatures := []model.Temperature{}
@@ -746,7 +632,7 @@ func createThermalModel(d *GetThermalResponse) *model.Thermal {
 	return ret
 }
 
-func createOemHuaweiBoardModel(d *GetOemHuaweiBoardResponse) *model.OemHuaweiBoard {
+func createOemHuaweiBoardModel(d *dto.GetOemHuaweiBoardResponse) *model.OemHuaweiBoard {
 	ret := new(model.OemHuaweiBoard)
 	createResourceModel(&d.Resource, &ret.Resource)
 	createProductInfoModel(&d.ProductInfo, &ret.ProductInfo)
@@ -762,21 +648,21 @@ func createOemHuaweiBoardModel(d *GetOemHuaweiBoardResponse) *model.OemHuaweiBoa
 	return ret
 }
 
-func createNetworkAdapterModel(d *GetNetworkAdapterResponse) *model.NetworkAdapter {
+func createNetworkAdapterModel(d *dto.GetNetworkAdapterResponse) *model.NetworkAdapter {
 	ret := new(model.NetworkAdapter)
 	createResourceModel(&d.Resource, &ret.Resource)
 	createProductInfoModel(&d.ProductInfo, &ret.ProductInfo)
 	return ret
 }
 
-func createControllerModel(d *Controller) *model.Controller {
+func createControllerModel(d *dto.Controller) *model.Controller {
 	ret := new(model.Controller)
 	ret.FirmwarePackageVersion = d.FirmwarePackageVersion
 	ret.ControllerCapabilities.NetworkPortCount = d.ControllerCapabilities.NetworkPortCount
 	return ret
 }
 
-func createNetworkPortModel(d *NetworkPort) *model.NetworkPort {
+func createNetworkPortModel(d *dto.NetworkPort) *model.NetworkPort {
 	ret := new(model.NetworkPort)
 	createResourceModel(&d.Resource, &ret.Resource)
 	ret.PhysicalPortNumber = d.PhysicalPortNumber
@@ -785,7 +671,7 @@ func createNetworkPortModel(d *NetworkPort) *model.NetworkPort {
 	return ret
 }
 
-func createDriveModel(d *GetDriveResponse) *model.Drive {
+func createDriveModel(d *dto.GetDriveResponse) *model.Drive {
 	ret := new(model.Drive)
 	createResourceModel(&d.Resource, &ret.Resource)
 	createProductInfoModel(&d.ProductInfo, &ret.ProductInfo)
@@ -808,7 +694,7 @@ func createDriveModel(d *GetDriveResponse) *model.Drive {
 	return ret
 }
 
-func createPCIeDeviceModel(device *GetPCIeDeviceResponse, functions *[]GetPCIeFunctionResponse) *model.PCIeDevice {
+func createPCIeDeviceModel(device *dto.GetPCIeDeviceResponse, functions *[]dto.GetPCIeFunctionResponse) *model.PCIeDevice {
 	ret := new(model.PCIeDevice)
 	createResourceModel(&device.Resource, &ret.Resource)
 	createProductInfoModel(&device.ProductInfo, &ret.ProductInfo)
@@ -820,7 +706,7 @@ func createPCIeDeviceModel(device *GetPCIeDeviceResponse, functions *[]GetPCIeFu
 	return ret
 }
 
-func createPCIeFunctionModel(d *GetPCIeFunctionResponse) *model.PCIeFunction {
+func createPCIeFunctionModel(d *dto.GetPCIeFunctionResponse) *model.PCIeFunction {
 	ret := new(model.PCIeFunction)
 	createResourceModel(&d.Resource, &ret.Resource)
 	ret.DeviceClass = d.DeviceClass

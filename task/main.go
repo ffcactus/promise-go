@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	base.Init("TaskApp")
+	base.Init("task")
 	base.InitMQService()
 	defer base.StopMQService()
 	initDB()

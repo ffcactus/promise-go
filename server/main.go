@@ -34,7 +34,7 @@ func initDB() {
 }
 
 func main() {
-	base.Init("ServerApp")
+	base.Init("server")
 	base.InitMQService()
 	defer base.StopMQService()
 	initDB()

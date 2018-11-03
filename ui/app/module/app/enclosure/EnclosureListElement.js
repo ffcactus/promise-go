@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
+import EnclosureTask from './EnclosureTask';
 import * as EnclosureAction from './EnclosureAction';
 import { Health } from '../../promise/common/Widget/Health';
 import styles from './App.css';
@@ -18,15 +19,19 @@ class EnclosureListElement extends React.Component {
   }
 
   render() {
-    const currentStyle = 'border-column selectable ' + (this.props.selected ? 'selected' : 'not-selected');
+    const { enclosure } = this.props;
+    const currentStyle = 'flex-item bottom-border center-left-container selectable ' + (this.props.selected ? 'selected' : 'not-selected');
+    let percentage = 100;
+    if (enclosure.UI !== null && enclosure.UI.task !== null) {
+      percentage = enclosure.UI.task.Percentage;
+    }
     return (
-      <div styleName={currentStyle} onClick={this.onSelect}>
-        <div>
-          <Health health={this.props.enclosure.Health}/>
-        </div>
+      <div styleName={currentStyle} onClick={this.onSelect} style={{height: '39px'}}>
+        <Health health={enclosure.Health}/>
         <div styleName="center-container">
-          <p>{this.props.enclosure.Name}</p>
+          <p>{enclosure.Name}</p>
         </div>
+        {percentage === 100 ? null : <EnclosureTask percentage={percentage}/>}
       </div>
     );
   }
@@ -40,7 +45,7 @@ EnclosureListElement.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   return {
-    selected: ownProps.enclosure.URI === state.enclosureApp.currentEnclosureUri,
+    selected: ownProps.enclosure.URI === state.enclosureApp.enclosureUri,
   };
 }
 

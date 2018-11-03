@@ -14,12 +14,12 @@ class ProfileResourceItem extends React.Component {
 
   onClick(event) {
     event.preventDefault();
-    this.props.dispatch(ProfileAction.select());
+    this.props.dispatch(ProfileAction.selectResource());
   }
 
 
   render() {
-    const currentStyle = 'center-container flex-item border-column selectable ' + (this.props.selected ? 'selected' : 'not-selected');
+    const currentStyle = 'center-container flex-item bottom-border selectable ' + (this.props.selected ? 'selected' : 'not-selected');
     return (
       <div styleName={currentStyle} onClick={this.onClick} style={{maxHeight: '40px'}}>
         <p>Profile</p>

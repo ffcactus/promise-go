@@ -11,7 +11,7 @@ class ResourceDetailControlArea extends React.Component {
 
   render() {
     return (
-      <div styleName="flex-item flex-row-container border-column-first" style={{maxHeight: '40px'}}>
+      <div styleName="flex-item flex-row-container bottom-border" style={{maxHeight: '40px'}}>
         <ResourceControlAdd />
         <ResourceControlEdit />
       </div>

@@ -57,7 +57,7 @@ module.exports = {
       },
       {
         test: /\.(ttf|eot|svg)(\?[a-z0-9#=&.]+)?$/,
-        loader: 'file'
+        loader: 'file-loader'
       },
       {
         test: /\.(png|jp(e*)g|svg|gif)$/,

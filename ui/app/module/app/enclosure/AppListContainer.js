@@ -6,7 +6,7 @@ import EnclosureList from './EnclosureList';
 import IDPoolList from './IDPoolList';
 import ProfileList from './ProfileList';
 
-class ResourceListContainer extends React.Component {
+class AppListContainer extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -25,7 +25,7 @@ class ResourceListContainer extends React.Component {
   }
 }
 
-ResourceListContainer.propTypes = {
+AppListContainer.propTypes = {
   currentResource: PropTypes.string
 };
 
@@ -35,4 +35,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(ResourceListContainer);
+export default connect(mapStateToProps)(AppListContainer);

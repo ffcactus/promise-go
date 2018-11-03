@@ -43,26 +43,27 @@ func (s *RefreshManager) ExpectedExecutionMs() uint64 {
 	return s.expectedExecutionMs
 }
 
-// Execute implements the Action interface.
-func (s *RefreshManager) Execute(c *context.Base) {
-	log.Info("Action refresh manager.")
+// Execute performs the operation of this strategy.
+func (s *RefreshManager) Execute(c context.Refresh) {
 	StepStart(c, s.name)
-	slots, clientError := c.Client.ManagerSlot()
+	slots, clientError := c.GetClient().ManagerSlot()
 	if clientError != nil {
 		// TODO we need process the alarm here.
 		log.WithFields(log.Fields{
-			"id": c.ID, "error": clientError,
+			"id": c.GetID(), "error": clientError,
 		}).Warn("Strategy refresh manager failed, get manager slots failed.")
 		StepError(c, s.name)
 		return
 	}
-	enclosure, dbError := c.DB.RefreshManagerSlot(c.ID, slots)
+	enclosure, dbError := c.GetDB().RefreshManagerSlot(c.GetID(), slots)
 	if dbError != nil {
 		StepError(c, s.name)
 		log.WithFields(log.Fields{
-			"id": c.ID, "error": clientError,
+			"id": c.GetID(), "error": clientError,
 		}).Warn("Strategy refresh manager failed, DB refresh manager failed.")
 	}
 	c.UpdateEnclosure(enclosure)
+	c.DispatchUpdateEvent()
 	StepFinish(c, s.name)
+	log.Info("Strategy refresh manager done.")
 }

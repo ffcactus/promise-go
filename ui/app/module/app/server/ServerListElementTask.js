@@ -12,7 +12,7 @@ class ServerListElementTask extends React.Component {
   }
 
   render() {
-    const task = this.props.serverTask.get(this.props.serverUri);
+    const task = this.props.task;
     if (task && task.Percentage !== 100) {
       return (
         <div styleName="ServerListElementTask">
@@ -26,13 +26,13 @@ class ServerListElementTask extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return { serverTask: state.serverApp.serverTask };
+function mapStateToProps(state, props) {
+  return { task: state.serverApp.serverTask.get(props.serverUri) };
 }
 
 ServerListElementTask.propTypes = {
   serverUri: PropTypes.string,
-  serverTask: PropTypes.object,
+  task: PropTypes.object,
 };
 
 

@@ -3,6 +3,7 @@ package base
 import (
 	beegoCtx "github.com/astaxie/beego/context"
 )
+
 // AsychServiceTemplateInterface is the interface that a concrete AsychService should have.
 type AsychServiceTemplateInterface interface {
 	CreateContext(request AsychActionRequestInterface) ContextInterface

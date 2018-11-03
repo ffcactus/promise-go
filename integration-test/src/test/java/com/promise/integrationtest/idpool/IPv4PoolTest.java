@@ -187,15 +187,15 @@ public class IPv4PoolTest extends PromiseIntegrationTest
 
         final List<IPv4PoolCollectionMemberResponse> members1 = PromiseAssertUtil
                 .assertGetCollection("/promise/v1/id-pool/ipv4", 3, 3, IPv4PoolCollectionMemberResponse.class);
-        Assert.assertTrue(members1.contains(response1));
-        Assert.assertTrue(members1.contains(response2));
-        Assert.assertTrue(members1.contains(response3));
+        Assert.assertTrue(members1.contains((Object)response1));
+        Assert.assertTrue(members1.contains((Object)response2));
+        Assert.assertTrue(members1.contains((Object)response3));
 
         PromiseAssertUtil.assertDeleteResource(response1.getUri());
         final List<IPv4PoolCollectionMemberResponse> members2 = PromiseAssertUtil
                 .assertGetCollection("/promise/v1/id-pool/ipv4", 2, 2, IPv4PoolCollectionMemberResponse.class);
-        Assert.assertTrue(members2.contains(response2));
-        Assert.assertTrue(members2.contains(response3));
+        Assert.assertTrue(members2.contains((Object)response2));
+        Assert.assertTrue(members2.contains((Object)response3));
 
         // Test start and count parameters.
         PromiseAssertUtil.assertGetColletcionWithStartCount("/promise/v1/id-pool/ipv4", 2);

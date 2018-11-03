@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"github.com/lib/pq"
 	log "github.com/sirupsen/logrus"
 	"promise/base"
 	"promise/enclosure/object/model"
@@ -16,6 +17,7 @@ type Enclosure struct {
 	State          string          `gorm:"column:State"`
 	StateReason    string          `gorm:"column:StateReason"`
 	Health         string          `gorm:"column:Health"`
+	Addresses      pq.StringArray  `gorm:"type:varchar(255)[]"`
 	ServerSlots    []ServerSlot    `gorm:"column:ServerSlots;ForeignKey:EnclosureRef"`
 	SwitchSlots    []SwitchSlot    `gorm:"column:SwitchSlots;ForeignKey:EnclosureRef"`
 	ManagerSlots   []ManagerSlot   `gorm:"column:ManagerSlots;ForeignKey:EnclosureRef"`
@@ -109,6 +111,7 @@ func (e *Enclosure) Load(i base.ModelInterface) error {
 	e.State = m.State
 	e.StateReason = m.StateReason
 	e.Health = m.Health
+	e.Addresses = m.Addresses
 	// blade
 	e.ServerSlots = make([]ServerSlot, 0)
 	for _, v := range m.ServerSlots {
@@ -166,6 +169,7 @@ func (e *Enclosure) ToModel() base.ModelInterface {
 	m.State = e.State
 	m.StateReason = e.StateReason
 	m.Health = e.Health
+	m.Addresses = e.Addresses
 	// blade
 	m.ServerSlots = make([]model.ServerSlot, 0)
 	for _, v := range e.ServerSlots {

@@ -31,7 +31,7 @@ func initDB() {
 }
 
 func main() {
-	base.Init("IDPoolApp")
+	base.Init("pool")
 	base.InitMQService()
 	defer base.StopMQService()
 	initDB()
