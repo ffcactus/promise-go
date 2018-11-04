@@ -5,6 +5,7 @@
 .project/
 .vscode/
 .recommenders/
+.project
 
 dist/
 target/
