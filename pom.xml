@@ -23,8 +23,9 @@
 
     <modules>
     	<module>common</module>
-        <module>auth-new</module>
-        <module>event</module>        
+        <module>secure</module>
+        <module>event</module>
+        <module>secure</module>
     </modules>
 
 </project>
