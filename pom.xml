@@ -27,6 +27,7 @@
         <module>event</module>
         <module>auth2-server</module>
         <module>auth2-client</module>
+        <module>vm</module>
     </modules>
 
 </project>
