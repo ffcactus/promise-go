@@ -30,6 +30,7 @@
         <module>vm</module>
         <module>study</module>
         <module>config-server</module>
+        <module>mongo</module>
     </modules>
 
 </project>
