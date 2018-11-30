@@ -32,6 +32,7 @@
         <module>config-server</module>
         <module>mongo</module>
         <module>TaskExample</module>
+        <module>aa</module>
     </modules>
 
 </project>

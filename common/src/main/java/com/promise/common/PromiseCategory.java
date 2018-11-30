@@ -4,6 +4,7 @@ public enum PromiseCategory
 {
     Auth ("Auth"),
     Task ("Task"),
+    Vm ("Vm"),
     Global ("Global");
 
     private final String value;

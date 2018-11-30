@@ -6,9 +6,7 @@ import org.springframework.data.annotation.Id;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Data
 @NoArgsConstructor
@@ -20,18 +18,7 @@ public class User
     private String id;
 
     @NotNull
-    @Getter
-    @Setter
     private String name;
 
-    @Override
-    public String toString()
-    {
-        return String.format("User[name=-%s, id=%s", name, id);
-    }
-    
-    public User(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+
 }
