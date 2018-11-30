@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class VirtualMachine
 {
     @Id
-    public Long id;
+    public String id;
     public String name;
     
     public String toString() {

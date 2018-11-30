@@ -31,6 +31,7 @@
         <module>study</module>
         <module>config-server</module>
         <module>mongo</module>
+        <module>TaskExample</module>
     </modules>
 
 </project>

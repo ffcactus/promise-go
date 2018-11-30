@@ -3,6 +3,7 @@ package com.promise.mongo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,6 +21,8 @@ public class MongoApp implements CommandLineRunner
 {
 
     private static final Log log = LogFactory.getLog(MongoApp.class);
+    @Value("#{ systemProperties['user.name']}")
+    private String name;
 
     @Autowired
     private MongoClient client;  
@@ -33,15 +36,14 @@ public class MongoApp implements CommandLineRunner
     @Override
     public void run(String... args)
             throws Exception
-    {
-        
+    {      
         MongoTemplate t = new MongoTemplate(client, "database");
         t.setWriteResultChecking(WriteResultChecking.EXCEPTION);
         
         MongoOperations mongoOps = t;
-        mongoOps.insert(new Person("Joe", 34));
+        mongoOps.insert(new Person(name, 34));
 
-        log.info(mongoOps.findOne(new Query(Criteria.where("name").is("Joe")), Person.class));
+        log.info(mongoOps.findOne(new Query(Criteria.where("name").is(name)), Person.class));
 
         mongoOps.dropCollection("person");
     }
