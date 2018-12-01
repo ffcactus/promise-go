@@ -1,6 +1,6 @@
 package com.promise.common;
 
-import com.promise.common.model.PromiseErrorResponse;
+import com.promise.common.model.PromiseError;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper=true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class PromiseRestException extends Throwable
+public class PromiseException extends Throwable
 {
 
     /**
@@ -21,7 +21,7 @@ public class PromiseRestException extends Throwable
     
     private String id;
     
-    public PromiseErrorResponse toPromiseErrorResponse() {
-        return new PromiseErrorResponse(id, "", "");
+    public PromiseError toPromiseErrorResponse() {
+        return new PromiseError(id, "", "");
     }
 }

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PromiseErrorResponse
+public class PromiseError
 {
     private String id;
     private String summary;
