@@ -1,4 +1,4 @@
-package com.promise.aa.authorization;
+package com.promise.common.security;
 
 import org.springframework.expression.Expression;
 
@@ -16,12 +16,12 @@ public class PolicyRule
     /*
      * Boolean SpEL expression. If evaluated to true, then this rule is applied to the request access context.
      */
-    private final Expression  target;
+    private final Expression target;
     
     /*
      * Boolean SpEL expression, if evaluated to true, then access granted.
      */
-    private final Expression  condition;
+    private final Expression condition;
     
 
 //    public PolicyRule(Expression  target, Expression condition) {

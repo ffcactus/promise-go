@@ -1,4 +1,4 @@
-package com.promise.aa.authorization;
+package com.promise.common.security;
 
 import java.io.Serializable;
 import java.util.Date;

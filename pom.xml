@@ -1,38 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.promise</groupId>
-    <artifactId>promise</artifactId>
-    <version>1.0.0</version>
-    <packaging>pom</packaging>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.promise</groupId>
+	<artifactId>promise</artifactId>
+	<version>1.0.0</version>
+	<packaging>pom</packaging>
 
-    <parent>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-starter-parent</artifactId>
-        <version>Finchley.RELEASE</version>
-    </parent>
-    
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <com.promise.version>1.0.0</com.promise.version>
-        <java.version>1.8</java.version>
-    </properties>
+	<parent>
+		<groupId>org.springframework.cloud</groupId>
+		<artifactId>spring-cloud-starter-parent</artifactId>
+		<version>Finchley.RELEASE</version>
+	</parent>
 
-    <modules>
-    	<module>common</module>
-        <module>secure</module>
-        <module>event</module>
-        <module>auth2-server</module>
-        <module>auth2-client</module>
-        <module>vm</module>
-        <module>study</module>
-        <module>config-server</module>
-        <module>mongo</module>
-        <module>TaskExample</module>
-        <module>aa</module>
-    </modules>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<com.promise.version>1.0.0</com.promise.version>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<modules>
+		<module>common</module>
+		<module>secure</module>
+		<module>event</module>
+		<module>auth2-server</module>
+		<module>auth2-client</module>
+		<module>vm</module>
+		<module>study</module>
+		<module>config-server</module>
+		<module>mongo</module>
+		<module>TaskExample</module>
+		<module>aa</module>
+	</modules>
 
 </project>
