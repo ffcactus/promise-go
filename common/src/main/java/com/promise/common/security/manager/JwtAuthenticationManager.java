@@ -1,6 +1,6 @@
 package com.promise.common.security.manager;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.ProviderManager;
@@ -12,11 +12,8 @@ import com.promise.common.security.provider.JwtAuthenticationProvider;
 public class JwtAuthenticationManager extends ProviderManager
 {
     @Autowired
-    private static JwtAuthenticationProvider provider;
-
-    public JwtAuthenticationManager()
+    public JwtAuthenticationManager(JwtAuthenticationProvider provider)
     {
-        super(Arrays.asList(provider));
+        super(Collections.singletonList(provider));
     }
-
 }

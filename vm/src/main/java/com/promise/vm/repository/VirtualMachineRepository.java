@@ -10,4 +10,3 @@ public interface VirtualMachineRepository extends MongoRepository<VirtualMachine
 {
     public List<VirtualMachine> findByName(String name);
 }
-

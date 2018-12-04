@@ -25,26 +25,22 @@ import com.promise.common.security.manager.JwtAuthenticationManager;
  * stop the filter chain and proceed with a redirect. Keep in mind we need the
  * chain to execute fully, including generating the response, as explained
  * above.
- * 
+ *
  */
 @Component
-public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter
+public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessingFilter
 {
-    
+
     private static final String prefix = "Bearer ";
 
     @Autowired
-    public JwtAuthenticationFilter(JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler, JwtAuthenticationManager jwtAuthenticationManager)
+    public JwtAuthenticationTokenFilter(
+            JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler,
+            JwtAuthenticationManager jwtAuthenticationManager)
     {
-        super("/rest/v1/vm/**/**");
+        super("/rest/**");
         this.setAuthenticationSuccessHandler(jwtAuthenticationSuccessHandler);
         this.setAuthenticationManager(jwtAuthenticationManager);
-    }
-
-    @Override
-    protected boolean requiresAuthentication(HttpServletRequest request, HttpServletResponse response)
-    {
-        return true;
     }
 
     @Override
@@ -53,16 +49,16 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
             IOException,
             ServletException
     {
-        String header = request.getHeader("Authorization");
+        final String header = request.getHeader("Authorization");
 
         if (header == null || !header.startsWith(prefix))
         {
             throw new JwtTokenMissingException("No JWT token found in request headers");
         }
 
-        String authToken = header.substring(prefix.length());
+        final String authToken = header.substring(prefix.length());
 
-        JwtAuthenticationToken authRequest = new JwtAuthenticationToken(authToken);
+        final JwtAuthenticationToken authRequest = new JwtAuthenticationToken(authToken);
 
         return getAuthenticationManager().authenticate(authRequest);
     }
