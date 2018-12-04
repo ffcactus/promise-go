@@ -1,43 +1,60 @@
 package com.promise.vm.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.context.SecurityContextPersistenceFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.promise.vm.service.InMemoryUserDetailsService;
+import com.promise.common.security.AbacPermissionEvaluator;
+import com.promise.common.security.JwtAuthenticationFilter;
+import com.promise.common.security.RestAuthenticationEntryPoint;
 
 @Configuration
+@ComponentScan(basePackages = {"com.promise.vm", "com.promise.common"})
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class RootConfigure extends WebSecurityConfigurerAdapter
 {
+    
     @Autowired
-    HttpAuthenticationEntryPoint entryPoint;
+    RestAuthenticationEntryPoint entryPoint;
+    @Autowired
+    JwtAuthenticationFilter jwtAuthenticationFilter;
+    
+//    @Bean
+//    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+//        JwtAuthenticationFilter authenticationTokenFilter = new JwtAuthenticationFilter();
+//        authenticationTokenFilter.setAuthenticationManager(authenticationManager);
+//        authenticationTokenFilter.setAuthenticationSuccessHandler(successHandler);
+//        return authenticationTokenFilter;
+//    }
 
-    @Autowired
-    InMemoryUserDetailsService userDetailService;
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-            .anyRequest()
-                .authenticated()
-                    .and()
-                .httpBasic()
-            .authenticationEntryPoint(entryPoint);
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.addFilterAfter(null, SecurityContextPersistenceFilter.class);
-        http.csrf().disable();
+        http
+            .csrf().disable()
+            .exceptionHandling().authenticationEntryPoint(entryPoint).and()
+            .authorizeRequests()                        
+                .antMatchers("**/**").permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        
     }
     
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailService);
+    
+    @Bean
+    public PermissionEvaluator getAbacPermissionEvaluator() {
+        return new AbacPermissionEvaluator();
     }
 }

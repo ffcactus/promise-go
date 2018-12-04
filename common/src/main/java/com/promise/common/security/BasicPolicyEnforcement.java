@@ -7,8 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.EvaluationException;
+import org.springframework.stereotype.Component;
 
-public class BasicPolicyEnforcement implements PolicyEnforcement
+@Component
+public class BasicPolicyEnforcement implements AbacPolicyEnforcement
 {
     private static final Logger logger = LoggerFactory.getLogger(BasicPolicyEnforcement.class);
 

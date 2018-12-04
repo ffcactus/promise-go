@@ -5,65 +5,85 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
- * In Promise, the request token is taken as the user, since it has all the information about the user.
+ * In Promise, the request token is taken as the user, since it has all the
+ * information about the user.
  *
  */
 public class PromiseUserDetails implements UserDetails
 {
-
     /**
      * 
      */
-    private static final long serialVersionUID = 8192382807339090886L;
+    private static final long serialVersionUID = -3994452351352130007L;
+    private final String id;
+    private final String username;
+    private final String token;
+    private final Collection<? extends GrantedAuthority> authorities;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities()
-    {
-        // TODO Auto-generated method stub
-        return null;
+    public PromiseUserDetails(String id, String username, String token, Collection<? extends GrantedAuthority> authorities) {
+        this.id = id;
+        this.username = username;
+        this.token = token;
+        this.authorities = authorities;
     }
 
-    @Override
-    public String getPassword()
+    @JsonIgnore
+    public String getId()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return id;
     }
 
     @Override
     public String getUsername()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return username;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
+    public String getToken()
+    {
+        return token;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities()
+    {
+        return authorities;
+    }
+
+    @Override
+    public String getPassword()
+    {
+        return null;
+    }
 }
