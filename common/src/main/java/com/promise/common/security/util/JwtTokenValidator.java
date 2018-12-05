@@ -8,6 +8,7 @@ import com.promise.common.model.JwtUserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.impl.TextCodec;
 
 @Component
 public class JwtTokenValidator
@@ -32,8 +33,8 @@ public class JwtTokenValidator
 
         try
         {
-            Claims body = Jwts.parser()
-                    .setSigningKey(secret)
+            final Claims body = Jwts.parser()
+                    .setSigningKey(TextCodec.BASE64.decode("Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E="))
                     .parseClaimsJws(token)
                     .getBody();
 
@@ -43,7 +44,7 @@ public class JwtTokenValidator
             u.setRole((String) body.get("role"));
 
         }
-        catch (JwtException e)
+        catch (final JwtException e)
         {
             // Simply print the exception and null will be returned for the userDto
             e.printStackTrace();

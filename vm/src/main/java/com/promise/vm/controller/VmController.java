@@ -15,7 +15,8 @@ public class VmController
     @RequestMapping(value = "/rest/v1/vm", method = RequestMethod.GET, produces = {
             "application/json"
     })
-    @PreAuthorize("hasPermission(null,'PROJECTS_LIST')")
+    @PreAuthorize("hasRole('ADMIN')")
+    //@Secured("ADMIN")
     public ResponseEntity<VmCollection> getVmCollection()
     {
         return null;

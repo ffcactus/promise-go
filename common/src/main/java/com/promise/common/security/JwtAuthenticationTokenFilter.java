@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.promise.common.security.exception.JwtTokenMissingException;
 import com.promise.common.security.manager.JwtAuthenticationManager;
+import com.promise.common.security.manager.JwtAuthenticationSuccessHandler;
 
 /**
  * This class is the entry point of our JWT authentication process; the filter

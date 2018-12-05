@@ -21,7 +21,7 @@ import com.promise.common.security.RestAuthenticationEntryPoint;
         "com.promise.vm", "com.promise.common"
 })
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class RootConfigure extends WebSecurityConfigurerAdapter
 {
 
@@ -29,14 +29,6 @@ public class RootConfigure extends WebSecurityConfigurerAdapter
     RestAuthenticationEntryPoint entryPoint;
     @Autowired
     JwtAuthenticationTokenFilter jwtAuthenticationFilter;
-
-    //    @Bean
-    //    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-    //        JwtAuthenticationFilter authenticationTokenFilter = new JwtAuthenticationFilter();
-    //        authenticationTokenFilter.setAuthenticationManager(authenticationManager);
-    //        authenticationTokenFilter.setAuthenticationSuccessHandler(successHandler);
-    //        return authenticationTokenFilter;
-    //    }
 
     @Override
     protected void configure(HttpSecurity http)
