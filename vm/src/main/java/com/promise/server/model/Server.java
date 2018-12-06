@@ -1,8 +1,6 @@
-package com.promise.vm.model;
+package com.promise.server.model;
 
 import org.springframework.data.annotation.Id;
-
-import com.promise.common.PromiseCategory;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,11 +11,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class VirtualMachine
+public class Server
 {
     @Id
     public String id;
-    public PromiseCategory category;
     public String name;
-    public String userUri;
+    public String partition;
+    public String scope;
+    public String type;
 }

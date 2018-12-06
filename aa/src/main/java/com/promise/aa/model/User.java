@@ -3,33 +3,34 @@ package com.promise.aa.model;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.promise.common.model.PromiseUserDetails;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString(exclude = {
-        "password", "token"
-})
-public class User
-{
-    @Id
+import lombok.Getter;
+import lombok.Setter;
+
+public class User extends PromiseUserDetails
+{ 
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -5031495025980981775L;
+    @Getter
+    @Setter
     @NotNull
+    @Id
     private String id;
     
+    @Getter
+    @Setter
     @NotNull
-    @Indexed(unique=true)
-    private String username;
-    @NotNull 
-    private String password;
-    private String token;
-    private String role;
-    @NotNull
-    @Indexed(unique=true)    
     private String email;
+    
+    public User(String id, String username, String password, String email, String partition, String scope, String rawAuthorities) {
+        super(username, partition, scope, rawAuthorities, password);
+        this.setPassword(password);
+        this.id = id;
+        this.email = email;
+    }
 }

@@ -1,4 +1,4 @@
-package com.promise.vm.config;
+package com.promise.server.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;

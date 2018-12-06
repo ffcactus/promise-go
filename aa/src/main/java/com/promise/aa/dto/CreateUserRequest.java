@@ -20,6 +20,9 @@ public class CreateUserRequest
     private String username;
     private String password;
     private String email;
+    private String partition;
+    private String scope;
+    private String authorities;
 
     public User toModel()
     {
@@ -27,9 +30,10 @@ public class CreateUserRequest
                 UUID.randomUUID().toString(),
                 username,
                 password,
-                null,
-                null,
-                email
+                email,
+                partition,
+                scope,
+                authorities
         );
     }
 }

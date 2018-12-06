@@ -22,7 +22,7 @@ public class SimplePolicyDefinition implements PolicyDefinition
         PolicyRule newRule = new PolicyRule(
                 "ResourceOwner", 
                 "Resource owner should have access to it.", 
-                exp.parseExpression("subject.name == resource.owner"),  // target
+                exp.parseExpression("subject.username == 'username'"),  // target
                 exp.parseExpression("true")); // condition
         rules.add(newRule);
     }

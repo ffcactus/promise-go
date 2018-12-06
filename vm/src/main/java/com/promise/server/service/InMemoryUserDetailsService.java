@@ -1,4 +1,4 @@
-package com.promise.vm.service;
+package com.promise.server.service;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

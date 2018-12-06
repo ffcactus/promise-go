@@ -1,4 +1,4 @@
-package com.promise.vm.config;
+package com.promise.server.config;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,9 +21,9 @@ import com.promise.common.security.PolicyDefinition;
 import com.promise.common.security.PolicyRule;
 import com.promise.common.security.SpelDeserializer;
 
-public class VmPolicyDefinition implements PolicyDefinition
+public class ServerPolicyDefinition implements PolicyDefinition
 {
-    private static Logger logger = LoggerFactory.getLogger(VmPolicyDefinition.class);
+    private static Logger logger = LoggerFactory.getLogger(ServerPolicyDefinition.class);
     
     private static String DEFAULT_POLICY_FILE_NAME = "default-policy.json";
     

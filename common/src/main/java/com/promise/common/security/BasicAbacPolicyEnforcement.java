@@ -10,9 +10,9 @@ import org.springframework.expression.EvaluationException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BasicPolicyEnforcement implements AbacPolicyEnforcement
+public class BasicAbacPolicyEnforcement implements AbacPolicyEnforcement
 {
-    private static final Logger logger = LoggerFactory.getLogger(BasicPolicyEnforcement.class);
+    private static final Logger logger = LoggerFactory.getLogger(BasicAbacPolicyEnforcement.class);
 
     @Autowired
     private PolicyDefinition policyDefinition;

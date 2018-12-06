@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.promise.aa.dto.LoginRequest;
-import com.promise.aa.dto.LoginResponse;
 import com.promise.aa.model.User;
 import com.promise.aa.repository.UserRepository;
 import com.promise.common.PromiseException;
+import com.promise.common.model.JwtUser;
 
 @Service
 public class SessionService
@@ -24,7 +24,7 @@ public class SessionService
      * @return The login response in which token is included.
      * @throws PromiseException In case like the user has already login.
      */
-    public LoginResponse Login(LoginRequest request)
+    public JwtUser Login(LoginRequest request)
             throws PromiseException
     {
         Optional<User> user = userRepository.findByUsername(request.getUsername());
@@ -32,20 +32,13 @@ public class SessionService
         {
             throw new PromiseException("Invalid username or password.");
         }
-
-        if (user.get().getPassword() != request.getPassword())
+        User savedUser = user.get();
+        if (!savedUser.getPassword().equals(request.getPassword()))
         {
             throw new PromiseException("Invalid username or password.");
         }
-        if (user.get().getToken() != null)
-        {
-            throw new PromiseException("Already login.");
-        }
-        String token = request.getUsername() + "-" + request.getPassword();
-        User savedUser = user.get();
-        savedUser.setToken(token);
-        userRepository.save(savedUser);
-        return new LoginResponse(token);
+        
+        return new JwtUser(savedUser.getUsername(), savedUser.getPartition(), savedUser.getScope(), savedUser.getRole());
     }
 
     public void logout(String token)

@@ -3,6 +3,8 @@ package com.promise.aa.controller;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,30 +12,33 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.promise.aa.dto.GetUserResponse;
 import com.promise.aa.dto.LoginRequest;
-import com.promise.aa.dto.LoginResponse;
 import com.promise.aa.model.User;
 import com.promise.aa.service.SessionService;
 import com.promise.common.PromiseException;
+import com.promise.common.model.JwtUser;
 import com.promise.common.model.PromiseError;
+import com.promise.common.security.util.JwtTokenGenerator;
 
 @RestController
-@RequestMapping("/rest/v1/session")
 public class SessionController
 {
+    @Value("${jwt.secret}")
+    private String secret;
+    
     @Autowired
     SessionService service;
 
     @PostMapping("/login")
-    @ResponseStatus(HttpStatus.CREATED)
-    public LoginResponse login(@RequestBody LoginRequest request)
+    public ResponseEntity<Void> login(@RequestBody final LoginRequest request) throws PromiseException
     {
-        return null;
+        JwtUser jwtUser = service.Login(request);
+        final HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("Authorization", "Bearer " + JwtTokenGenerator.generateToken(jwtUser, secret));
+        return ResponseEntity.noContent().headers(responseHeaders).build();
     }
 
     @PostMapping("/logout")

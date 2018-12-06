@@ -3,7 +3,7 @@ package com.promise.common.security.util;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.promise.common.model.JwtUserDto;
+import com.promise.common.model.JwtUser;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -27,22 +27,22 @@ public class JwtTokenValidator
      * @return the User object extracted from specified token or null if a token
      *         is invalid.
      */
-    public JwtUserDto parseToken(String token)
+    public JwtUser parseToken(String token)
     {
-        JwtUserDto u = null;
+        JwtUser u = null;
 
         try
         {
             final Claims body = Jwts.parser()
-                    .setSigningKey(TextCodec.BASE64.decode("Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E="))
+                    .setSigningKey(TextCodec.BASE64.decode(secret))
                     .parseClaimsJws(token)
                     .getBody();
 
-            u = new JwtUserDto();
-            u.setUsername(body.getSubject());
-            u.setId((String) body.get("userId"));
-            u.setRole((String) body.get("role"));
-
+            u = new JwtUser(
+                    body.getSubject(), 
+                    String.valueOf(body.get("partition")), 
+                    String.valueOf(body.get("scope")),
+                    String.valueOf(body.get("role")));
         }
         catch (final JwtException e)
         {
