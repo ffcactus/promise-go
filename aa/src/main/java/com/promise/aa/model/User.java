@@ -27,8 +27,8 @@ public class User extends PromiseUserDetails
     @NotNull
     private String email;
     
-    public User(String id, String username, String password, String email, String partition, String scope, String rawAuthorities) {
-        super(username, partition, scope, rawAuthorities, password);
+    public User(String id, String username, String password, String email, String partition, String scope, String role) {
+        super(username, partition, scope, role, password);
         this.setPassword(password);
         this.id = id;
         this.email = email;

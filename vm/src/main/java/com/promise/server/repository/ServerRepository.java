@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.promise.server.model.Server;
 
-public interface ServerRepository extends MongoRepository<Server, Long>
+public interface ServerRepository extends MongoRepository<Server, String>
 {
     public List<Server> findByName(String name);
 }

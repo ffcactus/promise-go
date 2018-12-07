@@ -6,15 +6,19 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.expression.EvaluationException;
 import org.springframework.stereotype.Component;
 
+import com.promise.common.security.policy.PolicyDefinition;
+
 @Component
-public class BasicAbacPolicyEnforcement implements AbacPolicyEnforcement
+public class PromiseAbacPolicyEnforcement implements AbacPolicyEnforcement
 {
-    private static final Logger logger = LoggerFactory.getLogger(BasicAbacPolicyEnforcement.class);
+    private static final Logger logger = LoggerFactory.getLogger(PromiseAbacPolicyEnforcement.class);
 
     @Autowired
+    @Qualifier("promisePolicyDefinition")
     private PolicyDefinition policyDefinition;
 
     @Override

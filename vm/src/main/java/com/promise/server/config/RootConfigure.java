@@ -38,7 +38,7 @@ public class RootConfigure extends WebSecurityConfigurerAdapter
                 .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(entryPoint)
                 .and()
-                .authorizeRequests().antMatchers("**/rest/v1/vm/**").authenticated()
+                .authorizeRequests().antMatchers("**/rest/v1/vm/**/**").authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http

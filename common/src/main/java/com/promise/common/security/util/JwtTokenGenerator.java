@@ -25,7 +25,7 @@ public class JwtTokenGenerator
     public static String generateToken(JwtUser u, String secret)
     {
         final Claims claims = Jwts.claims().setSubject(u.getUsername());
-        claims.put("partition", u.getUsername());
+        claims.put("partition", u.getPartition());
         claims.put("scope", u.getScope());
         claims.put("role", u.getRole());      
         return Jwts.builder()

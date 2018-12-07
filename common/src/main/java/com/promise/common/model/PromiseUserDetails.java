@@ -33,10 +33,10 @@ public class PromiseUserDetails extends JwtUser implements UserDetails
             String username,
             String partition,
             String scope,
-            String rawAuthorities,
+            String role,
             String password)
     {
-        super(username, partition, scope, rawAuthorities);
+        super(username, partition, scope, role);
         this.password = password;
     }    
     

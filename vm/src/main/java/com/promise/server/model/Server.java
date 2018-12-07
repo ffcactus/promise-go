@@ -2,13 +2,11 @@ package com.promise.server.model;
 
 import org.springframework.data.annotation.Id;
 
+import com.promise.server.dto.AddServerRequest;
+
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 public class Server
@@ -19,4 +17,15 @@ public class Server
     public String partition;
     public String scope;
     public String type;
+
+    public Server() {
+        
+    }
+    
+    public Server(AddServerRequest request) {
+        this.name = request.name;
+        this.partition = request.partition;
+        this.scope = request.scope;
+        this.type = request.type;
+    }
 }

@@ -1,0 +1,20 @@
+[
+	{
+		"name": "Admin",
+		"description": "Admin can do all.",
+		"target": "subject.role.name() == 'Admin'",
+		"condition": "true"
+	},
+	{
+		"name": "Everyone can read all.",
+		"description": "Everyone can read all.",
+		"target": "action == 'GET_LIST'",
+		"condition": "true"
+	},
+	{
+		"name": "Manager can change server in his own scope",
+		"description": "Manager can change server in his own scope",
+		"target": "subject.role == 'Manager' && action == 'CHANGE'",
+		"condition": "subject.scope == resource.scope"
+	}
+]

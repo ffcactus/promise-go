@@ -2,19 +2,31 @@
 	{
 		"name": "Admin",
 		"description": "Admin can do all.",
-		"target": "subject.role.name() == 'Admin'",
-		"condition": "true"
+		"target": "subject.role == 'ROLE_ADMIN'",
+		"condition": "subject.partition == resource.partition"
 	},
 	{
-		"name": "Everyone can read all.",
+		"name": "Everyone can read all",
 		"description": "Everyone can read all.",
-		"target": "action == 'GET_LIST'",
-		"condition": "true"
+		"target": "action == 'ListServer'",
+		"condition":"subject.partition == resource.partition"
 	},
 	{
-		"name": "Manager can change server in his own scope",
+		"name": "Manager can add server",
+		"description": "Manager can add server to his scope.",
+		"target": "subject.role == 'ROLE_MANAGER' && action == 'RemoveServer'",
+		"condition": "subject.scope == resource.scope && subject.partition == resource.partition"
+	},
+	{
+		"name": "Manager can change serve",
 		"description": "Manager can change server in his own scope",
-		"target": "subject.role == 'Manager' && action == 'CHANGE'",
-		"condition": "subject.scope == resource.scope"
+		"target": "subject.role == 'ROLE_MANAGER' && action == 'RemoveServer'",
+		"condition": "subject.scope == resource.scope && subject.partition == resource.partition"
+	},
+	{
+		"name": "Manager can remove server",
+		"description": "Manager can change server from his own scope",
+		"target": "subject.role == 'ROLE_MANAGER' && action == 'RemoveServer'",
+		"condition": "subject.scope == resource.scope && subject.partition == resource.partition"
 	}
 ]

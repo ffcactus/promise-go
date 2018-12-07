@@ -30,31 +30,32 @@ public class ServerApplication implements CommandLineRunner
     {
         if (recreateDbOnStartup)
         {
+            repository.deleteAll();
             // HP
-            for (int i = 0; i < 5000; i++) {
-                repository.save(new Server(UUID.randomUUID().toString(), "DL980 - Scope1 - " + i, "RACK", "HP", "Scope1"));
+            for (int i = 0; i < 5; i++) {
+                repository.save(new Server("hp-rack-scope1-" + i, "DL980 - Scope1 - " + i, "hp", "Rack", "Scope1"));
             }
-            for (int i = 0; i < 5000; i++) {
-                repository.save(new Server(UUID.randomUUID().toString(), "BL980 - Scope1 - " + i, "BLADE", "HP", "Scope1"));
+            for (int i = 0; i < 5; i++) {
+                repository.save(new Server("hp-blade-scope1-" + i, "BL980 - Scope1 - " + i, "hp", "Blade", "Scope1"));
             }            
-            for (int i = 0; i < 5000; i++) {
-                repository.save(new Server(UUID.randomUUID().toString(), "DL980 - Scope2 - " + i, "RACK", "HP", "Scope2"));
+            for (int i = 0; i < 5; i++) {
+                repository.save(new Server("hp-rack-scope2-" + i, "DL980 - Scope2 - " + i, "hp", "Rack", "Scope2"));
             }
-            for (int i = 0; i < 5000; i++) {
-                repository.save(new Server(UUID.randomUUID().toString(), "BL980 - Scope2 - " + i, "BLADE", "HP", "Scope2"));
+            for (int i = 0; i < 5; i++) {
+                repository.save(new Server("hp-blade-scope2-" + i, "BL980 - Scope2 - " + i, "hp", "Blade", "Scope2"));
             }            
             // HW
-            for (int i = 0; i < 5000; i++) {
-                repository.save(new Server(UUID.randomUUID().toString(), "RH2288 - Scope1 - " + i, "RACK", "HW", "Scope1"));
+            for (int i = 0; i < 5; i++) {
+                repository.save(new Server("hw-rack-scope1-" + i, "RH2288 - Scope1 - " + i, "hw", "Rack", "Scope1"));
             }
-            for (int i = 0; i < 5000; i++) {
-                repository.save(new Server(UUID.randomUUID().toString(), "CH121 - Scope1 - " + i, "BLADE", "HW", "Scope1"));
+            for (int i = 0; i < 5; i++) {
+                repository.save(new Server("hw-blade-scope1-" + i, "CH121 - Scope1 - " + i, "hw", "Blade", "Scope1"));
             }            
-            for (int i = 0; i < 5000; i++) {
-                repository.save(new Server(UUID.randomUUID().toString(), "RH2288 - Scope2 - " + i, "RACK", "HW", "Scope2"));
+            for (int i = 0; i < 5; i++) {
+                repository.save(new Server("hw-rack-scope2-" + i, "RH2288 - Scope2 - " + i, "hw", "Rack", "Scope2"));
             }
-            for (int i = 0; i < 5000; i++) {
-                repository.save(new Server(UUID.randomUUID().toString(), "CH121 - Scope2 - " + i, "BLADE", "HW", "Scope2"));
+            for (int i = 0; i < 5; i++) {
+                repository.save(new Server("hw-blade-scope2-" + i, "CH121 - Scope2 - " + i, "hw", "Blade", "Scope2"));
             }                            
         }
     }
