@@ -23,7 +23,7 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
     {
         // We do not need to do anything extra on REST authentication success, because there is no page to redirect to
-        logger.info("Authentication done.");
+        logger.info("Authentication done. URI = " + request.getRequestURI());
     }
 
 }

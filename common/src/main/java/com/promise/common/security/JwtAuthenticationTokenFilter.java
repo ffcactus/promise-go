@@ -33,15 +33,18 @@ public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessi
 {
 
     private static final String prefix = "Bearer ";
+    
 
     @Autowired
-    public JwtAuthenticationTokenFilter(
+    public JwtAuthenticationTokenFilter(            
+            JwtAuthenticationManager jwtAuthenticationManager,
             JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler,
-            JwtAuthenticationManager jwtAuthenticationManager)
+            PromiseAuthenticationFailureHandler failerHandler)
     {
         super("/rest/**");
         this.setAuthenticationSuccessHandler(jwtAuthenticationSuccessHandler);
         this.setAuthenticationManager(jwtAuthenticationManager);
+        this.setAuthenticationFailureHandler(failerHandler);
     }
 
     @Override
