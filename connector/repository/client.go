@@ -1,11 +1,11 @@
-package base
+package repository
 
 import (
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	log "github.com/sirupsen/logrus"
+	"log"
 	"io/ioutil"
 	"net/http"
 	"net/url"

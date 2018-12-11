@@ -1,18 +1,26 @@
 package com.promise.server.ws;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import com.promise.common.security.manager.JwtAuthenticationSuccessHandler;
+
+@Component
 public class ServerWebSocketHandler implements WebSocketHandler
 {
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationSuccessHandler.class);
+    
     @Override
     public void afterConnectionEstablished(WebSocketSession session)
             throws Exception
     {
-        // TODO Auto-generated method stub
+        logger.info("afterConnectionEstablished");
 
     }
 
@@ -20,7 +28,7 @@ public class ServerWebSocketHandler implements WebSocketHandler
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message)
             throws Exception
     {
-        // TODO Auto-generated method stub
+        logger.info("handleMessage");
 
     }
 
@@ -28,7 +36,7 @@ public class ServerWebSocketHandler implements WebSocketHandler
     public void handleTransportError(WebSocketSession session, Throwable exception)
             throws Exception
     {
-        // TODO Auto-generated method stub
+        logger.info("handleTransportError");
 
     }
 
@@ -36,14 +44,14 @@ public class ServerWebSocketHandler implements WebSocketHandler
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus)
             throws Exception
     {
-        // TODO Auto-generated method stub
+        logger.info("afterConnectionClosed");
 
     }
 
     @Override
     public boolean supportsPartialMessages()
     {
-        // TODO Auto-generated method stub
+        logger.info("supportsPartialMessages");
         return false;
     }
 
