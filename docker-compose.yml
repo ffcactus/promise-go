@@ -18,6 +18,22 @@ services:
     - type: volume
       source: dbdata
       target: /var/lib/postgresql/data
+  mongo:
+    image: mongo
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure    
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME: root
+      - MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - networks_service
+      - networks_db
+    volumes:
+    - type: volume
+      source: dbdata
+      target: /var/lib/postgresql/data            
   httpd:
     image: httpd.promise:latest
     deploy:
