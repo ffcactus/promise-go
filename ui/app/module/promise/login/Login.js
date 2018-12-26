@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import { login } from './LoginAction';
-import Styles from './login.css';
 import { LoginState } from './ConstValue';
 import FullSizeDiv from '../common/Widget/FullSizeDiv';
+import GoogleLogin from 'react-google-login';
+import Styles from './login.css';
 
 class Login extends React.Component {
   constructor(props) {
@@ -18,6 +19,8 @@ class Login extends React.Component {
     this.handleHostnameChange = this.handleHostnameChange.bind(this);
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.onGoogleLoginFailure = this.onGoogleLoginFailure.bind(this);
+    this.onGoogleLoginSuccess = this.onGoogleLoginSuccess.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -31,6 +34,14 @@ class Login extends React.Component {
 
   handlePasswordChange(event) {
     this.setState({ password: event.target.value });
+  }
+
+  onGoogleLoginSuccess(userObject) {
+    console.info(userObject);
+  }
+
+  onGoogleLoginFailure(reason) {
+    console.info(reason);
   }
 
   handleSubmit(event) {
@@ -75,6 +86,14 @@ class Login extends React.Component {
               </section>
               <section styleName="loginSubmit">
                 <input type="submit" value="login" disabled={isLoginButtonDisabled()} />
+              </section>
+              <section styleName="loginSubmit">
+                <GoogleLogin
+                  clientId="988618725491-umsr9vm0m439hijt990q500nci03bjv5.apps.googleusercontent.com"
+                  buttonText="Login"
+                  onSuccess={this.onGoogleLoginSuccess}
+                  onFailure={this.onGoogleLoginFailure}
+                />
               </section>
               <section styleName="loginFailureMessage">
                 <p styleName={isErrorMessageShow() ? 'showError' : 'hideError'}>{getLoginFailureDescription()}</p>
