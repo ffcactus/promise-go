@@ -4,6 +4,7 @@ const defaultSessionState = {
   hostname: null,
   state: LoginState.LOGOUT,
   username: null,
+  email: null,
   token: null,
   loginFailureInfo: null
 };
@@ -32,6 +33,15 @@ const session = (state = defaultSessionState, action) => {
         username: null,
         token: null,
         loginFailureInfo: action.info
+      };
+    case ActionType.GOOGLE_LOGIN_SUCCESS:
+      return {
+        ...state,
+        state: LoginState.LOGGED,
+        hostname: action.info.hostname,
+        username: action.info.userObject.profileObj.name,
+        email: action.info.userObject.profileObj.email,
+        token: action.info.userObject.accessToken
       };
     case ActionType.LOGIN_FAILURE_TIMEOUT:
       return {

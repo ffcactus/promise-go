@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
-import { login } from './LoginAction';
+import { login, googleLogin } from './LoginAction';
 import { LoginState } from './ConstValue';
 import FullSizeDiv from '../common/Widget/FullSizeDiv';
 import GoogleLogin from 'react-google-login';
@@ -37,7 +37,8 @@ class Login extends React.Component {
   }
 
   onGoogleLoginSuccess(userObject) {
-    console.info(userObject);
+    const from = this.props.location.state ? this.props.location.state.from : '/';
+    this.props.dispatch(googleLogin(this.state.hostname, userObject, from));
   }
 
   onGoogleLoginFailure(reason) {

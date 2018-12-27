@@ -94,4 +94,18 @@ function login(hostname, username, password, from) {
   };
 }
 
-export { login };
+function googleLogin(hostname, userObject, from) {
+  return (dispatch) => {
+    dispatch({
+      type: ActionType.GOOGLE_LOGIN_SUCCESS,
+      info: {
+        hostname,
+        userObject
+      }
+    });
+    dispatch(DesktopAction.setAppCollection());
+    dispatch(push(from));
+  };
+}
+
+export { login, googleLogin };
