@@ -19,5 +19,8 @@ func CreateServerContext(server *model.Server) *Base {
 	var context Base
 	context.DB.TemplateImpl = new(db.Server)
 	context.ServerClient = serverClient.GetServerClient(server)
+	if context.ServerClient == nil {
+		return nil
+	}
 	return &context
 }

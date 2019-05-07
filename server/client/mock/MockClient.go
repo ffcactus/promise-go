@@ -15,15 +15,15 @@ var (
 	delay = 5000
 )
 
-// MockClient is a mock client.
-type MockClient struct {
+// RedfishClient is a mock Redfish client.
+type RedfishClient struct {
 	Hostname string
 }
 
 // GetInstance will return a mock client.
-func GetInstance(address string) *MockClient {
+func GetInstance(address string) *RedfishClient {
 	delay, _ = beego.AppConfig.Int("MockClientDelay")
-	return &MockClient{
+	return &RedfishClient{
 		Hostname: address,
 	}
 }
@@ -33,39 +33,44 @@ func mockDelay() {
 }
 
 // Support return if the server support this client.
-func (c *MockClient) Support() bool {
+func (c *RedfishClient) Support() bool {
 	if strings.HasPrefix(c.Hostname, constvalue.MockType) {
 		return true
 	}
 	return false
+}
 
+// String returns the client info.
+func (c RedfishClient) String() string {
+	return "Mock Redfish " + c.Hostname
 }
 
 // GetProtocol will the the protocol
-func (c *MockClient) GetProtocol() string {
+func (c *RedfishClient) GetProtocol() string {
 	return constvalue.MockProtocol
 }
 
 // GetBasicInfo return the basic info.
-func (c *MockClient) GetBasicInfo() (*model.ServerBasicInfo, error) {
+func (c *RedfishClient) GetBasicInfo() (*model.ServerBasicInfo, error) {
 	ret := model.ServerBasicInfo{}
-	ret.OriginURIs.Chassis = randString()
-	ret.OriginURIs.System = randString()
+	ret.OriginURIs.Chassis = *randString()
+	ret.OriginURIs.System = *randString()
 	ret.PhysicalUUID = uuid.New().String()
 	ret.Name = c.Hostname
 	ret.Description = *randString()
 	ret.Type = constvalue.MockType
 	ret.Protocol = constvalue.MockProtocol
+	ret.Vender = "Mock"
 	return &ret, nil
 }
 
 // CreateManagementAccount is a mock method.
-func (c *MockClient) CreateManagementAccount(username string, password string) error {
+func (c *RedfishClient) CreateManagementAccount(username string, password string) error {
 	return nil
 }
 
 // GetProcessors is a mock method.
-func (c *MockClient) GetProcessors(systemID string) ([]model.Processor, error) {
+func (c *RedfishClient) GetProcessors(systemID string) ([]model.Processor, error) {
 	var ret []model.Processor
 	ret = append(ret, *randProcessor("1"))
 	ret = append(ret, *randProcessor("2"))
@@ -74,7 +79,7 @@ func (c *MockClient) GetProcessors(systemID string) ([]model.Processor, error) {
 }
 
 // GetMemory is a mock method.
-func (c *MockClient) GetMemory(systemID string) ([]model.Memory, error) {
+func (c *RedfishClient) GetMemory(systemID string) ([]model.Memory, error) {
 	var ret []model.Memory
 	ret = append(ret, *randMemory("1"))
 	ret = append(ret, *randMemory("2"))
@@ -83,7 +88,7 @@ func (c *MockClient) GetMemory(systemID string) ([]model.Memory, error) {
 }
 
 // GetEthernetInterfaces is a mock method.
-func (c *MockClient) GetEthernetInterfaces(systemID string) ([]model.EthernetInterface, error) {
+func (c *RedfishClient) GetEthernetInterfaces(systemID string) ([]model.EthernetInterface, error) {
 	var ret []model.EthernetInterface
 	ret = append(ret, *randEthernetInterface("eth0"))
 	ret = append(ret, *randEthernetInterface("eth1"))
@@ -92,7 +97,7 @@ func (c *MockClient) GetEthernetInterfaces(systemID string) ([]model.EthernetInt
 }
 
 // GetNetworkInterfaces is a mock method.
-func (c *MockClient) GetNetworkInterfaces(systemID string) ([]model.NetworkInterface, error) {
+func (c *RedfishClient) GetNetworkInterfaces(systemID string) ([]model.NetworkInterface, error) {
 	var ret []model.NetworkInterface
 	ret = append(ret, *randNetworkInterface("NetworkInterface0"))
 	ret = append(ret, *randNetworkInterface("NetworkInterface1"))
@@ -101,7 +106,7 @@ func (c *MockClient) GetNetworkInterfaces(systemID string) ([]model.NetworkInter
 }
 
 // GetStorages is a mock method.
-func (c *MockClient) GetStorages(systemID string) ([]model.Storage, error) {
+func (c *RedfishClient) GetStorages(systemID string) ([]model.Storage, error) {
 	var ret []model.Storage
 	ret = append(ret, *randStorage("Storage0"))
 	ret = append(ret, *randStorage("Storage1"))
@@ -110,33 +115,37 @@ func (c *MockClient) GetStorages(systemID string) ([]model.Storage, error) {
 }
 
 // GetPower is a mock method.
-func (c *MockClient) GetPower(chassisID string) (*model.Power, error) {
-	return &model.Power{}, nil
+func (c *RedfishClient) GetPower(chassisID string) (*model.Power, error) {
+	var ret model.Power
+	randResource(chassisID, &ret.Resource)
+	ret.PowerControl = append(ret.PowerControl, *randPowerControl("PowerControl0"))
+	ret.PowerSupplies = append(ret.PowerSupplies, *randPowerSupply("PowerSupply0"))
+	return &ret, nil
 }
 
 // GetThermal is a mock method.
-func (c *MockClient) GetThermal(chassisID string) (*model.Thermal, error) {
+func (c *RedfishClient) GetThermal(chassisID string) (*model.Thermal, error) {
 	return &model.Thermal{}, nil
 }
 
-// GetOemHuaweiBoards is a mock method.
-func (c *MockClient) GetOemHuaweiBoards(chassisID string) ([]model.OemHuaweiBoard, error) {
-	return []model.OemHuaweiBoard{}, nil
+// GetBoards is a mock method.
+func (c *RedfishClient) GetBoards(chassisID string) ([]model.Board, error) {
+	return []model.Board{}, nil
 }
 
 // GetNetworkAdapters is a mock method.
-func (c *MockClient) GetNetworkAdapters(chassisID string) ([]model.NetworkAdapter, error) {
+func (c *RedfishClient) GetNetworkAdapters(chassisID string) ([]model.NetworkAdapter, error) {
 	var ret []model.NetworkAdapter
 	return ret, nil
 }
 
 // GetDrives is a mock method.
-func (c *MockClient) GetDrives(chassisID string) ([]model.Drive, error) {
+func (c *RedfishClient) GetDrives(chassisID string) ([]model.Drive, error) {
 	return []model.Drive{}, nil
 }
 
 // GetPCIeDevices is a mock method.
-func (c *MockClient) GetPCIeDevices(chassisID string) ([]model.PCIeDevice, error) {
+func (c *RedfishClient) GetPCIeDevices(chassisID string) ([]model.PCIeDevice, error) {
 	return []model.PCIeDevice{}, nil
 }
 
@@ -195,19 +204,12 @@ func randProcessor(ID string) *model.Processor {
 	ret := model.Processor{}
 	randResource(ID, &ret.Resource)
 	randProductInfo(&ret.ProductInfo)
-	ret.Socket = randInt()
+	ret.Socket = randString()
 	ret.ProcessorType = randString()
 	ret.ProcessorArchitecture = randString()
 	ret.InstructionSet = randString()
 	ret.MaxSpeedMHz = randInt()
 	ret.TotalCores = randInt()
-	ret.ProcessorID = new(model.ProcessorID)
-	ret.ProcessorID.VendorID = randString()
-	ret.ProcessorID.MicrocodeInfo = randString()
-	ret.ProcessorID.Step = randString()
-	ret.ProcessorID.IdentificationRegisters = randString()
-	ret.ProcessorID.EffectiveFamily = randString()
-	ret.ProcessorID.EffectiveModel = randString()
 	return &ret
 }
 
@@ -251,6 +253,18 @@ func randStorageController(name string) *model.StorageController {
 	ret.FirmwareVersion = *randString()
 	ret.SupportedDeviceProtocols = append(ret.SupportedDeviceProtocols, *randString())
 	ret.SupportedDeviceProtocols = append(ret.SupportedDeviceProtocols, *randString())
+	return &ret
+}
+
+func randPowerControl(name string) *model.PowerControl {
+	ret := model.PowerControl{}
+	randProductInfo(&ret.ProductInfo)
+	return &ret
+}
+
+func randPowerSupply(name string) *model.PowerSupply {
+	ret := model.PowerSupply{}
+	randProductInfo(&ret.ProductInfo)
 	return &ret
 }
 

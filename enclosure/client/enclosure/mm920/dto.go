@@ -23,7 +23,7 @@ type GetRedfishV1Response struct {
 }
 
 // GetBladeChassisResponse is DTO.
-// It represents response from get /redfish/v1/chassis/blade{:id}
+// It represents response from get /redfish/v1/Chassis/blade{:id}
 type GetBladeChassisResponse struct {
 	Status struct {
 		State string
@@ -40,7 +40,7 @@ type GetBladeChassisResponse struct {
 }
 
 // GetSwiChassisResponse is DTO,.
-// It represents resposne from get /redfish/v1/chassis/swi{id}
+// It represents resposne from get /redfish/v1/Chassis/swi{id}
 type GetSwiChassisResponse struct {
 	Status struct {
 		State string
@@ -49,7 +49,7 @@ type GetSwiChassisResponse struct {
 }
 
 // GetSwiSystemResponse is DTO.
-// It represents resposne from get /redfish/v1/systems/swi{id}
+// It represents resposne from get /redfish/v1/Systems/swi{id}
 type GetSwiSystemResponse struct {
 	SerialNumber string
 }

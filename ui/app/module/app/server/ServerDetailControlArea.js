@@ -1,8 +1,8 @@
-import React from 'react';
-import CSSModules from 'react-css-modules';
-import ServerControlDiscover from './ServerControlDiscover';
-import ServerControlEdit from './ServerControlEdit';
-import styles from './App.css';
+import React from "react";
+import CSSModules from "react-css-modules";
+import ServerControlDiscover from "./ServerControlDiscover";
+import ServerControlEdit from "./ServerControlEdit";
+import styles from "./App.css";
 
 class ServerDetailControlArea extends React.Component {
   constructor(props) {
@@ -11,7 +11,10 @@ class ServerDetailControlArea extends React.Component {
 
   render() {
     return (
-      <div styleName="flex-item flex-row-container border-column-first" style={{maxHeight: '40px'}}>
+      <div
+        styleName="flex-row-container border-column-first"
+        style={{ height: "40px" }}
+      >
         <ServerControlDiscover />
         <ServerControlEdit />
       </div>
@@ -19,4 +22,6 @@ class ServerDetailControlArea extends React.Component {
   }
 }
 
-export default CSSModules(ServerDetailControlArea, styles, {allowMultiple: true});
+export default CSSModules(ServerDetailControlArea, styles, {
+  allowMultiple: true
+});

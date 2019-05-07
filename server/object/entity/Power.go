@@ -5,33 +5,6 @@ import (
 	"promise/server/object/model"
 )
 
-// Voltage This is the definition for voltage sensors.
-type Voltage struct {
-	PowerRef uint
-	EmbeddedResource
-	Threshold
-	SensorNumber    *int     // A numerical identifier to represent the voltage sensor.
-	ReadingVolts    *float64 // The present reading of the voltage sensor.
-	MinReadingRange *float64 // Minimum value for this Voltage sensor.
-	MaxReadingRange *float64 // Maximum value for this Voltage sensor.
-	PhysicalContext *string
-	//	RelatedItem     *[]string // Describes the areas or devices to which this voltage measurement applies.
-}
-
-// PowerMetrics Power readings for this chassis.
-type PowerMetrics struct {
-	MinConsumedWatts     *float64 // The lowest power consumption level over the measurement window (the last IntervalInMin minutes).
-	MaxConsumedWatts     *float64 // The highest power consumption level that has occured over the measurement window (the last IntervalInMin minutes).
-	AverageConsumedWatts *float64 // The average power level over the measurement window (the last IntervalInMin minutes).
-}
-
-// PowerLimit This object contains power limit status and configuration information for the chassis.
-type PowerLimit struct {
-	LimitInWatts   *float64 // The Power limit in watts. Set to null to disable power capping.
-	LimitException *string  // The action that is taken if the power cannot be maintained below the LimitInWatts.
-	CorrectionInMs *float64 // The time required for the limiting process to reduce power consumption to below the limit.
-}
-
 // PowerControl This is the definition for power control function (power reading/limiting).
 type PowerControl struct {
 	PowerRef uint
@@ -49,15 +22,6 @@ type PowerControl struct {
 	PowerLimitLimitException         *string
 	PowerLimitCorrectionInMs         *float64
 	// RelatedItem         *[]string
-}
-
-// InputRange This type shall describe an input range that the associated power supply is able to utilize.
-type InputRange struct {
-	InputType          *string // The Input type (AC or DC).
-	MinimumVoltage     *int    // The minimum line input voltage at which this power supply input range is effective.
-	MinimumFrequencyHz *int    // The minimum line input frequency at which this power supply input range is effective.
-	MaximumFrequencyHz *int    // The maximum line input frequency at which this power supply input range is effective.
-	OutputWattage      *int    // The maximum capacity of this Power Supply when operating in this input range.
 }
 
 // PowerSupply Power supply object.
@@ -79,7 +43,6 @@ type Power struct {
 	ServerRef string
 	EmbeddedResource
 	PowerControl  []PowerControl `gorm:"ForeignKey:PowerRef"` // This is the definition for power control function (power reading/limiting).
-	Voltages      []Voltage      `gorm:"ForeignKey:PowerRef"` // This is the definition for voltage sensors.
 	PowerSupplies []PowerSupply  `gorm:"ForeignKey:PowerRef"` // Details of the power supplies associated with this system or device.
 	Redundancy    []Redundancy   `gorm:"ForeignKey:Ref"`      // Redundancy information for the power subsystem of this system or device.
 }
@@ -108,19 +71,6 @@ func (e *PowerControl) ToModel() *model.PowerControl {
 }
 
 // ToModel will create a new model from entity.
-func (e *Voltage) ToModel() *model.Voltage {
-	m := model.Voltage{}
-	createResourceModel(&e.EmbeddedResource, &m.Resource)
-	createThresholdModel(&e.Threshold, &m.Threshold)
-	m.SensorNumber = e.SensorNumber
-	m.ReadingVolts = e.ReadingVolts
-	m.MinReadingRange = e.MinReadingRange
-	m.MaxReadingRange = e.MaxReadingRange
-	m.PhysicalContext = e.PhysicalContext
-	return &m
-}
-
-// ToModel will create a new model from entity.
 func (e *PowerSupply) ToModel() *model.PowerSupply {
 	m := model.PowerSupply{}
 	createResourceModel(&e.EmbeddedResource, &m.Resource)
@@ -140,9 +90,9 @@ func (e *Power) Load(m *model.Power) {
 	updateResourceEntity(&e.EmbeddedResource, &m.Resource)
 	// PowerControl
 	if m.PowerControl != nil {
-		for i := range *m.PowerControl {
+		for i := range m.PowerControl {
 			each := PowerControl{}
-			powerControl := (*m.PowerControl)[i]
+			powerControl := m.PowerControl[i]
 			updateResourceEntity(&each.EmbeddedResource, &powerControl.Resource)
 			updateProductInfoEntity(&each.ProductInfo, &powerControl.ProductInfo)
 			each.PowerConsumedWatts = powerControl.PowerConsumedWatts
@@ -163,26 +113,11 @@ func (e *Power) Load(m *model.Power) {
 			e.PowerControl = append(e.PowerControl, each)
 		}
 	}
-	// Voltages
-	if m.Voltages != nil {
-		for i := range *m.Voltages {
-			each := Voltage{}
-			voltages := (*m.Voltages)[i]
-			updateResourceEntity(&each.EmbeddedResource, &voltages.Resource)
-			updateThresholdEntity(&each.Threshold, &voltages.Threshold)
-			each.SensorNumber = voltages.SensorNumber
-			each.ReadingVolts = voltages.ReadingVolts
-			each.MinReadingRange = voltages.MinReadingRange
-			each.MaxReadingRange = voltages.MaxReadingRange
-			each.PhysicalContext = voltages.PhysicalContext
-			e.Voltages = append(e.Voltages, each)
-		}
-	}
 	// PowerSupplies
 	if m.PowerSupplies != nil {
-		for i := range *m.PowerSupplies {
+		for i := range m.PowerSupplies {
 			each := PowerSupply{}
-			powerSupplies := (*m.PowerSupplies)[i]
+			powerSupplies := m.PowerSupplies[i]
 			updateResourceEntity(&each.EmbeddedResource, &powerSupplies.Resource)
 			updateProductInfoEntity(&each.ProductInfo, &powerSupplies.ProductInfo)
 			each.PowerSupplyType = powerSupplies.PowerSupplyType
@@ -197,9 +132,9 @@ func (e *Power) Load(m *model.Power) {
 	}
 	// Redundancy
 	if m.Redundancy != nil {
-		for i := range *m.Redundancy {
+		for i := range m.Redundancy {
 			each := Redundancy{}
-			redundancy := (*m.Redundancy)[i]
+			redundancy := m.Redundancy[i]
 			updateResourceEntity(&each.EmbeddedResource, &redundancy.Resource)
 			each.Mode = redundancy.Mode
 			each.MaxNumSupported = redundancy.MaxNumSupported

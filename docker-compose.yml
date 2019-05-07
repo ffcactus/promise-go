@@ -15,9 +15,9 @@ services:
       - networks_service
       - networks_db
     volumes:
-    - type: volume
-      source: dbdata
-      target: /var/lib/postgresql/data
+      - type: volume
+        source: dbdata
+        target: /var/lib/postgresql/data
   httpd:
     image: httpd.promise:latest
     deploy:
@@ -38,7 +38,7 @@ services:
       restart_policy:
         condition: on-failure
     networks:
-      - networks_service        
+      - networks_service
   ws:
     image: ws.promise:latest
     deploy:
@@ -54,7 +54,7 @@ services:
     volumes:
       - type: volume
         source: logdata
-        target: /opt/promise/log        
+        target: /opt/promise/log
   auth:
     image: auth.promise:latest
     deploy:
@@ -65,7 +65,7 @@ services:
       - "httpd"
       - "db"
       - "rabbitmq"
-    command: "./wait-for.sh db:5432 -- ./wait-for.sh rabbitmq:5672 -- ./auth"    
+    command: "./wait-for.sh db:5432 -- ./wait-for.sh rabbitmq:5672 -- ./auth"
     networks:
       - networks_front
       - networks_service
@@ -73,7 +73,7 @@ services:
     volumes:
       - type: volume
         source: logdata
-        target: /opt/promise/log       
+        target: /opt/promise/log
   task:
     image: task.promise:latest
     deploy:
@@ -85,7 +85,7 @@ services:
       - "db"
       - "auth"
       - "rabbitmq"
-    command: "./wait-for.sh db:5432 -- ./wait-for.sh rabbitmq:5672 -- ./task"       
+    command: "./wait-for.sh db:5432 -- ./wait-for.sh rabbitmq:5672 -- ./task"
     networks:
       - networks_front
       - networks_service
@@ -93,7 +93,7 @@ services:
     volumes:
       - type: volume
         source: logdata
-        target: /opt/promise/log       
+        target: /opt/promise/log
   pool:
     image: pool.promise:latest
     deploy:
@@ -105,7 +105,7 @@ services:
       - "db"
       - "auth"
       - "rabbitmq"
-    command: "./wait-for.sh db:5432 -- ./wait-for.sh rabbitmq:5672 -- ./pool"       
+    command: "./wait-for.sh db:5432 -- ./wait-for.sh rabbitmq:5672 -- ./pool"
     networks:
       - networks_front
       - networks_service
@@ -113,7 +113,7 @@ services:
     volumes:
       - type: volume
         source: logdata
-        target: /opt/promise/log                     
+        target: /opt/promise/log
   server:
     image: server.promise:latest
     deploy:
@@ -126,7 +126,8 @@ services:
       - "auth"
       - "task"
       - "rabbitmq"
-    command: "./wait-for.sh db:5432 -- ./wait-for.sh rabbitmq:5672 -- ./server"       
+    # command: "./wait-for.sh db:5432 -- ./wait-for.sh rabbitmq:5672 -- ./server"
+    command: "./wait-for.sh db:5432 -- ./wait-for.sh rabbitmq:5672 -- sleep 99999"
     networks:
       - networks_front
       - networks_service
@@ -156,7 +157,7 @@ services:
     volumes:
       - type: volume
         source: logdata
-        target: /opt/promise/log        
+        target: /opt/promise/log
   director:
     image: director.promise:latest
     deploy:
@@ -169,7 +170,7 @@ services:
       - "auth"
       - "task"
       - "rabbitmq"
-    command: "./wait-for.sh db:5432 -- ./wait-for.sh rabbitmq:5672 -- ./director"   
+    command: "./wait-for.sh db:5432 -- ./wait-for.sh rabbitmq:5672 -- ./director"
     networks:
       - networks_front
       - networks_service
@@ -177,7 +178,7 @@ services:
     volumes:
       - type: volume
         source: logdata
-        target: /opt/promise/log      
+        target: /opt/promise/log
 
 networks:
   networks_front:

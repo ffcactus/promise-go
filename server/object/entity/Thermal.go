@@ -17,35 +17,11 @@ type Fan struct {
 	ReadingUnits *string // Units in which the reading and thresholds are measured.
 }
 
-// Temperature This is the definition for temperature sensors.
-type Temperature struct {
-	ThermalRef uint
-	Member
-	Threshold
-	SensorNumber        *int // A numerical identifier to represent the temperature sensor.
-	ReadingCelsius      *int // Temperature.
-	MinReadingRangeTemp *int // Minimum value for ReadingCelsius.
-	MaxReadingRangeTemp *int // Maximum value for ReadingCelsius.
-}
-
 // Thermal Thermal object.
 type Thermal struct {
 	ServerRef string
 	EmbeddedResource
-	Temperatures []Temperature `gorm:"ForeignKey:ThermalRef"` // This is the definition for temperature sensors.
-	Fans         []Fan         `gorm:"ForeignKey:ThermalRef"` // This is the definition for fans.
-}
-
-// ToModel will create a new model from entity.
-func (e *Temperature) ToModel() *model.Temperature {
-	m := new(model.Temperature)
-	createMemberModel(&e.Member, &m.Member)
-	createThresholdModel(&e.Threshold, &m.Threshold)
-	m.SensorNumber = e.SensorNumber
-	m.ReadingCelsius = e.ReadingCelsius
-	m.MinReadingRangeTemp = e.MinReadingRangeTemp
-	m.MaxReadingRangeTemp = e.MaxReadingRangeTemp
-	return m
+	Fans []Fan `gorm:"ForeignKey:ThermalRef"` // This is the definition for fans.
 }
 
 // ToModel will create a new model from entity.
@@ -64,19 +40,6 @@ func (e *Fan) ToModel() *model.Fan {
 // Load will load data from model.
 func (e *Thermal) Load(m *model.Thermal) {
 	updateResourceEntity(&e.EmbeddedResource, &m.Resource)
-	temperatures := []Temperature{}
-	for i := range m.Temperatures {
-		e := Temperature{}
-		m := m.Temperatures[i]
-		updateMemberEntity(&e.Member, &m.Member)
-		updateThresholdEntity(&e.Threshold, &m.Threshold)
-		e.SensorNumber = m.SensorNumber
-		e.ReadingCelsius = m.ReadingCelsius
-		e.MinReadingRangeTemp = m.MinReadingRangeTemp
-		e.MaxReadingRangeTemp = m.MaxReadingRangeTemp
-		temperatures = append(temperatures, e)
-	}
-	e.Temperatures = temperatures
 
 	fans := []Fan{}
 	for i := range m.Fans {

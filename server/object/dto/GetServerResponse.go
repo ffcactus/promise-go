@@ -19,7 +19,7 @@ type ComputerSystem struct {
 type Chassis struct {
 	Power           Power            `json:"Power"`
 	Thermal         Thermal          `json:"Thermal"`
-	OemHuaweiBoards []OemHuaweiBoard `json:"OemHuaweiBoards"`
+	Boards []Boards `json:"Boards"`
 	NetworkAdapters []NetworkAdapter `json:"NetworkAdapters"`
 	Drives          []Drive          `json:"Drives"`
 	PCIeDevices     []PCIeDevice     `json:"PCIeDevices"`
@@ -102,12 +102,12 @@ func (dto *GetServerResponse) Load(data base.ModelInterface) error {
 	// Chassis.Thermal
 	dto.Chassis.Thermal.Load(&m.Chassis.Thermal)
 
-	// Chassis.OemHuaweiBoards
-	dto.Chassis.OemHuaweiBoards = make([]OemHuaweiBoard, 0)
-	for i := range m.Chassis.OemHuaweiBoards {
-		each := new(OemHuaweiBoard)
-		each.Load(&m.Chassis.OemHuaweiBoards[i])
-		dto.Chassis.OemHuaweiBoards = append(dto.Chassis.OemHuaweiBoards, *each)
+	// Chassis.Boards
+	dto.Chassis.Boards = make([]Boards, 0)
+	for i := range m.Chassis.Boards {
+		each := new(Boards)
+		each.Load(&m.Chassis.Boards[i])
+		dto.Chassis.Boards = append(dto.Chassis.Boards, *each)
 	}
 	// Chassis.NetworkAdapters
 	dto.Chassis.NetworkAdapters = make([]NetworkAdapter, 0)

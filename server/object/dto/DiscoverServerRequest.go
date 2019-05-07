@@ -8,6 +8,7 @@ import (
 type DiscoverServerRequest struct {
 	Name        *string `json:"Name"`
 	Description *string `json:"Description"`
+	Vender      *string `json:"Vender"`
 	Hostname    string  `json:"Hostname"`
 	Username    string  `json:"Username"`
 	Password    string  `json:"Password"`

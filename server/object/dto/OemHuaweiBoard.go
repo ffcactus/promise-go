@@ -4,8 +4,8 @@ import (
 	"promise/server/object/model"
 )
 
-// OemHuaweiBoard is DTO.
-type OemHuaweiBoard struct {
+// Boards is DTO.
+type Boards struct {
 	ResourceResponse
 	ProductInfoResponse
 	CardNo          *int
@@ -20,7 +20,7 @@ type OemHuaweiBoard struct {
 }
 
 // Load will load data from model.
-func (dto *OemHuaweiBoard) Load(m *model.OemHuaweiBoard) {
+func (dto *Boards) Load(m *model.Board) {
 	dto.LoadResourceResponse(&m.Resource)
 	dto.LoadProductInfoResponse(&m.ProductInfo)
 	dto.CardNo = m.CardNo

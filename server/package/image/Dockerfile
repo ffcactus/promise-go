@@ -9,4 +9,4 @@ RUN chmod a+x ./server ./wait-for.sh
 
 EXPOSE 80
 
-# ENTRYPOINT ["./server"]
+ENTRYPOINT ["/bin/ash"]

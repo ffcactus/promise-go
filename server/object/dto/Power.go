@@ -4,17 +4,6 @@ import (
 	"promise/server/object/model"
 )
 
-// Voltage This is the definition for voltage sensors.
-type Voltage struct {
-	ResourceResponse
-	ThresholdResponse
-	SensorNumber    *int     `json:"SensorNumber,omitempty"`    // A numerical identifier to represent the voltage sensor.
-	ReadingVolts    *float64 `json:"ReadingVolts,omitempty"`    // The present reading of the voltage sensor.
-	MinReadingRange *float64 `json:"MinReadingRange,omitempty"` // Minimum value for this Voltage sensor.
-	MaxReadingRange *float64 `json:"MaxReadingRange,omitempty"` // Maximum value for this Voltage sensor.
-	PhysicalContext *string  `json:"PhysicalContext,omitempty"`
-}
-
 // PowerMetrics Power readings for this chassis.
 type PowerMetrics struct {
 	MinConsumedWatts     *float64 `json:"MinConsumedWatts,omitempty"`     // The lowest power consumption level over the measurement window (the last IntervalInMin minutes).
@@ -40,16 +29,6 @@ type PowerControl struct {
 	PowerAllocatedWatts *float64      `json:"PowerAllocatedWatts,omitempty"` // The total amount of power that has been allocated (or budegeted)to  chassis resources.
 	PowerMetrics        *PowerMetrics `json:"PowerMetrics,omitempty"`        // Power readings for this chassis.
 	PowerLimit          *PowerLimit   `json:"PowerLimit,omitempty"`          // The potential power that the chassis resources are requesting which may be higher than the current level being consumed since requested power includes budget that the chassis resource wants for future use.
-	// RelatedItem         *[]string
-}
-
-// InputRange This type shall describe an input range that the associated power supply is able to utilize.
-type InputRange struct {
-	InputType          *string `json:"InputType,omitempty"`          // The Input type (AC or DC).
-	MinimumVoltage     *int    `json:"MinimumVoltage,omitempty"`     // The minimum line input voltage at which this power supply input range is effective.
-	MinimumFrequencyHz *int    `json:"MinimumFrequencyHz,omitempty"` // The minimum line input frequency at which this power supply input range is effective.
-	MaximumFrequencyHz *int    `json:"MaximumFrequencyHz,omitempty"` // The maximum line input frequency at which this power supply input range is effective.
-	OutputWattage      *int    `json:"OutputWattage,omitempty"`      // The maximum capacity of this Power Supply when operating in this input range.
 }
 
 // PowerSupply is DTO.
@@ -62,17 +41,13 @@ type PowerSupply struct {
 	PowerCapacityWatts   *float64 `json:"PowerCapacityWatts,omitempty"`   // The maximum capacity of this Power Supply.
 	LastPowerOutputWatts *float64 `json:"LastPowerOutputWatts,omitempty"` // The average power output of this Power Supply.
 	FirmwareVersion      *string  `json:"FirmwareVersion,omitempty"`      // The firmware version for this Power Supply.
-	//	RelatedItem          *[]string     // The ID(s) of the resources associated with this Power Limit.
-	// Redundancy   *Redundancy   // This structure is used to show redundancy for power supplies.  The Component ids will reference the members of the redundancy groups.
-	// InputRange   *[]InputRange // This is the input ranges that the power supply can use.
-	IndicatorLed *string `json:"IndicatorLed,omitempty"` // The state of the indicator LED, used to identify the power supply.
+	IndicatorLed         *string  `json:"IndicatorLed,omitempty"`         // The state of the indicator LED, used to identify the power supply.
 }
 
 // Power is DTO.
 type Power struct {
 	ResourceResponse
 	PowerControl  []PowerControl `json:"PowerControl"`  // This is the definition for power control function (power reading/limiting).
-	Voltages      []Voltage      `json:"Voltages"`      // This is the definition for voltage sensors.
 	PowerSupplies []PowerSupply  `json:"PowerSupplies"` // Details of the power supplies associated with this system or device.
 	Redundancy    []Redundancy   `json:"Redundancy"`    // Redundancy information for the power subsystem of this system or device.
 }
@@ -81,14 +56,13 @@ type Power struct {
 func (dto *Power) Load(m *model.Power) {
 	dto.LoadResourceResponse(&m.Resource)
 	dto.PowerControl = make([]PowerControl, 0)
-	dto.Voltages = make([]Voltage, 0)
 	dto.PowerSupplies = make([]PowerSupply, 0)
 	dto.Redundancy = make([]Redundancy, 0)
 	// PowerControl
 	if m.PowerControl != nil {
-		for i := range *m.PowerControl {
+		for i := range m.PowerControl {
 			each := PowerControl{}
-			powerControl := (*m.PowerControl)[i]
+			powerControl := m.PowerControl[i]
 			each.LoadResourceResponse(&powerControl.Resource)
 			each.LoadProductInfoResponse(&powerControl.ProductInfo)
 			each.PowerConsumedWatts = powerControl.PowerConsumedWatts
@@ -111,26 +85,11 @@ func (dto *Power) Load(m *model.Power) {
 			dto.PowerControl = append(dto.PowerControl, each)
 		}
 	}
-	// Voltages
-	if m.Voltages != nil {
-		for i := range *m.Voltages {
-			each := Voltage{}
-			voltage := (*m.Voltages)[i]
-			each.LoadResourceResponse(&voltage.Resource)
-			each.LoadThresholdResponse(&voltage.Threshold)
-			each.SensorNumber = voltage.SensorNumber
-			each.ReadingVolts = voltage.ReadingVolts
-			each.MinReadingRange = voltage.MinReadingRange
-			each.MaxReadingRange = voltage.MaxReadingRange
-			each.PhysicalContext = voltage.PhysicalContext
-			dto.Voltages = append(dto.Voltages, each)
-		}
-	}
 	// PowerSupply
 	if m.PowerSupplies != nil {
-		for i := range *m.PowerSupplies {
+		for i := range m.PowerSupplies {
 			each := PowerSupply{}
-			powerSupplies := (*m.PowerSupplies)[i]
+			powerSupplies := m.PowerSupplies[i]
 			each.LoadResourceResponse(&powerSupplies.Resource)
 			each.LoadProductInfoResponse(&powerSupplies.ProductInfo)
 			each.PowerSupplyType = powerSupplies.PowerSupplyType
@@ -145,9 +104,9 @@ func (dto *Power) Load(m *model.Power) {
 	}
 	// Redundancy
 	if m.Redundancy != nil {
-		for i := range *m.Redundancy {
+		for i := range m.Redundancy {
 			each := Redundancy{}
-			redundancy := (*m.Redundancy)[i]
+			redundancy := m.Redundancy[i]
 			each.Load(&redundancy)
 			dto.Redundancy = append(dto.Redundancy, each)
 		}

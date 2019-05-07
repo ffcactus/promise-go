@@ -24,9 +24,20 @@ func (s *Discover) Perform(id string, request base.ActionRequestInterface) (base
 		return nil, []base.ErrorResponse{*base.NewErrorResponseInternalError()}
 	}
 	serverBasicInfo, err := Probe(discoverRequest)
+	if err != nil {
+		return nil, []base.ErrorResponse{*errorResp.NewErrorResponseServerDiscoverFailed()}
+	}
 	server := serverBasicInfo.CreateServer()
 	ctx := context.CreateDiscoverServerContext(server, discoverRequest)
 	st := strategy.CreateDiscoverServerStrategy(server)
+	if ctx == nil {
+		log.WithFields(log.Fields{"hostname": discoverRequest.Hostname, "vender": discoverRequest.Vender}).Warn("Service perform discover server failed, create context failed.")
+		return nil, []base.ErrorResponse{*base.NewErrorResponseInternalError()}
+	}
+	if st == nil {
+		log.WithFields(log.Fields{"hostname": discoverRequest.Hostname, "vender": discoverRequest.Vender}).Warn("Service perform discover server failed, create strategy failed.")
+		return nil, []base.ErrorResponse{*base.NewErrorResponseInternalError()}
+	}
 	model, err := st.Execute(ctx, server)
 	if err != nil {
 		return nil, []base.ErrorResponse{*errorResp.NewErrorResponseServerDiscoverFailed()}

@@ -309,6 +309,10 @@ func (c Client) Unmarshal(resp *http.Response, response interface{}) ClientError
 		errorImpl.body = body
 		return &errorImpl
 	}
+	// If no need to unmarshal.
+	if response == nil {
+		return nil
+	}
 	if err := json.Unmarshal(body, response); err != nil {
 		errorImpl.status = resp.StatusCode
 		errorImpl.body = body
@@ -326,6 +330,9 @@ func (c Client) Do(request *http.Request, response interface{}) ClientError {
 	if err != nil {
 		log.WithFields(log.Fields{"method": request.Method, "URL": request.URL, "error": err}).Warn("Client operation failed.")
 		return ToClientError(err)
+	}
+	if response == nil {
+		return nil
 	}
 	return c.Unmarshal(httpResponse, response)
 }

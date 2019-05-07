@@ -1,24 +1,20 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import CSSModules from 'react-css-modules';
-import ServerDetailSectionHeader from './ServerDetailSectionHeader';
-import ServerDetailTableVoltages from './ServerDetailTableVoltages';
-import styles from './App.css';
+import React from "react";
+import PropTypes from "prop-types";
+import CSSModules from "react-css-modules";
+import ServerDetailSectionHeader from "./ServerDetailSectionHeader";
+import ServerDetailTablePowerSupply from "./ServerDetailTablePowerSupply";
+import ServerDetailTablePowerControl from "./ServerDetailTablePowerControl";
+import styles from "./App.css";
 
 function ServerDetailSectionPower(props) {
-  const iconImage = require('./img/icon/Power.png');
-  return (<div styleName="ServerDetailSectionDiv">
-    <ServerDetailSectionHeader name="Power" image={iconImage} />
-    <ServerDetailTableVoltages voltages={props.power.Voltages} />
-    <table>
-      <thead>
-        <tr>
-          <th styleName="level1">Name</th>
-        </tr>
-      </thead>
-      <tbody/>
-    </table>
-  </div>);
+  const iconImage = require("./img/icon/Power.png");
+  return (
+    <div styleName="ServerDetailSectionDiv">
+      <ServerDetailSectionHeader name="Power" image={iconImage} />
+      <ServerDetailTablePowerSupply powerSupply={props.power.PowerSupplies} />
+      <ServerDetailTablePowerControl powerControl={props.power.PowerControl} />
+    </div>
+  );
 }
 
 ServerDetailSectionPower.propTypes = {

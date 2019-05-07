@@ -8,6 +8,7 @@ import (
 	"promise/server/object/constvalue"
 	"promise/server/object/entity"
 	"promise/server/object/model"
+	//"time"
 )
 
 // Server is the concrete DB for server.
@@ -658,11 +659,6 @@ func (impl *Server) deletePower(c *gorm.DB, server *entity.Server) error {
 			return base.ErrorTransaction
 		}
 	}
-	for i := range server.Power.Voltages {
-		if err := c.Delete(server.Power.Voltages[i]).Error; err != nil {
-			return base.ErrorTransaction
-		}
-	}
 	for i := range server.Power.PowerSupplies {
 		if err := c.Delete(server.Power.PowerSupplies[i]).Error; err != nil {
 			return base.ErrorTransaction
@@ -734,11 +730,6 @@ func (impl *Server) UpdatePower(ID string, power *model.Power) (base.ModelInterf
 }
 
 func (impl *Server) deleteThermal(c *gorm.DB, server *entity.Server) error {
-	for i := range server.Thermal.Temperatures {
-		if err := c.Delete(server.Thermal.Temperatures[i]).Error; err != nil {
-			return base.ErrorTransaction
-		}
-	}
 	for i := range server.Thermal.Fans {
 		if err := c.Delete(server.Thermal.Fans[i]).Error; err != nil {
 			return base.ErrorTransaction
@@ -804,17 +795,17 @@ func (impl *Server) UpdateThermal(ID string, thermal *model.Thermal) (base.Model
 	return server.ToModel(), nil
 }
 
-func (impl *Server) deleteOemHuaweiBoards(c *gorm.DB, server *entity.Server) error {
-	for i := range server.OemHuaweiBoards {
-		if err := c.Delete(server.OemHuaweiBoards[i]).Error; err != nil {
+func (impl *Server) deleteBoards(c *gorm.DB, server *entity.Server) error {
+	for i := range server.Boards {
+		if err := c.Delete(server.Boards[i]).Error; err != nil {
 			return base.ErrorTransaction
 		}
 	}
 	return nil
 }
 
-// UpdateOemHuaweiBoards Update OEM Huawei boards.
-func (impl *Server) UpdateOemHuaweiBoards(ID string, boards []model.OemHuaweiBoard) (base.ModelInterface, error) {
+// UpdateBoards Update OEM Huawei boards.
+func (impl *Server) UpdateBoards(ID string, boards []model.Board) (base.ModelInterface, error) {
 	var (
 		c      = impl.TemplateImpl.GetConnection()
 		server = new(entity.Server)
@@ -823,7 +814,7 @@ func (impl *Server) UpdateOemHuaweiBoards(ID string, boards []model.OemHuaweiBoa
 	if err := tx.Error; err != nil {
 		log.WithFields(log.Fields{
 			"id":    ID,
-			"op":    "UpdateOemHuaweiBoards",
+			"op":    "UpdateBoards",
 			"error": err,
 		}).Warn("DB operation failed, start transaction failed.")
 		return nil, base.ErrorTransaction
@@ -833,31 +824,31 @@ func (impl *Server) UpdateOemHuaweiBoards(ID string, boards []model.OemHuaweiBoa
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id": ID,
-			"op": "UpdateOemHuaweiBoards",
+			"op": "UpdateBoards",
 		}).Warn("DB operation failed, load server failed.")
 		return nil, base.ErrorTransaction
 	}
-	if err := impl.deleteOemHuaweiBoards(tx, server); err != nil {
+	if err := impl.deleteBoards(tx, server); err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id":    ID,
-			"op":    "UpdateOemHuaweiBoards",
+			"op":    "UpdateBoards",
 			"error": err,
 		}).Warn("DB operation failed, delete association failed, transaction rollback.")
 		return nil, base.ErrorTransaction
 	}
-	boardsE := []entity.OemHuaweiBoard{}
+	boardsE := []entity.Board{}
 	for _, v := range boards {
-		each := entity.OemHuaweiBoard{}
+		each := entity.Board{}
 		each.Load(&v)
 		boardsE = append(boardsE, each)
 	}
-	server.OemHuaweiBoards = boardsE
+	server.Boards = boardsE
 	if err := tx.Save(server).Error; err != nil {
 		tx.Rollback()
 		log.WithFields(log.Fields{
 			"id":    ID,
-			"op":    "UpdateOemHuaweiBoards",
+			"op":    "UpdateBoards",
 			"error": err,
 		}).Warn("DB opertion failed, save server failed, transaction rollback.")
 		return nil, base.ErrorTransaction
@@ -865,7 +856,7 @@ func (impl *Server) UpdateOemHuaweiBoards(ID string, boards []model.OemHuaweiBoa
 	if err := tx.Commit().Error; err != nil {
 		log.WithFields(log.Fields{
 			"id":    ID,
-			"op":    "UpdateOemHuaweiBoards",
+			"op":    "UpdateBoards",
 			"error": err,
 		}).Warn("DB opertion failed, commit failed.")
 		return nil, base.ErrorTransaction

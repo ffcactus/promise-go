@@ -1,30 +1,30 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import ServerDetailSectionHeader from './ServerDetailSectionHeader';
-import CSSModules from 'react-css-modules';
-import styles from './App.css';
+import React from "react";
+import PropTypes from "prop-types";
+import ServerDetailSectionHeader from "./ServerDetailSectionHeader";
+import CSSModules from "react-css-modules";
+import styles from "./App.css";
 
 function ServerDetailSectionProcessor(props) {
-  const iconImage = require('./img/icon/Processor.png');
-  return (<div styleName="ServerDetailSectionDiv">
-    <ServerDetailSectionHeader name="Processor" image={iconImage} />
-    <table>
-      <thead>
-        <tr>
-          <th styleName="level1">Name</th>
-          <th styleName="level1">Model</th>
-          <th styleName="level1">Architecture</th>
-          <th styleName="level1">InstructionSet</th>
-          <th styleName="level1">Socket</th>
-          <th styleName="level1">MaxSpeedMHz</th>
-          <th styleName="level1">TotalCores</th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          props.processors.map(each => {
+  const iconImage = require("./img/icon/Processor.png");
+  return (
+    <div styleName="ServerDetailSectionDiv">
+      <ServerDetailSectionHeader name="Processor" image={iconImage} />
+      <table>
+        <thead>
+          <tr>
+            <th styleName="level1">Name</th>
+            <th styleName="level1">Model</th>
+            <th styleName="level1">Architecture</th>
+            <th styleName="level1">InstructionSet</th>
+            <th styleName="level1">Socket</th>
+            <th styleName="level1">MaxSpeedMHz</th>
+            <th styleName="level1">TotalCores</th>
+          </tr>
+        </thead>
+        <tbody>
+          {props.processors.map((each, i) => {
             return (
-              <tr key={each.Name}>
+              <tr key={i.toString()}>
                 <td>{each.Name}</td>
                 <td>{each.Model}</td>
                 <td>{each.ProcessorArchitecture}</td>
@@ -34,11 +34,11 @@ function ServerDetailSectionProcessor(props) {
                 <td>{each.TotalCores}</td>
               </tr>
             );
-          })
-        }
-      </tbody>
-    </table>
-  </div>);
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 ServerDetailSectionProcessor.propTypes = {

@@ -1,110 +1,110 @@
 .Selected {
-    background-color: rgb(181, 214, 245);
+  background-color: rgb(181, 214, 245);
 }
 
 .NotSelected {
-    background-color: #DFEEFC;
+  background-color: #dfeefc;
 }
 
 .ServerGroupArea {
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    height: 100%;
-    display: flex;
-    flex-flow: column;
-    padding: 0px;
-    margin: 0px;
-    border: solid 0 transparent;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  padding: 0px;
+  margin: 0px;
+  border: solid 0 transparent;
 }
 
 /* ListControlArea contains button like "Add" and "Sort" */
 .ListControlArea {
-    border: solid 0 transparent;
-    border-bottom: 1px solid rgb(11, 188, 233);
-    overflow: hidden;
-    margin: 0px;
-    padding: 0px;
-    position: relative;
-    height: 40px;
-    display: block;
+  border: solid 0 transparent;
+  border-bottom: 1px solid rgb(11, 188, 233);
+  overflow: hidden;
+  margin: 0px;
+  padding: 0px;
+  position: relative;
+  height: 40px;
+  display: block;
 }
 
 /* The buttons in ListControlArea */
 .ListControlAreaButton {
-    border: 0px;
-    margin: 0px 10px 0px 10px;
-    padding: 0px;
-    cursor: pointer;
-    height: 100%;
-    width: 40px;
-    position: relative;
+  border: 0px;
+  margin: 0px 10px 0px 10px;
+  padding: 0px;
+  cursor: pointer;
+  height: 40px;
+  width: 40px;
+  position: relative;
 }
 
 .ListControlAreaButton .img {
-    display: block;
-    margin: auto;
+  display: block;
+  margin: auto;
 }
 
 .ServerGroupList {
-    margin: 0px;
-    padding: 0px;
-    position: relative;
-    margin: 0px;
-    padding: 0px;
-    overflow: auto;
-    border: 0 solid transparent;
-    flex: 1 1 auto;
-    border-bottom: 1px solid rgb(11, 188, 233);
-    background-color: #DFEEFC;
-    /* For the element inside */
-    display: flex;
-    flex-flow: column;
+  margin: 0px;
+  padding: 0px;
+  position: relative;
+  margin: 0px;
+  padding: 0px;
+  overflow: auto;
+  border: 0 solid transparent;
+  flex: 1 1 auto;
+  border-bottom: 1px solid rgb(11, 188, 233);
+  background-color: #dfeefc;
+  /* For the element inside */
+  display: flex;
+  flex-flow: column;
 }
 
 .ServerGroupElement {
-    height: 2em;
-    margin: 0px;
-    padding: 0px;    
-    border: 0px;
-    border-bottom: 1px solid rgb(11, 188, 233);
-    float: none;
-    flex: 0 1 auto;    
-    position: relative;
+  height: 2em;
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+  border-bottom: 1px solid rgb(11, 188, 233);
+  float: none;
+  flex: 0 1 auto;
+  position: relative;
 }
 
 .ServerGroupElementSelected {
-    height: 2em;
-    margin: 0px;
-    padding: 0px;    
-    border: 0px;
-    border-bottom: 1px solid rgb(11, 188, 233);
-    float: none;
-    flex: 0 1 auto;
-    position: relative;
+  height: 2em;
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+  border-bottom: 1px solid rgb(11, 188, 233);
+  float: none;
+  flex: 0 1 auto;
+  position: relative;
 }
 
 .ServerGroupElementText {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%)
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
 }
 
 .ListControlArea {
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    display: flex;
-    flex-flow: column;
-    position: absolute;
-    padding: 0px;
-    margin: 0px;
-    border: solid 0 transparent;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  display: flex;
+  flex-flow: column;
+  position: absolute;
+  padding: 0px;
+  margin: 0px;
+  border: solid 0 transparent;
 }
 
 /* .PromiseBoarder {
@@ -125,258 +125,282 @@
 } */
 
 .Full {
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    margin: 0px;
-    height: 100%;
-    width: 100%;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  margin: 0px;
+  height: 100%;
+  width: 100%;
 }
-
-
 
 /* ServerListArea contains search area, control area and server list area. */
 .ServerListArea {
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    display: flex;
-    flex-flow: column;
-    position: absolute;
-    padding: 0px;
-    margin: 0px;
-    border: solid 0 transparent;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  display: flex;
+  flex-flow: column;
+  position: absolute;
+  padding: 0px;
+  margin: 0px;
+  border: solid 0 transparent;
 }
 
 .ServerSearchArea {
-    border: solid 0 transparent;
-    border-bottom: 1px solid rgb(11, 188, 233);
-    overflow: hidden;
-    margin: 0px;
-    padding: 0px;
-    position: relative;
-    height: 40px;
-    min-height: 40px;
-    display: flex;
-    flex: 1 1 none;
+  border: solid 0 transparent;
+  border-bottom: 1px solid rgb(11, 188, 233);
+  overflow: hidden;
+  margin: 0px;
+  padding: 0px;
+  position: relative;
+  height: 40px;
+  min-height: 40px;
+  display: flex;
+  flex: 1 1 none;
 }
 
 .ServerList {
-    margin: 0px;
-    padding: 0px;
-    position: relative;
-    margin: 0px;
-    padding: 0px;
-    overflow: auto;
-    border: 0 solid transparent;
-    flex: 1 1 auto;
-    border-bottom: 1px solid rgb(11, 188, 233);
-    display: flex;
-    flex-flow: column;
+  margin: 0px;
+  padding: 0px;
+  position: relative;
+  margin: 0px;
+  padding: 0px;
+  overflow: auto;
+  border: 0 solid transparent;
+  flex: 1 1 auto;
+  border-bottom: 1px solid rgb(11, 188, 233);
+  display: flex;
+  flex-flow: column;
 }
 
 .ServerListElement {
-    margin: 0px;
-    padding: 0px;
-    display: flex;
-    border: 1px solid rgb(11, 188, 233);
-    height: 38px; /* The outter box is 40 */
+  margin: 0px;
+  padding: 0px;
+  display: flex;
+  border: 1px solid rgb(11, 188, 233);
+  height: 38px; /* The outter box is 40 */
 }
 
 .ServerListElementHealth {
-    flex-flow: row;
-    flex: 1 1 auto;
-    position: relative;
+  flex-flow: row;
+  flex: 1 1 auto;
+  position: relative;
 }
 
 .ServerListElementName {
-    flex-flow: row;
-    flex: 9 1 auto;
-    position: relative;
+  flex-flow: row;
+  flex: 9 1 auto;
+  position: relative;
 }
 
 .ServerListElementName p {
-    margin: 0px;
-    position: absolute;
-    top: 50%;
-    left: 10%;
-    margin-right: -10%;
-    transform: translate(-10%, -50%)
+  margin: 0px;
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  margin-right: -10%;
+  transform: translate(-10%, -50%);
 }
 
 .ServerListElementTask {
-    flex-flow: row;
-    width: 50px;
-    flex: 1 1 auto;
-    position: relative;
+  flex-flow: row;
+  width: 50px;
+  flex: 1 1 auto;
+  position: relative;
 }
 
 .ServerListElementState {
-    flex-flow: row;
-    flex: 0 1 auto;
-    position: relative;
+  flex-flow: row;
+  flex: 0 1 auto;
+  position: relative;
 }
 
 /* Used by server detail area */
 
 .ServerDetailSectionDiv {
-    margin-bottom: 50px;
+  margin-bottom: 50px;
 }
 
 .ServerDetailSectionHeader {
-    font-size: 40px;
+  font-size: 40px;
 }
 
 .ServerDetailSectionHeaderIcon {
-    max-height: 50px;
-    margin: 0 auto;
-    margin-right: 50px;
-    float: left;
-    vertical-align: middle;
+  max-height: 50px;
+  margin: 0 auto;
+  margin-right: 50px;
+  float: left;
+  vertical-align: middle;
 }
 
-table
-{
-    border-collapse: collapse;
-    border-spacing: 0px;
-    margin: 10px;
+table {
+  border-collapse: collapse;
+  border-spacing: 0px;
+  margin: 10px;
 }
-table, th, td
-{
-    padding: 5px;
-    border: 1px solid black;
+table,
+th,
+td {
+  padding: 5px;
+  border: 1px solid black;
 }
 
 th.level1 {
-    background-color: lightblue
+  background-color: lightblue;
 }
 
 th.level2 {
-    background-color: lightgreen
+  background-color: lightgreen;
 }
 
 /* Put them here for test only, the following should put into a dedicated css file. */
 .header {
-    background-color: #ebeae6;
-    height: 40px;
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    left: 0px;
-    display: flex;
+  background-color: #ebeae6;
+  height: 40px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  display: flex;
 }
 
 .main {
-    background-color: white;
-    position: absolute;
-    top: 40px;
-    right: 0px;
-    bottom: 40px;
-    left: 0px;
-    display: flex;
+  background-color: white;
+  position: absolute;
+  top: 40px;
+  right: 0px;
+  bottom: 40px;
+  left: 0px;
+  display: flex;
 }
 
 .footer {
-    background-color: aquamarine;
-    height: 40px;
-    position: absolute;
-    right: 0px;
-    bottom: 0px;
-    left: 0px;
+  background-color: aquamarine;
+  height: 40px;
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
 }
 
 .main-resizer {
-    flex-basis: 3px;
-    background-color: #adc4dd;
-    cursor: ew-resize;
+  flex-basis: 3px;
+  background-color: #adc4dd;
+  cursor: ew-resize;
 }
 
-.main-group, .header-home {
-    flex-basis: 14.6%;
-    min-width: 200px;
+.main-group,
+.header-home {
+  flex-basis: 14.6%;
+  min-width: 200px;
 }
 
 .main-list {
-    flex-basis: 23.6%;
-    min-width: 200px;
+  flex-basis: 23.6%;
+  min-width: 200px;
 }
 
 .main-detail {
-    flex: 1 1 auto;
-    min-width: 380px;   
+  flex: 1 1 auto;
+  min-width: 380px;
 }
 
 .full {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-    left: 0px;
-    height: 100%;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  height: 100%;
 }
 
 .flex-column-container {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .flex-row-container {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .flex-item {
-    flex: 1;
+  flex: 1;
 }
 
 .flex-item-last {
-    flex: 1 1 auto;
+  flex: 1 1 auto;
 }
 
 .border-column-first {
-    border-top: 0px transparent;
+  border-top: 0px transparent;
 }
 
 .border-column {
-    border-top: 1px solid #adc4dd;
+  border-top: 1px solid #adc4dd;
 }
 
 .border-row-first {
-    border-left: 0px solid transparent;
+  border-left: 0px solid transparent;
 }
 
 .border-row {
-    border-left: 1px solid #adc4dd;
+  border-left: 1px solid #adc4dd;
 }
 
 .group-area {
-    height: 100%;
-    background-color: #dfeefc;
+  height: 100%;
+  background-color: #dfeefc;
 }
 
 .detail-area {
-    height: 100%;
+  height: 100%;
 }
 
 .list-area {
-    height: 100%;
-    background-color: #f9f9f9;
+  height: 100%;
+  background-color: #f9f9f9;
 }
 
 .border-column-first {
-    border-top: 0px transparent;
+  border-top: 0px transparent;
 }
 
 .border-column {
-    border-top: 1px solid #adc4dd;
+  border-top: 1px solid #adc4dd;
 }
 
 .border-row-first {
-    border-left: 0px solid transparent;
+  border-left: 0px solid transparent;
 }
 
 .border-row {
-    border-left: 1px solid #adc4dd;
+  border-left: 1px solid #adc4dd;
+}
+
+.TabRoot {
+  background-color: white;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.TabHeader {
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: auto;
+
+  border: 1px solid black;
+  background-color: silver;
+  height: 40px;
+}
+
+.TabContent {
+  flex-grow: auto;
+  flex-shrink: 1;
+  flex-basis: auto;
+  overflow: hidden;
 }

@@ -6,8 +6,8 @@ import (
 
 // OriginURIs The
 type OriginURIs struct {
-	Chassis *string
-	System  *string
+	Chassis string
+	System  string
 }
 
 // ComputerSystem Computer system object.
@@ -23,7 +23,7 @@ type ComputerSystem struct {
 type Chassis struct {
 	Power           Power
 	Thermal         Thermal
-	OemHuaweiBoards []OemHuaweiBoard
+	Boards          []Board
 	NetworkAdapters []NetworkAdapter
 	Drives          []Drive
 	PCIeDevices     []PCIeDevice
@@ -38,6 +38,7 @@ type ServerBasicInfo struct {
 	Hostname       string
 	Type           string
 	Protocol       string
+	Vender         string
 	OriginUsername *string
 	OriginPassword *string
 }
@@ -54,6 +55,7 @@ type Server struct {
 	Hostname       string
 	Type           string
 	Protocol       string
+	Vender         string
 	OriginUsername *string
 	OriginPassword *string
 	Credential     string
@@ -103,6 +105,7 @@ func (o *ServerBasicInfo) CreateServer() *Server {
 	server.Hostname = o.Hostname
 	server.Type = o.Type
 	server.Protocol = o.Protocol
+	server.Vender = o.Vender
 	server.OriginUsername = o.OriginUsername
 	server.OriginPassword = o.OriginPassword
 	return server

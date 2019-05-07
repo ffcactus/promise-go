@@ -2,15 +2,17 @@ package client
 
 import (
 	log "github.com/sirupsen/logrus"
+	"promise/server/client/dell"
+	"promise/server/client/hp"
+	"promise/server/client/huawei"
 	"promise/server/client/mock"
-	"promise/server/client/redfish"
-	"promise/server/object/constvalue"
 	"promise/server/object/model"
 	"strings"
 )
 
 // ServerClientInterface is the client interface for server device.
 type ServerClientInterface interface {
+	String() string
 	Support() bool
 	GetProtocol() string
 	GetBasicInfo() (*model.ServerBasicInfo, error)
@@ -21,7 +23,7 @@ type ServerClientInterface interface {
 	GetNetworkInterfaces(systemID string) ([]model.NetworkInterface, error)
 	GetStorages(systemID string) ([]model.Storage, error)
 	// For chassis info
-	GetOemHuaweiBoards(chassisID string) ([]model.OemHuaweiBoard, error)
+	GetBoards(chassisID string) ([]model.Board, error)
 	GetPower(chassisID string) (*model.Power, error)
 	GetThermal(chassisID string) (*model.Thermal, error)
 	GetNetworkAdapters(chassisID string) ([]model.NetworkAdapter, error)
@@ -29,18 +31,38 @@ type ServerClientInterface interface {
 	GetPCIeDevices(chassisID string) ([]model.PCIeDevice, error)
 }
 
-// FindBestClient will find the best client for the server.
-func FindBestClient(hostname string, username string, password string) ServerClientInterface {
+// FindBestClient will find the best client based on the server credential, which means it will detect the server real time.
+func FindBestClient(vender *string, hostname string, username string, password string) ServerClientInterface {
 	var client ServerClientInterface
-	client = mock.GetInstance(hostname)
-	if client.Support() {
+	var support = false
+	if vender == nil {
+		*vender = "Huawei"
+	}
+	if *vender == "HP" {
+		client = hp.GetInstance(hostname, username, password)
+		if client.Support() {
+			support = true
+		}
+	} else if *vender == "Dell" {
+		client = dell.GetInstance(hostname, username, password)
+		if client.Support() {
+			support = true
+		}
+	} else if *vender == "Huawei" {
+		client = huawei.GetInstance(hostname, username, password)
+		if client.Support() {
+			support = true
+		}
+	} else if *vender == "Mock" {
+		client = mock.GetInstance(hostname)
+		if client.Support() {
+			support = true
+		}
+	}
+	if client != nil {
 		return client
 	}
-	client = redfish.GetInstance(hostname, username, password)
-	if client.Support() {
-		return client
-	}
-	log.WithFields(log.Fields{"hostname": hostname}).Warn("FindBestClient(), can't find a client, server address = ", hostname)
+	log.WithFields(log.Fields{"client": client, "vender": *vender, "support": support}).Warn("Client find best client failed.")
 	return nil
 }
 
@@ -57,15 +79,18 @@ func getServerManagementAccount(server *model.Server) (string, string) {
 	return "", ""
 }
 
-// GetServerClient will return the server client based on protocol.
+// GetServerClient will return the server client based on server which is saved.
 func GetServerClient(server *model.Server) ServerClientInterface {
-	switch server.Protocol {
-	case constvalue.RedfishV1:
-		username, password := getServerManagementAccount(server)
-		return redfish.GetInstance(server.Hostname, username, password)
-	case constvalue.MockProtocol:
+	username, password := getServerManagementAccount(server)
+	if server.Vender == "Huawei" {
+		return huawei.GetInstance(server.Hostname, username, password)
+	} else if server.Vender == "HP" {
+		return hp.GetInstance(server.Hostname, username, password)
+	} else if server.Vender == "Dell" {
+		return dell.GetInstance(server.Hostname, username, password)
+	} else if server.Vender == "Mock" {
 		return mock.GetInstance(server.Hostname)
-	default:
-		return nil
 	}
+	log.WithFields(log.Fields{"hostname": server.Hostname, "vender": server.Vender}).Warn("Client find best client failed.")
+	return nil
 }

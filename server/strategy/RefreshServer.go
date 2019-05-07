@@ -4,8 +4,10 @@ import (
 	log "github.com/sirupsen/logrus"
 	"promise/base"
 	"promise/server/context"
-	"promise/server/object/constvalue"
 	"promise/server/object/model"
+	"promise/server/strategy/dell"
+	"promise/server/strategy/hp"
+	"promise/server/strategy/huawei"
 )
 
 // RefreshServer is the strategy for refresh server.
@@ -17,7 +19,7 @@ type RefreshServer interface {
 	RefreshStorages(c *context.RefreshServer, server *model.Server) error
 	RefreshPower(c *context.RefreshServer, server *model.Server) error
 	RefreshThermal(c *context.RefreshServer, server *model.Server) error
-	RefreshOemHuaweiBoards(c *context.RefreshServer, server *model.Server) error
+	RefreshBoards(c *context.RefreshServer, server *model.Server) error
 	RefreshNetworkAdapters(c *context.RefreshServer, server *model.Server) error
 	RefreshDrives(c *context.RefreshServer, server *model.Server) error
 	RefreshPCIeDevices(c *context.RefreshServer, server *model.Server) error
@@ -26,13 +28,18 @@ type RefreshServer interface {
 
 // CreateRefreshServerStrategy creates the strategy based on server.
 func CreateRefreshServerStrategy(server *model.Server) RefreshServer {
-	switch server.Type {
-	case constvalue.RackType:
-		return new(RefreshRackServer)
-	case constvalue.MockType:
-		return new(RefreshMockServer)
-	default:
-		log.WithFields(log.Fields{"id": server.ID, "type": server.Type}).Warn("Can not find refresh server strategy.")
-		return nil
+	if server.Vender == "HP" {
+		return new(hp.Refresh)
 	}
+	if server.Vender == "Dell" {
+		return new(dell.Refresh)
+	}
+	if server.Vender == "Huawei" {
+		return new(huawei.RefreshRackServer)
+	}
+	if server.Vender == "Mock" {
+		return new(huawei.RefreshMockServer)
+	}
+	log.WithFields(log.Fields{"id": server.ID, "vender": server.Vender, "type": server.Type}).Warn("Strategy find refresh strategy instance failed.")
+	return nil
 }

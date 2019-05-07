@@ -2,6 +2,7 @@ package context
 
 import (
 	"promise/server/object/model"
+	"strings"
 )
 
 // CredentialHandlerInterface The interface of credential handler.
@@ -15,5 +16,6 @@ type CredentialHandler struct {
 
 // GetCredential Get server credential.
 func (h *CredentialHandler) GetCredential(server model.Server) (username, password string) {
-	return "", ""
+	splite := strings.Split(server.Credential, " ")
+	return splite[0], splite[1]
 }
